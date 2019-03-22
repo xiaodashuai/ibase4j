@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -29,6 +30,12 @@ public class BizCanvas extends BaseModel implements Serializable {
     //文件名
     @TableField("FILENAME_")
     private String filename;
+
+    /**
+     * 版本号：记录方案变更版本;
+     */
+    @TableField("VERNUM_")
+    private Integer verNum;
 
     public String getBizcode() {
         return bizcode;
@@ -70,7 +77,12 @@ public class BizCanvas extends BaseModel implements Serializable {
         this.filename = filename;
     }
 
-    public BizCanvas() {
+    public Integer getVerNum() {
+        return verNum;
+    }
+
+    public void setVerNum(Integer verNum) {
+        this.verNum = verNum;
     }
 
     @Override
@@ -81,6 +93,25 @@ public class BizCanvas extends BaseModel implements Serializable {
                 .add("extra", extra)
                 .add("num", num)
                 .add("filename", filename)
+				.add("verNum", verNum)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizCanvas)) return false;
+        BizCanvas bizCanvas = (BizCanvas) o;
+        return Objects.equal(getBizcode(), bizCanvas.getBizcode()) &&
+                Objects.equal(getType(), bizCanvas.getType()) &&
+                Objects.equal(getExtra(), bizCanvas.getExtra()) &&
+                Objects.equal(getNum(), bizCanvas.getNum()) &&
+                Objects.equal(getFilename(), bizCanvas.getFilename()) &&
+                Objects.equal(getVerNum(), bizCanvas.getVerNum());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getBizcode(), getType(), getExtra(), getNum(), getFilename(), getVerNum());
     }
 }

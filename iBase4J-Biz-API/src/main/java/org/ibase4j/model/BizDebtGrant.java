@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import java.util.Date;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -165,7 +166,7 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	 */
 	@TableField("PASS_DATE")
 	private Date passDate;
-	
+
 	/***
 	 * 经办人部门名称
 	 */
@@ -188,32 +189,20 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	@TableField(exist=false)
 	private String grantAmtStr;
 
-	public String getIdentNumber() {
-		return identNumber;
-	}
+    /**
+     * 版本号：记录方案变更版本;
+     */
+    @TableField("VERNUM_")
+    private Integer verNum;
 
-	public void setIdentNumber(String identNumber) {
-		this.identNumber = identNumber;
-	}
-
-	public String getLiceDate() {
-		return liceDate;
-	}
-
-	public void setLiceDate(String liceDate) {
-		this.liceDate = liceDate;
-	}
-
-	public String getSeqNo() {
-		return seqNo;
-	}
-
-	public void setSeqNo(String seqNo) {
-		this.seqNo = seqNo;
-	}
+	/**
+	 * 修改次数：记录发放条件修改次数（实际修改次数，修订驳回重提不会增加）;
+	 */
+	@TableField("CHANGE_NUM")
+	private Integer changeNum;
 
 	public String getDebtCode() {
-		return debtCode;
+		return debtCode == "" ? null : debtCode;
 	}
 
 	public void setDebtCode(String debtCode) {
@@ -221,7 +210,7 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getBusinessTypes() {
-		return businessTypes;
+		return businessTypes == "" ? null : businessTypes;
 	}
 
 	public void setBusinessTypes(String businessTypes) {
@@ -229,7 +218,7 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getGrantCode() {
-		return grantCode;
+		return grantCode == "" ? null : grantCode;
 	}
 
 	public void setGrantCode(String grantCode) {
@@ -245,7 +234,7 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getScopeBusinPeriod() {
-		return scopeBusinPeriod;
+		return scopeBusinPeriod == "" ? null : scopeBusinPeriod;
 	}
 
 	public void setScopeBusinPeriod(String scopeBusinPeriod) {
@@ -283,17 +272,17 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	public void setProperInfo(Long properInfo) {
 		this.properInfo = properInfo;
 	}
-	
+
 	public String getBusinessTypeName() {
-		return businessTypeName;
+		return businessTypeName == "" ? null : businessTypeName;
 	}
 
 	public void setBusinessTypeName(String businessTypeName) {
 		this.businessTypeName = businessTypeName;
 	}
-	
+
 	public String getInstitutionCode() {
-		return institutionCode;
+		return institutionCode == "" ? null : institutionCode;
 	}
 
 	public void setInstitutionCode(String institutionCode) {
@@ -301,7 +290,7 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getDescriptionProgramQuoqate() {
-		return descriptionProgramQuoqate;
+		return descriptionProgramQuoqate == "" ? null : descriptionProgramQuoqate;
 	}
 
 	public void setDescriptionProgramQuoqate(String descriptionProgramQuoqate) {
@@ -309,7 +298,7 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getDescriptionRateRules() {
-		return descriptionRateRules;
+		return descriptionRateRules == "" ? null : descriptionRateRules;
 	}
 
 	public void setDescriptionRateRules(String descriptionRateRules) {
@@ -317,7 +306,7 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getOriginalGrantCode() {
-		return originalGrantCode;
+		return originalGrantCode == "" ? null : originalGrantCode;
 	}
 
 	public void setOriginalGrantCode(String originalGrantCode) {
@@ -325,7 +314,7 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getProposer() {
-		return proposer;
+		return proposer == "" ? null : proposer;
 	}
 
 	public void setProposer(String proposer) {
@@ -333,7 +322,7 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getCurrency() {
-		return currency;
+		return currency == "" ? null : currency;
 	}
 
 	public void setCurrency(String currency) {
@@ -349,7 +338,7 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getBusinessName() {
-		return businessName;
+		return businessName == "" ? null : businessName;
 	}
 
 	public void setBusinessName(String businessName) {
@@ -357,19 +346,35 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getIouCode() {
-		return iouCode;
+		return iouCode == "" ? null : iouCode;
 	}
 
 	public void setIouCode(String iouCode) {
 		this.iouCode = iouCode;
 	}
 
-	public String getHistoryState() {
-		return historyState;
+	public String getIdentNumber() {
+		return identNumber == "" ? null : identNumber;
 	}
 
-	public void setHistoryState(String historyState) {
-		this.historyState = historyState;
+	public void setIdentNumber(String identNumber) {
+		this.identNumber = identNumber;
+	}
+
+	public String getLiceDate() {
+		return liceDate == "" ? null : liceDate;
+	}
+
+	public void setLiceDate(String liceDate) {
+		this.liceDate = liceDate;
+	}
+
+	public String getSeqNo() {
+		return seqNo == "" ? null : seqNo;
+	}
+
+	public void setSeqNo(String seqNo) {
+		this.seqNo = seqNo;
 	}
 
 	public Integer getProcessStatus() {
@@ -378,6 +383,14 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 
 	public void setProcessStatus(Integer processStatus) {
 		this.processStatus = processStatus;
+	}
+
+	public String getHistoryState() {
+		return historyState == "" ? null : historyState;
+	}
+
+	public void setHistoryState(String historyState) {
+		this.historyState = historyState;
 	}
 
 	public Date getEndDate() {
@@ -397,7 +410,7 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getDeptName() {
-		return deptName;
+		return deptName == "" ? null : deptName;
 	}
 
 	public void setDeptName(String deptName) {
@@ -405,21 +418,21 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	}
 
 	public String getCreateByName() {
-		return createByName;
+		return createByName == "" ? null : createByName;
 	}
 
 	public void setCreateByName(String createByName) {
 		this.createByName = createByName;
 	}
-	
+
 	public String getCurrencyName() {
-		return currencyName;
+		return currencyName == "" ? null : currencyName;
 	}
 
 	public void setCurrencyName(String currencyName) {
 		this.currencyName = currencyName;
 	}
-	
+
 	public String getGrantAmtStr() {
 		if(grantAmt!=null){
 			DecimalFormat numberFormat = new DecimalFormat(",###.00");
@@ -431,6 +444,22 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 	public void setGrantAmtStr(String grantAmtStr) {
 		this.grantAmtStr = grantAmtStr;
 	}
+
+	public Integer getVerNum() {
+		return verNum;
+	}
+
+	public String getVerNumStr() {
+		return String.format("%0" + 3 + "d", verNum);
+	}
+
+	public void setVerNum(Integer verNum) {
+		this.verNum = verNum;
+	}
+
+	public Integer getChangeNum() { return changeNum; }
+
+	public void setChangeNum(Integer changeNum) { this.changeNum = changeNum; }
 
 	public BizDebtGrant() {
 	}
@@ -469,6 +498,51 @@ public class BizDebtGrant extends BaseModel implements Serializable {
 				.add("createByName", createByName)
 				.add("currencyName", currencyName)
 				.add("grantAmtStr", grantAmtStr)
+				.add("verNum", verNum)
+				.add("changeNum", changeNum)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizDebtGrant)) return false;
+		BizDebtGrant that = (BizDebtGrant) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessTypes(), that.getBusinessTypes()) &&
+				Objects.equal(getGrantCode(), that.getGrantCode()) &&
+				Objects.equal(getSendDate(), that.getSendDate()) &&
+				Objects.equal(getScopeBusinPeriod(), that.getScopeBusinPeriod()) &&
+				Objects.equal(getGracePeriod(), that.getGracePeriod()) &&
+				Objects.equal(getToierancePeriod(), that.getToierancePeriod()) &&
+				Objects.equal(getGrantStatus(), that.getGrantStatus()) &&
+				Objects.equal(getProperInfo(), that.getProperInfo()) &&
+				Objects.equal(getBusinessTypeName(), that.getBusinessTypeName()) &&
+				Objects.equal(getInstitutionCode(), that.getInstitutionCode()) &&
+				Objects.equal(getDescriptionProgramQuoqate(), that.getDescriptionProgramQuoqate()) &&
+				Objects.equal(getDescriptionRateRules(), that.getDescriptionRateRules()) &&
+				Objects.equal(getOriginalGrantCode(), that.getOriginalGrantCode()) &&
+				Objects.equal(getProposer(), that.getProposer()) &&
+				Objects.equal(getCurrency(), that.getCurrency()) &&
+				Objects.equal(getGrantAmt(), that.getGrantAmt()) &&
+				Objects.equal(getBusinessName(), that.getBusinessName()) &&
+				Objects.equal(getIouCode(), that.getIouCode()) &&
+				Objects.equal(getIdentNumber(), that.getIdentNumber()) &&
+				Objects.equal(getLiceDate(), that.getLiceDate()) &&
+				Objects.equal(getSeqNo(), that.getSeqNo()) &&
+				Objects.equal(getProcessStatus(), that.getProcessStatus()) &&
+				Objects.equal(getHistoryState(), that.getHistoryState()) &&
+				Objects.equal(getEndDate(), that.getEndDate()) &&
+				Objects.equal(getPassDate(), that.getPassDate()) &&
+				Objects.equal(getDeptName(), that.getDeptName()) &&
+				Objects.equal(getCreateByName(), that.getCreateByName()) &&
+				Objects.equal(getCurrencyName(), that.getCurrencyName()) &&
+				Objects.equal(getVerNum(), that.getVerNum()) &&
+				Objects.equal(getChangeNum(), that.getChangeNum());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessTypes(), getGrantCode(), getSendDate(), getScopeBusinPeriod(), getGracePeriod(), getToierancePeriod(), getGrantStatus(), getProperInfo(), getBusinessTypeName(), getInstitutionCode(), getDescriptionProgramQuoqate(), getDescriptionRateRules(), getOriginalGrantCode(), getProposer(), getCurrency(), getGrantAmt(), getBusinessName(), getIouCode(), getIdentNumber(), getLiceDate(), getSeqNo(), getProcessStatus(), getHistoryState(), getEndDate(), getPassDate(), getDeptName(), getCreateByName(), getCurrencyName(), getVerNum(), getChangeNum());
 	}
 }

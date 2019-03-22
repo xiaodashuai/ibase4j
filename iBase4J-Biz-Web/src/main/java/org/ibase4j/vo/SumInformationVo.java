@@ -1,6 +1,6 @@
 package org.ibase4j.vo;
 
-import org.ibase4j.model.BizCustomer;
+import org.ibase4j.model.BizCust;
 import org.ibase4j.model.BizFEC;
 
 import java.io.Serializable;
@@ -18,7 +18,7 @@ public class SumInformationVo implements Serializable{
     /**
      * 用信主体
      */
-    private List<BizCustomer> custList;
+    private List<BizCust> custList;
 
     /**
      * 利率
@@ -132,11 +132,11 @@ public class SumInformationVo implements Serializable{
 
 
 
-    public List<BizCustomer> getCustList() {
+    public List<BizCust> getCustList() {
         return custList;
     }
 
-    public void setCustList(List<BizCustomer> custList) {
+    public void setCustList(List<BizCust> custList) {
         this.custList = custList;
     }
 

@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -390,5 +391,43 @@ public class BizGuarantee extends BaseModel implements Serializable {
 				.add("guaranterFormat", guaranterFormat)
 				.add("lawFlag", lawFlag)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizGuarantee)) return false;
+		BizGuarantee that = (BizGuarantee) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessTypes(), that.getBusinessTypes()) &&
+				Objects.equal(getGuarNo(), that.getGuarNo()) &&
+				Objects.equal(getBusinessName(), that.getBusinessName()) &&
+				Objects.equal(getTheApplicant(), that.getTheApplicant()) &&
+				Objects.equal(getByGuarantor(), that.getByGuarantor()) &&
+				Objects.equal(getBeneficiaryName(), that.getBeneficiaryName()) &&
+				Objects.equal(getCountryBeneficiary(), that.getCountryBeneficiary()) &&
+				Objects.equal(getCountryGuarantor(), that.getCountryGuarantor()) &&
+				Objects.equal(getFinancAmt(), that.getFinancAmt()) &&
+				Objects.equal(getFinancTermUnit(), that.getFinancTermUnit()) &&
+				Objects.equal(getFinancGuarType(), that.getFinancGuarType()) &&
+				Objects.equal(getPayment(), that.getPayment()) &&
+				Objects.equal(getUseFunds(), that.getUseFunds()) &&
+				Objects.equal(getFinanCost(), that.getFinanCost()) &&
+				Objects.equal(getEffectiveDate(), that.getEffectiveDate()) &&
+				Objects.equal(getEffectiveConditions(), that.getEffectiveConditions()) &&
+				Objects.equal(getExpiryDate(), that.getExpiryDate()) &&
+				Objects.equal(getExpirationDate(), that.getExpirationDate()) &&
+				Objects.equal(getFailureEvent(), that.getFailureEvent()) &&
+				Objects.equal(getOpenWay(), that.getOpenWay()) &&
+				Objects.equal(getGuarExpiryDare(), that.getGuarExpiryDare()) &&
+				Objects.equal(getGuarFailure(), that.getGuarFailure()) &&
+				Objects.equal(getChargeInterest(), that.getChargeInterest()) &&
+				Objects.equal(getGuaranterFormat(), that.getGuaranterFormat()) &&
+				Objects.equal(getLawFlag(), that.getLawFlag());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessTypes(), getGuarNo(), getBusinessName(), getTheApplicant(), getByGuarantor(), getBeneficiaryName(), getCountryBeneficiary(), getCountryGuarantor(), getFinancAmt(), getFinancTermUnit(), getFinancGuarType(), getPayment(), getUseFunds(), getFinanCost(), getEffectiveDate(), getEffectiveConditions(), getExpiryDate(), getExpirationDate(), getFailureEvent(), getOpenWay(), getGuarExpiryDare(), getGuarFailure(), getChargeInterest(), getGuaranterFormat(), getLawFlag());
 	}
 }

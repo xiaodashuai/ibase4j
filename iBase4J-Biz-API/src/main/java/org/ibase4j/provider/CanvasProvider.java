@@ -18,6 +18,12 @@ public interface CanvasProvider extends BaseProvider<BizCanvas> {
     boolean savCanvas(String imgStr,BizCanvas canvas);
 
     /**
+     * 暂存时删除快照，节省磁盘占用
+     * @param params
+     */
+    void delCanvas(Map<String, Object> params);
+
+    /**
      * 查询快照;
      * @param params
      * @return base64 List

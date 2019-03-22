@@ -106,4 +106,33 @@ public interface BizDebtGrantProvider extends BaseProvider<BizDebtGrant> {
      * 100条数据分页查询
      * */
     Page<BizDebtGrant> queryByHundred(Map<String, Object> param);
+<<<<<<< HEAD
+=======
+
+    /**
+     * 功能：根据概要信息查询回现
+     * @param params
+     * @return
+     */
+    Page getGrantInfo(Map<String, Object> params);
+	
+	    /**
+     * 发放条件修改驳回
+     * @param params
+     */
+    boolean saveRepairGrant(Map<String, Object> params) throws Exception;
+	
+	/**
+     * @Description: 查询发放用信主体信息
+     * @Param: [param]
+     * @return: java.util.List
+     */
+    List   getMakeLoansCustomerInfo(Map<String,Object> param);
+    /**
+     * @Description: 查询发放用信主体信息
+     * @Param: [param]
+     * @return: java.util.List
+     */
+    List   getSumRepayAmtbyCust(Map<String,Object> param);
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 }

@@ -1,5 +1,8 @@
 package org.ibase4j.vo;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+
 public class WfInsTaskVo {
     private String tiid;
     private String piid;
@@ -108,5 +111,47 @@ public class WfInsTaskVo {
 
     public void setStartedDate(String startedDate) {
         this.startedDate = startedDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof WfInsTaskVo)) return false;
+        WfInsTaskVo that = (WfInsTaskVo) o;
+        return Objects.equal(getTiid(), that.getTiid()) &&
+                Objects.equal(getPiid(), that.getPiid()) &&
+                Objects.equal(getBlockInsId(), that.getBlockInsId()) &&
+                Objects.equal(getProcessName(), that.getProcessName()) &&
+                Objects.equal(getActivityName(), that.getActivityName()) &&
+                Objects.equal(getAiid(), that.getAiid()) &&
+                Objects.equal(getStarter(), that.getStarter()) &&
+                Objects.equal(getOwner(), that.getOwner()) &&
+                Objects.equal(getUserId(), that.getUserId()) &&
+                Objects.equal(getDepId(), that.getDepId()) &&
+                Objects.equal(getRoleId(), that.getRoleId()) &&
+                Objects.equal(getStartedDate(), that.getStartedDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getTiid(), getPiid(), getBlockInsId(), getProcessName(), getActivityName(), getAiid(), getStarter(), getOwner(), getUserId(), getDepId(), getRoleId(), getStartedDate());
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("tiid", tiid)
+                .add("piid", piid)
+                .add("blockInsId", blockInsId)
+                .add("processName", processName)
+                .add("activityName", activityName)
+                .add("aiid", aiid)
+                .add("starter", starter)
+                .add("owner", owner)
+                .add("userId", userId)
+                .add("depId", depId)
+                .add("roleId", roleId)
+                .add("startedDate", startedDate)
+                .toString();
     }
 }

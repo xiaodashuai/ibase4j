@@ -62,6 +62,7 @@
 		where
 		role_type =
 		#{roleType , jdbcType=INTEGER}
+		and enable_=1
 	</select>
 
 	<resultMap id="powerTypeMap" type="org.ibase4j.model.SysRole"

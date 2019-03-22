@@ -37,7 +37,7 @@ public interface BizMakeLoansMapper extends BaseMapper<BizMakeLoans>{
      * @Param: [param]
      * @return: java.util.List
      */
-    List getGrantAMTDetailForStandingBook(@Param("cm") Map<String,Object> param);
+    List getGrantMessageStandingBook(Page page,@Param("cm") Map<String,Object> param);
 
     /** 
     * @Description: 统计信息查询列表 带分页

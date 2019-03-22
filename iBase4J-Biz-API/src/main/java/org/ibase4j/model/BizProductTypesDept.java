@@ -6,6 +6,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -52,49 +53,18 @@ public class BizProductTypesDept extends BaseModel implements Serializable {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((deptCode == null) ? 0 : deptCode.hashCode());
-		result = prime * result + ((prodQuotaLmt == null) ? 0 : prodQuotaLmt.hashCode());
-		result = prime * result + ((productTypes == null) ? 0 : productTypes.hashCode());
-		return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizProductTypesDept)) return false;
+		BizProductTypesDept that = (BizProductTypesDept) o;
+		return Objects.equal(getDeptCode(), that.getDeptCode()) &&
+				Objects.equal(getProdQuotaLmt(), that.getProdQuotaLmt()) &&
+				Objects.equal(getProductTypes(), that.getProductTypes());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj){
-			return true;
-		}
-		if (obj == null){
-			return false;
-		}
-		if (getClass() != obj.getClass()){
-			return false;
-		}
-		BizProductTypesDept other = (BizProductTypesDept) obj;
-		if (deptCode == null) {
-			if (other.deptCode != null){
-				return false;
-			}
-		} else if (!deptCode.equals(other.deptCode)){
-			return false;
-		}
-		if (prodQuotaLmt == null) {
-			if (other.prodQuotaLmt != null){
-				return false;
-			}
-		} else if (!prodQuotaLmt.equals(other.prodQuotaLmt)){
-			return false;
-		}
-		if (productTypes == null) {
-			if (other.productTypes != null){
-				return false;
-			}
-		} else if (!productTypes.equals(other.productTypes)){
-			return false;
-		}
-		return true;
+	public int hashCode() {
+		return Objects.hashCode(getDeptCode(), getProdQuotaLmt(), getProductTypes());
 	}
 
 	public BizProductTypesDept() {

@@ -7,18 +7,28 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.toolkit.IdWorker;
 import org.ibase4j.core.base.BaseProviderImpl;
 import org.ibase4j.core.config.BizContant;
 import org.ibase4j.core.support.cache.RedisHelper;
 import org.ibase4j.core.util.*;
+<<<<<<< HEAD
 import org.ibase4j.mapper.BizDebtGrantMapper;
 import org.ibase4j.mapper.BizMakeLoansMapper;
 import org.ibase4j.mapper.BizProductDefinitionMapper;
+=======
+import org.ibase4j.mapper.*;
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 import org.ibase4j.model.*;
+import org.ibase4j.vo.BookkeepkingVo;
 import org.ibase4j.vo.RepaymentVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -39,6 +49,9 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
     private BizMakeLoansMapper bizMakeLoansMapper;
     @Autowired
     private BizDebtGrantMapper bizDebtGrantMapper;
+
+    @Autowired
+    private BizGuaranteeResultMapper bizGuaranteeResultMapper;
     @Autowired
     private BizDebtGrantProvider bizDebtGrantProvider;
     @Autowired
@@ -78,12 +91,23 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
     @Autowired
     private BizInterfaceResultProvider bizInterfaceResultProvider;
     @Autowired
-    private BizProductDefinitionMapper bizProductDefinitionMapper;
+    private PlatformTransactionManager txManager;
+	@Autowired
+	private BizProductDefinitionMapper bizProductDefinitionMapper;
+<<<<<<< HEAD
+		
 
+=======
+    @Autowired
+    private BizTRNMapper bizTRNMapper;
+
+    @Autowired
+    private BizGuaranteeInfoMapper bizGuaranteeInfoMapper;
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map getMakeLoansDebtInfo(Map<String, Object> params) {
+    public Map getMakeLoansDebtInfo(Map<String, Object> params) {//获取方案详情信息 sinosong
         Map dataMap = new HashMap();
         // 产品相关信息
         Map debtInfoForMakeLoan = bizDebtGrantProvider.getDebtInfoForMakeLoan(params);
@@ -135,163 +159,263 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String requestMakeLoansInterface(Map<String, Object> params) {
-        // 由于68环境不能测试行方接口 遂配置接口开关 on开  off关
-        String interfaceStatus = PropertiesUtil.getString("interface.status");
-        // 时间
-        String date = DateUtil.format(new Date());
-        // 日期
-        String time = DateUtil.formatTime(new Date());
-        // 发放表主键id
-        String objInr = StringUtil.objectToString(params.get("objInr"));
-        // 介质识别号
-        String identNumber = StringUtil.objectToString(params.get("identNumber"));
-        // 借据编号
-        String iouCode = StringUtil.objectToString(params.get("iouCode"));
-        // 发放审核编号
-        String grantCode = StringUtil.objectToString(params.get("grantCode"));
-        // 发放币种
-        String currency = "";
-        // 利率浮动方式
-        String floatMode = "";
-        // 逾期利率浮动方式
-        String overdueRateCalcMode = "";
-        // 许可证日期
-        String liceDate = "";
-        // 创建借据许可证接口返回的借据序号
-        String returnSeqNo = "";
-        // 交易序号 每个介质识别号 每天从10001开始
-        int seqNo = bizCntProvider.getNextSEQNO(identNumber + date.replace("-", "")) + 1;
-        // 发放金额
-        BigDecimal grantAmt;
-        // 方案信息
-        Map debtInfoForMakeLoan = (Map) params.get("debtInfoForMakeLoan");
-        // 地区号
-        Map map1 = new HashMap();
-        SysUser sysUser = (SysUser) params.get("sysUser");
-        Long userId = sysUser.getId();
-        map1.put("userId", userId);
-        String areaNumber = bizDebtGrantMapper.getAreaNumberByUserId(map1);
-        // 利率信息
-        Map fecDataMap = new HashMap();
-        fecDataMap.put("objInr", objInr);
-        List fecList = bizFECProvider.getBizFECByINR(fecDataMap);
-        Map fecMap = new HashMap();
-        if (fecList != null && fecList.size() > 0) {
-            fecMap = (Map) fecList.get(0);
-            currency = StringUtil.objectToString(fecMap.get("currency"));
-            floatMode = StringUtil.objectToString(fecMap.get("floatMode"));
-            overdueRateCalcMode = StringUtil.objectToString(fecMap.get("overdueRateCalcMode"));
-            grantAmt = new BigDecimal(StringUtil.objectToString(fecMap.get("paymentAmt")));
-            debtInfoForMakeLoan.put("grantAmt", grantAmt);
-        }
 
-        if ("on".equals(interfaceStatus)) {
+        // 手工进行数据库事务控制，对表的增删改操作都使用mapper的方法，或自己写的方法， 但是方法报错需要抛出异常
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = txManager.getTransaction(def);
 
-            // 64002贷款合同状态查询接口所需参数
-            Map paramsOne = new HashMap();
-            paramsOne.put("grantCode", grantCode);
-            paramsOne.put("areaNumber", areaNumber);
-            paramsOne.put("identNumber", identNumber);
-            paramsOne.put("date", date);
-            paramsOne.put("time", time);
-            Map resultOne = requestIntefaceOne(paramsOne);
-            String codeOne = StringUtil.objectToString(resultOne.get("code"));
-            if ("500".equals(codeOne)) {
-                String msgOne = StringUtil.objectToString(resultOne.get("msg"));
-                return msgOne;
+        try {
+            // 由于68环境不能测试行方接口 遂配置接口开关 on开  off关
+            String interfaceStatus = PropertiesUtil.getString("interface.status");
+            // 时间
+            Date dat = new Date();
+            String date = DateUtil.format(dat);
+            // 日期
+            String time = DateUtil.formatTime(dat);
+            // 发放表主键id
+            String objInr = StringUtil.objectToString(params.get("objInr"));
+            // 介质识别号
+            String identNumber = StringUtil.objectToString(params.get("identNumber"));
+            // 借据编号
+            String iouCode = StringUtil.objectToString(params.get("iouCode"));
+            // 发放审核编号
+            // 业务编号规则变化，去掉后三位。方案编号变成13位，条件编号变成16 ypf
+            // String grantCode = StringUtil.objectToString(params.get("grantCode"));
+            String grantCode = StringUtil.objectToString(params.get("grantCode")).substring(0, 16);
+
+            // 发放币种
+            String currency = "";
+            // 利率浮动方式
+            String floatMode = "";
+            // 逾期利率浮动方式
+            String overdueRateCalcMode = "";
+            // 许可证日期
+            String liceDate = "";
+            // 创建借据许可证接口返回的借据序号
+            String returnSeqNo = "";
+            // 交易序号 每个介质识别号 每天从10001开始
+            int seqNo = bizCntProvider.getNextSEQNO(identNumber + date.replace("-", "")) + 1;
+            // 发放金额
+            BigDecimal grantAmt = new BigDecimal("0");
+            // 方案信息
+            Map debtInfoForMakeLoan = (Map) params.get("debtInfoForMakeLoan");
+            // 地区号
+            Map map1 = new HashMap();
+            SysUser sysUser = (SysUser) params.get("sysUser");
+            Long userId = sysUser.getId();
+            map1.put("userId", userId);
+            String areaNumber = bizDebtGrantMapper.getAreaNumberByUserId(map1);
+            // 利率信息
+            Map fecDataMap = new HashMap();
+            fecDataMap.put("objInr", objInr);
+            List fecList = bizFECProvider.getBizFECByINR(fecDataMap);
+            Map fecMap = new HashMap();
+            if (fecList != null && fecList.size() > 0) {
+                fecMap = (Map) fecList.get(0);
+                currency = StringUtil.objectToString(fecMap.get("currency"));
+                floatMode = StringUtil.objectToString(fecMap.get("floatMode"));
+                overdueRateCalcMode = StringUtil.objectToString(fecMap.get("overdueRateCalcMode"));
+                grantAmt = new BigDecimal(StringUtil.objectToString(fecMap.get("paymentAmt")));
+                debtInfoForMakeLoan.put("grantAmt", grantAmt);
+            }
+            Map resultThree =null;
+            if ("on".equals(interfaceStatus)) {
+
+                //条件新增，修改开关alterflag
+                boolean addflag =true;//新增
+                Map qryparam = new HashMap();
+                qryparam.put("qryparam", grantCode);
+                List<BizDebtGrant> grantlist = bizDebtGrantMapper.selectByMap(qryparam);
+                if (null != grantlist && grantlist.size()>0) {
+                    int changenum = grantlist.get(0).getChangeNum();
+                    if (changenum == 0) {
+                        addflag=false;
+                    }
+
+                }
+                if(addflag){
+
+                    // 64002贷款合同状态查询接口所需参数
+                    Map paramsOne = new HashMap();
+                    paramsOne.put("grantCode", grantCode);
+                    paramsOne.put("areaNumber", areaNumber);
+                    paramsOne.put("identNumber", identNumber);
+                    paramsOne.put("date", date);
+                    paramsOne.put("time", time);
+                    Map resultOne = requestIntefaceOne(paramsOne);
+                    String codeOne = StringUtil.objectToString(resultOne.get("code"));
+                    if ("500".equals(codeOne)) {
+                        String msgOne = StringUtil.objectToString(resultOne.get("msg"));
+                        return msgOne;
+                    }
+
+                    // 调用64005创建借据许可证接口
+                    Map paramsTwo = new HashMap();
+                    paramsTwo.put("grantCode", grantCode);
+                    paramsTwo.put("areaNumber", areaNumber);
+                    paramsTwo.put("identNumber", identNumber);
+                    paramsTwo.put("seqNo", seqNo);
+                    paramsTwo.put("currency", currency);
+                    paramsTwo.put("iouCode", iouCode);
+                    paramsTwo.put("fecMap", fecMap);
+                    paramsTwo.put("floatMode", floatMode);
+                    paramsTwo.put("overdueRateCalcMode", overdueRateCalcMode);
+                    paramsTwo.put("date", date);
+                    paramsTwo.put("time", time);
+                    Map resultTwo = requestIntefaceTwo(paramsTwo);
+                    String codeTwo = StringUtil.objectToString(resultTwo.get("code"));
+                    if ("500".equals(codeTwo)) {
+                        String msgTwo = StringUtil.objectToString(resultTwo.get("msg"));
+                        return msgTwo;
+                    } else if ("300".equals(codeTwo)) {
+                        liceDate = StringUtil.objectToString(resultTwo.get("liceDate"));
+                        returnSeqNo = StringUtil.objectToString(resultTwo.get("returnSeqNo"));
+                        BizDebtGrant bizDebtGrant = new BizDebtGrant();
+                        bizDebtGrant.setId(Long.valueOf(objInr));
+                        bizDebtGrant.setLiceDate(liceDate);
+                        bizDebtGrant.setSeqNo(returnSeqNo);
+                        bizDebtGrant.setIdentNumber(identNumber);
+                        // 改为使用mapper
+                        // bizDebtGrantProvider.update(bizDebtGrant);
+                        bizDebtGrantMapper.updateById(bizDebtGrant);
+                    }
+                }
+
+                // 调用额度占用接口
+                Map paramsThree = new HashMap();
+                paramsThree.put("grantCode", grantCode);
+                paramsThree.put("areaNumber", areaNumber);
+                paramsThree.put("debtInfoForMakeLoan", debtInfoForMakeLoan);
+                paramsThree.put("identNumber", identNumber);
+                paramsThree.put("date", date);
+                paramsThree.put("currency", currency);
+                paramsThree.put("fecMap", fecMap);
+                paramsThree.put("type", "1");//额度标志 1占用  0释放
+                resultThree = requestIntefaceThree(paramsThree);
+                String codeThree = StringUtil.objectToString(resultThree.get("code"));
+                if ("500".equals(codeThree)) {
+                    String msgThree = StringUtil.objectToString(resultThree.get("msg"));
+                    return msgThree;
+                }
+
+                // 业务与担保合同关系接口
+                Map paramsFour = new HashMap();
+                paramsFour.put("grantCode", grantCode);
+                paramsFour.put("identNumber", identNumber);
+                paramsFour.put("addflag", addflag);
+                paramsFour.put("type", "0002");//0002 生效   0004解除  0009结清 0003 修改
+                Map resultFour = requestIntefaceFour(paramsFour);
+                String codeFour = StringUtil.objectToString(resultFour.get("code"));
+                if ("500".equals(codeFour)) {
+                    String msgFour = StringUtil.objectToString(resultFour.get("msg"));
+                    return msgFour;
+                }
             }
 
-            // 调用64005创建借据许可证接口
-            Map paramsTwo = new HashMap();
-            paramsTwo.put("grantCode", grantCode);
-            paramsTwo.put("areaNumber", areaNumber);
-            paramsTwo.put("identNumber", identNumber);
-            paramsTwo.put("seqNo", seqNo);
-            paramsTwo.put("currency", currency);
-            paramsTwo.put("iouCode", iouCode);
-            paramsTwo.put("fecMap", fecMap);
-            paramsTwo.put("floatMode", floatMode);
-            paramsTwo.put("overdueRateCalcMode", overdueRateCalcMode);
-            paramsTwo.put("date", date);
-            paramsTwo.put("time", time);
-            Map resultTwo = requestIntefaceTwo(paramsTwo);
-            String codeTwo = StringUtil.objectToString(resultTwo.get("code"));
-            if ("500".equals(codeTwo)) {
-                String msgTwo = StringUtil.objectToString(resultTwo.get("msg"));
-                return msgTwo;
-            } else if ("300".equals(codeTwo)){
-                liceDate = StringUtil.objectToString(resultTwo.get("liceDate"));
-                returnSeqNo = StringUtil.objectToString(resultTwo.get("returnSeqNo"));
-                BizDebtGrant bizDebtGrant = new BizDebtGrant();
-                bizDebtGrant.setId(Long.valueOf(objInr));
-                bizDebtGrant.setLiceDate(liceDate);
-                bizDebtGrant.setSeqNo(returnSeqNo);
-                bizDebtGrant.setIdentNumber(identNumber);
-                bizDebtGrantProvider.update(bizDebtGrant);
-            }
+            logger.debug("===================================================更新发放表信息start");
 
-            // 调用额度占用接口
-            Map paramsThree = new HashMap();
-            paramsThree.put("grantCode", grantCode);
-            paramsThree.put("areaNumber", areaNumber);
-            paramsThree.put("debtInfoForMakeLoan", debtInfoForMakeLoan);
-            paramsThree.put("identNumber", identNumber);
-            paramsThree.put("date", date);
-            paramsThree.put("currency", currency);
-            paramsThree.put("fecMap", fecMap);
-            paramsThree.put("type", "1");//额度标志 1占用  0释放
-            Map resultThree = requestIntefaceThree(paramsThree);
-            String codeThree = StringUtil.objectToString(resultThree.get("code"));
-            if ("500".equals(codeThree)) {
-                String msgThree = StringUtil.objectToString(resultThree.get("msg"));
-                return msgThree;
-            }
+            // 更新发放表信息
+            BizDebtGrant bizDebtGrant1 = new BizDebtGrant();
+            bizDebtGrant1.setId(Long.valueOf(objInr));
+            bizDebtGrant1.setGrantStatus(4);// 状态 3 已批未放 4 发放中 5 已发放
+            // bizDebtGrantProvider.update(bizDebtGrant1);
+            bizDebtGrantMapper.updateById(bizDebtGrant1);
 
-            // 业务与担保合同关系接口
-            Map paramsFour = new HashMap();
-            paramsFour.put("grantCode", grantCode);
-            paramsFour.put("identNumber", identNumber);
-            paramsFour.put("type", "0002");//0002 生效   0004解除  0009结清
-            Map resultFour = requestIntefaceFour(paramsFour);
-            String codeFour = StringUtil.objectToString(resultFour.get("code"));
-            if ("500".equals(codeFour)) {
-                String msgFour = StringUtil.objectToString(resultFour.get("msg"));
-                return msgFour;
-            }
-        }
+            logger.debug("===================================================更新发放表信息end");
+            logger.debug("===================================================记录放款主表start");
 
-        logger.debug("===================================================更新发放表信息start");
+            // 记录放款主表
+            Map dataMap = new HashMap();
+            SysDept sysDept = getUserInstitutionCodeByUserId(userId);
+            debtInfoForMakeLoan.put("institutionCode", sysDept.getParentCode());
+            dataMap.put("debtInfoForMakeLoan", debtInfoForMakeLoan);
+            dataMap.put("fecList", fecList);
+            dataMap.put("userId", userId);
+            dataMap.put("enable", 0);
+            dataMap.put("date", dat);
+            BizMakeLoans makeLoan = updateBizMakeLoans(dataMap);
+            Long objInr1 = Long.valueOf(makeLoan.getId());
+            dataMap.put("objInr", objInr1);
 
-        // 更新发放表信息
-        BizDebtGrant bizDebtGrant1 = new BizDebtGrant();
-        bizDebtGrant1.setId(Long.valueOf(objInr));
-        bizDebtGrant1.setGrantStatus(4);// 状态 3 已批未放 4 发放中 5 已发放
-        bizDebtGrantProvider.update(bizDebtGrant1);
+            logger.debug("===================================================记录放款主表end");
 
-        logger.debug("===================================================更新发放表信息end");
-        logger.debug("===================================================记录放款主表start");
+            // 记录放款台账 enable = 0
 
-        // 记录放款主表
-        Map dataMap = new HashMap();
-        SysDept sysDept = getUserInstitutionCodeByUserId(userId);
-        debtInfoForMakeLoan.put("institutionCode", sysDept.getParentCode());
-        dataMap.put("debtInfoForMakeLoan", debtInfoForMakeLoan);
-        dataMap.put("fecList", fecList);
-        dataMap.put("userId", userId);
-        dataMap.put("enable", 0);
-        BizMakeLoans makeLoan = updateBizMakeLoans(dataMap);
-        Long objInr1 = Long.valueOf(makeLoan.getId());
-        dataMap.put("objInr", objInr1);
+            // 放款存一条流水 ypf
 
-        logger.debug("===================================================记录放款主表end");
+            BizTRN bizTRN = new BizTRN();
+            Long trnId = IdWorker.getId();
 
-        // 记录放款台账 enable = 0
-        boolean b = updateMakeLoanStandingBook(dataMap);
+            bizTRN.setBchkeyinr(makeLoan.getInstitutionCode());
+            bizTRN.setIniusr(userId);
+            bizTRN.setOwnref(grantCode);
+            bizTRN.setObjtyp(BizContant.MAKE_LOANS_MAIN);
+            bizTRN.setObjinr(objInr1);
+            bizTRN.setExedat(dat);
+            bizTRN.setInidattim(dat);
+            bizTRN.setId(trnId);
+            bizTRN.setCreateTime(dat);
+            bizTRN.setCreateBy(userId);
+            bizTRN.setEnable(1);
+            //为*时代表最新的流水
+            bizTRN.setRelflg("Y");
+            //为*时代表业务中最新审批通过的数据
+            bizTRN.setRelres("N");
+
+            bizTRN.setInifrm(BizContant.MAKE_LOANS_APPRL);
+            bizTRN.setIninam(BizContant.MAKE_LOANS_NAME);
+            bizTRN.setProcessStatus(1);
+            bizTRNProvider.updateTRNStatus(bizTRN);
+
+            // 修改台账存储逻辑 ypf
+        /*boolean b = updateMakeLoanStandingBook(dataMap);
         if (!b) {
             return "台账记录失败";
-        }
+        }*/
 
-        return "等待核心处理结果";
+            // 新增一条放款台账，LOANIN LOANSUM
+            // 修改条件发放台账，GRANOUT GRANSUM
+            boolean bookres1 = bizCBEProvider.bookkeepking(new BookkeepkingVo("BIZ_MAKE_LOANS", objInr1, trnId, MAKE_LOANS_IN_CBTTXT, BizContant.MAKE_LOANS_CBCTXT, currency, grantAmt, null, null, dat, makeLoan.getBankTellId()));
+//        boolean bookres1 = bizCBEProvider.bookkeepking(new BizCBE(BizContant.MAKE_LOANS_MAIN,objInr1,trnId),new BizCBB(BizContant.MAKE_LOANS_MAIN,objInr1,BizContant.MAKE_LOANS_CBCTXT,currency,grantAmt,null,null),MAKE_LOANS_IN_CBTTXT,BizContant.MAKE_LOANS_CBCTXT,new Date());
+            // boolean bookres2 = bizCBEProvider.bookkeepking(new BizCBE("BIZ_DEBT_MAIN",bizDebtId,trnId),new BizCBB("BIZ_DEBT_MAIN",bizDebtId,BizContant.DEBT_SUMMARY_DEBT_CBCTXT,bizDebtSummary.getMpc(),StringUtil.stringToBigDecimal(bizDebtSummary.getSolutionAmount()),null,null),"DEBTIN",BizContant.DEBT_SUMMARY_DEBT_CBCTXT,dat);
+            if (!bookres1) {
+                return "台账记录失败";
+<<<<<<< HEAD
+            }
+=======
+            }*/
+//添加额度占用台账 sinosong 记录额度占用台账,需要提供lim记录
+
+//            String custstr = StringUtil.objectToString((Map)resultThree.get("custList"));
+//            if(null != custstr && !"".equals(custstr)){
+//                List<String> custList = Arrays.asList(custstr);
+//                List<Map> list2=(List<Map>)JSONArray.parseObject((Map)resultThree.get("custList"));
+//                if(null != list2 && list2.size()>0){
+//                    for (int i = 0; i <list2.size() ; i++) {
+//                        Map custmap = list2.get(i);
+//                        String  limitId=StringUtil.objectToString(custmap.get("limitId"));
+//                        String  rninr=StringUtil.objectToString(custmap.get("rninr"));
+//                        String  cur=StringUtil.objectToString(custmap.get("cur"));
+//                        String  amt=StringUtil.objectToString(custmap.get("amt"));
+//                        String  updatetime=StringUtil.objectToString(custmap.get("updatetime"));
+//                        String  banktellerid=StringUtil.objectToString(custmap.get("banktellerid"));
+//                        boolean limRes = bizCBEProvider.bookkeepking(new BookkeepkingVo("BIZ_CUST_LIMIT",Long.valueOf(rninr),Long.valueOf(limitId),rninr,BizContant.LIMIT_IN_CBTTXT,BizContant.LIMITSUM_CBCTXT,cur,new BigDecimal(amt),null,null,new Date(updatetime),Long.valueOf(banktellerid));
+//                    }
+//                }
+//            }
+
+
+
+//                boolean limRes = bizCBEProvider.bookkeepking(new BookkeepkingVo("BIZ_CUST_LIMIT",lim.getId(),lim.getTrninr(),BizContant.LIMIT_IN_CBTTXT,BizContant.LIMITSUM_CBCTXT,lim.getCur(),lim.getAmt(),null,null,lim.getUpdateTime(),lim.getBankTellerId()));
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
+
+            return "等待核心处理结果";
+        }catch (Exception es) {
+            txManager.rollback(status);
+            es.printStackTrace();
+            throw new RuntimeException("save makeLoanInfo error! reason=="+es.getMessage());
+        }
     }
 
     /**
@@ -303,76 +427,192 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String sendRepaymentPlan(Map<String, Object> params) {
-        // 由于68环境不能测试行方接口 遂配置接口开关 on开  off关
-        String interfaceStatus = PropertiesUtil.getString("interface.status");
-        // 日期
-        String date = DateUtil.format(new Date());
-        // 时间
-        String time = DateUtil.formatTime(new Date());
-        // 方案信息
-        Map<String, Object> debtInfoForMakeLoan = bizDebtGrantProvider.getDebtInfoForMakeLoan(params);
-        // 发放id
-        String grantId = StringUtil.objectToString(debtInfoForMakeLoan.get("objInr"));
-        //发放信息
-        BizDebtGrant bizDebtGrant = bizDebtGrantProvider.selectByGrantId(grantId);
-        // 发放编码
-        String grantCode = bizDebtGrant.getGrantCode();
-        // 用户ID
-        Long userId = Long.valueOf(params.get("userId").toString());
-        // 许可证序号
-        String seqNo = bizDebtGrant.getSeqNo() == null ? "" : bizDebtGrant.getSeqNo();
-        // 许可证日期
-        String liceDate = bizDebtGrant.getLiceDate() == null ? "" : bizDebtGrant.getLiceDate();
-        // 借据编号
-        String iouCode = bizDebtGrant.getIouCode() == null ? "" : bizDebtGrant.getIouCode();
-        // 利率信息
-        Map fecDataMap = new HashMap();
-        fecDataMap.put("objInr", grantId);
-        Map fecMap = null;
-        List fecList = bizFECProvider.getBizFECByINR(fecDataMap);
-        if (fecList != null && fecList.size() > 0) {
-            fecMap = (Map) fecList.get(0);
-        } else {
-            return "64005借据许可证接口参数获取失败";
-        }
-        // 发放币种
-        String currency = StringUtil.objectToString(fecMap.get("currency"));
-        // 利率浮动方式
-        String floatMode = StringUtil.objectToString(fecMap.get("floatMode"));
-        // 逾期利率浮动方式
-        String overdueRateCalcMode = StringUtil.objectToString(fecMap.get("overdueRateCalcMode"));
-        // 地区号
-        Map map1 = new HashMap();
-        SysUser sysUser = (SysUser) params.get("sysUser");
-        map1.put("userId", sysUser.getId());
-        String areaNumber = bizDebtGrantMapper.getAreaNumberByUserId(map1);
-        // 介质识别号
-        String identNumber = StringUtil.objectToString(debtInfoForMakeLoan.get("identNumber"));
 
-        if ("on".equals(interfaceStatus)) {
+        // 手工进行数据库事务控制，对表的增删改操作都使用mapper的方法，或自己写的方法， 但是方法报错需要抛出异常
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = txManager.getTransaction(def);
 
-            // 640005借据许可证查询接口
-            Map paramsFive = new HashMap();
-            paramsFive.put("liceDate", liceDate);
-            paramsFive.put("grantCode", grantCode);
-            paramsFive.put("areaNumber", areaNumber);
-            paramsFive.put("identNumber", identNumber);
-            paramsFive.put("seqNo", seqNo);
-            paramsFive.put("currency", currency);
-            paramsFive.put("iouCode", iouCode);
-            paramsFive.put("fecMap", fecMap);
-            paramsFive.put("floatMode", floatMode);
-            paramsFive.put("overdueRateCalcMode", overdueRateCalcMode);
-            paramsFive.put("date", date);
-            paramsFive.put("time", time);
-            paramsFive.put("userId", userId);
-            Map resultFive = requestIntefaceFive(paramsFive);
-            String codeFive = StringUtil.objectToString(resultFive.get("code"));
-            if ("500".equals(codeFive)) {
-                String msgFive = StringUtil.objectToString(resultFive.get("msg"));
-                return msgFive;
+        try {
+            // 由于68环境不能测试行方接口 遂配置接口开关 on开  off关
+            String interfaceStatus = PropertiesUtil.getString("interface.status");
+
+            Date dat = new Date();
+            // 日期
+            String date = DateUtil.format(dat);
+            // 时间
+            String time = DateUtil.formatTime(dat);
+            // 方案信息
+            Map<String, Object> debtInfoForMakeLoan = bizDebtGrantProvider.getDebtInfoForMakeLoan(params);
+            // 发放id
+            String grantId = StringUtil.objectToString(debtInfoForMakeLoan.get("objInr"));
+            //发放信息
+            BizDebtGrant bizDebtGrant = bizDebtGrantProvider.selectByGrantId(grantId);
+            // 发放编码
+            String grantCode = bizDebtGrant.getGrantCode();
+            // 用户ID
+            Long userId = Long.valueOf(params.get("userId").toString());
+            // 许可证序号
+            String seqNo = bizDebtGrant.getSeqNo() == null ? "" : bizDebtGrant.getSeqNo();
+            // 许可证日期
+            String liceDate = bizDebtGrant.getLiceDate() == null ? "" : bizDebtGrant.getLiceDate();
+            // 借据编号
+            String iouCode = bizDebtGrant.getIouCode() == null ? "" : bizDebtGrant.getIouCode();
+            // 利率信息
+            Map fecDataMap = new HashMap();
+            fecDataMap.put("objInr", grantId);
+            Map fecMap = null;
+            List fecList = bizFECProvider.getBizFECByINR(fecDataMap);
+            if (fecList != null && fecList.size() > 0) {
+                fecMap = (Map) fecList.get(0);
+            } else {
+                return "64005借据许可证接口参数获取失败";
+            }
+            // 发放币种
+            String currency = StringUtil.objectToString(fecMap.get("currency"));
+            // 利率浮动方式
+            String floatMode = StringUtil.objectToString(fecMap.get("floatMode"));
+            // 逾期利率浮动方式
+            String overdueRateCalcMode = StringUtil.objectToString(fecMap.get("overdueRateCalcMode"));
+            // 地区号
+            Map map1 = new HashMap();
+            SysUser sysUser = (SysUser) params.get("sysUser");
+            map1.put("userId", sysUser.getId());
+            String areaNumber = bizDebtGrantMapper.getAreaNumberByUserId(map1);
+            // 介质识别号
+            String identNumber = StringUtil.objectToString(debtInfoForMakeLoan.get("identNumber"));
+
+            if ("on".equals(interfaceStatus)) {
+
+
+                //条件新增，修改开关alterflag
+                boolean addflag =true;//新增
+                Map qryparam = new HashMap();
+                qryparam.put("qryparam", grantCode);
+                List<BizDebtGrant> grantlist = bizDebtGrantMapper.selectByMap(qryparam);
+                if (null != grantlist && grantlist.size()>0) {
+                    int changenum = grantlist.get(0).getChangeNum();
+                    if (changenum == 0) {
+                        addflag=false;
+                    }
+
+                }
+                if(addflag) {
+
+
+                    // 640005借据许可证查询接口
+                    Map paramsFive = new HashMap();
+                    paramsFive.put("liceDate", liceDate);
+                    paramsFive.put("grantCode", grantCode);
+                    paramsFive.put("areaNumber", areaNumber);
+                    paramsFive.put("identNumber", identNumber);
+                    paramsFive.put("seqNo", seqNo);
+                    paramsFive.put("currency", currency);
+                    paramsFive.put("iouCode", iouCode);
+                    paramsFive.put("fecMap", fecMap);
+                    paramsFive.put("floatMode", floatMode);
+                    paramsFive.put("overdueRateCalcMode", overdueRateCalcMode);
+                    paramsFive.put("date", date);
+                    paramsFive.put("time", time);
+                    paramsFive.put("userId", userId);
+                    Map resultFive = requestIntefaceFive(paramsFive);
+                    String codeFive = StringUtil.objectToString(resultFive.get("code"));
+                    if ("500".equals(codeFive)) {
+                        String msgFive = StringUtil.objectToString(resultFive.get("msg"));
+                        return msgFive;
+                    }
+                }
+                // 还款计划接口
+                Map paramsSix = new HashMap();
+                paramsSix.put("grantCode", grantCode);
+                paramsSix.put("areaNumber", areaNumber);
+                paramsSix.put("identNumber", identNumber);
+                paramsSix.put("date", date);
+                paramsSix.put("time", time);
+                Map resultSix = requestIntefaceSix(paramsSix);
+                String codeSix = StringUtil.objectToString(resultSix.get("code"));
+                if ("500".equals(codeSix)) {
+                    String msgSix = StringUtil.objectToString(resultSix.get("msg"));
+                    return msgSix;
+                }
             }
 
+            Map dataMap = new HashMap();
+            SysDept sysDept = getUserInstitutionCodeByUserId(userId);
+            debtInfoForMakeLoan.put("institutionCode", sysDept.getParentCode());
+            dataMap.put("debtInfoForMakeLoan", debtInfoForMakeLoan);
+            dataMap.put("fecList", fecList);
+            dataMap.put("userId", userId);
+            dataMap.put("enable", 1);
+            dataMap.put("liceDate", liceDate);
+            dataMap.put("date", dat);
+
+            // 修改债项发放状态
+            Integer grantStatus = 5;
+            // bizDebtGrantProvider.updateDebtGrantStatus(grantCode, grantStatus);
+            BizDebtGrant bizDebtGrant1 = new BizDebtGrant();
+            bizDebtGrant1.setGrantCode(grantCode);
+             BizDebtGrant bizDebtGrant2 = bizDebtGrantProvider.selectOne(bizDebtGrant1);
+             // 修改债项发放方案状态
+             bizDebtGrant2.setGrantStatus(grantStatus);
+             bizDebtGrantMapper.updateById(bizDebtGrant2);
+
+            // 更新放款主表enable = 1;
+            BizMakeLoans bizMakeLoans = updateBizMakeLoans(dataMap);
+            // 更新放款台账enable = 1
+            dataMap.put("objInr", bizMakeLoans.getId());
+
+            // 台账改到放款时记录，发送还款计划和更新还款计划都不再处理台账
+            // 记录放款台账 enable = 1
+            // boolean b = updateMakeLoanStandingBook(dataMap);
+            // 交易流水
+            bizTRNProvider.saveMakeLoansTRN(dataMap);
+            return "发送还款计划成功";
+
+        }catch (Exception es) {
+            txManager.rollback(status);
+            es.printStackTrace();
+            throw new RuntimeException("save makeLoanInfo（repay） error! reason=="+es.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public String updateRepaymentPlan(Map<String, Object> params) {
+
+        // 手工进行数据库事务控制，对表的增删改操作都使用mapper的方法，或自己写的方法， 但是方法报错需要抛出异常
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = txManager.getTransaction(def);
+
+        try {
+
+            Date dat = new Date();
+            // 日期
+            String date = DateUtil.format(dat);
+            // 时间
+            String time = DateUtil.formatTime(dat);
+            // 方案信息
+            Map<String, Object> debtInfoForMakeLoan = bizDebtGrantProvider.getDebtInfoForMakeLoan(params);
+            // 发放id
+            String grantId = StringUtil.objectToString(debtInfoForMakeLoan.get("objInr"));
+            //发放信息
+            BizDebtGrant bizDebtGrant = bizDebtGrantProvider.selectByGrantId(grantId);
+            // 发放编码
+            String grantCode = bizDebtGrant.getGrantCode();
+            // 许可证日期
+            String liceDate = bizDebtGrant.getLiceDate() == null ? "" : bizDebtGrant.getLiceDate();
+            // 地区号
+            Map map1 = new HashMap();
+            SysUser sysUser = (SysUser) params.get("sysUser");
+            map1.put("userId", sysUser.getId());
+            String areaNumber = bizDebtGrantMapper.getAreaNumberByUserId(map1);
+            // 介质识别号
+            String identNumber = StringUtil.objectToString(debtInfoForMakeLoan.get("identNumber"));
+            // 利率信息
+            Map fecDataMap = new HashMap();
+            fecDataMap.put("objInr", grantId);
+            List fecList = bizFECProvider.getBizFECByINR(fecDataMap);
             // 还款计划接口
             Map paramsSix = new HashMap();
             paramsSix.put("grantCode", grantCode);
@@ -386,94 +626,34 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
                 String msgSix = StringUtil.objectToString(resultSix.get("msg"));
                 return msgSix;
             }
+
+            // 修改债项发放状态
+            Integer grantStatus = 5;
+            Map dataMap = new HashMap();
+            Long userId = Long.valueOf(params.get("userId").toString());
+            SysDept sysDept = getUserInstitutionCodeByUserId(userId);
+            debtInfoForMakeLoan.put("institutionCode", sysDept.getParentCode());
+            dataMap.put("debtInfoForMakeLoan", debtInfoForMakeLoan);
+            dataMap.put("fecList", fecList);
+            dataMap.put("userId", userId);
+            dataMap.put("enable", 2);//0 新增未激活 1 更新未激活为激活 2 新增激活
+            dataMap.put("liceDate", liceDate);
+            dataMap.put("date", dat);// 使用同一个日期
+            bizDebtGrantProvider.updateDebtGrantStatus(grantCode, grantStatus);
+            // 更新放款主表enable = 1;
+            BizMakeLoans bizMakeLoans = updateBizMakeLoans(dataMap);
+            // 更新放款台账enable = 1
+            dataMap.put("objInr", bizMakeLoans.getId());
+            // 记录放款台账 enable = 1
+            // boolean b = updateMakeLoanStandingBook(dataMap);
+            // 交易流水
+            bizTRNProvider.saveMakeLoansTRN(dataMap);
+            return "还款计划发送成功";
+        }catch (Exception es) {
+            txManager.rollback(status);
+            es.printStackTrace();
+            throw new RuntimeException("update makeLoanInfo（repay） error! reason=="+es.getMessage());
         }
-
-        Map dataMap = new HashMap();
-        SysDept sysDept = getUserInstitutionCodeByUserId(userId);
-        debtInfoForMakeLoan.put("institutionCode", sysDept.getParentCode());
-        dataMap.put("debtInfoForMakeLoan", debtInfoForMakeLoan);
-        dataMap.put("fecList", fecList);
-        dataMap.put("userId", userId);
-        dataMap.put("enable", 1);
-        dataMap.put("liceDate", liceDate);
-
-        // 修改债项发放状态
-        Integer grantStatus = 5;
-        bizDebtGrantProvider.updateDebtGrantStatus(grantCode, grantStatus);
-        // 更新放款主表enable = 1;
-        BizMakeLoans bizMakeLoans = updateBizMakeLoans(dataMap);
-        // 更新放款台账enable = 1
-        dataMap.put("objInr", bizMakeLoans.getId());
-        // 记录放款台账 enable = 1
-        boolean b = updateMakeLoanStandingBook(dataMap);
-        // 交易流水
-        bizTRNProvider.saveMakeLoansTRN(dataMap);
-        return "发送还款计划成功";
-    }
-
-    @Override
-    @Transactional
-    public String updateRepaymentPlan(Map<String, Object> params) {
-        // 日期
-        String date = DateUtil.format(new Date());
-        // 时间
-        String time = DateUtil.formatTime(new Date());
-        // 方案信息
-        Map<String, Object> debtInfoForMakeLoan = bizDebtGrantProvider.getDebtInfoForMakeLoan(params);
-        // 发放id
-        String grantId = StringUtil.objectToString(debtInfoForMakeLoan.get("objInr"));
-        //发放信息
-        BizDebtGrant bizDebtGrant = bizDebtGrantProvider.selectByGrantId(grantId);
-        // 发放编码
-        String grantCode = bizDebtGrant.getGrantCode();
-        // 许可证日期
-        String liceDate = bizDebtGrant.getLiceDate() == null ? "" : bizDebtGrant.getLiceDate();
-        // 地区号
-        Map map1 = new HashMap();
-        SysUser sysUser = (SysUser) params.get("sysUser");
-        map1.put("userId", sysUser.getId());
-        String areaNumber = bizDebtGrantMapper.getAreaNumberByUserId(map1);
-        // 介质识别号
-        String identNumber = StringUtil.objectToString(debtInfoForMakeLoan.get("identNumber"));
-        // 利率信息
-        Map fecDataMap = new HashMap();
-        fecDataMap.put("objInr", grantId);
-        List fecList = bizFECProvider.getBizFECByINR(fecDataMap);
-        // 还款计划接口
-        Map paramsSix = new HashMap();
-        paramsSix.put("grantCode", grantCode);
-        paramsSix.put("areaNumber", areaNumber);
-        paramsSix.put("identNumber", identNumber);
-        paramsSix.put("date", date);
-        paramsSix.put("time", time);
-        Map resultSix = requestIntefaceSix(paramsSix);
-        String codeSix = StringUtil.objectToString(resultSix.get("code"));
-        if ("500".equals(codeSix)) {
-            String msgSix = StringUtil.objectToString(resultSix.get("msg"));
-            return msgSix;
-        }
-
-        // 修改债项发放状态
-        Integer grantStatus = 5;
-        Map dataMap = new HashMap();
-        Long userId = Long.valueOf(params.get("userId").toString());
-        SysDept sysDept = getUserInstitutionCodeByUserId(userId);
-        debtInfoForMakeLoan.put("institutionCode", sysDept.getParentCode());
-        dataMap.put("debtInfoForMakeLoan", debtInfoForMakeLoan);
-        dataMap.put("fecList", fecList);
-        dataMap.put("userId", userId);
-        dataMap.put("enable", 2);//0 新增未激活 1 更新未激活为激活 2 新增激活
-        dataMap.put("liceDate", liceDate);
-        bizDebtGrantProvider.updateDebtGrantStatus(grantCode, grantStatus);
-        // 更新放款主表enable = 1;
-        BizMakeLoans bizMakeLoans = updateBizMakeLoans(dataMap);
-        // 更新放款台账enable = 1
-        dataMap.put("objInr", bizMakeLoans.getId());
-        // 记录放款台账 enable = 1
-        boolean b = updateMakeLoanStandingBook(dataMap);
-        // 交易流水
-        bizTRNProvider.saveMakeLoansTRN(dataMap);
-        return "还款计划发送成功";
     }
 
     /**
@@ -956,15 +1136,40 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
         org64003.add(businessTypes);
         org64003.add(getCurrencyNo(currency));
         org64003.add(StringUtil.objectToString(fecMap.get("paymentAmt")));
-        org64003.add(type);
-        Map guaranteeInfoList = getGuaranteeInfoList(grantCode);
+        Map<String, Object> custMap = getCustomInfoByParams(debtInfoForMakeLoan);
+        String mdelstr = StringUtil.objectToString(custMap.get("mdellist"));;
+        if (!"".equals(mdelstr)&& null != mdelstr){
+            map.put("code", "500");
+            map.put("msg", "数据异常，请联系管理员！");
+            return map;
+        }
+        org64003.add(StringUtil.objectToString(custMap.get("type")));
+//        Map guaranteeInfoList = getGuaranteeInfoList(grantCode);
+        Map guaranteeInfoList = getGuaranteeInfoList1(grantCode);
         org64003.add(StringUtil.objectToString(guaranteeInfoList.get("guaranteeType")));// 担保方式
         // 用信主体
+<<<<<<< HEAD
         String customInfoParams = getCustomInfoParams(debtInfoForMakeLoan);
         String guarantee = StringUtil.objectToString(guaranteeInfoList.get("guarantee"));
         String mortgage = StringUtil.objectToString(guaranteeInfoList.get("mortgage"));
         String credit = StringUtil.objectToString(guaranteeInfoList.get("credit"));
         org64003.add(customInfoParams);
+=======
+        debtInfoForMakeLoan.put("grantCode",grantCode);
+
+
+//        String customInfoParams = getCustomInfoParams(debtInfoForMakeLoan);
+        String guarantee = StringUtil.objectToString(guaranteeInfoList.get("guarantee"));
+        String mortgage = StringUtil.objectToString(guaranteeInfoList.get("mortgage"));
+        String credit = StringUtil.objectToString(guaranteeInfoList.get("credit"));
+        String guarModified = StringUtil.objectToString(guaranteeInfoList.get("guarModified"));
+//        org64003.add(customInfoParams)
+
+        org64003.add("".equals(StringUtil.objectToString(custMap.get("max"))) ? "no" : StringUtil.objectToString(custMap.get("max")));//公开额度、最高综合授信额度、专项额度
+        org64003.add("".equals(StringUtil.objectToString(custMap.get("credit"))) ? "no" : StringUtil.objectToString(custMap.get("credit")));// 信用（免担保）
+        org64003.add("".equals(StringUtil.objectToString(custMap.get("maxGuarantee"))) ? "no" : StringUtil.objectToString(custMap.get("maxGuarantee")));//最高保证额度列表
+        org64003.add(guarModified);//担保方式是否修改标识
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
         org64003.add("".equals(guarantee) ? "no" : guarantee);// 保证担保
         org64003.add("".equals(mortgage) ? "no" : mortgage);//抵押质押担保方式
         org64003.add("".equals(credit) ? "no" : credit);// 信用担保方式
@@ -1000,6 +1205,35 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
                     String RspMsg = jsonObject.getString("RspMsg");
                     msg = "额度占用失败,错误信息为: " + RspMsg;
                 }
+<<<<<<< HEAD
+=======
+                Map param =new HashMap();
+                param.put("grantCode",grantCode);
+                param.put("bizStatus","3");
+                param.put("orderBy","CREATE_TIME");
+                List<BizTRN> trnList = bizTRNMapper.selectByMap(param);
+                Long trnid=null;
+                if(null != trnList && trnList.size()>0){
+                    BizTRN trn = trnList.get(0);
+                    trnid=trn.getId();
+                }
+                List allcustList = (List)custMap.get("allcustlist");
+                if(null!=allcustList &&allcustList.size()>0 ){
+                    for (int i = 0; i <allcustList.size() ; i++) {
+                        Map custMapa = (Map)allcustList.get(i);
+                        String limId = StringUtil.objectToString(custMapa.get("limId"));
+                        String cur = StringUtil.objectToString(custMapa.get("Cur"));
+                        BigDecimal amt = new BigDecimal(StringUtil.objectToString(custMapa.get("amt")));
+                        String createBy = StringUtil.objectToString(custMapa.get("createBy"));
+                    //添加额度占用台账 sinosong 记录额度占用台账,需要提供lim记录
+                    boolean limRes = bizCBEProvider.bookkeepking(new BookkeepkingVo("BIZ_CUST_LIMIT",Long.valueOf(limId),trnid,BizContant.LIMIT_IN_CBTTXT,BizContant.LIMITSUM_CBCTXT,cur,amt,null,null,new Date(),Long.valueOf(createBy)));
+                    }
+                }
+
+
+
+
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
             }
         } else {
             msg = "额度占用失败,错误信息为: 额度占用接口返回数据异常";
@@ -1070,14 +1304,32 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
         org64003.add(getCurrencyNo(currency));
         org64003.add(StringUtil.objectToString(fecMap.get("paymentAmt")));
         org64003.add(type);
-        Map guaranteeInfoList = getGuaranteeInfoList(grantCode);
+//        Map guaranteeInfoList = getGuaranteeInfoList(grantCode);
+        Map guaranteeInfoList = getGuaranteeInfoList1(grantCode);
         org64003.add(StringUtil.objectToString(guaranteeInfoList.get("guaranteeType")));// 担保方式
         // 用信主体
+<<<<<<< HEAD
         String customInfoParams = getCustomInfoParams(debtInfoForMakeLoan);
         String guarantee = StringUtil.objectToString(guaranteeInfoList.get("guarantee"));
         String mortgage = StringUtil.objectToString(guaranteeInfoList.get("mortgage"));
         String credit = StringUtil.objectToString(guaranteeInfoList.get("credit"));
         org64003.add(customInfoParams);
+=======
+        debtInfoForMakeLoan.put("grantCode",grantCode);
+        Map<String, Object> custMap = getCustomInfoByParams(debtInfoForMakeLoan);
+
+//        String customInfoParams = getCustomInfoParams(debtInfoForMakeLoan);
+        String guarantee = StringUtil.objectToString(guaranteeInfoList.get("guarantee"));
+        String mortgage = StringUtil.objectToString(guaranteeInfoList.get("mortgage"));
+        String credit = StringUtil.objectToString(guaranteeInfoList.get("credit"));
+        String guarModified = StringUtil.objectToString(guaranteeInfoList.get("guarModified"));
+//        org64003.add(customInfoParams)
+
+        org64003.add("".equals(StringUtil.objectToString(custMap.get("max"))) ? "no" : StringUtil.objectToString(custMap.get("max")));//公开额度、最高综合授信额度、专项额度
+        org64003.add("".equals(StringUtil.objectToString(custMap.get("credit"))) ? "no" : StringUtil.objectToString(custMap.get("credit")));// 信用（免担保）
+        org64003.add("".equals(StringUtil.objectToString(custMap.get("maxGuarantee"))) ? "no" : StringUtil.objectToString(custMap.get("maxGuarantee")));//最高保证额度列表
+        org64003.add(guarModified);//担保方式是否修改标识
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
         org64003.add("".equals(guarantee) ? "no" : guarantee);// 保证担保
         org64003.add("".equals(mortgage) ? "no" : mortgage);//抵押质押担保方式
         org64003.add("".equals(credit) ? "no" : credit);// 信用担保方式
@@ -1152,58 +1404,67 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
             objInr = Long.valueOf(StringUtil.objectToString(successMap.get("objInr")));
             responseStatus  = StringUtil.objectToString(successMap.get("responseStatus"));
         }
-
-        // 查询担保合同信息
-        List guaranteeContract = getGuaranteeContract(grantCode);
-        if (guaranteeContract != null && guaranteeContract.size() > 0) {
-            int startNum = 0;
-            int size = guaranteeContract.size();
-            String identNumber = StringUtil.objectToString(params.get("identNumber"));
-            String type = StringUtil.objectToString(params.get("type"));
-            if (!"".equals(responseStatus)) {
-                startNum = Integer.valueOf(responseStatus.toString());
-            }
-            for (int a = startNum; a < size; a++) {
-                Map contract = (Map) guaranteeContract.get(a);
-                String amount = "";
-                String clearRatioAmt = StringUtil.objectToString(contract.get("clearRatioAmt"));
-                String notClearAmt = StringUtil.objectToString(contract.get("notClearAmt"));
-                if(clearRatioAmt != null && !"".equals(clearRatioAmt)){
-                    amount = clearRatioAmt;
+        boolean addflag = (boolean)params.get("addflag");
+        if (addflag) {//新增条件
+           // 查询担保合同信息
+            List guaranteeContract = getGuaranteeContract(grantCode);
+            if (guaranteeContract != null && guaranteeContract.size() > 0) {
+                int startNum = 0;
+                int size = guaranteeContract.size();
+                String identNumber = StringUtil.objectToString(params.get("identNumber"));
+                String type = StringUtil.objectToString(params.get("type"));
+                if (!"".equals(responseStatus)) {
+                    startNum = Integer.valueOf(responseStatus.toString());
                 }
-                if(notClearAmt != null && !"".equals(notClearAmt)){
-                    amount = notClearAmt;
-                }
-                ArrayList paramsFour = new ArrayList();
-                paramsFour.add(StringUtil.objectToString(contract.get("guarantorCustId")));// 申请人客户编号
-                paramsFour.add(identNumber);//介质识别号
-                paramsFour.add(StringUtil.objectToString(contract.get("warrantyContractNumber")));//担保合同编号
-                paramsFour.add(amount);//担保金额
-                paramsFour.add(type);// 002 生效   004解除  009结清
-                String params64001 = joinInterfaceParams(paramsFour);
+                for (int a = startNum; a < size; a++) {
+                    Map contract = (Map) guaranteeContract.get(a);
+                    String amount = "";
+                    String clearRatioAmt = StringUtil.objectToString(contract.get("clearRatioAmt"));
+                    String notClearAmt = StringUtil.objectToString(contract.get("notClearAmt"));
+                    if(clearRatioAmt != null && !"".equals(clearRatioAmt)){
+                        amount = clearRatioAmt;
+                    }
+                    if(notClearAmt != null && !"".equals(notClearAmt)){
+                        amount = notClearAmt;
+                    }
+                    ArrayList paramsFour = new ArrayList();
+                    paramsFour.add(StringUtil.objectToString(contract.get("guarantorCustId")));// 申请人客户编号
+                    paramsFour.add(identNumber);//介质识别号
+                    paramsFour.add(StringUtil.objectToString(contract.get("warrantyContractNumber")));//担保合同编号
+                    paramsFour.add(amount);//担保金额
+                    paramsFour.add(type);// 002 生效   004解除  009结清
+                    String params64001 = joinInterfaceParams(paramsFour);
 
-                Map returnResult = invokeInterface(grantCode,actionSet,action,params64001,objInr);
-                String returnCode = StringUtil.objectToString(returnResult.get("code"));
+                    Map returnResult = invokeInterface(grantCode,actionSet,action,params64001,objInr);
+                    String returnCode = StringUtil.objectToString(returnResult.get("code"));
 
-                if ("500".equals(returnCode)) {
-                    map.put("code", "500");
-                    map.put("msg", "业务与担保合同关系接口调用失败，请联系管理员！");
-                    return map;
-                }
-                objInr = Long.valueOf(StringUtil.objectToString(returnResult.get("objInr")));
-                String inte64001 = StringUtil.objectToString(returnResult.get("results"));
-                JSONArray jSONArray = JSONObject.parseArray(inte64001);
-                for (int j = 0; j < jSONArray.size(); j++) {
-                    JSONObject jsonObject = jSONArray.getJSONObject(j);
-                    String RspCode = jsonObject.getString("RspCode");
-                    String ErrorNo = jsonObject.getString("ErrorNo");
-                    if ("000000".equals(RspCode)) {
-                        if ("1".equals(ErrorNo)) {
-                            if (a == size - 1) {
-                                code = "200";
-                                bizInterfaceResultProvider.update(new BizInterfaceResult(Long.valueOf(objInr), BizContant.INTERFACE_RESULT_SUCCESS));
-                            }
-                        } else {
+                    if ("500".equals(returnCode)) {
+                        map.put("code", "500");
+                        map.put("msg", "业务与担保合同关系接口调用失败，请联系管理员！");
+                        return map;
+                    }
+                    objInr = Long.valueOf(StringUtil.objectToString(returnResult.get("objInr")));
+                    String inte64001 = StringUtil.objectToString(returnResult.get("results"));
+                    JSONArray jSONArray = JSONObject.parseArray(inte64001);
+                    for (int j = 0; j < jSONArray.size(); j++) {
+                        JSONObject jsonObject = jSONArray.getJSONObject(j);
+                        String RspCode = jsonObject.getString("RspCode");
+                        String ErrorNo = jsonObject.getString("ErrorNo");
+                        if ("000000".equals(RspCode)) {
+                            if ("1".equals(ErrorNo)) {
+                                if (a == size - 1) {
+                                    code = "200";
+                                    bizInterfaceResultProvider.update(new BizInterfaceResult(Long.valueOf(objInr), BizContant.INTERFACE_RESULT_SUCCESS));
+                                }
+                            } else {
+                                String ErrorInfo = jsonObject.getString("ErrorInfo");
+                                bizInterfaceResultProvider.update(new BizInterfaceResult(Long.valueOf(objInr), String.valueOf(a)));
+                                msg = "业务与担保合同建立失败,错误信息为: " + ErrorInfo;
+                                map.put("code", code);
+                            map.put("msg", msg);
+                            return map;
+                        }
+                    } else {
                             String ErrorInfo = jsonObject.getString("ErrorInfo");
                             bizInterfaceResultProvider.update(new BizInterfaceResult(Long.valueOf(objInr), String.valueOf(a)));
                             msg = "业务与担保合同建立失败,错误信息为: " + ErrorInfo;
@@ -1211,20 +1472,15 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
                             map.put("msg", msg);
                             return map;
                         }
-                    } else {
-                        String ErrorInfo = jsonObject.getString("ErrorInfo");
-                        bizInterfaceResultProvider.update(new BizInterfaceResult(Long.valueOf(objInr), String.valueOf(a)));
-                        msg = "业务与担保合同建立失败,错误信息为: " + ErrorInfo;
-                        map.put("code", code);
-                        map.put("msg", msg);
-                        return map;
                     }
                 }
+            } else {
+                code = "200";
             }
-        } else {
-            code = "200";
+        }else {
+            // 查询担保合同信息
+            List guaranteeContract = getGuaranteeContract(grantCode);
         }
-
         map.put("code", code);
         map.put("msg", msg);
         return map;
@@ -1259,9 +1515,24 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
             objInr = Long.valueOf(StringUtil.objectToString(successMap.get("objInr")));
             responseStatus  = StringUtil.objectToString(successMap.get("responseStatus"));
         }
-
+        Map qrymap = new HashMap();
+        qrymap.put("grantCode",grantCode);
+        List<BizDebtGrant> grant = bizDebtGrantMapper.selectByMap(qrymap);
+        if (null ==grant || grant.size()<=0) {
+            map.put("code", "500");
+            map.put("msg", "业务与担保合同关系解除接口调用失败，请联系管理员！");
+            return map;
+        }
+        int cn = grant.get(0).getChangeNum();
+        List guaranteeContract =new ArrayList();
+        if (cn ==0 ){
+           guaranteeContract = getGuaranteeContract(grantCode);
+        }else {
+           guaranteeContract = getGuaranteeContractbyGrantAlter(grantCode);
+        }
         // 查询担保合同信息
-        List guaranteeContract = getGuaranteeContract(grantCode);
+
+
         if (guaranteeContract != null && guaranteeContract.size() > 0) {
             int startNum = 0;
             int size = guaranteeContract.size();
@@ -1285,8 +1556,15 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
                 paramsFour.add(StringUtil.objectToString(contract.get("guarantorCustId")));// 申请人客户编号
                 paramsFour.add(identNumber);//介质识别号
                 paramsFour.add(StringUtil.objectToString(contract.get("warrantyContractNumber")));//担保合同编号
-                paramsFour.add(amount);//担保金额
-                paramsFour.add(type);// 002 生效   004解除  009结清
+
+                if(cn ==0){
+                    paramsFour.add(amount);//担保金额
+                    paramsFour.add(type);// 002 生效   004解除  009结清
+                }else{
+                    paramsFour.add(StringUtil.objectToString(contract.get("type")));// 002 生效   004解除  009结清
+                    paramsFour.add(StringUtil.objectToString(contract.get("amount")));//担保金额
+                }
+
                 String params64001 = joinInterfaceParams(paramsFour);
 
                 Map returnResult = invokeInterface(grantCode,actionSet,action,params64001,objInr);
@@ -1764,7 +2042,7 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
             bizMakeLoans.setInstitutionCode(StringUtil.objectToString(debtInfoForMakeLoan.get("institutionCode")));
             //0 新增未激活 1 更新未激活为激活 2 新增激活
             if ("0".equals(enable)) {
-                bizMakeLoans.setDateOfLoan(new Date());//暂存当前时间
+                bizMakeLoans.setDateOfLoan((Date) params.get("date"));//暂存当前时间
                 bizMakeLoans.setEnable(0);
                 returnMakeLoans = update(bizMakeLoans);
             } else if ("1".equals(enable)) {
@@ -1789,7 +2067,10 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
                 returnMakeLoans = update(bizMakeLoans);
             }
         } catch (Exception e) {
-            return null;
+            // 异常抛到外层，用于手工控制事务，统一回滚
+            // return null;
+            logger.error(ExceptionUtil.getStackTraceAsString(e));
+            throw new RuntimeException(ExceptionUtil.getStackTraceAsString(e));
         }
         return returnMakeLoans;
     }
@@ -2340,6 +2621,87 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
         return dataMap;
     }
 
+
+    private Map getGuaranteeInfoList1(String grantCode) {
+        Map paramMap = new HashMap();
+        paramMap.put("grantCode", grantCode);
+        // 获取担保信息
+        List guaranteeInfoList = bizGuaranteeResultProvider.getGuaranteeInfoList(paramMap);
+        Map dataMap = new HashMap();
+        // 保证
+        List guaranteeList = new ArrayList();
+        // 抵押质押
+        List mortgageList = new ArrayList();
+        // 信用
+        List creditList = new ArrayList();
+        // 保证
+        List oldguaranteeList = new ArrayList();
+        // 抵押质押
+        List oldmortgageList = new ArrayList();
+        // 信用
+        List oldcreditList = new ArrayList();
+        //担保方式是否修改标识 0——是 ；1——否
+        int guarModified= 1;
+        // 担保类型
+        List type = new ArrayList();
+        if (guaranteeInfoList != null && guaranteeInfoList.size() > 0) {
+            Map gimap  = (Map) guaranteeInfoList.get(0);
+            int a = Integer.valueOf(StringUtil.objectToString(gimap.get("changeNum")));
+
+            for (int i = 0; i < guaranteeInfoList.size(); i++) {
+                Map guaranteeInfo = (Map) guaranteeInfoList.get(i);
+                String typePoint = StringUtil.objectToString(guaranteeInfo.get("typePoint"));
+                int changeNum = Integer.valueOf(StringUtil.objectToString(gimap.get("changeNum")));
+                if(a==changeNum){
+                    if ("C101".equals(typePoint)) {
+                        guaranteeList.add(guaranteeInfo);
+                        type.add(typePoint);
+                    } else if ("C102".equals(typePoint) || "C103".equals(typePoint)) {
+                        mortgageList.add(guaranteeInfo);
+                        type.add(typePoint);
+                    } else if ("C000".equals(typePoint)) {
+                        creditList.add(guaranteeInfo);
+                        type.add(typePoint);
+                    }
+                }else if(a>changeNum){
+                    if ("C101".equals(typePoint)) {
+                        oldguaranteeList.add(guaranteeInfo);
+                        guarModified =0;
+
+                    } else if ("C102".equals(typePoint) || "C103".equals(typePoint)) {
+                        oldmortgageList.add(guaranteeInfo);
+                        guarModified=0;
+                    } else if ("C000".equals(typePoint)) {
+                        oldcreditList.add(guaranteeInfo);
+                        guarModified=0;
+                    }
+                }
+
+            }
+            String guaranteeType = StringUtil.listToString(type, "|");
+            String guarantee = joinGuaranteeParams(guaranteeList);
+            String mortgage = joinMortgageParams(mortgageList);
+            String credit = joinCreditParams(creditList);
+            dataMap.put("guarantee", guarantee);
+            dataMap.put("mortgage", mortgage);
+            dataMap.put("credit", credit);
+            dataMap.put("guaranteeType", guaranteeType);
+            dataMap.put("guarModified", guarModified);
+        }
+        return dataMap;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * @Description: 担保类型为 保证 参数拼接
      * @Param: [params]
@@ -2474,7 +2836,452 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
         }
         return stringBuilder.toString();
     }
+<<<<<<< HEAD
 
+=======
+    /**
+     * @Description: 额度占用接口 用信主体占用额度
+     * @Param: [params]
+     * @return: java.lang.String
+     */
+    private Map<String,Object> getCustomInfoByParams(Map params) {
+  /**      // 获取用信主体相关信息
+        List productCustomerInfoList = bizDebtGrantProvider.getProductCustomerInfo(params);
+        // 发放金额
+        BigDecimal grantAmt = new BigDecimal(StringUtil.objectToString(params.get("grantAmt")));
+        //公开
+        StringBuilder stringBuilder = new StringBuilder();
+        //信用
+        StringBuilder creditStrBuilder = new StringBuilder();
+        //最高保证
+        StringBuilder maxGuaranteeStrBuilder = new StringBuilder();
+        try {
+            if (productCustomerInfoList != null && productCustomerInfoList.size() > 0) {
+                //todo
+                Map map = new HashMap();
+                Map qrymap = new HashMap();
+                qrymap.put("GRANT_CODE",params.get("grantCode"));
+                List<BizDebtGrant> debtgrantList= bizDebtGrantMapper.selectByMap(qrymap);
+                List<BizGuaranteeInfo> guranlist=new ArrayList<BizGuaranteeInfo>();
+                if(null != debtgrantList && debtgrantList.size()>0){
+                    map.put("DEBT_CODE",debtgrantList.get(0).getDebtCode());
+                    guranlist=bizGuaranteeInfoMapper.selectByMap(map);
+                }
+
+                for (int i = 0; i < productCustomerInfoList.size(); i++) {
+                    Map credit = (Map) productCustomerInfoList.get(i);
+                    String custNo = StringUtil.objectToString(credit.get("custNo"));
+                    String amountType = StringUtil.objectToString(credit.get("amountType"));
+                    BigDecimal creditRatio = new BigDecimal(StringUtil.objectToString(credit.get("creditRatio")));
+                    BigDecimal convertedPrice = new BigDecimal(StringUtil.objectToString(params.get("convertedPrice")));
+                    // 额度占用币种 默认为人民币
+                    String currency = "156";
+                    // 额度占用金额 发放金额 * 币种对应的折算牌价 * 额度用信比例(数据库为*100以后的整数) / 100
+                    BigDecimal amt = grantAmt.multiply(convertedPrice).multiply(creditRatio).divide(new BigDecimal("100")).setScale(2,BigDecimal.ROUND_HALF_UP);
+                    // 将信用额度筛除
+                    if("0000".equals(amountType) || "TP03".equals(amountType) || "TP04".equals(amountType) || "TP05".equals(amountType) || "TP09".equals(amountType)){
+                        if (i != productCustomerInfoList.size() - 1) {
+                            stringBuilder.append(custNo).append("|").append(amountType).append("|").append(currency).append("|")
+                                    .append(amt).append("|+|");
+                        } else {
+                            stringBuilder.append(custNo).append("|").append(amountType).append("|").append(currency).append("|")
+                                    .append(amt);
+                        }
+                    }
+                    // 信用
+                    if("0001".equals(amountType) || "0002".equals(amountType) || "0003".equals(amountType) || "0004".equals(amountType) || "0007".equals(amountType)){
+
+                        if (i != productCustomerInfoList.size() - 1) {
+                            creditStrBuilder.append(custNo).append("|").append(amountType).append("|").append(currency).append("|")
+                                    .append(amt).append("|+|");
+                        } else {
+                            creditStrBuilder.append(custNo).append("|").append(amountType).append("|").append(currency).append("|")
+                                    .append(amt);
+                        }
+
+                    }
+                    // 最高保证
+                    if("0006".equals(amountType) ){
+                        if(null!=guranlist && guranlist.size()>0 ){
+                            for (int j = 0; j < guranlist.size(); j++) {
+                                BizGuaranteeInfo    guar=guranlist.get(j);
+                                if (null !=guar && custNo.equals(guar.getGuarantor())){
+                                    if (i != productCustomerInfoList.size() - 1) {
+                                        maxGuaranteeStrBuilder.append(custNo).append("|").append(guar.getGuarantor()).append("|").append(amountType).append("|").append(currency).append("|")
+                                                .append(amt).append("|+|");
+                                    } else {
+                                        maxGuaranteeStrBuilder.append(custNo).append("|").append(guar.getGuarantor()).append("|").append(amountType).append("|").append(currency).append("|")
+                                                .append(amt);
+                                    }
+                                }
+                            }
+
+
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        Map resultmap = new HashMap();
+        resultmap.put("max",stringBuilder.toString());
+        resultmap.put("credit",creditStrBuilder.toString());
+        resultmap.put("maxGuarantee",maxGuaranteeStrBuilder.toString());;**/
+
+        // 获取用信主体相关信息 按修改次数倒叙排列
+        List mlCustomerInfoList = bizDebtGrantProvider.getMakeLoansCustomerInfo(params);
+        //拼装用信主体数据
+        Map custMap=getCustInfByLimitType(mlCustomerInfoList);
+        return custMap;
+    }
+
+    private Map getCustInfByLimitType(List mlCustomerInfoList) {
+
+        //公开,最高，专项
+        StringBuilder  maxsb  = new StringBuilder();
+        //信用
+        StringBuilder  creditsb  = new StringBuilder();
+        // 最高担保
+        StringBuilder  guransb  = new StringBuilder();
+        String type ="1";  //额度标志 1：占用，2：修改
+        Map resultmap = new HashMap();
+        List allcustlist = new ArrayList();
+        if (null != mlCustomerInfoList && mlCustomerInfoList.size()>0) {
+            int a = 0;
+
+
+            List oldmaxlist = new ArrayList();
+            List newmaxlist = new ArrayList();
+            List maddlist = new ArrayList();
+            List maddrelist = new ArrayList();
+            List mdellist = new ArrayList();
+            List mdelrelist = new ArrayList();
+
+            List oldcreditlist = new ArrayList();
+            List newcreditlist = new ArrayList();
+            List caddlist = new ArrayList();
+            List caddrelist = new ArrayList();
+            List cdellist = new ArrayList();
+            List cdelrelist = new ArrayList();
+
+
+            List oldmaxGuaranteelist = new ArrayList();
+            List newmaxGuaranteelist = new ArrayList();
+            List gaddlist = new ArrayList();
+            List gaddrelist = new ArrayList();
+            List gdellist = new ArrayList();
+            List gdelrelist = new ArrayList();
+
+
+
+
+            Map fcust = (Map) mlCustomerInfoList.get(0);
+            a = Integer.valueOf(StringUtil.objectToString(fcust.get("changeNum")));
+            for (int i = 0; i < mlCustomerInfoList.size(); i++) {
+                Map mlc = (Map) mlCustomerInfoList.get(0);
+                String amountType = StringUtil.objectToString(fcust.get("amountType"));//额度类型
+                String custNo = StringUtil.objectToString(fcust.get("custNo"));//客户号
+                if (Integer.valueOf(StringUtil.objectToString(fcust.get("changeNum"))) == a) {
+                    if ("0000".equals(amountType) || "TP03".equals(amountType) || "TP04".equals(amountType) || "TP05".equals(amountType) || "TP09".equals(amountType)) {
+                        //公开，最高，专项
+                        newmaxlist.add(mlc);
+                        maddlist.add(custNo);
+                        mdelrelist.add(custNo);
+                    } else if ("0001".equals(amountType) || "0002".equals(amountType) || "0003".equals(amountType) || "0004".equals(amountType) || "0007".equals(amountType)) {
+                        //信用
+                        newcreditlist.add(mlc);
+                        caddlist.add(custNo);
+                        cdelrelist.add(custNo);
+                    } else if ("0006".equals(amountType)) {
+                        //最高保证
+                        newmaxGuaranteelist.add(mlc);
+                        gaddlist.add(mlc);
+                        gdelrelist.add(mlc);
+                    }
+
+
+                } else if (Integer.valueOf(StringUtil.objectToString(fcust.get("changeNum"))) < a) {
+                    if ("0000".equals(amountType) || "TP03".equals(amountType) || "TP04".equals(amountType) || "TP05".equals(amountType) || "TP09".equals(amountType)) {
+                        //公开，最高，专项
+                        oldmaxlist.add(mlc);
+                        mdelrelist.add(custNo);
+                        mdellist.add(custNo);
+                    } else if ("0001".equals(amountType) || "0002".equals(amountType) || "0003".equals(amountType) || "0004".equals(amountType) || "0007".equals(amountType)) {
+                        //信用
+                        oldcreditlist.add(mlc);
+                        cdelrelist.add(custNo);
+                        cdellist.add(custNo);
+                    } else if ("0006".equals(amountType)) {
+                        //最高保证
+                        oldmaxGuaranteelist.add(mlc);
+                        gdellist.add(mlc);
+                        gaddrelist.add(mlc);
+                    }
+                }
+            }
+            //===================
+            //公开,最高，专项
+            //add
+            maddlist.removeAll(maddrelist);
+            //del
+            mdellist.removeAll(mdelrelist);
+
+            if(null !=mdellist && mdellist.size()>0){
+                resultmap.put("mdellist",1);
+                return resultmap;
+            }
+
+            for (int i = 0; i < newmaxlist.size(); i++) {
+                Map newmaxcust =  (Map) newmaxlist.get(i);
+                String nmcustno = StringUtil.objectToString(newmaxcust.get("custNo"));
+                String nmamt = StringUtil.objectToString(newmaxcust.get("amt"));
+                String nmamountType = StringUtil.objectToString(newmaxcust.get("amountType"));
+                String nmcur = StringUtil.objectToString(newmaxcust.get("cur"));
+                String nfirstId = StringUtil.objectToString(newmaxcust.get("firstId"));
+
+
+                for (int j = 0; j <oldmaxlist.size() ; j++) {
+                    Map oldmaxcust =  (Map) newmaxlist.get(j);
+                    String omcustno = StringUtil.objectToString(oldmaxcust.get("custNo"));
+                    String omamt = StringUtil.objectToString(oldmaxcust.get("amt"));
+                    //余额=总额-释放
+                    Map  paramap =  new HashMap();
+                    paramap.put("custno",nmcustno);
+                    paramap.put("firstId",nfirstId);
+
+                    BigDecimal repaySumAmt = new BigDecimal(0);
+                    List list = bizDebtGrantProvider.getSumRepayAmtbyCust(paramap);
+                    if (null == list && list.size() >0) {
+
+                        repaySumAmt=new BigDecimal ( StringUtil.objectToString(((Map) list.get(0)).get("sumAmt"))) ;
+                    }
+
+                    if (nmcustno.equals(omcustno)){
+                        type="2";
+                        if(nmamt.equals(omamt)){//same
+//                            maxsb.append(nmcustno).append("|").append(nmamountType).append("|").append(nmcur).append("|")
+//                                    .append(nmamt).append("|").append(new BigDecimal(nmamt).subtract(repaySumAmt)).append("|").append("04").append("|+|");
+                        }else {//upt
+                            maxsb.append(nmcustno).append("|").append(nmamountType).append("|").append(nmcur).append("|")
+                                    .append(nmamt).append("|").append(new BigDecimal(nmamt).subtract(repaySumAmt)).append("|").append("02").append("|+|");
+
+                            allcustlist.add(newmaxcust);
+                        }
+                    }
+                }
+
+
+                for (int x = 0; x <maddlist.size(); x++) {//add
+                    //余额=总额-释放
+                    Map  paramap =  new HashMap();
+                    paramap.put("custno",nmcustno);
+                    paramap.put("firstId",nfirstId);
+
+                    BigDecimal repaySumAmt = new BigDecimal(0);
+                    List list = bizDebtGrantProvider.getSumRepayAmtbyCust(paramap);
+                    if (null == list && list.size() >0) {
+
+                        repaySumAmt=new BigDecimal ( StringUtil.objectToString(((Map) list.get(0)).get("sumAmt"))) ;
+                    }
+                    String addcustno = StringUtil.objectToString(maddlist.get(x));
+                    if (nmcustno.equals(addcustno)) {
+                        maxsb.append(nmcustno).append("|").append(nmamountType).append("|").append(nmcur).append("|")
+                                .append(nmamt).append("|").append(new BigDecimal(nmamt).subtract(repaySumAmt)).append("|").append("01").append("|+|");
+                        allcustlist.add(newmaxcust);
+                    }
+                }
+            }
+
+  /**          for (int y = 0; y <mdellist.size() ; y++) {//del
+                type="2";
+                Map oldmaxcust =  (Map) mdellist.get(y);
+                String omcustno = StringUtil.objectToString(oldmaxcust.get("custNo"));
+                String omamt = StringUtil.objectToString(oldmaxcust.get("amt"));
+                String omamountType = StringUtil.objectToString(oldmaxcust.get("amountType"));
+                String omcur = StringUtil.objectToString(oldmaxcust.get("cur"));
+                String ofirstId = StringUtil.objectToString(oldmaxcust.get("firstId"));
+                //余额=总额-释放
+                Map  paramap =  new HashMap();
+                paramap.put("custno",omcustno);
+                paramap.put("firstId",ofirstId);
+
+                BigDecimal repaySumAmt = new BigDecimal(0);
+                List list = bizDebtGrantProvider.getSumRepayAmtbyCust(paramap);
+                if (null == list && list.size() >0) {
+
+                    repaySumAmt=new BigDecimal ( StringUtil.objectToString(((Map) list.get(0)).get("sumAmt"))) ;
+                }
+
+
+
+                maxsb.append(omcustno).append("|").append(omamountType).append("|").append(omcur).append("|")
+                            .append(omamt).append("|").append(new BigDecimal(omamt).subtract(repaySumAmt)).append("|").append("03").append("|+|");
+            }**/
+
+            //===============================
+            //信用
+            //add
+            caddlist.removeAll(caddrelist);
+            //del
+            cdellist.removeAll(cdelrelist);
+            for (int i = 0; i < newcreditlist.size(); i++) {
+                Map newcreditcust =  (Map) newcreditlist.get(i);
+                String nccustno = StringUtil.objectToString(newcreditcust.get("custNo"));
+                String ncamt = StringUtil.objectToString(newcreditcust.get("amt"));
+                String ncamountType = StringUtil.objectToString(newcreditcust.get("amountType"));
+                String nccur = StringUtil.objectToString(newcreditcust.get("cur"));
+
+                for (int j = 0; j <oldcreditlist.size() ; j++) {
+                    Map oldcreditcust =  (Map) newcreditlist.get(j);
+                    String occustno = StringUtil.objectToString(oldcreditcust.get("custNo"));
+                    String ocamt = StringUtil.objectToString(oldcreditcust.get("amt"));
+                    //余额=总额-释放
+
+
+                    if (nccustno.equals(occustno)){
+                        type="2";
+                        if(ncamt.equals(ocamt)){
+                            creditsb.append(nccustno).append("|").append(ncamountType).append("|").append(nccur).append("|")
+                                    .append(ncamt).append("|").append(ncamt).append("|").append("04").append("|+|");
+                        }else {
+                            creditsb.append(nccustno).append("|").append(ncamountType).append("|").append(nccur).append("|")
+                                    .append(ncamt).append("|").append("02").append("|+|");
+                            allcustlist.add(newcreditcust);
+                        }
+                    }
+                }
+
+                for (int x = 0; x <caddlist.size(); x++) {
+                    type="2";
+                    String addcustno = StringUtil.objectToString(caddlist.get(x));
+                    if (nccustno.equals(addcustno)) {
+                        creditsb.append(nccustno).append("|").append(ncamountType).append("|").append(nccur).append("|")
+                                .append(ncamt).append("|").append("01").append("|+|");
+                        allcustlist.add(newcreditcust);
+                    }
+                }
+            }
+
+            for (int y = 0; y <cdellist.size() ; y++) {
+                type="2";
+                Map oldcreditcust =  (Map) cdellist.get(y);
+                String occustno = StringUtil.objectToString(oldcreditcust.get("custNo"));
+                String ocamt = StringUtil.objectToString(oldcreditcust.get("amt"));
+                String ocamountType = StringUtil.objectToString(oldcreditcust.get("amountType"));
+                String occur = StringUtil.objectToString(oldcreditcust.get("cur"));
+
+                creditsb.append(occustno).append("|").append(ocamountType).append("|").append(occur).append("|")
+                                .append(ocamt).append("|").append(ocamt).append("|").append("03").append("|+|");
+                allcustlist.add(oldcreditcust);
+           }
+            // 最高担保
+            //add
+            gaddlist.removeAll(gaddrelist);
+            //del
+            gdellist.removeAll(gdelrelist);
+            for (int i = 0; i < newmaxGuaranteelist.size(); i++) {
+                Map newmaxGuaranteecust =  (Map) newmaxGuaranteelist.get(i);
+                String ngcustno = StringUtil.objectToString(newmaxGuaranteecust.get("custNo"));
+                String ngamt = StringUtil.objectToString(newmaxGuaranteecust.get("amt"));
+                String ngamountType = StringUtil.objectToString(newmaxGuaranteecust.get("amountType"));
+                String ngcur = StringUtil.objectToString(newmaxGuaranteecust.get("cur"));
+                String nfirstId = StringUtil.objectToString(newmaxGuaranteecust.get("firstId"));
+
+                for (int j = 0; j <oldmaxGuaranteelist.size() ; j++) {
+                    Map oldmaxGuaranteecust =  (Map) newmaxGuaranteelist.get(j);
+                    String ogcustno = StringUtil.objectToString(oldmaxGuaranteecust.get("custNo"));
+                    String ogamt = StringUtil.objectToString(oldmaxGuaranteecust.get("amt"));
+                    //余额=总额-释放
+
+
+                    if (ngcustno.equals(ogcustno)){
+
+                        Map  paramap =  new HashMap();
+                        paramap.put("custno",ngcustno);
+                        paramap.put("firstId",nfirstId);
+
+                        BigDecimal repaySumAmt = new BigDecimal(0);
+                        List list = bizDebtGrantProvider.getSumRepayAmtbyCust(paramap);
+                        if (null == list && list.size() >0) {
+
+                            repaySumAmt=new BigDecimal ( StringUtil.objectToString(((Map) list.get(0)).get("sumAmt"))) ;
+                        }
+
+
+                        type="2";
+                        if(ngamt.equals(ogamt)){
+                            guransb.append(ngcustno).append("|").append(ngamountType).append("|").append(ngcur).append("|")
+                                    .append(ngamt).append("|").append(repaySumAmt).append("|").append("04").append("|+|");
+                        }else {
+                            guransb.append(ngcustno).append("|").append(ngamountType).append("|").append(ngcur).append("|")
+                                    .append(ngamt).append("|").append(repaySumAmt).append("|").append("02").append("|+|");
+                            allcustlist.add(newmaxGuaranteecust);
+                        }
+                    }
+                }
+
+                for (int x = 0; x <gaddlist.size(); x++) {
+
+                    String addcustno = StringUtil.objectToString(caddlist.get(x));
+                    Map  paramap =  new HashMap();
+                    paramap.put("custno",ngcustno);
+                    paramap.put("firstId",nfirstId);
+
+                    BigDecimal repaySumAmt = new BigDecimal(0);
+                    List list = bizDebtGrantProvider.getSumRepayAmtbyCust(paramap);
+                    if (null == list && list.size() >0) {
+
+                        repaySumAmt=new BigDecimal ( StringUtil.objectToString(((Map) list.get(0)).get("sumAmt"))) ;
+                    }
+                    if (ngcustno.equals(addcustno)) {
+                        guransb.append(ngcustno).append("|").append(ngamountType).append("|").append(ngcur).append("|")
+                                .append(ngamt).append("|").append(repaySumAmt).append("|").append("01").append("|+|");
+                        allcustlist.add(newmaxGuaranteecust);
+                    }
+                }
+            }
+
+            for (int y = 0; y <gdellist.size() ; y++) {
+                type="2";
+                Map oldmaxGuaranteecust =  (Map) gdellist.get(y);
+                String ogcustno = StringUtil.objectToString(oldmaxGuaranteecust.get("custNo"));
+                String ogamt = StringUtil.objectToString(oldmaxGuaranteecust.get("amt"));
+                String ogamountType = StringUtil.objectToString(oldmaxGuaranteecust.get("amountType"));
+                String ogcur = StringUtil.objectToString(oldmaxGuaranteecust.get("cur"));
+                String ogfirstId = StringUtil.objectToString(oldmaxGuaranteecust.get("firstId"));
+
+
+                Map  paramap =  new HashMap();
+                paramap.put("custno",ogcustno);
+                paramap.put("firstId",ogfirstId);
+
+                BigDecimal repaySumAmt = new BigDecimal(0);
+                List list = bizDebtGrantProvider.getSumRepayAmtbyCust(paramap);
+                if (null == list && list.size() >0) {
+
+                    repaySumAmt=new BigDecimal ( StringUtil.objectToString(((Map) list.get(0)).get("sumAmt"))) ;
+                }
+
+                guransb.append(ogcustno).append("|").append(ogamountType).append("|").append(ogcur).append("|")
+                            .append(ogamt).append("|").append(repaySumAmt).append("|").append("03").append("|+|");
+                allcustlist.add(oldmaxGuaranteecust);
+
+            }
+            allcustlist.addAll(newmaxlist);
+
+        }
+
+
+
+        resultmap.put("max",maxsb.substring(0,maxsb.length()-2));
+        resultmap.put("credit",creditsb.substring(0,creditsb.length()-2));
+        resultmap.put("maxGuarantee",guransb.substring(0,guransb.length()-2));
+        resultmap.put("type",type);
+        resultmap.put("allcustlist",allcustlist);
+        return resultmap;
+    }
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
     /**
      * @Description: 最高额担保合同参数
      * @Param: [grantCode]
@@ -2486,6 +3293,7 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
         paramMap.put("grantCode", grantCode);
         // 获取担保信息
         List guaranteeInfoList = bizGuaranteeResultProvider.getGuaranteeInfoList(paramMap);
+//        List guaranteeInfoList = bizGuaranteeResultProvider.getGuaranteeRelationInfoList(paramMap);
         if (guaranteeInfoList != null && guaranteeInfoList.size() > 0) {
             for (int i = 0; i < guaranteeInfoList.size(); i++) {
                 Map guaranteeInfo = (Map) guaranteeInfoList.get(i);
@@ -2504,7 +3312,213 @@ public class BizMakeLoansProviderImpl extends BaseProviderImpl<BizMakeLoans> imp
         }
         return list;
     }
-    
+    /**
+     * @Description: 发放条件修改最高额担保合同参数
+     * @Param: [grantCode]
+     * @return: java.util.List
+     */
+    private List getGuaranteeContractbyGrantAlter(String grantCode) {
+        List list = new ArrayList();
+        List newlist = new ArrayList();
+        List oldlist = new ArrayList();
+        List addlist = new ArrayList();
+        List dellist = new ArrayList();
+        List samelist = new ArrayList();
+        List uptlist = new ArrayList();
+        Map paramMap = new HashMap();
+        paramMap.put("grantCode", grantCode);
+        // 获取担保信息
+
+        List guaranteeInfoList = bizGuaranteeResultProvider.getGuaranteeRelationInfoList(paramMap);
+
+        if (guaranteeInfoList != null && guaranteeInfoList.size() > 0) {
+            Map guar = (Map) guaranteeInfoList.get(0);
+            int a = Integer.valueOf(StringUtil.objectToString(guar.get("changeNum")));
+            String guarantorCustId = StringUtil.objectToString(guar.get("guarantorCustId"));// 申请人客户编号
+            String warrantyContractNumber = StringUtil.objectToString(guar.get("warrantyContractNumber"));// 担保合同编号
+
+            String clearRatioAmt = StringUtil.objectToString(guar.get("clearRatioAmt"));//可明确划分金额
+            String notClearAmt = StringUtil.objectToString(guar.get("notClearAmt"));//不可明确划分金额
+            for (int i = 0; i < guaranteeInfoList.size(); i++) {
+
+                Map guaranteeInfo = (Map) guaranteeInfoList.get(i);
+                if (Integer.valueOf(StringUtil.objectToString(guaranteeInfo.get("changeNum"))) == a) {
+
+                    newlist.add(guaranteeInfo);
+                    addlist.add(guaranteeInfo);
+                }else if(Integer.valueOf(StringUtil.objectToString(guaranteeInfo.get("changeNum"))) < a) {
+                    oldlist.add(guaranteeInfo);
+                    dellist.add(guaranteeInfo);
+                }
+
+            }
+
+
+            for (int m = 0; m <newlist.size() ; m++) {
+                Map nguar = (Map) guaranteeInfoList.get(m);
+                String nguarantorCustId = StringUtil.objectToString(nguar.get("guarantorCustId"));//申请人客户编号
+                String nwarrantyContractNumber = StringUtil.objectToString(nguar.get("warrantyContractNumber"));//担保合同编号
+                String nclearRatioAmt = StringUtil.objectToString(nguar.get("clearRatioAmt"));
+                String nnotClearAmt = StringUtil.objectToString(nguar.get("notClearAmt"));
+                for (int n = 0; n<oldlist.size() ; n++) {
+                    Map oguar = (Map) guaranteeInfoList.get(n);
+                    String oguarantorCustId = StringUtil.objectToString(oguar.get("guarantorCustId"));//申请人客户编号
+                    String owarrantyContractNumber = StringUtil.objectToString(oguar.get("warrantyContractNumber"));//担保合同编号
+                    String oclearRatioAmt = StringUtil.objectToString(oguar.get("clearRatioAmt"));
+                    String onotClearAmt = StringUtil.objectToString(oguar.get("notClearAmt"));
+                    if(null!=nguarantorCustId && !"".equals(nguarantorCustId) && null!=oguarantorCustId && !"".equals(oguarantorCustId) && nguarantorCustId.equals(oguarantorCustId)
+                            &&null!=nwarrantyContractNumber && !"".equals(nwarrantyContractNumber) && null!=owarrantyContractNumber && !"".equals(owarrantyContractNumber) && nwarrantyContractNumber.equals(owarrantyContractNumber)
+                            &&(null!=nclearRatioAmt && !"".equals(nclearRatioAmt) && null!=oclearRatioAmt && !"".equals(oclearRatioAmt) && nclearRatioAmt.equals(oclearRatioAmt)
+                            ||null!=nnotClearAmt && !"".equals(nnotClearAmt) && null!=onotClearAmt && !"".equals(onotClearAmt) && nnotClearAmt.equals(onotClearAmt))
+                            ){
+                        //same
+                        samelist.add(nguar);
+                    }else if(null!=nguarantorCustId && !"".equals(nguarantorCustId) && null!=oguarantorCustId && !"".equals(oguarantorCustId) && nguarantorCustId.equals(oguarantorCustId)
+                            &&null!=nwarrantyContractNumber && !"".equals(nwarrantyContractNumber) && null!=owarrantyContractNumber && !"".equals(owarrantyContractNumber) && nwarrantyContractNumber.equals(owarrantyContractNumber)
+                            &&(! nclearRatioAmt.equals(oclearRatioAmt)||! nnotClearAmt.equals(onotClearAmt))
+                            ){
+
+                        String namount = "";
+
+                        if(nclearRatioAmt != null && !"".equals(nclearRatioAmt)){
+                            namount = nclearRatioAmt;
+                        }
+                        if(nnotClearAmt != null && !"".equals(nnotClearAmt)){
+                            namount = nnotClearAmt;
+                        }
+                        String oamount = "";
+
+                        if(oclearRatioAmt != null && !"".equals(oclearRatioAmt)){
+                            oamount = nclearRatioAmt;
+                        }
+                        if(onotClearAmt != null && !"".equals(onotClearAmt)){
+                            oamount = onotClearAmt;
+                        }
+
+
+                        nguar.put("amount",new BigDecimal(namount).subtract(new BigDecimal(oamount)));
+                        nguar.put("type","0003");
+                        String guaranteeContractType = StringUtil.objectToString(nguar.get("guaranteeContractType"));
+                        if (!"".equals(guaranteeContractType)) {
+                            switch (guaranteeContractType){
+                                case("UE05"):list.add(nguar);break;// 最高额保证合同
+                                case("UE12"):list.add(nguar);break;// 最高额保证合同（个人）
+                                case("UE13"):list.add(nguar);break;// 最高额保证合同（对公）
+                                case("UE06"):list.add(nguar);break;// 最高额抵押合同
+                                case("UE15"):list.add(nguar);break;// 最高额权利质押合同
+                                case("UE14"):list.add(nguar);break;// 最高额动产质押合同
+                            }
+                        }
+                        //upt
+                        uptlist.add(nguar);
+                    }
+
+                }
+            }
+            for (int x = 0; x <addlist.size() ; x++) {
+                Map xguar = (Map) guaranteeInfoList.get(x);
+                String xguarantorCustId = StringUtil.objectToString(xguar.get("guarantorCustId"));//申请人客户编号
+                String xwarrantyContractNumber = StringUtil.objectToString(xguar.get("warrantyContractNumber"));//担保合同编号
+                String xclearRatioAmt = StringUtil.objectToString(xguar.get("clearRatioAmt"));
+                String xnotClearAmt = StringUtil.objectToString(xguar.get("notClearAmt"));
+                for (int s = 0; s < samelist.size(); s++) {
+                    Map sguar = (Map) guaranteeInfoList.get(s);
+                    String sguarantorCustId = StringUtil.objectToString(sguar.get("guarantorCustId"));//申请人客户编号
+                    String swarrantyContractNumber = StringUtil.objectToString(sguar.get("warrantyContractNumber"));//担保合同编号
+                    String sclearRatioAmt = StringUtil.objectToString(sguar.get("clearRatioAmt"));
+                    String snotClearAmt = StringUtil.objectToString(sguar.get("notClearAmt"));
+                    if (null != xguarantorCustId && !"".equals(xguarantorCustId) && null != sguarantorCustId && !"".equals(sguarantorCustId) && xguarantorCustId.equals(sguarantorCustId)
+                            && null != xwarrantyContractNumber && !"".equals(xwarrantyContractNumber) && null != swarrantyContractNumber && !"".equals(swarrantyContractNumber) && xwarrantyContractNumber.equals(swarrantyContractNumber)
+                            ) {
+                        //add
+                        addlist.remove(sguar);
+                    }
+
+                }
+            }
+            for (int de = 0; de <dellist.size() ; de++) {
+                Map deguar = (Map) guaranteeInfoList.get(de);
+                String deguarantorCustId = StringUtil.objectToString(deguar.get("guarantorCustId"));//申请人客户编号
+                String dewarrantyContractNumber = StringUtil.objectToString(deguar.get("warrantyContractNumber"));//担保合同编号
+                String declearRatioAmt = StringUtil.objectToString(deguar.get("clearRatioAmt"));
+                String denotClearAmt = StringUtil.objectToString(deguar.get("notClearAmt"));
+                for (int sa = 0; sa<samelist.size() ; sa++) {
+                    Map saguar = (Map) guaranteeInfoList.get(sa);
+                    String saguarantorCustId = StringUtil.objectToString(saguar.get("guarantorCustId"));//申请人客户编号
+                    String sawarrantyContractNumber = StringUtil.objectToString(saguar.get("warrantyContractNumber"));//担保合同编号
+                    String saclearRatioAmt = StringUtil.objectToString(saguar.get("clearRatioAmt"));
+                    String sanotClearAmt = StringUtil.objectToString(saguar.get("notClearAmt"));
+                    if(null!=deguarantorCustId && !"".equals(deguarantorCustId) && null!=saguarantorCustId && !"".equals(saguarantorCustId) && deguarantorCustId.equals(saguarantorCustId)
+                            &&null!=dewarrantyContractNumber && !"".equals(dewarrantyContractNumber) && null!=sawarrantyContractNumber && !"".equals(sawarrantyContractNumber) && dewarrantyContractNumber.equals(sawarrantyContractNumber)
+                            ){
+                        //add
+                        dellist.remove(saguar);
+                    }
+
+                }
+            }
+            for (int ad = 0; ad <addlist.size() ; ad++) {
+                Map adguar = (Map) addlist.get(ad);
+                String adguarantorCustId = StringUtil.objectToString(adguar.get("guarantorCustId"));//申请人客户编号
+                String adwarrantyContractNumber = StringUtil.objectToString(adguar.get("warrantyContractNumber"));//担保合同编号
+                String adclearRatioAmt = StringUtil.objectToString(adguar.get("clearRatioAmt"));
+                String adnotClearAmt = StringUtil.objectToString(adguar.get("notClearAmt"));
+                String adamount = "";
+
+                if(adclearRatioAmt != null && !"".equals(adclearRatioAmt)){
+                    adamount = adclearRatioAmt;
+                }
+                if(adnotClearAmt != null && !"".equals(adnotClearAmt)){
+                    adamount = adnotClearAmt;
+                }
+                adguar.put("amount",adamount);
+                adguar.put("type","0002");
+                String guaranteeContractType = StringUtil.objectToString(adguar.get("guaranteeContractType"));
+                if (!"".equals(guaranteeContractType)) {
+                    switch (guaranteeContractType){
+                        case("UE05"):list.add(adguar);break;// 最高额保证合同
+                        case("UE12"):list.add(adguar);break;// 最高额保证合同（个人）
+                        case("UE13"):list.add(adguar);break;// 最高额保证合同（对公）
+                        case("UE06"):list.add(adguar);break;// 最高额抵押合同
+                        case("UE15"):list.add(adguar);break;// 最高额权利质押合同
+                        case("UE14"):list.add(adguar);break;// 最高额动产质押合同
+                    }
+                }
+
+            }
+            for (int del = 0; del <dellist.size() ; del++) {
+                Map delguar = (Map) dellist.get(del);
+                String delguarantorCustId = StringUtil.objectToString(delguar.get("guarantorCustId"));//申请人客户编号
+                String delwarrantyContractNumber = StringUtil.objectToString(delguar.get("warrantyContractNumber"));//担保合同编号
+                String delclearRatioAmt = StringUtil.objectToString(delguar.get("clearRatioAmt"));
+                String delnotClearAmt = StringUtil.objectToString(delguar.get("notClearAmt"));
+                String delamount = "";
+
+                if(delclearRatioAmt != null && !"".equals(delclearRatioAmt)){
+                    delamount = delclearRatioAmt;
+                }
+                if(delnotClearAmt != null && !"".equals(delnotClearAmt)){
+                    delamount = delnotClearAmt;
+                }
+                delguar.put("amount",delamount);
+                delguar.put("type","0004");
+                String guaranteeContractType = StringUtil.objectToString(delguar.get("guaranteeContractType"));
+                if (!"".equals(guaranteeContractType)) {
+                    switch (guaranteeContractType){
+                        case("UE05"):list.add(delguar);break;// 最高额保证合同
+                        case("UE12"):list.add(delguar);break;// 最高额保证合同（个人）
+                        case("UE13"):list.add(delguar);break;// 最高额保证合同（对公）
+                        case("UE06"):list.add(delguar);break;// 最高额抵押合同
+                        case("UE15"):list.add(delguar);break;// 最高额权利质押合同
+                        case("UE14"):list.add(delguar);break;// 最高额动产质押合同
+                    }
+                }
+
+            }
+
+        }
+        return list;
+    }
     /** 
     * @Description: 查询接口返回结果 
     * @Param: [grantCode, interfaceNname] 

@@ -31,7 +31,7 @@ public class BizProductTypes extends BaseModel implements Serializable {
 	private Integer isChild;
 
 	@TableField(exist = false) // 绑定客户信息
-	private List<BizCustomer> customersList;
+	private List<BizCust> customersList;
 
 	@TableField(exist = false) // 债项方案id
 	private String debtCode;
@@ -39,8 +39,7 @@ public class BizProductTypes extends BaseModel implements Serializable {
 	private String names;
 	@TableField(exist = false) // 用于用信页面的勾选
 	private Boolean checked;
-	@TableField(exist = false) // 用于单一规则表的id
-	private String singleId;
+
 	/**
 	 * 存储专有信息页面的承租人
 	 */
@@ -53,11 +52,15 @@ public class BizProductTypes extends BaseModel implements Serializable {
 	private Long tolerancePertod;
 
 	/**
-	 * 行业投向，用于风险分析的存取值
+	 * 行业投向，用于专有信息的存取值
 	 */
 	@TableField(exist = false)
 	private String industryTo;
-
+	/**
+	 * 承租人是否是地方性融资平台，用于专有信息的存取值
+	 */
+	@TableField(exist = false)
+	private String financePlatform;
 	/**
 	 * 背景国别，用于风险分析的存取值
 	 */
@@ -65,16 +68,16 @@ public class BizProductTypes extends BaseModel implements Serializable {
 	private String tbon;
 
 	/**
-	 * 用于租金保理表的id
+	 * 保存单一规则表的id
+	 */
+	@TableField(exist = false)
+	private String singleId;
+	/**
+	 * 保存租金保理表的id
 	 */
 	@TableField(exist = false)
 	private String theRentFactorId;
 
-	/**
-	 * 承租人是否是地方性融资平台，用于专有信息的存取值
-	 */
-	@TableField(exist = false)
-	private String financePlatform;
 	/**
 	 * 用于租金保理表的客户名称
 	 */
@@ -127,11 +130,11 @@ public class BizProductTypes extends BaseModel implements Serializable {
 		this.isChild = isChild;
 	}
 
-	public List<BizCustomer> getCustomersList() {
+	public List<BizCust> getCustomersList() {
 		return customersList;
 	}
 
-	public void setCustomersList(List<BizCustomer> customersList) {
+	public void setCustomersList(List<BizCust> customersList) {
 		this.customersList = customersList;
 	}
 
@@ -159,6 +162,7 @@ public class BizProductTypes extends BaseModel implements Serializable {
 		this.checked = checked;
 	}
 
+<<<<<<< HEAD
 	public String getSingleId() {
 		return singleId;
 	}
@@ -167,6 +171,8 @@ public class BizProductTypes extends BaseModel implements Serializable {
 		this.singleId = singleId;
 	}
 
+=======
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 	public String getCustNo() {
 		return custNo;
 	}
@@ -191,6 +197,14 @@ public class BizProductTypes extends BaseModel implements Serializable {
 		this.industryTo = industryTo;
 	}
 
+	public String getFinancePlatform() {
+		return financePlatform == "" ? null : financePlatform;
+	}
+
+	public void setFinancePlatform(String financePlatform) {
+		this.financePlatform = financePlatform;
+	}
+
 	public String getTbon() {
 		return tbon;
 	}
@@ -199,20 +213,30 @@ public class BizProductTypes extends BaseModel implements Serializable {
 		this.tbon = tbon;
 	}
 
+<<<<<<< HEAD
 	public String getTheRentFactorId() {
 		return theRentFactorId;
+=======
+	public String getSingleId() {
+		return singleId == "" ? null : singleId;
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
+	}
+
+	public void setSingleId(String singleId) {
+		this.singleId = singleId;
+	}
+
+<<<<<<< HEAD
+	public String getFinancePlatform() {
+		return financePlatform;
+=======
+	public String getTheRentFactorId() {
+		return theRentFactorId == "" ? null : theRentFactorId;
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 	}
 
 	public void setTheRentFactorId(String theRentFactorId) {
 		this.theRentFactorId = theRentFactorId;
-	}
-
-	public String getFinancePlatform() {
-		return financePlatform;
-	}
-
-	public void setFinancePlatform(String financePlatform) {
-		this.financePlatform = financePlatform;
 	}
 
 	public String getCustName() {
@@ -230,4 +254,63 @@ public class BizProductTypes extends BaseModel implements Serializable {
 	public void setCustTating(String custTating) {
 		this.custTating = custTating;
 	}
+<<<<<<< HEAD
+=======
+
+	public BizProductTypes() {
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("name", name)
+				.add("code", code)
+				.add("parentCode", parentCode)
+				.add("leaf", leaf)
+				.add("isChild", isChild)
+				.add("customersList", customersList)
+				.add("debtCode", debtCode)
+				.add("names", names)
+				.add("checked", checked)
+				.add("custNo", custNo)
+				.add("tolerancePertod", tolerancePertod)
+				.add("industryTo", industryTo)
+				.add("financePlatform", financePlatform)
+				.add("tbon", tbon)
+				.add("singleId", singleId)
+				.add("theRentFactorId", theRentFactorId)
+				.add("custName", custName)
+				.add("custTating", custTating)
+				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizProductTypes)) return false;
+		BizProductTypes that = (BizProductTypes) o;
+		return Objects.equal(getName(), that.getName()) &&
+				Objects.equal(getCode(), that.getCode()) &&
+				Objects.equal(getParentCode(), that.getParentCode()) &&
+				Objects.equal(getLeaf(), that.getLeaf()) &&
+				Objects.equal(getIsChild(), that.getIsChild()) &&
+				Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getNames(), that.getNames()) &&
+				Objects.equal(getChecked(), that.getChecked()) &&
+				Objects.equal(getCustNo(), that.getCustNo()) &&
+				Objects.equal(getTolerancePertod(), that.getTolerancePertod()) &&
+				Objects.equal(getIndustryTo(), that.getIndustryTo()) &&
+				Objects.equal(getFinancePlatform(), that.getFinancePlatform()) &&
+				Objects.equal(getTbon(), that.getTbon()) &&
+				Objects.equal(getSingleId(), that.getSingleId()) &&
+				Objects.equal(getTheRentFactorId(), that.getTheRentFactorId()) &&
+				Objects.equal(getCustName(), that.getCustName()) &&
+				Objects.equal(getCustTating(), that.getCustTating());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getName(), getCode(), getParentCode(), getLeaf(), getIsChild(), getDebtCode(), getNames(), getChecked(), getCustNo(), getTolerancePertod(), getIndustryTo(), getFinancePlatform(), getTbon(), getSingleId(), getTheRentFactorId(), getCustName(), getCustTating());
+	}
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 }

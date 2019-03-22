@@ -157,27 +157,33 @@ public class BizCust extends BaseModel implements Serializable {
 	private String custManager;
 
     /**
-     * 用于用信主体中存取值
+     * 用于用信主体中存取值,存储额度信息
      */
 	@TableField(exist = false)
 	private List<BizCreditLines> creditLinesList;
 
 	/**
+	 * 用来保存额度类型表的id
+	 */
+	@TableField(exist = false)
+	private String productLinesTypeId;
+
+	/**
 	 * 授信额度信息外键,用于用信主体的存取值
 	 */
 	@TableField(exist = false)
-	private Long creditLinesId;
+	private String creditLinesId;
 	/**
 	 * 产品用信比例，用于用信主体的存取值
 	 */
 	@TableField(exist = false)
 	private String creditRatio;
 
-	public Long getCreditLinesId() {
+	public String getCreditLinesId() {
 		return creditLinesId;
 	}
 
-	public void setCreditLinesId(Long creditLinesId) {
+	public void setCreditLinesId(String creditLinesId) {
 		this.creditLinesId = creditLinesId;
 	}
 
@@ -413,28 +419,48 @@ public class BizCust extends BaseModel implements Serializable {
 		this.ratiEndTime = ratiEndTime;
 	}
 
-	@Override
-	public String toString() {
-		return "BizCustomer{" +
-				"debtCode='" + debtCode + '\'' +
-				", custNo='" + custNo + '\'' +
-				", organizationCode=" + organizationCode +
-				", custNameCN='" + custNameCN + '\'' +
-				", custNameEN='" + custNameEN + '\'' +
-				", custAddressCN='" + custAddressCN + '\'' +
-				", custAddressEN='" + custAddressEN + '\'' +
-				", custBusinessUnit='" + custBusinessUnit + '\'' +
-				", custRegistrastionType='" + custRegistrastionType + '\'' +
-				", custRatingCreditType='" + custRatingCreditType + '\'' +
-				", custScale='" + custScale + '\'' +
-				", groupNumber='" + groupNumber + '\'' +
-				", groupName='" + groupName + '\'' +
-				", mainBusiness='" + mainBusiness + '\'' +
-				", custCountry='" + custCountry + '\'' +
-				", creditRating='" + creditRating + '\'' +
-				", ratiTime=" + ratiTime +
-				", custManager='" + custManager + '\'' +
-				", creditLinesList=" + creditLinesList +
-				'}';
-	}
+    public String getProductLinesTypeId() {
+        return productLinesTypeId;
+    }
+
+    public void setProductLinesTypeId(String productLinesTypeId) {
+        this.productLinesTypeId = productLinesTypeId;
+    }
+
+    @Override
+    public String toString() {
+        return "BizCust{" +
+                "debtCode='" + debtCode + '\'' +
+                ", custNo='" + custNo + '\'' +
+                ", custIdType='" + custIdType + '\'' +
+                ", organizationCode='" + organizationCode + '\'' +
+                ", custNameCN='" + custNameCN + '\'' +
+                ", custNameEN='" + custNameEN + '\'' +
+                ", custAddressCN='" + custAddressCN + '\'' +
+                ", custAddressEN='" + custAddressEN + '\'' +
+                ", custBusinessUnit='" + custBusinessUnit + '\'' +
+                ", custBusinessUnitName='" + custBusinessUnitName + '\'' +
+                ", custRegistrastionType='" + custRegistrastionType + '\'' +
+                ", custRegistrastionTypeName='" + custRegistrastionTypeName + '\'' +
+                ", custRatingCreditType='" + custRatingCreditType + '\'' +
+                ", custRatingCreditTypeName='" + custRatingCreditTypeName + '\'' +
+                ", custScale='" + custScale + '\'' +
+                ", custScaleName='" + custScaleName + '\'' +
+                ", groupNumber='" + groupNumber + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", mainBusiness='" + mainBusiness + '\'' +
+                ", mainBusinessName='" + mainBusinessName + '\'' +
+                ", custCountry='" + custCountry + '\'' +
+                ", custCountryName='" + custCountryName + '\'' +
+                ", creditRating='" + creditRating + '\'' +
+                ", ratiTime=" + ratiTime +
+                ", ratiBeginTime=" + ratiBeginTime +
+                ", ratiEndTime=" + ratiEndTime +
+                ", custManager='" + custManager + '\'' +
+                ", creditLinesList=" + creditLinesList +
+                ", productLinesTypeId='" + productLinesTypeId + '\'' +
+                ", creditLinesId=" + creditLinesId +
+                ", creditRatio='" + creditRatio + '\'' +
+                '}';
+    }
 }

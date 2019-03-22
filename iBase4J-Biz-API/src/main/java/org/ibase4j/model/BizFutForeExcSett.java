@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -123,5 +124,24 @@ public class BizFutForeExcSett extends BaseModel implements Serializable {
 				.add("proposer", proposer)
 				.add("forwaroPeriod", forwaroPeriod)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizFutForeExcSett)) return false;
+		BizFutForeExcSett that = (BizFutForeExcSett) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessTypes(), that.getBusinessTypes()) &&
+				Objects.equal(getBusinessRemark(), that.getBusinessRemark()) &&
+				Objects.equal(getBnsDiffPrice(), that.getBnsDiffPrice()) &&
+				Objects.equal(getBnsDiffPriceRemark(), that.getBnsDiffPriceRemark()) &&
+				Objects.equal(getProposer(), that.getProposer()) &&
+				Objects.equal(getForwaroPeriod(), that.getForwaroPeriod());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessTypes(), getBusinessRemark(), getBnsDiffPrice(), getBnsDiffPriceRemark(), getProposer(), getForwaroPeriod());
 	}
 }

@@ -4,7 +4,7 @@
 package org.ibase4j.provider;
 
 import org.ibase4j.core.base.BaseProvider;
-import org.ibase4j.model.BizCustomer;
+import org.ibase4j.model.BizCust;
 
 
 /**
@@ -12,7 +12,7 @@ import org.ibase4j.model.BizCustomer;
  * @author xiaoshuiquan
  * @date 2018/5/26
  */
-public interface BizUseLetterProvider extends BaseProvider<BizCustomer>{
+public interface BizUseLetterProvider extends BaseProvider<BizCust>{
 
 	
 }

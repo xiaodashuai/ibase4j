@@ -2,6 +2,8 @@ package org.ibase4j.model;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.ibase4j.core.base.BaseModel;
 
@@ -91,17 +93,34 @@ public class BizProStatement extends BaseModel implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("title", title)
-                .append("bizid", bizid)
-                .append("createddate", createddate)
-                .append("insprocessname", insprocessname)
-                .append("actprocessname", actprocessname)
-                .append("pdid", pdid)
-                .append("piid", piid)
-                .toString();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizProStatement)) return false;
+        BizProStatement that = (BizProStatement) o;
+        return Objects.equal(getTitle(), that.getTitle()) &&
+                Objects.equal(getBizid(), that.getBizid()) &&
+                Objects.equal(getCreateddate(), that.getCreateddate()) &&
+                Objects.equal(getInsprocessname(), that.getInsprocessname()) &&
+                Objects.equal(getActprocessname(), that.getActprocessname()) &&
+                Objects.equal(getPdid(), that.getPdid()) &&
+                Objects.equal(getPiid(), that.getPiid());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getTitle(), getBizid(), getCreateddate(), getInsprocessname(), getActprocessname(), getPdid(), getPiid());
+    }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("title", title)
+                .add("bizid", bizid)
+                .add("createddate", createddate)
+                .add("insprocessname", insprocessname)
+                .add("actprocessname", actprocessname)
+                .add("pdid", pdid)
+                .add("piid", piid)
+                .toString();
+    }
 }

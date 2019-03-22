@@ -26,7 +26,7 @@ public interface BizDebtGrantMapper extends BaseMapper<BizDebtGrant>{
     * @Param: [params]
     * @return: java.util.List
     */
-    List getMakeLoansDebts(Page page, @Param("cm") Map<String, Object> params);
+//    List getMakeLoansDebts(Page page, @Param("cm") Map<String, Object> params);
     /**
      * 功能：查询产品总共发放的次数
      * @param productId 产品id 

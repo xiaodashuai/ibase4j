@@ -2,17 +2,22 @@ package org.ibase4j.provider;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.plugins.Page;
+import org.ibase4j.core.Constants;
 import org.ibase4j.core.base.BaseProviderImpl;
 import org.ibase4j.core.config.BizContant;
+import org.ibase4j.core.support.cache.RedisHelper;
 import org.ibase4j.core.util.DateUtil;
 import org.ibase4j.core.util.StringUtil;
 import org.ibase4j.mapper.*;
 import org.ibase4j.model.BizDebtGrant;
+import org.ibase4j.model.InfAfwkpln;
 import org.ibase4j.model.SysDept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,6 +53,12 @@ public class BizStandingBookProviderImpl extends BaseProviderImpl<BizDebtGrant> 
     private BizCBBMapper bizCBBMapper;
     @Autowired
     private BizGuaranteeResultProvider bizGuaranteeResultProvider;
+    @Autowired
+    private RedisHelper redisHelper;
+    @Autowired
+    private InfAfpaexoProvider infAfpaexoProvider;
+    @Autowired
+    private InfAfpcmemMapper infAfpcmemMapper;
 
     @Override
     public Page getDebtStandingBookList(Map<String, Object> param) {
@@ -59,53 +70,43 @@ public class BizStandingBookProviderImpl extends BaseProviderImpl<BizDebtGrant> 
     @Override
     public Page getGrantStandingBookPage(Map<String, Object> param) {
         Page page = getPage(param);
-        page.setOrderByField("A.DATE_OF_LOAN");
+        page.setOrderByField("mem.workdate");
         List grantStandingBookList = bizMakeLoansMapper.getGrantStandingBookList(page, param);
         // 查询下次还本时间 金额 还息时间
         String endDate = StringUtil.objectToString(param.get("endDate"));
+
         if (grantStandingBookList != null && grantStandingBookList.size() > 0) {
             for (int i = 0; i < grantStandingBookList.size(); i++) {
                 Map dataMap = new HashMap();
                 Map grantStandingBook = (Map) grantStandingBookList.get(i);
                 String grantCode = StringUtil.objectToString(grantStandingBook.get("grantCode"));
                 String objInr = StringUtil.objectToString(grantStandingBook.get("grantId"));
-                dataMap.put("objInr", objInr);
-                dataMap.put("endDate", endDate.substring(0,10));
-                dataMap.put("grantCode", grantCode);
-                // 查找发放币种和金额 TODO 由于第一批次租金保理业务只有一个币种 对于多币种只展示一个一种
-                List bizFECByINR = bizFECMapper.getBizFECByINR(dataMap);
-                if (bizFECByINR != null && bizFECByINR.size() > 0) {
-                    for (int i1 = 0; i1 < bizFECByINR.size(); i1++) {
-                        Map bizFec = (Map) bizFECByINR.get(i1);
-                        grantStandingBook.put("currency", StringUtil.objectToString(bizFec.get("currencyString")));
-                        grantStandingBook.put("paymentAmt", StringUtil.objectToString(bizFec.get("paymentAmt")));
+                BigDecimal totffamt = (String) grantStandingBook.get("totffamt") == null ?new BigDecimal(0):new BigDecimal((String) grantStandingBook.get("totffamt"));
+                BigDecimal tothkamt = (String) grantStandingBook.get("tothkamt") == null ?new BigDecimal(0):new BigDecimal((String) grantStandingBook.get("tothkamt"));
+                grantStandingBook.put("closingBal", StringUtil.objectToString(totffamt.subtract(tothkamt)));
+
+                String protseno = StringUtil.objectToString(grantStandingBook.get("protseno"));
+
+                Long endDateL = Long.parseLong(endDate.replace("-","").substring(0,8));
+
+                Set<Serializable> amtSet = redisHelper.zget(Constants.CACHE_INF_AFWKPLN_AMT_NEXTPLAN + protseno,endDateL,22991231L,1,1);
+                if(amtSet.size()==1){
+                    for (Serializable jsonStr : amtSet) {
+                        InfAfwkpln amtPln = JSON.parseObject((String)jsonStr,InfAfwkpln.class);
+                        grantStandingBook.put("gbDate", amtPln.getGbdate());
+                        grantStandingBook.put("gbAmt", amtPln.getGbamount());
                     }
-                } else {
-                    grantStandingBook.put("currency", "");
-                    grantStandingBook.put("paymentAmt", "");
                 }
-                // 查询下次还本时间 金额
-                List debtInfoForRepaymentPricinal = bizRepaymentPricinalPlanMapper.getDebtInfoForRepaymentPricinal(dataMap);
-                if (debtInfoForRepaymentPricinal != null && debtInfoForRepaymentPricinal.size() > 0) {
-                    Map repaymentPricinal = (Map) debtInfoForRepaymentPricinal.get(0);
-                    grantStandingBook.put("payDate", StringUtil.objectToString(repaymentPricinal.get("payDate")).substring(0,10));
-                    grantStandingBook.put("principalAmt", StringUtil.objectToString(repaymentPricinal.get("principalAmt")));
-                } else {
-                    grantStandingBook.put("payDate", "");
-                    grantStandingBook.put("principalAmt", "");
-                }
-                // 查询下次还本时间 金额 还息时间
-                List debtInfoForRepaymentLoan = bizRepaymentLoanPlanMapper.getDebtInfoForRepaymentLoan(dataMap);
-                if (debtInfoForRepaymentLoan != null && debtInfoForRepaymentLoan.size() > 0) {
-                    Map repaymentLoan = (Map) debtInfoForRepaymentLoan.get(0);
-                    grantStandingBook.put("interestDate", StringUtil.objectToString(repaymentLoan.get("interestDate")).substring(0,10));
-                } else {
-                    grantStandingBook.put("interestDate", "");
+                Set<Serializable> intSet = redisHelper.zget(Constants.CACHE_INF_AFWKPLN_INT_NEXTPLAN + protseno,endDateL,22991231L,1,1);
+                if(intSet.size()==1){
+                    for (Serializable jsonStr : intSet) {
+                        InfAfwkpln intPln = JSON.parseObject((String)jsonStr,InfAfwkpln.class);
+                        grantStandingBook.put("interestDate", intPln.getGbdate());
+                        grantStandingBook.put("interestAmt", intPln.getGbint());
+                    }
                 }
             }
         }
-
-
         page.setRecords(grantStandingBookList);
         return page;
     }
@@ -113,7 +114,7 @@ public class BizStandingBookProviderImpl extends BaseProviderImpl<BizDebtGrant> 
     @Override
     public List getGrantStandingBookList(Map<String, Object> param) {
         Page page = getPage(param);
-        page.setOrderByField("A.DATE_OF_LOAN");
+        page.setOrderByField("mem.workdate");
         page.setSize(99999999);
         return bizMakeLoansMapper.getGrantStandingBookList(page,param);
     }
@@ -140,84 +141,134 @@ public class BizStandingBookProviderImpl extends BaseProviderImpl<BizDebtGrant> 
 
     @Override
     public List getGrantAMTDetailForStandingBook(Map<String, Object> param) {
-        List grantAMTList = bizMakeLoansMapper.getGrantAMTDetailForStandingBook(param);
-        if (grantAMTList != null && grantAMTList.size() > 0) {
+//        List grantAMTList = bizMakeLoansMapper.getGrantAMTDetailForStandingBook(param);
+        List grantAMTList = bizMakeLoansMapper.getGrantStandingBookList(param);
+
+       /* if (grantAMTList != null && grantAMTList.size() > 0) {
             for (int i = 0; i < grantAMTList.size(); i++) {
                 Map grantAMT = (Map) grantAMTList.get(i);
-                // 查询发放金额 币种 利率
-                String objInr = StringUtil.objectToString(grantAMT.get("objInr"));
-                Map dataMap = new HashMap();
-                dataMap.put("objInr", objInr);
-                List bizFECByINR = bizFECMapper.getBizFECByINR(dataMap);
-                if (bizFECByINR != null && bizFECByINR.size() > 0) {
-                    Map bizFec = (Map) bizFECByINR.get(0);
-                    grantAMT.put("currency", StringUtil.objectToString(bizFec.get("currencyString")));
-                    grantAMT.put("paymentAmt", StringUtil.objectToString(bizFec.get("paymentAmt")));
-                    grantAMT.put("rateVal", StringUtil.objectToString(bizFec.get("rateVal")));
-                } else {
-                    grantAMT.put("currency", "");
-                    grantAMT.put("paymentAmt", 0);
-                    grantAMT.put("rateVal", 0);
+
+                BigDecimal totffamt = grantAMT.get("totffamt") == null ?new BigDecimal(0):new BigDecimal((String) grantAMT.get("totffamt"));
+                BigDecimal tothkamt =  grantAMT.get("tothkamt") == null ?new BigDecimal(0):new BigDecimal((String) grantAMT.get("tothkamt"));
+                BigDecimal closingBal = totffamt.subtract(tothkamt);
+                grantAMT.put("closingBal", StringUtil.objectToString(closingBal));
+                String currency = StringUtil.objectToString(grantAMT.get("currency"));
+                String deptCode = StringUtil.objectToString(grantAMT.get("deptCode"));
+                BigDecimal inamt =  grantAMT.get("inamt") == null ?new BigDecimal(0):new BigDecimal((String) grantAMT.get("inamt"));
+                BigDecimal ofamt =  grantAMT.get("ofamt") == null ?new BigDecimal(0):new BigDecimal((String) grantAMT.get("ofamt"));
+                grantAMT.put("inoffAmt", inamt.add(ofamt).setScale(2,BigDecimal.ROUND_HALF_UP));
+                BigDecimal intrate =  grantAMT.get("intrate") == null ?new BigDecimal(0):new BigDecimal((String) grantAMT.get("intrate"));
+                grantAMT.put("intrate", StringUtil.objectToString(intrate.multiply(new BigDecimal("0.000001"))));
+
+                if("CNY".equals(currency)){
+                    grantAMT.put("closingBalCNY", StringUtil.objectToString(closingBal));
+                    grantAMT.put("tothkamtCNY", StringUtil.objectToString(tothkamt));
+                }else if("USD".equals(currency)){
+                    grantAMT.put("closingBalUSD", StringUtil.objectToString(closingBal));
+                }else if("".equals(currency)){
+                    throw new RuntimeException("ERROR.currency is null!");
                 }
-                // 查询当前日期折算牌价 暂为1
-                BigDecimal amtBalance = new BigDecimal(StringUtil.objectToString(grantAMT.get("amtBalance")));
-                grantAMT.put("amtBalanceCNY", amtBalance);
-                grantAMT.put("amtBalanceUSD", amtBalance);
-                // 本金累计收回金额（原币）
-                Map cbeMap = new HashMap();
-                cbeMap.put("endDate", StringUtil.objectToString(grantAMT.get("dateOfLoan")));
-                cbeMap.put("objInr", StringUtil.objectToString(grantAMT.get("objInr")));
-                Map grantAMTInALL = bizCBEMapper.getGrantAMTInALL(cbeMap);
-                BigDecimal grantAMTInAll = new BigDecimal(StringUtil.objectToString(grantAMTInALL.get("grantAMTInAll")));
-                grantAMT.put("grantAMTInAll", grantAMTInAll);
-                // 本金累计收回金额 (折人民币)
-                grantAMT.put("grantAMTInAllCNY", grantAMTInAll);
-                // 逾期本金余额
-                Map OVEDUSUMMap = new HashMap();
-                OVEDUSUMMap.put("endDate", StringUtil.objectToString(grantAMT.get("dateOfLoan")));
-                OVEDUSUMMap.put("objInr", StringUtil.objectToString(grantAMT.get("objInr")));
-                OVEDUSUMMap.put("cbc", BizContant.OVEDUSUM_CBCTXT);
-                grantAMT.put("oveduSum", bizCBBMapper.getCBBbyCBCType(OVEDUSUMMap));
-                // 表内欠息余额
-                Map INATESUMMap = new HashMap();
-                INATESUMMap.put("endDate", StringUtil.objectToString(grantAMT.get("dateOfLoan")));
-                INATESUMMap.put("objInr", StringUtil.objectToString(grantAMT.get("objInr")));
-                INATESUMMap.put("cbc", BizContant.INATESUM_CBCTXT);
-                grantAMT.put("inateSum", bizCBBMapper.getCBBbyCBCType(OVEDUSUMMap));
-                // 表外欠息余额
-                Map OUATESUMMap = new HashMap();
-                OUATESUMMap.put("endDate", StringUtil.objectToString(grantAMT.get("dateOfLoan")));
-                OUATESUMMap.put("objInr", StringUtil.objectToString(grantAMT.get("objInr")));
-                OUATESUMMap.put("cbc", BizContant.OUATESUM_CBCTXT);
-                grantAMT.put("ouateSum", bizCBBMapper.getCBBbyCBCType(OVEDUSUMMap));
+
+                BigDecimal crossRateCNY = infAfpaexoProvider.getCrossRate(currency,"CNY",null,deptCode);
+                if(null != crossRateCNY){
+                    grantAMT.put("closingBalCNY", StringUtil.objectToString(closingBal.multiply(crossRateCNY).setScale(2,BigDecimal.ROUND_HALF_UP)));
+                    grantAMT.put("tothkamtCNY", StringUtil.objectToString(tothkamt.multiply(crossRateCNY).setScale(2,BigDecimal.ROUND_HALF_UP)));
+                }else {
+                    logger.error("未获取到折算牌价...crossRateCNY=currency="+currency+" deptCode="+deptCode);
+                    throw new RuntimeException("can't get crossRate...crossRateCNY=currency="+currency+" deptCode="+deptCode);
+                }
+                BigDecimal crossRateUSD = infAfpaexoProvider.getCrossRate(currency,"USD",null,deptCode);
+                if(null != crossRateUSD){
+                    grantAMT.put("closingBalUSD", StringUtil.objectToString(closingBal.multiply(crossRateUSD).setScale(2,BigDecimal.ROUND_HALF_UP)));
+                }else {
+                    logger.error("未获取到折算牌价...crossRateUSD=currency="+currency+" deptCode="+deptCode);
+                    throw new RuntimeException("can't get crossRate...crossRateUSD=currency="+currency+" deptCode="+deptCode);
+                }
+
             }
-        }
-        return grantAMTList;
+        }*/
+        return getMoreInfoForStatistic(grantAMTList);
     }
 
     @Override
     public Page getStatisticInfoPage(Map<String, Object> param) {
+        //endDate=2019-03-15 09:48:21
         Page page = getPage(param);
-        page.setOrderByField("A.DATE_OF_LOAN");
-        List statisticInfoList = bizMakeLoansMapper.getStatisticInfoList(page, param);
-        List moreInfoForStatistic = getMoreInfoForStatistic(statisticInfoList);
-        page.setRecords(moreInfoForStatistic);
+        page.setOrderByField("mem.workdate");
+        param.put("workdate",infAfpcmemMapper.getMaxWorkDate(StringUtil.objectToString(param.get("endDate"))));
+        List statisticInfoList = bizMakeLoansMapper.getGrantMessageStandingBook(page,param);
+        page.setRecords(getMoreInfoForStatistic(statisticInfoList));
         return page;
     }
 
     @Override
     public List getStatisticInfoList(Map<String, Object> param) {
         Page page = getPage(param);
-        page.setOrderByField("A.DATE_OF_LOAN");
+//        page.setOrderByField("A.DATE_OF_LOAN");
+//        page.setSize(99999999);
+//        List statisticInfoList = bizMakeLoansMapper.getStatisticInfoList(page,param);
         page.setSize(99999999);
-        List statisticInfoList = bizMakeLoansMapper.getStatisticInfoList(page,param);
+        page.setOrderByField("mem.workdate");
+        param.put("workdate",infAfpcmemMapper.getMaxWorkDate(StringUtil.objectToString(param.get("endDate"))));
+        List statisticInfoList = bizMakeLoansMapper.getGrantMessageStandingBook(page,param);
         List moreInfoForStatistic = getMoreInfoForStatistic(statisticInfoList);
+
         return moreInfoForStatistic;
     }
 
     private List getMoreInfoForStatistic(List statisticInfoList){
 
-        if(statisticInfoList != null && statisticInfoList.size()>0){
+        if (statisticInfoList != null && statisticInfoList.size() > 0) {
+            for (int i = 0; i < statisticInfoList.size(); i++) {
+                Map grantAMT = (Map) statisticInfoList.get(i);
+
+                BigDecimal totffamt = grantAMT.get("totffamt") == null ?new BigDecimal(0):new BigDecimal((String) grantAMT.get("totffamt"));
+                BigDecimal tothkamt =  grantAMT.get("tothkamt") == null ?new BigDecimal(0):new BigDecimal((String) grantAMT.get("tothkamt"));
+                //逾期本金金额
+                BigDecimal ovramt =  grantAMT.get("ovramt") == null ?new BigDecimal(0):new BigDecimal((String) grantAMT.get("ovramt"));
+                BigDecimal closingBal = totffamt.subtract(tothkamt);
+                grantAMT.put("closingBal", StringUtil.objectToString(closingBal));
+                String currency = StringUtil.objectToString(grantAMT.get("currency"));
+                String deptCode = StringUtil.objectToString(grantAMT.get("deptCode"));
+                BigDecimal inamt =  grantAMT.get("inamt") == null ?new BigDecimal(0):new BigDecimal((String) grantAMT.get("inamt"));
+                BigDecimal ofamt =  grantAMT.get("ofamt") == null ?new BigDecimal(0):new BigDecimal((String) grantAMT.get("ofamt"));
+                grantAMT.put("inoffAmt", inamt.add(ofamt).setScale(2,BigDecimal.ROUND_HALF_UP));
+                BigDecimal intrate =  grantAMT.get("intrate") == null ?new BigDecimal(0):new BigDecimal((String) grantAMT.get("intrate"));
+                grantAMT.put("intrate", StringUtil.objectToString(intrate.multiply(new BigDecimal("0.000001"))));
+
+                if("CNY".equals(currency)){
+                    grantAMT.put("closingBalCNY", StringUtil.objectToString(closingBal));
+                    grantAMT.put("tothkamtCNY", StringUtil.objectToString(tothkamt));
+                    grantAMT.put("totffamtCNY", StringUtil.objectToString(totffamt));
+                    grantAMT.put("ovramtCNY", StringUtil.objectToString(ovramt));
+                }else if("USD".equals(currency)){
+                    grantAMT.put("closingBalUSD", StringUtil.objectToString(closingBal));
+                }else if("".equals(currency)){
+                    throw new RuntimeException("ERROR.currency is null!");
+                }
+
+                BigDecimal crossRateCNY = infAfpaexoProvider.getCrossRate(currency,"CNY",null,deptCode);
+                if(null != crossRateCNY){
+                    grantAMT.put("closingBalCNY", StringUtil.objectToString(closingBal.multiply(crossRateCNY).setScale(2,BigDecimal.ROUND_HALF_UP)));
+                    grantAMT.put("tothkamtCNY", StringUtil.objectToString(tothkamt.multiply(crossRateCNY).setScale(2,BigDecimal.ROUND_HALF_UP)));
+                    grantAMT.put("totffamtCNY", StringUtil.objectToString(totffamt.multiply(crossRateCNY).setScale(2,BigDecimal.ROUND_HALF_UP)));
+                    grantAMT.put("ovramtCNY", StringUtil.objectToString(ovramt.multiply(crossRateCNY).setScale(2,BigDecimal.ROUND_HALF_UP)));
+                }else {
+                    logger.error("未获取到折算牌价...crossRateCNY=currency="+currency+" deptCode="+deptCode);
+                    throw new RuntimeException("can't get crossRate...crossRateCNY=currency="+currency+" deptCode="+deptCode);
+                }
+                BigDecimal crossRateUSD = infAfpaexoProvider.getCrossRate(currency,"USD",null,deptCode);
+                if(null != crossRateUSD){
+                    grantAMT.put("closingBalUSD", StringUtil.objectToString(closingBal.multiply(crossRateUSD).setScale(2,BigDecimal.ROUND_HALF_UP)));
+                }else {
+                    logger.error("未获取到折算牌价...crossRateUSD=currency="+currency+" deptCode="+deptCode);
+                    throw new RuntimeException("can't get crossRate...crossRateUSD=currency="+currency+" deptCode="+deptCode);
+                }
+
+            }
+        }
+
+        /*if(statisticInfoList != null && statisticInfoList.size()>0){
             for (int i = 0; i < statisticInfoList.size(); i++) {
                 Map statisticInfo = (Map)statisticInfoList.get(i);
                 // 查找币种 发放金额
@@ -268,7 +319,7 @@ public class BizStandingBookProviderImpl extends BaseProviderImpl<BizDebtGrant> 
                     statisticInfo.put("dayBetween", "");
                 }
             }
-        }
+        }*/
         return statisticInfoList;
     }
 

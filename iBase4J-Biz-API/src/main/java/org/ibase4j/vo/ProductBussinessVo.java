@@ -2,6 +2,9 @@ package org.ibase4j.vo;
 
 
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+
 import java.util.Date;
 import java.util.List;
 
@@ -370,5 +373,85 @@ public class ProductBussinessVo implements java.io.Serializable {
 
 	public void setPbList(List<ProductBussinessVo> pbList) {
 		this.pbList = pbList;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ProductBussinessVo)) return false;
+		ProductBussinessVo that = (ProductBussinessVo) o;
+		return isChildren() == that.isChildren() &&
+				Objects.equal(getName(), that.getName()) &&
+				Objects.equal(getCode(), that.getCode()) &&
+				Objects.equal(getParentCode(), that.getParentCode()) &&
+				Objects.equal(getSingleId(), that.getSingleId()) &&
+				Objects.equal(getDebtNum(), that.getDebtNum()) &&
+				Objects.equal(getPtEffectiveDate(), that.getPtEffectiveDate()) &&
+				Objects.equal(getPtExpiDate(), that.getPtExpiDate()) &&
+				Objects.equal(getPtLs(), that.getPtLs()) &&
+				Objects.equal(getPgEffectiveDate(), that.getPgEffectiveDate()) &&
+				Objects.equal(getPgExpiDate(), that.getPgExpiDate()) &&
+				Objects.equal(getCreditLinesId(), that.getCreditLinesId()) &&
+				Objects.equal(getCreditRatio(), that.getCreditRatio()) &&
+				Objects.equal(getProductCurrency(), that.getProductCurrency()) &&
+				Objects.equal(getAopForm(), that.getAopForm()) &&
+				Objects.equal(getAop(), that.getAop()) &&
+				Objects.equal(getAopMiN(), that.getAopMiN()) &&
+				Objects.equal(getAopMax(), that.getAopMax()) &&
+				Objects.equal(getLtnopa(), that.getLtnopa()) &&
+				Objects.equal(getTdwln(), that.getTdwln()) &&
+				Objects.equal(getPsp(), that.getPsp()) &&
+				Objects.equal(getPrType(), that.getPrType()) &&
+				Objects.equal(getInterestRateForm(), that.getInterestRateForm()) &&
+				Objects.equal(getTpoRate(), that.getTpoRate()) &&
+				Objects.equal(getPirr(), that.getPirr()) &&
+				Objects.equal(getTpRate(), that.getTpRate()) &&
+				Objects.equal(getProdRateType(), that.getProdRateType()) &&
+				Objects.equal(getPrRange(), that.getPrRange()) &&
+				Objects.equal(getBteaa(), that.getBteaa()) &&
+				Objects.equal(getEaaa(), that.getEaaa()) &&
+				Objects.equal(getPbList(), that.getPbList());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getName(), getCode(), getParentCode(), isChildren(), getSingleId(), getDebtNum(), getPtEffectiveDate(), getPtExpiDate(), getPtLs(), getPgEffectiveDate(), getPgExpiDate(), getCreditLinesId(), getCreditRatio(), getProductCurrency(), getAopForm(), getAop(), getAopMiN(), getAopMax(), getLtnopa(), getTdwln(), getPsp(), getPrType(), getInterestRateForm(), getTpoRate(), getPirr(), getTpRate(), getProdRateType(), getPrRange(), getBteaa(), getEaaa(), getPbList());
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("name", name)
+				.add("code", code)
+				.add("parentCode", parentCode)
+				.add("children", children)
+				.add("singleId", singleId)
+				.add("debtNum", debtNum)
+				.add("ptEffectiveDate", ptEffectiveDate)
+				.add("ptExpiDate", ptExpiDate)
+				.add("ptLs", ptLs)
+				.add("pgEffectiveDate", pgEffectiveDate)
+				.add("pgExpiDate", pgExpiDate)
+				.add("creditLinesId", creditLinesId)
+				.add("creditRatio", creditRatio)
+				.add("productCurrency", productCurrency)
+				.add("aopForm", aopForm)
+				.add("aop", aop)
+				.add("aopMiN", aopMiN)
+				.add("aopMax", aopMax)
+				.add("ltnopa", ltnopa)
+				.add("tdwln", tdwln)
+				.add("psp", psp)
+				.add("prType", prType)
+				.add("interestRateForm", interestRateForm)
+				.add("tpoRate", tpoRate)
+				.add("pirr", pirr)
+				.add("tpRate", tpRate)
+				.add("prodRateType", prodRateType)
+				.add("prRange", prRange)
+				.add("bteaa", bteaa)
+				.add("eaaa", eaaa)
+				.add("pbList", pbList)
+				.toString();
 	}
 }

@@ -54,5 +54,15 @@
 			</if>
 		</where>
 	</select>
-		
+
+    <select id="queryByDebtCode" resultType="org.ibase4j.model.BizTemporarySave">
+		select
+			*
+		from
+			BIZ_TMPSAVE
+		WHERE
+			DEBT_CODE = #{debtCode , jdbcType=VARCHAR}
+	</select>
+
+
 </mapper>

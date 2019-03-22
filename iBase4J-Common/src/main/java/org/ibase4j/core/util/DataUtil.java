@@ -2,15 +2,18 @@ package org.ibase4j.core.util;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.ibase4j.core.base.BaseModel;
 
-import java.io.File;
-import java.io.IOException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.io.*;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
-import java.util.Collection;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * 常见的辅助类
@@ -46,7 +49,7 @@ public final class DataUtil {
 	/**
 	 * 十六进制字符串转十进制字节数组
 	 * 
-	 * @param b
+	 * @param hs
 	 * @return
 	 */
 	public static final byte[] hex2byte(String hs) {
@@ -266,4 +269,226 @@ public final class DataUtil {
 		}
 		return k;
 	}
+
+    /**
+     * 比较两个实体属性值，返回一个map以有差异的属性名为key，value为一个Map分别存oldObject,newObject此属性名的值
+     * @param oldObject 进行属性比较的对象1
+     * @param newObject 进行属性比较的对象2
+     * @param strs 属性名
+     * @param isContains true只校验strs中的字段，false排除校验strs指定的属性
+     * @return  e.g {name={newValue=2, oldValue=1}}
+     */
+	@SuppressWarnings("rawtypes")
+	public static Map<String, Map<String,Object>> compareEntityFields(Object oldObject, Object newObject ,String [] strs,boolean isContains) {
+		Map<String, Map<String, Object>> map = null;
+
+		try{
+			/**
+			 * 只有两个对象都是同一类型的才有可比性
+			 */
+			if (oldObject.getClass() == newObject.getClass()) {
+				map = new HashMap<String, Map<String,Object>>();
+
+				Class clazz = oldObject.getClass();
+				//获取object的所有属性
+				PropertyDescriptor[] pds = Introspector.getBeanInfo(clazz,Object.class).getPropertyDescriptors();
+
+				for (PropertyDescriptor pd : pds) {
+					//遍历获取属性名
+					String name = pd.getName();
+
+					if((isContains && !Arrays.asList(strs).contains(name))||(!isContains && Arrays.asList(strs).contains(name))){
+						continue;
+					}
+
+					//获取属性的get方法
+					Method readMethod = pd.getReadMethod();
+
+					// 在oldObject上调用get方法等同于获得oldObject的属性值
+					Object oldValue = readMethod.invoke(oldObject);
+					// 在newObject上调用get方法等同于获得newObject的属性值
+					Object newValue = readMethod.invoke(newObject);
+
+					if(oldValue instanceof List){
+						continue;
+					}
+
+					if(newValue instanceof List){
+						continue;
+					}
+
+					if(oldValue instanceof Timestamp){
+						oldValue = new Date(((Timestamp) oldValue).getTime());
+					}
+
+					if(newValue instanceof Timestamp){
+						newValue = new Date(((Timestamp) newValue).getTime());
+					}
+
+					if(oldValue == null && newValue == null){
+						continue;
+					}else if(oldValue == null && newValue != null){
+						Map<String,Object> valueMap = new HashMap<String,Object>();
+						valueMap.put("oldValue",oldValue);
+						valueMap.put("newValue",newValue);
+
+						map.put(name, valueMap);
+
+						continue;
+					}
+
+					// 比较这两个值是否相等,不等就可以放入map了
+					if (!oldValue.equals(newValue)) {
+						Map<String,Object> valueMap = new HashMap<String,Object>();
+						valueMap.put("oldValue",oldValue);
+						valueMap.put("newValue",newValue);
+
+						map.put(name, valueMap);
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+		return map;
+	}
+
+    /**
+     * 判断两个对象是否相等
+     * @param oldObject 对象1
+     * @param newObject 对象2
+     * @param strs 属性名
+     * @param isContains true只校验strs中的字段，false排除校验strs指定的属性
+     * @return true 两实体认为一致
+     */
+    public static boolean equalsEximEntity(Object oldObject, Object newObject,String [] strs,boolean isContains) {
+        if(null == oldObject || null == newObject){
+            return false;
+        }
+        Map<String, Map<String,Object>> resultMap=compareEntityFields(oldObject,newObject,strs,isContains);
+        if(resultMap.size()>0) {
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    /**
+     * 两个对象集合比较，做差集
+     * @param newList 变更后的实体List
+     * @param oldList 原库中的实体List
+     * @param strs 比较的参数列表
+     * @return map.get("addEntityList") 为list1存在，list2不存在，map.get("updateEntityList") 需要update的entityList，map.get("delIDList")为需要remove的id List;
+     */
+    public static Map getMinusMap(List newList,List oldList,String [] strs,boolean isContains){
+
+        Map map = new HashMap();
+        List<String> idlst1 = new ArrayList<String>();
+        Set<String> idset2 = new HashSet<String>();
+        List addList = new ArrayList();
+        List addEntityList = new ArrayList();
+        List ameList = new ArrayList();
+        List delList = new ArrayList();
+        //去除null元素
+		newList.removeAll(Collections.singleton(null));
+		oldList.removeAll(Collections.singleton(null));
+        for(Object o1 : newList){
+
+            idlst1.add(((BaseModel)o1).getId_());
+
+            for(Object o2 : oldList){
+
+                idset2.add(((BaseModel)o2).getId_());
+
+                if(equalsEximEntity(o1,o2,strs,isContains)){
+                    break;
+                }else{
+                    if(((BaseModel)o1).getId_().equals(((BaseModel)o2).getId_())){
+                        ameList.add(o1);
+                    }
+                }
+
+            }
+        }
+        List<String> idlst2 = new ArrayList<String>(idset2);
+        addList.addAll(idlst1);
+        addList.removeAll(idlst2);
+        delList.addAll(idlst2);
+        delList.removeAll(idlst1);
+        for(Object o1 : newList){
+            if(addList.contains(((BaseModel)o1).getId_())){
+                addEntityList.add(o1);
+            }
+        }
+		map.put("addEntityList",addEntityList);
+		map.put("updateEntityList",ameList);
+		map.put("delIDList",delList);
+        return map;
+    }
+	public static boolean copyFile(File sourcefile,File targetFile){
+        FileInputStream input = null;
+        BufferedInputStream inbuff = null;
+        FileOutputStream out = null;
+        BufferedOutputStream outbuff = null;
+
+        try {
+            //新建文件输入流并对它进行缓冲
+            input = new FileInputStream(sourcefile);
+            inbuff = new BufferedInputStream(input);
+
+            //新建文件输出流并对它进行缓冲
+            out = new FileOutputStream(targetFile);
+            outbuff = new BufferedOutputStream(out);
+
+            //缓冲数组
+            byte[] b=new byte[1024*5];
+            int len=0;
+            while((len=inbuff.read(b))!=-1){
+                outbuff.write(b, 0, len);
+            }
+
+            //刷新此缓冲的输出流
+            outbuff.flush();
+
+            //关闭流
+            inbuff.close();
+            outbuff.close();
+            out.close();
+            input.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (inbuff != null) {
+                try {
+                    inbuff.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (outbuff != null) {
+                try {
+                    outbuff.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

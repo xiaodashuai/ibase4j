@@ -2,6 +2,8 @@ package org.ibase4j.model;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -111,5 +113,37 @@ public class BizProductDefinition extends BaseModel implements Serializable{
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizProductDefinition)) return false;
+        BizProductDefinition that = (BizProductDefinition) o;
+        return Objects.equal(getZoneNo(), that.getZoneNo()) &&
+                Objects.equal(getProductType(), that.getProductType()) &&
+                Objects.equal(getCurrencyChar(), that.getCurrencyChar()) &&
+                Objects.equal(getCurrencyNum(), that.getCurrencyNum()) &&
+                Objects.equal(getProductMix(), that.getProductMix()) &&
+                Objects.equal(getProductSeqnum(), that.getProductSeqnum()) &&
+                Objects.equal(getProductName(), that.getProductName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getZoneNo(), getProductType(), getCurrencyChar(), getCurrencyNum(), getProductMix(), getProductSeqnum(), getProductName());
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("zoneNo", zoneNo)
+                .add("productType", productType)
+                .add("currencyChar", currencyChar)
+                .add("currencyNum", currencyNum)
+                .add("productMix", productMix)
+                .add("productSeqnum", productSeqnum)
+                .add("productName", productName)
+                .toString();
     }
 }

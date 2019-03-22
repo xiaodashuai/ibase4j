@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -139,5 +140,25 @@ public class BizHistoryCommentInfo extends BaseModel implements Serializable {
                 .add("commentId", commentId)
                 .add("commentInfo", commentInfo)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizHistoryCommentInfo)) return false;
+        BizHistoryCommentInfo that = (BizHistoryCommentInfo) o;
+        return Objects.equal(getTaskId(), that.getTaskId()) &&
+                Objects.equal(getApprovalId(), that.getApprovalId()) &&
+                Objects.equal(getRoleId(), that.getRoleId()) &&
+                Objects.equal(getRoleName(), that.getRoleName()) &&
+                Objects.equal(getUserId(), that.getUserId()) &&
+                Objects.equal(getUserName(), that.getUserName()) &&
+                Objects.equal(getCommentId(), that.getCommentId()) &&
+                Objects.equal(getCommentInfo(), that.getCommentInfo());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getTaskId(), getApprovalId(), getRoleId(), getRoleName(), getUserId(), getUserName(), getCommentId(), getCommentInfo());
     }
 }

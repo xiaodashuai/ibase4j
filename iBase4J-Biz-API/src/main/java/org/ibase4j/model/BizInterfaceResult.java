@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -180,7 +181,26 @@ public class BizInterfaceResult extends BaseModel implements Serializable {
     public BizInterfaceResult() {
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizInterfaceResult)) return false;
+        BizInterfaceResult that = (BizInterfaceResult) o;
+        return Objects.equal(getTradeCode(), that.getTradeCode()) &&
+                Objects.equal(getTradeCodeVerNum(), that.getTradeCodeVerNum()) &&
+                Objects.equal(getInterfaceName(), that.getInterfaceName()) &&
+                Objects.equal(getRequestTime(), that.getRequestTime()) &&
+                Objects.equal(getRequestParams(), that.getRequestParams()) &&
+                Objects.equal(getResponseInfo(), that.getResponseInfo()) &&
+                Objects.equal(getResponseTime(), that.getResponseTime()) &&
+                Objects.equal(getResponseStatus(), that.getResponseStatus()) &&
+                Objects.equal(getResponseErrorMsg(), that.getResponseErrorMsg());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getTradeCode(), getTradeCodeVerNum(), getInterfaceName(), getRequestTime(), getRequestParams(), getResponseInfo(), getResponseTime(), getResponseStatus(), getResponseErrorMsg());
+    }
 
     @Override
     public String toString() {

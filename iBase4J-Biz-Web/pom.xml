@@ -62,17 +62,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ibase4j</groupId>
-			<artifactId>iBase4J-SYS-API</artifactId>
-			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.ibase4j</groupId>
 			<artifactId>iBase4J-Biz-API</artifactId>
 			<version>${project.version}</version>
 			<exclusions>
@@ -82,6 +71,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>

@@ -1,5 +1,6 @@
 package org.ibase4j.service;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.plugins.Page;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.ibase4j.core.base.BaseService;
@@ -18,7 +19,7 @@ import java.util.Map;
  */
 @Service
 public class SysUserService extends BaseService<ISysUserProvider, SysUser> {
-	@Autowired
+	@Reference
 	public void setProvider(ISysUserProvider provider) {
 		this.provider = provider;
 	}

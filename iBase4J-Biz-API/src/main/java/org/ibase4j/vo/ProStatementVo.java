@@ -1,5 +1,7 @@
 package org.ibase4j.vo;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.matrix.engine.foundation.domain.TaskVO;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -64,13 +66,30 @@ public class ProStatementVo extends TaskVO implements java.io.Serializable{
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProStatementVo)) return false;
+        ProStatementVo that = (ProStatementVo) o;
+        return Objects.equal(getBizid(), that.getBizid()) &&
+                Objects.equal(getTitle(), that.getTitle()) &&
+                Objects.equal(getCreateddate(), that.getCreateddate()) &&
+                Objects.equal(getInsprocessname(), that.getInsprocessname()) &&
+                Objects.equal(getActprocessname(), that.getActprocessname());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getBizid(), getTitle(), getCreateddate(), getInsprocessname(), getActprocessname());
+    }
+
+    @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("bizid", bizid)
-                .append("title", title)
-                .append("createddate", createddate)
-                .append("insprocessname", insprocessname)
-                .append("actprocessname", actprocessname)
+        return MoreObjects.toStringHelper(this)
+                .add("bizid", bizid)
+                .add("title", title)
+                .add("createddate", createddate)
+                .add("insprocessname", insprocessname)
+                .add("actprocessname", actprocessname)
                 .toString();
     }
 }

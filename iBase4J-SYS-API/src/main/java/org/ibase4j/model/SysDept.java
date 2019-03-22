@@ -23,6 +23,8 @@ public class SysDept extends BaseModel implements Serializable{
 	private Integer sortNo;
 	@TableField("TYPE_") // 类型(1:机构2:部门)
 	private Integer type;
+	@TableField("DEPT_LEVEL ") // 级别 1： 一级； 2 ：二级；3：三级；
+	private Integer deptLevel;
 	@TableField("UNIT_ID")
 	private String unitId;
 	@TableField("LEAF_")
@@ -182,6 +184,14 @@ public class SysDept extends BaseModel implements Serializable{
 		this.parentName = parentName;
 	}
 
+	public Integer getDeptLevel() {
+		return deptLevel;
+	}
+
+	public void setDeptLevel(Integer deptLevel) {
+		this.deptLevel = deptLevel;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -200,6 +210,8 @@ public class SysDept extends BaseModel implements Serializable{
 		result = prime * result + ((sortNo == null) ? 0 : sortNo.hashCode());
 		result = prime * result + ((tel == null) ? 0 : tel.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((deptLevel == null) ? 0 : deptLevel.hashCode());
+
 		return result;
 	}
 

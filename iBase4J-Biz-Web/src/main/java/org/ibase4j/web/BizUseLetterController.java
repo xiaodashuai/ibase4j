@@ -11,7 +11,6 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.ibase4j.core.base.BaseController;
 import org.ibase4j.model.BizCust;
-import org.ibase4j.model.BizCustomer;
 import org.ibase4j.service.BizUseLetterService;
 import org.ibase4j.vo.ProductBussinessVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class BizUseLetterController extends BaseController{
     @ApiOperation(value = "保存选择的客户")
     @RequiresPermissions("before.base.reponse.read")
     @PostMapping(value = "/saveCustomer/save")
-    public Object saveCustomer(ModelMap modelMap, @RequestBody BizCustomer customer) {
+    public Object saveCustomer(ModelMap modelMap, @RequestBody BizCust customer) {
         useLetterService.update(customer);
         return setSuccessModelMap(modelMap);
     }
@@ -51,8 +50,8 @@ public class BizUseLetterController extends BaseController{
     @RequiresPermissions("before.base.reponse.read")
     @PutMapping(value = "/selectCustomerList/list")
     public Object selectCustomerList(ModelMap modelMap, @RequestBody Map<String, Object> customer) {
-        List<BizCustomer> cusList=useLetterService.queryList(customer);
-        BizCustomer cust=cusList.get(0);
+        List<BizCust> cusList=useLetterService.queryList(customer);
+        BizCust cust=cusList.get(0);
         return setSuccessModelMap(modelMap,cust);
     }
 
@@ -63,7 +62,7 @@ public class BizUseLetterController extends BaseController{
         Map<String,Object>cusMap=new HashMap();
         Long debtNum=Long.valueOf(customer.get("debtNum").toString());
         cusMap.put("debtNum", debtNum);
-        List<BizCustomer> cusList=useLetterService.queryList(cusMap);
+        List<BizCust> cusList=useLetterService.queryList(cusMap);
         if (cusList.size()!=0){
             return setSuccessModelMap(modelMap,cusList);
         }

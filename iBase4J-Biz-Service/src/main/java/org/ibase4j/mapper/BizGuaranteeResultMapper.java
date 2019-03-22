@@ -27,4 +27,13 @@ public interface BizGuaranteeResultMapper extends BaseMapper<BizGuaranteeResult>
      * @return: java.util.List
      */
     List getGuaranteeInfoList(@Param("cm") Map<String, Object> params);
+
+
+    /**
+     * @Description: 额度占用接口参数
+     * @Param: [params]
+     * @return: java.util.List
+     */
+    List getGuaranteeRelationInfoList(@Param("cm") Map<String, Object> params);
+
 }

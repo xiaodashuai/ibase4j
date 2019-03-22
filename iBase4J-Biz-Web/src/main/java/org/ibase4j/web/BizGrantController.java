@@ -60,7 +60,8 @@ public class BizGrantController extends BaseController {
 	@PutMapping(value = "/read/getProductList")
 	public Object getProductList(ModelMap modelMap, @RequestBody Map<String, Object> params) {
 		String debtCode = StringUtil.objectToString(params.get("debtCode"));
-		List<ProductVo> list = bizDebtSummaryService.getProduct(debtCode);
+        String debtNo = StringUtils.substring(debtCode, 0, 13);
+		List<ProductVo> list = bizDebtSummaryService.getProduct(debtNo);
 		return setSuccessModelMap(modelMap, list);
 	}
 	

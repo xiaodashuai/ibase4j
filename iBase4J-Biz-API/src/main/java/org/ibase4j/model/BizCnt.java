@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -56,5 +57,20 @@ public class BizCnt extends BaseModel implements Serializable {
                 .add("val", val)
                 .add("step", step)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizCnt)) return false;
+        BizCnt bizCnt = (BizCnt) o;
+        return Objects.equal(getName(), bizCnt.getName()) &&
+                Objects.equal(getVal(), bizCnt.getVal()) &&
+                Objects.equal(getStep(), bizCnt.getStep());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getName(), getVal(), getStep());
     }
 }

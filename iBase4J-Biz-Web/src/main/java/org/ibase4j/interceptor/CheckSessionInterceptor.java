@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.ibase4j.core.interceptor.BaseInterceptor;
+import org.ibase4j.core.util.PropertiesUtil;
 import org.ibase4j.model.BizSession;
 import org.ibase4j.service.BizSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class CheckSessionInterceptor extends BaseInterceptor {
 
     @Autowired
     private BizSessionService bizSessionService;
-
+    Long sessionExpireTime = Long.parseLong(PropertiesUtil.getString("session.expireTime"));
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         //对所有的请求放行  只是修改一下数据库session的更新时间
@@ -33,7 +34,8 @@ public class CheckSessionInterceptor extends BaseInterceptor {
             //根据sessionId 去查数据库 如果有就更新  没有就放行
             BizSession bizSession = bizSessionService.queryBySessionId(sessionId);
             if (bizSession != null && !"".equals(bizSession)) {
-                bizSession.setUpdateTime(new Date());
+
+                bizSession.setUpdateTime(new Date(System.currentTimeMillis()+sessionExpireTime));
                 try {
                     bizSessionService.update(bizSession);
                     logger.info("拦截器刷新BIZ_SESSION更新时间成功 : {}", bizSession.getSessionId());

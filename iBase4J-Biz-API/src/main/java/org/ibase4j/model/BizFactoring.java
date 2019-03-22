@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -292,5 +293,36 @@ public class BizFactoring extends BaseModel implements Serializable {
 				.add("buyers", buyers)
 				.add("seller", seller)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizFactoring)) return false;
+		BizFactoring that = (BizFactoring) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessTypes(), that.getBusinessTypes()) &&
+				Objects.equal(getTheApplicant(), that.getTheApplicant()) &&
+				Objects.equal(getEdfImporter(), that.getEdfImporter()) &&
+				Objects.equal(getEdfImportFactor(), that.getEdfImportFactor()) &&
+				Objects.equal(getExporter(), that.getExporter()) &&
+				Objects.equal(getExporterAgent(), that.getExporterAgent()) &&
+				Objects.equal(getBnsDurationType(), that.getBnsDurationType()) &&
+				Objects.equal(getOpenness(), that.getOpenness()) &&
+				Objects.equal(getRightRecourse(), that.getRightRecourse()) &&
+				Objects.equal(getFinance(), that.getFinance()) &&
+				Objects.equal(getValueDate(), that.getValueDate()) &&
+				Objects.equal(getDueDate(), that.getDueDate()) &&
+				Objects.equal(getPeriodOfGrace(), that.getPeriodOfGrace()) &&
+				Objects.equal(getClearForm(), that.getClearForm()) &&
+				Objects.equal(getBuyerSellerAgent(), that.getBuyerSellerAgent()) &&
+				Objects.equal(getSellerSellerAgent(), that.getSellerSellerAgent()) &&
+				Objects.equal(getBuyers(), that.getBuyers()) &&
+				Objects.equal(getSeller(), that.getSeller());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessTypes(), getTheApplicant(), getEdfImporter(), getEdfImportFactor(), getExporter(), getExporterAgent(), getBnsDurationType(), getOpenness(), getRightRecourse(), getFinance(), getValueDate(), getDueDate(), getPeriodOfGrace(), getClearForm(), getBuyerSellerAgent(), getSellerSellerAgent(), getBuyers(), getSeller());
 	}
 }

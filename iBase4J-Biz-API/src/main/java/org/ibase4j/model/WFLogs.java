@@ -6,6 +6,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -50,5 +51,19 @@ public class WFLogs extends BaseModel implements Serializable {
 				.add("lgDate", lgDate)
 				.add("ipAddress", ipAddress)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof WFLogs)) return false;
+		WFLogs wfLogs = (WFLogs) o;
+		return Objects.equal(getLgDate(), wfLogs.getLgDate()) &&
+				Objects.equal(getIpAddress(), wfLogs.getIpAddress());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getLgDate(), getIpAddress());
 	}
 }

@@ -27,7 +27,79 @@
 			</if>
 		</where>
 	</select>
+	<select id="getBizCustomerList" resultMap="custmoerMap">
+		select
+		a.*
+		from BIZ_CUSTOMER a
+		inner join
+		BIZ_PTS b
+		on a.ID_ = b.OBJINR
+		<where>
+			<if test="1==1">
+				and b.ROL = 'LETS'
+			</if>
+			<if test="cm.enable != null and cm.enable != ''">
+				and a.enable_ = #{cm.enable}
+			</if>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and a.DEBT_CODE = #{cm.debtCode}
+			</if>
+		</where>
+	</select>
+
+	<resultMap id="custmoerMap" type="org.ibase4j.model.BizCust"
+			   autoMapping="true">
+		<id column="ID_" property="id" />
+		<result column="CUST_NO" property="custNo" javaType="String"
+				jdbcType="VARCHAR" />
+		<result column="DEBT_CODE" property="debtCode" javaType="String"
+				jdbcType="VARCHAR" />
+		<result column="ORGANIZATION_CODE" property="organizationCode"/>
+
+		<result column="CUST_NAME_CN" property="custNameCN" javaType="String"
+				jdbcType="VARCHAR" />
+		<result column="CUST_NAME_EN" property="custNameEN" javaType="String"
+				jdbcType="VARCHAR" />
+		<result column="CUST_ADDRESS_CN" property="custAddressCN"
+				javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_ADDRESS_EN" property="custAddressEN"
+				javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_BUSINESS_UNIT" property="custBusinessUnit"
+				javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_REG_TYPE" property="custRegistrastionType"
+				javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_RCREDIT_TYPE" property="custRatingCreditType"
+				javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_SCALE" property="custScale" javaType="String"
+				jdbcType="VARCHAR" />
+		<result column="GROUP_NO" property="groupNumber" javaType="String"
+				jdbcType="VARCHAR" />
+		<result column="GROUP_NAME" property="groupName" javaType="String"
+				jdbcType="VARCHAR" />
+		<result column="MAIN_BUSINESS" property="mainBusiness"
+				javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_COUNTRY" property="custCountry" javaType="String"
+				jdbcType="VARCHAR" />
+		<result column="CREDIT_RATING" property="creditRating" javaType="String"
+				jdbcType="VARCHAR" />
+		<result column="RATING_TIME" property="ratiTime"/>
+		<result column="CUST_MANAGER" property="custManager" javaType="String"
+				jdbcType="VARCHAR" />
+        <result column="CUST_ID_TYPE" property="custIdType" javaType="String"
+                jdbcType="VARCHAR" />
+        <result column="RATING_BEGIN_TIME" property="ratiBeginTime"/>
+        <result column="RATING_END_TIME" property="ratiEndTime"/>
+	</resultMap>
+
+	<select id="queryByCustNo" resultMap="custmoerMap">
+		select
+			*
+		from
+			BIZ_CUST
+		WHERE
+			CUST_NO = #{custNo , jdbcType=VARCHAR}
+	</select>
 
 
-	
+
 </mapper>

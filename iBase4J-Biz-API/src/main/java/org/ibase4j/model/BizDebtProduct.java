@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -95,5 +96,22 @@ public class BizDebtProduct extends BaseModel implements Serializable {
 				.add("industryInvestment", industryInvestment)
 				.add("backgroundNationality", backgroundNationality)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizDebtProduct)) return false;
+		BizDebtProduct that = (BizDebtProduct) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessType(), that.getBusinessType()) &&
+				Objects.equal(getProductName(), that.getProductName()) &&
+				Objects.equal(getIndustryInvestment(), that.getIndustryInvestment()) &&
+				Objects.equal(getBackgroundNationality(), that.getBackgroundNationality());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessType(), getProductName(), getIndustryInvestment(), getBackgroundNationality());
 	}
 }

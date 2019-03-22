@@ -82,6 +82,7 @@ public class BizSessionProviderImpl extends BaseProviderImpl<BizSession> impleme
 
     @Override
     public void cleanExpiredSessions() {
+        Long sessionExpireTime = Long.parseLong(PropertiesUtil.getString("session.expireTime"));
         String key = "spring:session:" + PropertiesUtil.getString("biz.session.redis.namespace") + ":sessions:expires:";
         Map<String, Object> columnMap = InstanceUtil.newHashMap();
         columnMap.put("ENABLE_", 1);
@@ -94,11 +95,11 @@ public class BizSessionProviderImpl extends BaseProviderImpl<BizSession> impleme
                 Date updateTime = bizSession.getUpdateTime();
                 if (!StringUtils.isEmpty(startTime)) {
                     if (!StringUtils.isEmpty(updateTime)) {
-                        //如果更新时间 已经过期30分钟
-                        if (System.currentTimeMillis() - updateTime.getTime() > 1800000) {
+                        //如果更新时间 已经过期sessionExpireTime毫秒
+                        if (System.currentTimeMillis() - updateTime.getTime() > sessionExpireTime) {
                             bizSessionUpdate(bizSession);
                         }
-                    } else if (System.currentTimeMillis() - startTime.getTime() > 1800000) {
+                    } else if (System.currentTimeMillis() - startTime.getTime() > sessionExpireTime) {
                         bizSessionUpdate(bizSession);
                     }
                 }

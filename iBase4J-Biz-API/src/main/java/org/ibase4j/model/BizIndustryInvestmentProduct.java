@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -68,5 +69,20 @@ public class BizIndustryInvestmentProduct extends BaseModel implements Serializa
                 .add("productCode", productCode)
                 .add("industryInvestmentId", industryInvestmentId)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizIndustryInvestmentProduct)) return false;
+        BizIndustryInvestmentProduct that = (BizIndustryInvestmentProduct) o;
+        return Objects.equal(getDebtNum(), that.getDebtNum()) &&
+                Objects.equal(getProductCode(), that.getProductCode()) &&
+                Objects.equal(getIndustryInvestmentId(), that.getIndustryInvestmentId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getDebtNum(), getProductCode(), getIndustryInvestmentId());
     }
 }

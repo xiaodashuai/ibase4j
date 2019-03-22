@@ -95,6 +95,10 @@ public final class DateUtil {
 		return format(new Date());
 	}
 
+	public static final String getDateYYYYMMDD() {
+		return formatYYYYMMDD(new Date());
+	}
+
 	/**
 	 * 获取日期时间
 	 * 

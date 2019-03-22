@@ -36,4 +36,6 @@ public interface BizGuaranteeResultProvider extends BaseProvider<BizGuaranteeRes
     * @return: java.util.List 
     */ 
     List getGuaranteeInfoList(Map<String, Object> params);
+
+    List getGuaranteeRelationInfoList(Map<String, Object> params);
 }

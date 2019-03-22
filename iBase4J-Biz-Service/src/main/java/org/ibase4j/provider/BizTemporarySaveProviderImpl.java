@@ -2,12 +2,18 @@ package org.ibase4j.provider;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-
-import org.apache.commons.collections.CollectionUtils;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.toolkit.IdWorker;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import org.ibase4j.core.base.BaseProviderImpl;
+import org.ibase4j.core.util.DateUtil;
 import org.ibase4j.core.util.PropertiesUtil;
 import org.ibase4j.core.util.StringUtil;
+import org.ibase4j.mapper.BizTemporarySaveMapper;
 import org.ibase4j.model.BizTemporarySave;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
@@ -19,295 +25,311 @@ import java.util.UUID;
 
 @CacheConfig(cacheNames = "BizTemporarySave")
 @Service(interfaceClass = BizTemporarySaveProvider.class)
-public class BizTemporarySaveProviderImpl extends BaseProviderImpl<BizTemporarySave>
-		implements BizTemporarySaveProvider {
+public class BizTemporarySaveProviderImpl extends BaseProviderImpl<BizTemporarySave> implements BizTemporarySaveProvider {
+    @Autowired
+    private BizTemporarySaveMapper bizTemporarySaveMapper;
+    String basePath = PropertiesUtil.getString("tempsav.dir");
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean saveGrantTemporary(Object t, Map params){
+        Wrapper<BizTemporarySave> wrapper = new EntityWrapper<BizTemporarySave>();
+        wrapper.eq("DEPT_CODE",StringUtil.objectToString(params.get("deptCode"))).eq("TASK_ID",StringUtil.objectToString(params.get("taskId")));
+        params.put("wrapper",wrapper);
+        return this.saveTemporary(t, params);
+    }
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean saveTemporary(Object t, Map params) {
-		String debtCode = StringUtil.objectToString(params.get("debtCode"));//根据方案编号查询
-		String deptCode = StringUtil.objectToString(params.get("deptCode"));//部门编码
-		String taskId = StringUtil.objectToString(params.get("taskid"));//业务类型（发放/变更/重新提交/数据迁移）
-		String bizcode =StringUtil.objectToString(params.get("bizcode"));//业务编号
-		String remark =  StringUtil.objectToString(params.get("remark"));//发放申请人
-		String projectName= StringUtil.objectToString(params.get("projectName"));//项目名称
-		String roleId = StringUtil.objectToString(params.get("rolid"));//角色id 
-		String userId = StringUtil.objectToString(params.get("userid"));//用户id 
-		//返回参数
-		boolean res = false;
-		BizTemporarySave temp = null;
-		//查询暂存的对象列表
-		Map<String,Object> queryMap = new HashMap<String,Object>();
-		queryMap.put("schemeNum", debtCode);//根据方案编号查询
-		queryMap.put("deptCode",deptCode );//部门编码
-		queryMap.put("taskid", taskId);//业务类型（发放/变更/重新提交/数据迁移）
-		List<BizTemporarySave> selmodList = queryList(queryMap);
-		//暂存对象
-		BizTemporarySave selmod = null;
-		if(CollectionUtils.isNotEmpty(selmodList)){
-			logger.debug("查询出"+selmodList.size()+"符合条件的暂存信息...");
-			selmod = selmodList.get(0);
-		}
-		if (null != selmod && ((t instanceof BizTemporarySave && "0".equals(selmod.getType()))
-				|| (!(t instanceof BizTemporarySave) && "1".equals(selmod.getType())))) {
-			// 数据库中原暂存数据上更新
-			if ("0".equals(selmod.getType())) {
-				temp = (BizTemporarySave) t;
-				if (null != temp.getObj()) {
-					selmod.setObj(temp.getObj());
-					if (this.saveTmpObj(selmod, selmod.getFilename())) {
-						selmod.setDeptCode(deptCode);
-						this.update(selmod);
-						res = true;
-					} else {
-						throw new RuntimeException("BizTemporarySave:Save object error!");
-					}
-				} else {
-					throw new RuntimeException("this BizTemporarySave.obj is null!");
-				}
-			} else {
-				if (this.saveTmpObj(t, selmod.getFilename())) {
-					this.update(selmod);
-					res = true;
-				} else {
-					throw new RuntimeException("BizTemporarySave:Save object error!");
-				}
-			}
-		} else {
-			BizTemporarySave sel = new BizTemporarySave();
-			sel.setDeptCode(deptCode);
-			sel.setTaskid(taskId);
-			sel.setBizcode(bizcode);
-			sel.setRemark(remark);	
-			sel.setProjectName(projectName);
-			sel.setRolid(roleId);
-			sel.setUserid(userId);
-			// 新增一条数据
-			String filename = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-			if (t instanceof BizTemporarySave) {
-				temp = (BizTemporarySave) t;
-				if (null != temp.getObj()) {
-					sel.setType("0");
-					sel.setFilename(filename);
-					sel.setObj(temp.getObj());
-					if (this.saveTmpObj(sel, filename)) {
-						this.update(sel);
-						res = true;
-					} else {
-						throw new RuntimeException("BizTemporarySave:Save object error!");
-					}
-				} else {
-					throw new RuntimeException("this BizTemporarySave.obj is null!");
-				}
-			} else {
-				sel.setType("1");
-				sel.setFilename(filename);
-				if (this.saveTmpObj(t, filename)) {
-					this.update(sel);
-					res = true;
-				} else {
-					throw new RuntimeException("BizTemporarySave:Save pojo error!");
-				}
-			}
-		}
+        boolean res = false;
+        BizTemporarySave temp = null;
+        BizTemporarySave selmod = null;
+        BizTemporarySave sel = new BizTemporarySave();
+        String cDateStr = DateUtil.getDateYYYYMMDD();
+        Date cDate = new Date();
+
+        if (null != params.get("id")){
+            sel.setId((Long)params.get("id"));
+        }
+        if (null != params.get("bizcode")){
+            sel.setBizcode(StringUtil.objectToString(params.get("bizcode")));
+        }
+        if (null != params.get("type")){
+            sel.setType(StringUtil.objectToString(params.get("type")));
+        }
+        if (null != params.get("rolid")){
+            sel.setRolid(StringUtil.objectToString(params.get("rolid")));
+        }
+        if (null != params.get("taskid")){
+            sel.setTaskid(StringUtil.objectToString(params.get("taskid")));
+        }
+        if (null != params.get("userid")){
+            sel.setUserid(StringUtil.objectToString(params.get("userid")));
+        }
+        if (null != params.get("remark")){
+            sel.setRemark(StringUtil.objectToString(params.get("remark")));
+        }
+        if (null != params.get("projectName")){
+            sel.setProjectName(StringUtil.objectToString(params.get("projectName")));
+        }
+        if (null != params.get("deptCode")){
+            sel.setDeptCode(StringUtil.objectToString(params.get("deptCode")));
+        }
+
+        if (null != params.get("wrapper")){
+            //自定义查询条件，查询时若存在则优先使用（方案暂存时仅保留一条）
+            Wrapper<BizTemporarySave> wrapper = (EntityWrapper<BizTemporarySave>)params.get("wrapper");
+            selmod = this.selectOne(wrapper);
+        }else{
+            selmod = this.selectOne(sel);
+        }
+
+        if (null != selmod && ((t instanceof BizTemporarySave && "0".equals(selmod.getType()))
+                || (!(t instanceof BizTemporarySave) && "1".equals(selmod.getType())))) {
+            // 数据库中原暂存数据上更新
+            if ("0".equals(selmod.getType())) {
+                temp = (BizTemporarySave) t;
+                if (null != temp.getObj()) {
+                    selmod.setObj(temp.getObj());
+                    selmod.setUpdateTime(cDate);
+                    if (this.saveTmpObj(selmod, selmod.getFilename(),DateUtil.formatYYYYMMDD(selmod.getCreateTime()))) {
+                        int i = bizTemporarySaveMapper.updateById(selmod);
+                        if(i==1){
+                            res = true;
+                        }
+                    } else {
+                        throw new RuntimeException("BizTemporarySave:Save object error!");
+                    }
+                } else {
+                    throw new RuntimeException("this BizTemporarySave.obj is null!");
+                }
+            } else {
+                selmod.setObj(temp.getObj());
+                selmod.setUpdateTime(cDate);
+                if (this.saveTmpObj(t, selmod.getFilename(),DateUtil.formatYYYYMMDD(selmod.getCreateTime()))) {
+                    int i = bizTemporarySaveMapper.updateById(selmod);
+                    if(i==1){
+                        res = true;
+                    }
+                } else {
+                    throw new RuntimeException("BizTemporarySave:Save object error!");
+                }
+            }
+        } else{
+            String filename = IdWorker.getIdStr();
+            if (t instanceof BizTemporarySave) {
+                temp = (BizTemporarySave) t;
+                if (null != temp.getObj()) {
+                    sel.setId(Long.parseLong(filename));
+                    sel.setType("0");
+                    sel.setFilename(filename);
+                    sel.setObj(temp.getObj());
+                    if (this.saveTmpObj(sel, filename,cDateStr)) {
+                        // selmod.setObj(null);
+                        sel.setCreateTime(cDate);
+                        sel.setUpdateTime(cDate);
+                        int i = bizTemporarySaveMapper.insert(sel);
+                        if(i==1){
+                            res = true;
+                        }
+                    } else {
+                        throw new RuntimeException("BizTemporarySave:Save object error!");
+                    }
+                } else {
+                    throw new RuntimeException("this BizTemporarySave.obj is null!");
+                }
+            } else {
+                sel.setId(Long.parseLong(filename));
+                sel.setType("1");
+                sel.setFilename(filename);
+                if (this.saveTmpObj(t, filename,cDateStr)) {
+                    sel.setCreateTime(cDate);
+                    sel.setUpdateTime(cDate);
+                    int i = bizTemporarySaveMapper.insert(sel);
+                    if(i==1){
+                        res = true;
+                    }
+                } else {
+                    throw new RuntimeException("BizTemporarySave:Save pojo error!");
+                }
+            }
+        }
 		return res;
 	}
 
 	/**
-	 *
-	 *
 	 * xiaoshuiquan
-	 * 
 	 * @date 2018.11.1
 	 * @return
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean saveSchemeTemporary(Object t, Map params) {
-		boolean res = false;
-		BizTemporarySave temp = null;
-		BizTemporarySave sel = new BizTemporarySave();
-		BizTemporarySave se2 = new BizTemporarySave();
 
-		if (null != params.get("bizcode"))
-			sel.setBizcode(StringUtil.objectToString(params.get("bizcode")));
-		se2.setBizcode(StringUtil.objectToString(params.get("bizcode")));
-		if (null != params.get("rolid"))
-			sel.setRolid(StringUtil.objectToString(params.get("rolid")));
-		if (null != params.get("taskid"))
-			sel.setTaskid(StringUtil.objectToString(params.get("taskid")));
-		if (null != params.get("userid"))
-			sel.setUserid(StringUtil.objectToString(params.get("userid")));
-		if (null != params.get("remark"))
-			sel.setRemark(StringUtil.objectToString(params.get("remark")));
-		if (null != params.get("projectName"))
-			sel.setProjectName(StringUtil.objectToString(params.get("projectName")));
-		if (null != params.get("deptCode"))
-			sel.setDeptCode(StringUtil.objectToString(params.get("deptCode")));
-		/**
-		 * 判断是否是第一次暂存
-		 */
-		BizTemporarySave selmod = this.selectOne(se2);
+        Wrapper<BizTemporarySave> wrapper = new EntityWrapper<BizTemporarySave>();
+        wrapper.eq("BIZ_CODE",StringUtil.objectToString(params.get("bizcode"))).ne("PROJECT_NAME","ReSubmit_debtMain").ne("PROJECT_NAME","Trn_debtMain");
+        params.put("wrapper",wrapper);
+		return this.saveTemporary(t, params);
 
-		if (null != selmod && ((t instanceof BizTemporarySave && "0".equals(selmod.getType()))
-				|| (!(t instanceof BizTemporarySave) && "1".equals(selmod.getType())))) {
-			// 数据库中原暂存数据上更新
-			if ("0".equals(selmod.getType())) {
-				temp = (BizTemporarySave) t;
-				if (null != temp.getObj()) {
-					selmod.setObj(temp.getObj());
-					if (this.saveTmpObj(selmod, selmod.getFilename())) {
-						if (null != params.get("bizcode"))
-							selmod.setBizcode(StringUtil.objectToString(params.get("bizcode")));
-						se2.setBizcode(StringUtil.objectToString(params.get("bizcode")));
-						if (null != params.get("rolid"))
-							selmod.setRolid(StringUtil.objectToString(params.get("rolid")));
-						if (null != params.get("taskid"))
-							selmod.setTaskid(StringUtil.objectToString(params.get("taskid")));
-						if (null != params.get("userid"))
-							selmod.setUserid(StringUtil.objectToString(params.get("userid")));
-						if (null != params.get("remark"))
-							selmod.setRemark(StringUtil.objectToString(params.get("remark")));
-						if (null != params.get("projectName"))
-							selmod.setProjectName(StringUtil.objectToString(params.get("projectName")));
-						if (null != params.get("deptCode"))
-							selmod.setDeptCode(StringUtil.objectToString(params.get("deptCode")));
-						selmod.setCreateTime(new Date());
-						this.update(selmod);
-						res = true;
-					} else {
-						throw new RuntimeException("BizTemporarySave:Save object error!");
-					}
-				} else {
-					throw new RuntimeException("this BizTemporarySave.obj is null!");
-				}
-			} else {
-				if (this.saveTmpObj(t, selmod.getFilename())) {
-					this.update(selmod);
-					res = true;
-				} else {
-					throw new RuntimeException("BizTemporarySave:Save object error!");
-				}
-			}
-		} else {
-			// 新增一条数据
-			String filename = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-			if (t instanceof BizTemporarySave) {
-				temp = (BizTemporarySave) t;
-				if (null != temp.getObj()) {
-					sel.setType("0");
-					sel.setFilename(filename);
-					sel.setObj(temp.getObj());
-					if (this.saveTmpObj(sel, filename)) {
-						// selmod.setObj(null);
-						this.update(sel);
-						res = true;
-					} else {
-						throw new RuntimeException("BizTemporarySave:Save object error!");
-					}
-				} else {
-					throw new RuntimeException("this BizTemporarySave.obj is null!");
-				}
-			} else {
-				sel.setType("1");
-				sel.setFilename(filename);
-				if (this.saveTmpObj(t, filename)) {
-					this.update(sel);
-					res = true;
-				} else {
-					throw new RuntimeException("BizTemporarySave:Save pojo error!");
-				}
-			}
-		}
-		return res;
 	}
 
-	private boolean saveTmpObj(Object obj, String filename) {
+	private boolean saveTmpObj(Object obj, String filename,String cDateStr) {
 
-		if (null == filename || null == obj)
-			return false;
-		String filePath = PropertiesUtil.getString("tempsav.dir") + filename + ".tss";
-		File file = new File(filePath);
-		File fileParent = file.getParentFile();
-		if (!fileParent.exists())
-			fileParent.mkdirs();
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
-			oos.writeObject(obj);
-			oos.close();
-			return true;
+        if (null == filename || null == obj){
+            return false;
+        }
+        Output output = null;
+        if(basePath.endsWith("/")){
+            basePath = basePath.substring(0,basePath.length()-1);
+        }
+        String filePath = basePath +"/"+cDateStr+"/"+ filename + ".tss";
+        File file = new File(filePath);
+        File fileParent = file.getParentFile();
+        if (!fileParent.exists()){
+            fileParent.mkdirs();
+        }
+        try {
+            Kryo kryo = new Kryo();
+            kryo.setReferences(false);
+            kryo.setRegistrationRequired(false);
+            kryo.register(obj.getClass());
+            output = new Output(new FileOutputStream(file));
+            kryo.writeClassAndObject(output,obj);
+            output.flush();
+            output.close();
+            return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} finally {
+            if (output != null) {
+                output.close();
+            }
+        }
 		return false;
 	}
 
+    @Override
+    public Object getTemporary(Map<String, Object> params){
+	    return this.getTemporary(params,BizTemporarySave.class);
+    }
+
 	@Override
-	public Object getTemporary(Map params) {
+    public <T extends Serializable> Object getTemporary(Map<String, Object> params,Class<T> clazz) {
+
 		BizTemporarySave sel = new BizTemporarySave();
-		if (null != params.get("bizcode"))
-			sel.setBizcode(StringUtil.objectToString(params.get("bizcode")));
-		if (null != params.get("rolid"))
-			sel.setRolid(StringUtil.objectToString(params.get("rolid")));
-		if (null != params.get("taskid"))
-			sel.setTaskid(StringUtil.objectToString(params.get("taskid")));
-		if (null != params.get("userid"))
-			sel.setUserid(StringUtil.objectToString(params.get("userid")));
+        if (null != params.get("id")){
+            sel.setId((Long)params.get("id"));
+        }
+		if (null != params.get("bizcode")){
+            sel.setBizcode(StringUtil.objectToString(params.get("bizcode")));
+        }
+		if (null != params.get("rolid")){
+            sel.setRolid(StringUtil.objectToString(params.get("rolid")));
+        }
+		if (null != params.get("taskid")){
+            sel.setTaskid(StringUtil.objectToString(params.get("taskid")));
+        }
+		if (null != params.get("userid")){
+            sel.setUserid(StringUtil.objectToString(params.get("userid")));
+        }
+		if (null != params.get("remark")){
+            sel.setRemark(StringUtil.objectToString(params.get("remark")));
+        }
+		if (null != params.get("projectName")){
+            sel.setProjectName(StringUtil.objectToString(params.get("projectName")));
+        }
 		BizTemporarySave temp = this.selectOne(sel);
 		if (null != temp) {
-			String filePath = PropertiesUtil.getString("tempsav.dir") + temp.getFilename() + ".tss";
-			try {
-				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath));
-				if ("0".equals(temp.getType())) {// 序列化后getobj
-					BizTemporarySave rd = (BizTemporarySave) ois.readObject();
-					ois.close();
-					return rd.getObj();
-				} else if ("1".equals(temp.getType())) {// 直接回传
-					Object o = ois.readObject();
-					ois.close();
-					return o;
-				}
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			} catch (ClassNotFoundException e2) {
-				e2.printStackTrace();
-			}
+            if(basePath.endsWith("/")){
+                basePath = basePath.substring(0,basePath.length()-1);
+            }
+			String filePath = basePath+ "/" + DateUtil.formatYYYYMMDD(temp.getCreateTime()) + "/" + temp.getFilename() + ".tss";
+			FileInputStream fileIS = null;
+            Input input;
+            try {
+                fileIS = new FileInputStream(filePath);
+                Kryo kryo = new Kryo();
+                kryo.setReferences(false);
+                kryo.setRegistrationRequired(false);
+                kryo.register(clazz);
+                input = new Input(fileIS);
+                Object ts = null;
+                while((ts=kryo.readClassAndObject(input)) != null){
+                    input.close();
+                    if ("0".equals(temp.getType())){
+                        return ((BizTemporarySave)ts).getObj();
+                    }else{
+                        return (T)ts;
+                    }
+                }
+			} catch (Exception e) {
+                logger.error(e.getMessage());
+				e.printStackTrace();
+			} finally {
+                try {
+                    if (fileIS != null) {
+                        fileIS.close();
+                    }
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
 		}
 		return null;
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void delTemporary(Map params) {
+	public boolean delTemporary(Map params) {
 		BizTemporarySave sel = new BizTemporarySave();
-		if (null != params.get("bizcode"))
-			sel.setBizcode(StringUtil.objectToString(params.get("bizcode")));
-		if (null != params.get("rolid"))
-			sel.setRolid(StringUtil.objectToString(params.get("rolid")));
-		if (null != params.get("taskid"))
-			sel.setTaskid(StringUtil.objectToString(params.get("taskid")));
-		if (null != params.get("userid"))
-			sel.setUserid(StringUtil.objectToString(params.get("userid")));
+        if (null != params.get("id")){
+            sel.setId((Long)params.get("id"));
+        }
+        if (null != params.get("bizcode")){
+            sel.setBizcode(StringUtil.objectToString(params.get("bizcode")));
+        }
+        if (null != params.get("rolid")){
+            sel.setRolid(StringUtil.objectToString(params.get("rolid")));
+        }
+        if (null != params.get("taskid")){
+            sel.setTaskid(StringUtil.objectToString(params.get("taskid")));
+        }
+        if (null != params.get("userid")){
+            sel.setUserid(StringUtil.objectToString(params.get("userid")));
+        }
+        if (null != params.get("remark")){
+            sel.setRemark(StringUtil.objectToString(params.get("remark")));
+        }
+        if (null != params.get("projectName")){
+            sel.setProjectName(StringUtil.objectToString(params.get("projectName")));
+        }
 		BizTemporarySave temp = this.selectOne(sel);
 		if (null != temp) {
 			this.delete(temp.getId());
-			String filePath = PropertiesUtil.getString("tempsav.dir") + temp.getFilename() + ".tss";
+            if(basePath.endsWith("/")){
+                basePath = basePath.substring(0,basePath.length()-1);
+            }
+			String filePath = basePath + "/" + DateUtil.formatYYYYMMDD(temp.getCreateTime()) + "/" + temp.getFilename() + ".tss";
 			File file = new File(filePath);
 			if (file.exists()) {
-				if (file.delete())
-					logger.debug("已删除暂存文件：" + temp.getFilename());
-				else
-					throw new RuntimeException("删除暂存文件失败:" + filePath);
+				if (file.delete()){
+                    logger.debug("已删除暂存文件：" + temp.getFilename());
+                    return true;
+                }
+				else{
+                    throw new RuntimeException("删除暂存文件失败:" + filePath);
+                }
 			} else {
 				throw new RuntimeException("暂存文件文件不存在:" + filePath);
 			}
 		}
+        return false;
 	}
 
 	@Override
 	public List<BizTemporarySave> getTemporaryList(Map<String, Object> params) {
-		EntityWrapper<BizTemporarySave> sel = new EntityWrapper();
-		mapper.selectList(sel);
 		return queryList(params);
 	}
 
@@ -318,48 +340,18 @@ public class BizTemporarySaveProviderImpl extends BaseProviderImpl<BizTemporaryS
 		return tmpList;
 	}
 
-	@Override
+    @Override
 	public Object getById(Long id) {
-		BizTemporarySave temp = queryById(id);
-		String filePath = PropertiesUtil.getString("tempsav.dir") + temp.getFilename() + ".tss";
-		try {
-			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath));
-			if ("0".equals(temp.getType())) {// 序列化后getobj
-				BizTemporarySave rd = (BizTemporarySave) ois.readObject();
-				ois.close();
-				return rd.getObj();
-			} else if ("1".equals(temp.getType())) {// 直接回传
-				Object o = ois.readObject();
-				ois.close();
-				return o;
-			}
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		} catch (ClassNotFoundException e2) {
-			e2.printStackTrace();
-		}
-		return null;
+        Map params = new HashMap();
+        params.put("id",id);
+	    return this.getTemporary(params);
 	}
 
 	@Override
 	public boolean delById(Long id) {
-		BizTemporarySave temp = this.queryById(id);
-		if (null != temp) {
-			this.delete(temp.getId());
-			String filePath = PropertiesUtil.getString("tempsav.dir") + temp.getFilename() + ".tss";
-			File file = new File(filePath);
-			if (file.exists()) {
-				if (file.delete()) {
-					logger.info("已删除暂存文件：" + temp.getFilename());
-					return true;
-				} else {
-					logger.error("删除暂存文件失败:" + filePath);
-				}
-			} else {
-				logger.warn("暂存文件文件不存在:" + filePath);
-			}
-		}
-		return false;
+        Map params = new HashMap();
+        params.put("id",id);
+        return this.delTemporary(params);
 	}
 
 	@Override
@@ -375,13 +367,17 @@ public class BizTemporarySaveProviderImpl extends BaseProviderImpl<BizTemporaryS
 			if (null != temp) {
 				this.delete(temp.getId());
 				logger.info("已删除暂存数据：" + temp.getBizcode());
-				String filePath = PropertiesUtil.getString("tempsav.dir") + temp.getFilename() + ".tss";
+                if(basePath.endsWith("/")){
+                    basePath = basePath.substring(0,basePath.length()-1);
+                }
+				String filePath = basePath + "/" + DateUtil.formatYYYYMMDD(temp.getCreateTime())  + "/" + temp.getFilename() + ".tss";
 				File file = new File(filePath);
 				if (file.exists()) {
 					if (file.delete()) {
 						logger.info("已删除暂存文件：" + temp.getFilename());
 						count++;
 					} else {
+						logger.error("删除暂存文件失败:" + filePath);
 						throw new RuntimeException("删除暂存文件失败:" + filePath);
 					}
 				} else {

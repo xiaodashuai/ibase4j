@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -179,5 +180,28 @@ public class BizLC extends BaseModel implements Serializable {
 				.add("tradrWay", tradrWay)
 				.add("bneContNo", bneContNo)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizLC)) return false;
+		BizLC bizLC = (BizLC) o;
+		return Objects.equal(getDebtCode(), bizLC.getDebtCode()) &&
+				Objects.equal(getBusinessType(), bizLC.getBusinessType()) &&
+				Objects.equal(getTheApplicant(), bizLC.getTheApplicant()) &&
+				Objects.equal(getOpenWay(), bizLC.getOpenWay()) &&
+				Objects.equal(getSpillageRange(), bizLC.getSpillageRange()) &&
+				Objects.equal(getPaymentTerm(), bizLC.getPaymentTerm()) &&
+				Objects.equal(getTheForwaro(), bizLC.getTheForwaro()) &&
+				Objects.equal(getBeneficiaryName(), bizLC.getBeneficiaryName()) &&
+				Objects.equal(getBeneficiaryCountry(), bizLC.getBeneficiaryCountry()) &&
+				Objects.equal(getTradrWay(), bizLC.getTradrWay()) &&
+				Objects.equal(getBneContNo(), bizLC.getBneContNo());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessType(), getTheApplicant(), getOpenWay(), getSpillageRange(), getPaymentTerm(), getTheForwaro(), getBeneficiaryName(), getBeneficiaryCountry(), getTradrWay(), getBneContNo());
 	}
 }

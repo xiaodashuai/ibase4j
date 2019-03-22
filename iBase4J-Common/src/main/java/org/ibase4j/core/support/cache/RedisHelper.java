@@ -228,4 +228,42 @@ public final class RedisHelper implements CacheManager {
     }
 
 
+<<<<<<< HEAD
+=======
+
+    @Override
+    public final Long zadd(final String key, Set<ZSetOperations.TypedTuple<Serializable>> tuples) {
+        return redisTemplate.opsForZSet().add(key,tuples);
+    }
+
+    @Override
+    public final Boolean zadd(final String key, final Serializable value, double score) {
+        return redisTemplate.opsForZSet().add(key,value,score);
+    }
+
+    @Override
+    public final Set<Serializable> zget(final String key,Long Smin,Long Smax,int offset,int count) {
+        return redisTemplate.opsForZSet().rangeByScore(key,Smin,Smax,offset,count);
+    }
+    @Override
+    public final Set<Serializable> zgetDesc(final String key,Long Smin,Long Smax,int offset,int count) {
+        return redisTemplate.opsForZSet().reverseRangeByScore(key,Smin,Smax,offset,count);
+    }
+
+    @Override
+    public final List zgetAll(final String key) {
+        Cursor<ZSetOperations.TypedTuple<Serializable>> cursor = redisTemplate.opsForZSet().scan(key, ScanOptions.NONE);
+        Long size = redisTemplate.opsForZSet().size("key");
+        List entityList = null;
+        if(null != size && size > 0){
+            entityList = new ArrayList(size.intValue());
+            while (cursor.hasNext()){
+                ZSetOperations.TypedTuple<Serializable> item = cursor.next();
+                entityList.add(item.getValue());
+            }
+        }
+        return entityList;
+    }
+
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 }

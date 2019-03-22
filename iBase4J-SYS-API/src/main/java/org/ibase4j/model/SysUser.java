@@ -53,6 +53,33 @@ public class SysUser extends BaseModel {
 	@TableField("phone_")
 	private String phone;
 	/**
+	 * 手机号
+	 */
+	@TableField("telephone_")
+	private String telephone;
+	/**
+	 * 用户级别
+	 */
+	@TableField("user_level")
+	private String userLevel;
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public String getUserLevel() {
+		return userLevel;
+	}
+
+	public void setUserLevel(String userLevel) {
+		this.userLevel = userLevel;
+	}
+
+	/**
 	 * 邮箱
 	 */
 	@TableField("email_")

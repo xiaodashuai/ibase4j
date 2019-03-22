@@ -146,5 +146,16 @@ public class BizCntProviderImpl extends BaseProviderImpl<BizCnt> implements BizC
         return m == 0 ? name + number + "" : name + String.format("%0" + m + "d", number);
     }
 
+    @Override
+    public int getNumber(String name){
+
+        if(null != name){
+            BizCnt cnt = bizCntMapper.findByName(name);
+            if(null!=cnt){
+                return cnt.getVal();
+            }
+        }
+        return 0;
+    }
 }
 

@@ -2,6 +2,8 @@ package org.ibase4j.model;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 /**
  * <p>
@@ -39,41 +41,76 @@ public class BizCountryRiskRating extends BaseModel {
 	 */
 	@TableField("RISK_LEVEL")
 	private Long riskLevel;
-	public String getCode() {
-		return code;
+
+	public BizCountryRiskRating() {
 	}
+
+	public String getCode() {
+		return code == "" ? null : code;
+	}
+
 	public void setCode(String code) {
 		this.code = code;
 	}
+
 	public String getNameCN() {
-		return nameCN;
+		return nameCN == "" ? null : nameCN;
 	}
+
 	public void setNameCN(String nameCN) {
 		this.nameCN = nameCN;
 	}
+
 	public String getNameEN() {
-		return nameEN;
+		return nameEN == "" ? null : nameEN;
 	}
+
 	public void setNameEN(String nameEN) {
 		this.nameEN = nameEN;
 	}
+
 	public String getShortEN() {
-		return shortEN;
+		return shortEN == "" ? null : shortEN;
 	}
+
 	public void setShortEN(String shortEN) {
 		this.shortEN = shortEN;
 	}
+
 	public Long getRiskLevel() {
 		return riskLevel;
 	}
+
 	public void setRiskLevel(Long riskLevel) {
 		this.riskLevel = riskLevel;
 	}
+
 	@Override
 	public String toString() {
-		return "CountryRiskRating [code=" + code + ", nameCN=" + nameCN + ", nameEN=" + nameEN + ", shortEN=" + shortEN
-				+ ", riskLevel=" + riskLevel + ", toString()=" + super.toString() + "]";
+		return MoreObjects.toStringHelper(this)
+				.add("code", code)
+				.add("nameCN", nameCN)
+				.add("nameEN", nameEN)
+				.add("shortEN", shortEN)
+				.add("riskLevel", riskLevel)
+				.toString();
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizCountryRiskRating)) return false;
+		BizCountryRiskRating that = (BizCountryRiskRating) o;
+		return Objects.equal(getCode(), that.getCode()) &&
+				Objects.equal(getNameCN(), that.getNameCN()) &&
+				Objects.equal(getNameEN(), that.getNameEN()) &&
+				Objects.equal(getShortEN(), that.getShortEN()) &&
+				Objects.equal(getRiskLevel(), that.getRiskLevel());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getCode(), getNameCN(), getNameEN(), getShortEN(), getRiskLevel());
+	}
 	
 }

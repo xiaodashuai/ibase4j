@@ -3,6 +3,9 @@
  */
 package org.ibase4j.vo;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
 /**
@@ -87,63 +90,36 @@ public class ProductVo implements Serializable {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((businessType == null) ? 0 : businessType.hashCode());
-		result = prime * result + ((debtCode == null) ? 0 : debtCode.hashCode());
-		result = prime * result + ((objType == null) ? 0 : objType.hashCode());
-		result = prime * result + ((properInfo == null) ? 0 : properInfo.hashCode());
-		return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ProductVo)) return false;
+		ProductVo productVo = (ProductVo) o;
+		return Objects.equal(getObjType(), productVo.getObjType()) &&
+				Objects.equal(getBusinessType(), productVo.getBusinessType()) &&
+				Objects.equal(getBusinessName(), productVo.getBusinessName()) &&
+				Objects.equal(getDebtCode(), productVo.getDebtCode()) &&
+				Objects.equal(getProperInfo(), productVo.getProperInfo()) &&
+				Objects.equal(getNumLimit(), productVo.getNumLimit()) &&
+				Objects.equal(getTotalNum(), productVo.getTotalNum()) &&
+				Objects.equal(getUsedNum(), productVo.getUsedNum());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj){
-			return true;
-		}
-		if (obj == null){
-			return false;
-		}
-		if (getClass() != obj.getClass()){
-			return false;
-		}
-		ProductVo other = (ProductVo) obj;
-		if (businessType == null) {
-			if (other.businessType != null){
-				return false;
-			}
-		} else if (!businessType.equals(other.businessType)){
-			return false;
-		}
-		if (debtCode == null) {
-			if (other.debtCode != null){
-				return false;
-			}
-		} else if (!debtCode.equals(other.debtCode)){
-			return false;
-		}
-		if (objType == null) {
-			if (other.objType != null){
-				return false;
-			}
-		} else if (!objType.equals(other.objType)){
-			return false;
-		}
-		if (properInfo == null) {
-			if (other.properInfo != null){
-				return false;
-			}
-		} else if (!properInfo.equals(other.properInfo)){
-			return false;
-		}
-		return true;
+	public int hashCode() {
+		return Objects.hashCode(getObjType(), getBusinessType(), getBusinessName(), getDebtCode(), getProperInfo(), getNumLimit(), getTotalNum(), getUsedNum());
 	}
 
 	@Override
 	public String toString() {
-		return "ProductVo [objType=" + objType + ", businessType=" + businessType + ", debtCode=" + debtCode
-				+ ", properInfo=" + properInfo + "]";
+		return MoreObjects.toStringHelper(this)
+				.add("objType", objType)
+				.add("businessType", businessType)
+				.add("businessName", businessName)
+				.add("debtCode", debtCode)
+				.add("properInfo", properInfo)
+				.add("numLimit", numLimit)
+				.add("totalNum", totalNum)
+				.add("usedNum", usedNum)
+				.toString();
 	}
-
 }

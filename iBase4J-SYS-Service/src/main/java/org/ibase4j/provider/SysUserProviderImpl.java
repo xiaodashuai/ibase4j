@@ -136,7 +136,7 @@ public class SysUserProviderImpl extends BaseProviderImpl<SysUser> implements IS
 			SysUser oneUser = sysUserMapper.selectById(sysUser.getId());
 			sysUser.setPassword(oneUser.getPassword());
 		}
-		sysUser.setEnable(1);
+//		sysUser.setEnable(1);
 		// 保存或修改帐户
 		SysUser model = update(sysUser);
 		log.info("修改成功！");

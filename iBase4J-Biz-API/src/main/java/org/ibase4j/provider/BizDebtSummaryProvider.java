@@ -69,7 +69,7 @@ public interface BizDebtSummaryProvider extends BaseProvider<BizDebtSummary> {
 	 * 修改方案状态
 	 * @param params
 	 */
-	void getSchemeState(Map<String, Object> params);
+	boolean getSchemeState(Map<String, Object> params);
 
 	//驳回后的重新提交
     void ReSaveDebt(Map<String, Object> mapObj);
@@ -89,4 +89,18 @@ public interface BizDebtSummaryProvider extends BaseProvider<BizDebtSummary> {
     	* @Date: 2018/12/21
     	*/
     void refreshDebtExpired();
+
+	/**
+	 * 驳回后点删除
+	 * @param bizDebt
+	 */
+	void rejectAndDel(BizDebtSummary bizDebt);
+
+	/**
+	 * 提交时，保存数据回显的暂存文件
+	 * @param reviewObj
+	 * @param tmpSaveParams
+	 * @return
+	 */
+//	boolean saveReSubmitFile(Map reviewObj,Map<String, Object> tmpSaveParams);
 }

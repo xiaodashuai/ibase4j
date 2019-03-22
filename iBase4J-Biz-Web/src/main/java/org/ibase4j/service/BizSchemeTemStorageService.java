@@ -1,6 +1,8 @@
 package org.ibase4j.service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -10,10 +12,7 @@ import org.ibase4j.core.util.StringUtil;
 import org.ibase4j.model.BizTemporarySave;
 import org.ibase4j.model.SysDept;
 import org.ibase4j.model.SysUser;
-import org.ibase4j.provider.BizDebtSummaryProvider;
-import org.ibase4j.provider.BizTemporarySaveProvider;
-import org.ibase4j.provider.ISysDeptProvider;
-import org.ibase4j.provider.ISysUserProvider;
+import org.ibase4j.provider.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +41,8 @@ public class BizSchemeTemStorageService extends BaseService<BizTemporarySaveProv
 	private ISysDeptProvider sysDeptProvider;
 	@Reference
 	private BizDebtSummaryProvider bizDebtSummaryProvider;
+    @Reference
+    private CanvasProvider canvasProvider;
 	@Autowired
 	private BizSchemeTemStorageService bizSchemeTemStorageService;
 	/**
@@ -90,6 +91,11 @@ public class BizSchemeTemStorageService extends BaseService<BizTemporarySaveProv
 		// 执行保存
 		boolean success = provider.saveSchemeTemporary(temp, params);
 		log.info(success ? "暂存成功" : "暂存失败");
+		if(success){
+            params.put("bizcode", debtCode);
+            params.put("type", "A");
+            canvasProvider.delCanvas(params);
+		}
 
 		return success;
 	}
@@ -100,7 +106,7 @@ public class BizSchemeTemStorageService extends BaseService<BizTemporarySaveProv
 	/**
 	 * 功能：查询用户所有暂存内容
 	 * 
-	 * @param grantModel
+	 * @param params
 	 * @return
 	 */
 	public Page<?> getTempResult(Map<String, Object> params) {
@@ -145,15 +151,17 @@ public class BizSchemeTemStorageService extends BaseService<BizTemporarySaveProv
 	/**
 	 * 功能：删除暂存对象，同时删除暂存的文件
 	 * 
-	 * @param id
+	 * @param params
 	 * @return
 	 */
 	public boolean delTempDataAndFile(Map<String, Object> params) {
 		log.info("开始删除暂存...");
 		String debtCode=params.get("debtCode").toString();
-		BizTemporarySave temp = new BizTemporarySave();
-		temp.setBizcode(debtCode);
-		BizTemporarySave temp1 =provider.selectOne(temp);
+		/*BizTemporarySave temp = new BizTemporarySave();
+		temp.setBizcode(debtCode);*/
+        Wrapper<BizTemporarySave> wrapper = new EntityWrapper<BizTemporarySave>();
+        wrapper.eq("BIZ_CODE",debtCode).ne("PROJECT_NAME","ReSubmit_debtMain").ne("PROJECT_NAME","Trn_debtMain");
+		BizTemporarySave temp1 =provider.selectOne(wrapper);
 		if(temp1!=null){
 			provider.delById(temp1.getId());
 			log.info("删除暂存完成...");

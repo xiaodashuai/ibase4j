@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -670,5 +671,61 @@ public class BizInterestRate extends BaseModel implements Serializable {
 				.add("emergingIndustryClassify", emergingIndustryClassify)
 				.add("policyAttributeClassify", policyAttributeClassify)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizInterestRate)) return false;
+		BizInterestRate that = (BizInterestRate) o;
+		return Objects.equal(getDebtNum(), that.getDebtNum()) &&
+				Objects.equal(getGrantCode(), that.getGrantCode()) &&
+				Objects.equal(getTraneFinanceBusiness(), that.getTraneFinanceBusiness()) &&
+				Objects.equal(getPolicyLendingStatus(), that.getPolicyLendingStatus()) &&
+				Objects.equal(getPolicyDescription(), that.getPolicyDescription()) &&
+				Objects.equal(getLoanNumberAvailable(), that.getLoanNumberAvailable()) &&
+				Objects.equal(getCreditLoanNum(), that.getCreditLoanNum()) &&
+				Objects.equal(getNaturnLoan(), that.getNaturnLoan()) &&
+				Objects.equal(getCompare(), that.getCompare()) &&
+				Objects.equal(getTwoHeadTaller(), that.getTwoHeadTaller()) &&
+				Objects.equal(getContrySpecificLoans(), that.getContrySpecificLoans()) &&
+				Objects.equal(getMediumEnterpriseLoans(), that.getMediumEnterpriseLoans()) &&
+				Objects.equal(getShipFinance(), that.getShipFinance()) &&
+				Objects.equal(getTyoesIndustrial(), that.getTyoesIndustrial()) &&
+				Objects.equal(getIndustrialTransformation(), that.getIndustrialTransformation()) &&
+				Objects.equal(getStrategicEmerg(), that.getStrategicEmerg()) &&
+				Objects.equal(getCurturalProduct(), that.getCurturalProduct()) &&
+				Objects.equal(getAlleviationLoan(), that.getAlleviationLoan()) &&
+				Objects.equal(getTradeInterestRate(), that.getTradeInterestRate()) &&
+				Objects.equal(getPolicyAttributeState(), that.getPolicyAttributeState()) &&
+				Objects.equal(getCreditLoanNo(), that.getCreditLoanNo()) &&
+				Objects.equal(getProjectName(), that.getProjectName()) &&
+				Objects.equal(getLoanServicePeopleNum(), that.getLoanServicePeopleNum()) &&
+				Objects.equal(getLoanFunResource(), that.getLoanFunResource()) &&
+				Objects.equal(getPovertyProperty(), that.getPovertyProperty()) &&
+				Objects.equal(getPovertyAddress(), that.getPovertyAddress()) &&
+				Objects.equal(getPovertySort(), that.getPovertySort()) &&
+				Objects.equal(getBusinessContractCode(), that.getBusinessContractCode()) &&
+				Objects.equal(getBusinessContractDate(), that.getBusinessContractDate()) &&
+				Objects.equal(getBusinessContractAmount(), that.getBusinessContractAmount()) &&
+				Objects.equal(getBusinessType(), that.getBusinessType()) &&
+				Objects.equal(getInnovativeBusinessType(), that.getInnovativeBusinessType()) &&
+				Objects.equal(getInOverseasTo(), that.getInOverseasTo()) &&
+				Objects.equal(getIs421(), that.getIs421()) &&
+				Objects.equal(getLoanDomain(), that.getLoanDomain()) &&
+				Objects.equal(getImportExportGoodsService(), that.getImportExportGoodsService()) &&
+				Objects.equal(getInvestmentLoanCkassifcation(), that.getInvestmentLoanCkassifcation()) &&
+				Objects.equal(getIsSyndicated(), that.getIsSyndicated()) &&
+				Objects.equal(getIsSyndicatedAgency(), that.getIsSyndicatedAgency()) &&
+				Objects.equal(getSyndicatedStatus(), that.getSyndicatedStatus()) &&
+				Objects.equal(getIndustryInvestment(), that.getIndustryInvestment()) &&
+				Objects.equal(getBackgroundNationality(), that.getBackgroundNationality()) &&
+				Objects.equal(getEmergingIndustryClassify(), that.getEmergingIndustryClassify()) &&
+				Objects.equal(getPolicyAttributeClassify(), that.getPolicyAttributeClassify());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtNum(), getGrantCode(), getTraneFinanceBusiness(), getPolicyLendingStatus(), getPolicyDescription(), getLoanNumberAvailable(), getCreditLoanNum(), getNaturnLoan(), getCompare(), getTwoHeadTaller(), getContrySpecificLoans(), getMediumEnterpriseLoans(), getShipFinance(), getTyoesIndustrial(), getIndustrialTransformation(), getStrategicEmerg(), getCurturalProduct(), getAlleviationLoan(), getTradeInterestRate(), getPolicyAttributeState(), getCreditLoanNo(), getProjectName(), getLoanServicePeopleNum(), getLoanFunResource(), getPovertyProperty(), getPovertyAddress(), getPovertySort(), getBusinessContractCode(), getBusinessContractDate(), getBusinessContractAmount(), getBusinessType(), getInnovativeBusinessType(), getInOverseasTo(), getIs421(), getLoanDomain(), getImportExportGoodsService(), getInvestmentLoanCkassifcation(), getIsSyndicated(), getIsSyndicatedAgency(), getSyndicatedStatus(), getIndustryInvestment(), getBackgroundNationality(), getEmergingIndustryClassify(), getPolicyAttributeClassify());
 	}
 }

@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -698,5 +699,65 @@ public class BizInterbank extends BaseModel implements Serializable {
 				.add("collectModel", collectModel)
 				.add("collectModelOther", collectModelOther)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizInterbank)) return false;
+		BizInterbank that = (BizInterbank) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessTypes(), that.getBusinessTypes()) &&
+				Objects.equal(getOpenWay(), that.getOpenWay()) &&
+				Objects.equal(getOpeningDate(), that.getOpeningDate()) &&
+				Objects.equal(getOutWay(), that.getOutWay()) &&
+				Objects.equal(getOverloadingRange(), that.getOverloadingRange()) &&
+				Objects.equal(getExpirationOfPayTxt(), that.getExpirationOfPayTxt()) &&
+				Objects.equal(getExpirationOfPayNo(), that.getExpirationOfPayNo()) &&
+				Objects.equal(getProposer(), that.getProposer()) &&
+				Objects.equal(getBeneficiaryCountry(), that.getBeneficiaryCountry()) &&
+				Objects.equal(getBeneficiaryName(), that.getBeneficiaryName()) &&
+				Objects.equal(getBnsCoutractNo(), that.getBnsCoutractNo()) &&
+				Objects.equal(getEntrustmentBank(), that.getEntrustmentBank()) &&
+				Objects.equal(getEntrustmentModel(), that.getEntrustmentModel()) &&
+				Objects.equal(getVouchee(), that.getVouchee()) &&
+				Objects.equal(getCountryGuarantor(), that.getCountryGuarantor()) &&
+				Objects.equal(getPremiumCollection(), that.getPremiumCollection()) &&
+				Objects.equal(getGuarEffectiveDate(), that.getGuarEffectiveDate()) &&
+				Objects.equal(getEntryCondittion(), that.getEntryCondittion()) &&
+				Objects.equal(getExpiryCountryGuaranter(), that.getExpiryCountryGuaranter()) &&
+				Objects.equal(getFailureEvents(), that.getFailureEvents()) &&
+				Objects.equal(getEffectiveDateBusiness(), that.getEffectiveDateBusiness()) &&
+				Objects.equal(getOperatCondittion(), that.getOperatCondittion()) &&
+				Objects.equal(getBusinessExpirationDate(), that.getBusinessExpirationDate()) &&
+				Objects.equal(getBusinessFailureEvent(), that.getBusinessFailureEvent()) &&
+				Objects.equal(getLetterGuarantee(), that.getLetterGuarantee()) &&
+				Objects.equal(getLaw(), that.getLaw()) &&
+				Objects.equal(getFinancingAmount(), that.getFinancingAmount()) &&
+				Objects.equal(getFinancingCost(), that.getFinancingCost()) &&
+				Objects.equal(getUseOfFunds(), that.getUseOfFunds()) &&
+				Objects.equal(getPaymentSource(), that.getPaymentSource()) &&
+				Objects.equal(getEffectiveDate(), that.getEffectiveDate()) &&
+				Objects.equal(getRiskBearingRatio(), that.getRiskBearingRatio()) &&
+				Objects.equal(getValueDate(), that.getValueDate()) &&
+				Objects.equal(getDueDate(), that.getDueDate()) &&
+				Objects.equal(getPeriodOfGrace(), that.getPeriodOfGrace()) &&
+				Objects.equal(getNameUnderBuyer(), that.getNameUnderBuyer()) &&
+				Objects.equal(getNameUnderSeller(), that.getNameUnderSeller()) &&
+				Objects.equal(getBuyerCountry(), that.getBuyerCountry()) &&
+				Objects.equal(getSellerCountry(), that.getSellerCountry()) &&
+				Objects.equal(getRelatedCredentials(), that.getRelatedCredentials()) &&
+				Objects.equal(getNameReceiveBank(), that.getNameReceiveBank()) &&
+				Objects.equal(getNameOfPayee(), that.getNameOfPayee()) &&
+				Objects.equal(getAccountBeneficiary(), that.getAccountBeneficiary()) &&
+				Objects.equal(getObligorBank(), that.getObligorBank()) &&
+				Objects.equal(getCreditNo(), that.getCreditNo()) &&
+				Objects.equal(getCollectModel(), that.getCollectModel()) &&
+				Objects.equal(getCollectModelOther(), that.getCollectModelOther());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessTypes(), getOpenWay(), getOpeningDate(), getOutWay(), getOverloadingRange(), getExpirationOfPayTxt(), getExpirationOfPayNo(), getProposer(), getBeneficiaryCountry(), getBeneficiaryName(), getBnsCoutractNo(), getEntrustmentBank(), getEntrustmentModel(), getVouchee(), getCountryGuarantor(), getPremiumCollection(), getGuarEffectiveDate(), getEntryCondittion(), getExpiryCountryGuaranter(), getFailureEvents(), getEffectiveDateBusiness(), getOperatCondittion(), getBusinessExpirationDate(), getBusinessFailureEvent(), getLetterGuarantee(), getLaw(), getFinancingAmount(), getFinancingCost(), getUseOfFunds(), getPaymentSource(), getEffectiveDate(), getRiskBearingRatio(), getValueDate(), getDueDate(), getPeriodOfGrace(), getNameUnderBuyer(), getNameUnderSeller(), getBuyerCountry(), getSellerCountry(), getRelatedCredentials(), getNameReceiveBank(), getNameOfPayee(), getAccountBeneficiary(), getObligorBank(), getCreditNo(), getCollectModel(), getCollectModelOther());
 	}
 }

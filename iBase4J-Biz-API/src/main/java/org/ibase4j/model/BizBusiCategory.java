@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -67,5 +68,20 @@ public class BizBusiCategory extends BaseModel implements Serializable {
 				.add("sortNo", sortNo)
 				.add("parentId", parentId)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizBusiCategory)) return false;
+		BizBusiCategory that = (BizBusiCategory) o;
+		return Objects.equal(getCategoryNmae(), that.getCategoryNmae()) &&
+				Objects.equal(getSortNo(), that.getSortNo()) &&
+				Objects.equal(getParentId(), that.getParentId());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getCategoryNmae(), getSortNo(), getParentId());
 	}
 }

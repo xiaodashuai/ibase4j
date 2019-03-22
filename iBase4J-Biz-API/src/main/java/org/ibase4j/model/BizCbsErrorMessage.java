@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -53,5 +54,19 @@ public class BizCbsErrorMessage extends BaseModel implements Serializable {
 				.add("errorCode", errorCode)
 				.add("errorMessage", errorMessage)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizCbsErrorMessage)) return false;
+		BizCbsErrorMessage that = (BizCbsErrorMessage) o;
+		return Objects.equal(getErrorCode(), that.getErrorCode()) &&
+				Objects.equal(getErrorMessage(), that.getErrorMessage());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getErrorCode(), getErrorMessage());
 	}
 }

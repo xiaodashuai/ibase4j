@@ -3,9 +3,70 @@
 <mapper namespace="org.ibase4j.mapper.BizCanvasMapper">
 
     <select id="selectCanvasList" resultMap="BizCanvasMap">
-     select t.* from biz_canvas t,
-       (select num_, biz_code, max(update_time) as updatetime from biz_canvas group by num_, biz_code) t2
+     select t.id_,
+        t.biz_code,
+        t.type_,
+        t.extra_,
+        t.num_,
+        t.filename_,
+        t.create_by,
+        t.create_time,
+        t.update_by,
+        t.update_time,
+        t.remark_,
+        t.enable_,
+        t.vernum_ from biz_canvas t,
+       (select num_, biz_code, max(vernum_) as vernum from biz_canvas group by num_, biz_code) t2
       where t.num_ = t2.num_
+        and t.biz_code = t2.biz_code
+        and t.vernum_ = t2.vernum
+        <if test="cm.type != null and cm.type != ''">
+            and t.type_=#{cm.type}
+        </if>
+        <if test="cm.bizcode != null and cm.bizcode != ''">
+            and t.biz_code=#{cm.bizcode}
+        </if>
+        <if test="cm.extra != null and cm.extra != ''">
+            and t.extra_=#{cm.extra}
+        </if>
+        <if test="cm.num != null and cm.num != ''">
+            and t.num_=#{cm.num}
+        </if>
+        order by t.num_
+    </select>
+
+    <resultMap id="BizCanvasMap" type="org.ibase4j.model.BizCanvas" autoMapping="true">
+        <id column="ID_" property="id" />
+        <result column="BIZ_CODE" property="bizcode" javaType="String" jdbcType="VARCHAR" />
+        <result column="TYPE_" property="type" javaType="String" jdbcType="VARCHAR" />
+        <result column="EXTRA_" property="extra" javaType="String" jdbcType="VARCHAR" />
+        <result column="NUM_" property="num" javaType="Integer" jdbcType="INTEGER" />
+        <result column="FILENAME_" property="filename" javaType="String" jdbcType="VARCHAR" />
+        <result column="ENABLE_" property="enable" javaType="Integer" jdbcType="INTEGER" />
+        <result column="REMARK_" property="remark" javaType="String" jdbcType="VARCHAR" />
+        <result column="CREATE_BY" property="createBy" javaType="Long" jdbcType="NUMERIC" />
+        <result column="CREATE_TIME" property="createTime" javaType="java.sql.Date" jdbcType="DATE" />
+        <result column="UPDATE_BY" property="updateBy" javaType="Long" jdbcType="NUMERIC" />
+        <result column="UPDATE_TIME" property="updateTime" javaType="java.sql.Date" jdbcType="DATE" />
+        <result column="vernum_" property="verNum" javaType="Integer" jdbcType="INTEGER" />
+    </resultMap>
+
+    <select id="selectCanvasListOld" resultMap="BizCanvasMap">
+        select t.id_,
+        t.biz_code,
+        t.type_,
+        t.extra_,
+        t.num_,
+        t.filename_,
+        t.create_by,
+        t.create_time,
+        t.update_by,
+        t.update_time,
+        t.remark_,
+        t.enable_,
+        '' as vernum_ from biz_canvas t,
+        (select num_, biz_code, max(update_time) as updatetime from biz_canvas group by num_, biz_code) t2
+        where t.num_ = t2.num_
         and t.biz_code = t2.biz_code
         and t.update_time = t2.updatetime
         <if test="cm.type != null and cm.type != ''">
@@ -22,16 +83,5 @@
         </if>
         order by t.num_
     </select>
-    <resultMap id="BizCanvasMap" type="org.ibase4j.model.BizCanvas"
-               autoMapping="true">
-        <id column="ID_" property="id" />
-        <result column="BIZ_ID" property="bizid" javaType="Long" jdbcType="VARCHAR" />
-        <result column="BIZ_CODE" property="bizcode" javaType="String" jdbcType="VARCHAR" />
-        <result column="TYPE_" property="type" javaType="String" jdbcType="VARCHAR" />
-        <result column="EXTRA_" property="extra" javaType="String" jdbcType="VARCHAR" />
-        <result column="NUM_" property="num" javaType="Integer" jdbcType="INTEGER" />
-        <result column="FILENAME_" property="filename" javaType="String" jdbcType="VARCHAR" />
-
-    </resultMap>
 
 </mapper>

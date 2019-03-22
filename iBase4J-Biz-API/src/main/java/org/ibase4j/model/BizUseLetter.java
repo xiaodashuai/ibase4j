@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -152,5 +153,26 @@ public class BizUseLetter extends BaseModel implements Serializable {
 				.add("prRatio", prRatio)
 				.add("debtNum", debtNum)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizUseLetter)) return false;
+		BizUseLetter that = (BizUseLetter) o;
+		return Objects.equal(getBcCode(), that.getBcCode()) &&
+				Objects.equal(getPefDate(), that.getPefDate()) &&
+				Objects.equal(getPxDate(), that.getPxDate()) &&
+				Objects.equal(getPci(), that.getPci()) &&
+				Objects.equal(getPeDate(), that.getPeDate()) &&
+				Objects.equal(getSfDate(), that.getSfDate()) &&
+				Objects.equal(getPlType(), that.getPlType()) &&
+				Objects.equal(getPrRatio(), that.getPrRatio()) &&
+				Objects.equal(getDebtNum(), that.getDebtNum());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getBcCode(), getPefDate(), getPxDate(), getPci(), getPeDate(), getSfDate(), getPlType(), getPrRatio(), getDebtNum());
 	}
 }

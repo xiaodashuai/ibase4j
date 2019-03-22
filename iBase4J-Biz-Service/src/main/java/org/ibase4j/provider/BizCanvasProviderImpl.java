@@ -1,21 +1,27 @@
 package org.ibase4j.provider;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.toolkit.IdWorker;
+import net.jpountz.lz4.LZ4Compressor;
+import net.jpountz.lz4.LZ4Factory;
+import net.jpountz.lz4.LZ4FastDecompressor;
+import org.ibase4j.core.Constants;
 import org.ibase4j.core.base.BaseProviderImpl;
+import org.ibase4j.core.util.DateUtil;
 import org.ibase4j.core.util.PropertiesUtil;
+import org.ibase4j.core.util.StringUtil;
 import org.ibase4j.mapper.BizCanvasMapper;
+import org.ibase4j.mapper.BizDebtGrantMapper;
+import org.ibase4j.mapper.BizDebtSummaryMapper;
 import org.ibase4j.model.BizCanvas;
+import org.ibase4j.model.BizDebtGrant;
+import org.ibase4j.model.BizDebtSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
-import org.ibase4j.core.Constants;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
 import java.io.*;
-import java.security.SecureRandom;
 import java.util.*;
 
 /**
@@ -28,124 +34,182 @@ public class BizCanvasProviderImpl extends BaseProviderImpl<BizCanvas> implement
 
     @Autowired
     private BizCanvasMapper bizCanvasMapper;
+    @Autowired
+    private BizDebtSummaryMapper bizDebtSummaryMapper;
+    @Autowired
+    private BizDebtGrantMapper bizDebtGrantMapper;
+    @Autowired
+    private BizCntProvider bizCntProvider;
+
+    String basePath = PropertiesUtil.getString("canvas.dir");
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean savCanvas(String imgStr,BizCanvas canvas) {
 
         boolean res = false;
-        String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-        canvas.setFilename(uuid);
-        String filePath = PropertiesUtil.getString("canvas.dir")  + uuid + ".b64";
+        Long uuid = IdWorker.getId();
+        canvas.setId(uuid);
+        canvas.setFilename(uuid+"");
+        canvas.setVerNum(bizCntProvider.getNextNumber(canvas.getBizcode()+canvas.getType()+canvas.getNum()));
+        if(null == canvas.getCreateTime()){
+            Date creDat = new Date();
+            canvas.setCreateTime(creDat);
+            canvas.setUpdateTime(creDat);
+        }
+        String filePath = basePath + "/" + canvas.getBizcode() + "/" + canvas.getCreateBy() + "/" + DateUtil.formatYYYYMMDD(canvas.getCreateTime())+ "/" + uuid + ".b64";
         File file = new File(filePath);
         File fileParent = file.getParentFile();
         if(!fileParent.exists()){
             fileParent.mkdirs();
         }
+        OutputStream out = null;
         try {
-            OutputStream out = new FileOutputStream(file);
-            byte[] result = this.encrypt(imgStr.getBytes(),Constants.canvasSalt);
-            out.write(result);
+            LZ4Factory factory = LZ4Factory.fastestInstance();
+            byte[] strData = imgStr.getBytes("UTF-8");
+            canvas.setExtra(strData.length+"");
+            LZ4Compressor compressor = factory.fastCompressor();
+            out = new FileOutputStream(file);
+            out.write(compressor.compress(strData));
             out.flush();
             out.close();
-            this.update(canvas);
+            bizCanvasMapper.insert(canvas);
             res = true;
         } catch (IOException e1) {
             e1.printStackTrace();
+        } finally {
+            try {
+                if(null!=out){
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return res;
     }
 
     @Override
-    public List<String> queryImgList(Map<String, Object> params) {
+    @Transactional(rollbackFor = Exception.class)
+    public void delCanvas(Map<String, Object> params){
 
-        logger.debug("CanvasProvider-CanvasProvider："+params);
+        String bizCode =  StringUtil.objectToString(params.get("bizcode"));
+        String type =  StringUtil.objectToString(params.get("type"));
 
-        List<BizCanvas> bizCanvas = bizCanvasMapper.selectCanvasList(params);
-        List<String> imgStrlst = new ArrayList<String>();
-        FileInputStream in = null;
-        byte[] filecontent = null;
-        byte[] decryResult = null;
-        for (BizCanvas canvas: bizCanvas) {
-
-            String imgFilePath = PropertiesUtil.getString("canvas.dir")  + canvas.getFilename() + ".b64";
-
-            try {
-                File file = new File(imgFilePath);
-                Long filelength = file.length();
-                filecontent = new byte[filelength.intValue()];
-                in = new FileInputStream(file);
-                in.read(filecontent);
-                decryResult = this.decrypt(filecontent, Constants.canvasSalt);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if(null!=in){
-                    try {
-                        in.close();
-                        in = null;
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        if( ("A".equals(type) && bizCode.length()==16) || ("B".equals(type) && bizCode.length()==19)){
+            Wrapper<BizCanvas> wrapper = new EntityWrapper<BizCanvas>();
+            wrapper.eq("BIZ_CODE",bizCode).eq("TYPE_",type);
+            List<BizCanvas>  canvasList = bizCanvasMapper.selectList(wrapper);
+            if(null != canvasList){
+                for (BizCanvas canvas : canvasList){
+                    File sourcefile = new File(basePath + "/" + canvas.getBizcode() + "/" + canvas.getCreateBy() + "/" + DateUtil.formatYYYYMMDD(canvas.getCreateTime())+ "/" + canvas.getFilename() + ".b64");
+                    if (sourcefile.exists() && sourcefile.isFile()) {
+                       boolean res = sourcefile.delete();
+                        if(res){
+                            int i = bizCanvasMapper.deleteById(canvas.getId());
+                            if(i == 1){
+                                logger.debug("delete canvas,details= " + canvas.toString());
+                            }else{
+                                logger.error("delCanvas:del database Error! effects rows="+i);
+                            }
+                        }else{
+                            logger.error("delCanvas:del file Error! sourcefile="+sourcefile.getAbsolutePath());
+                        }
                     }
                 }
             }
-            //添加不为空判断
-            if(decryResult!=null){
-                imgStrlst.add(new String(decryResult));
+        }
+    }
+
+    @Override
+    public List<String> queryImgList(Map<String, Object> params) {
+
+        if(null != params && null != params.get("type")){
+
+            String bizType = (String)params.get("type");
+            String bizcode = (String)params.get("bizcode");
+            if("A".equals(bizType)){
+                if(bizcode.length()==13){
+                    BizDebtSummary selDebt = new BizDebtSummary();
+                    selDebt.setDebtCode(bizcode);
+                    BizDebtSummary lastDebt = bizDebtSummaryMapper.selectOne(selDebt);
+                    params.put("bizcode",bizcode+lastDebt.getVerNumStr());
+                }
+            }else if("B".equals(bizType)){
+                if(bizcode.length()==16){
+                    BizDebtGrant selGrant = new BizDebtGrant();
+                    selGrant.setGrantCode(bizcode);
+                    BizDebtGrant lastGrant = bizDebtGrantMapper.selectOne(selGrant);
+                    params.put("bizcode",bizcode+lastGrant.getVerNumStr());
+                }
             }
+        }
+
+        BizCanvas selCanvas = new BizCanvas();
+        selCanvas.setBizcode((String) params.get("bizcode"));
+        selCanvas.setType((String)params.get("type"));
+        selCanvas.setNum(1);
+        selCanvas.setVerNum(1);
+
+        List<BizCanvas> bizCanvas = null;
+        if(null != bizCanvasMapper.selectOne(selCanvas)){
+            bizCanvas = bizCanvasMapper.selectCanvasList(params);
+        }else{
+            bizCanvas = bizCanvasMapper.selectCanvasListOld(params);
+        }
+
+        List<String> imgStrlst = new ArrayList<String>();
+
+        if(null != bizCanvas){
+
+            FileInputStream in = null;
+            byte[] filecontent = null;
+
+            LZ4Factory factory = LZ4Factory.fastestInstance();
+            LZ4FastDecompressor decompressor = factory.fastDecompressor();
+            String basePath = PropertiesUtil.getString("canvas.dir");
+
+            for (BizCanvas canvas: bizCanvas) {
+                String imgFilePath = basePath + canvas.getBizcode() + "/" + canvas.getCreateBy() + "/" + DateUtil.formatYYYYMMDD(canvas.getCreateTime()) + "/" + canvas.getFilename() + ".b64";
+                try {
+                    File file = new File(imgFilePath);
+                    Long filelength = file.length();
+                    filecontent = new byte[filelength.intValue()];
+                    in = new FileInputStream(file);
+                    in.read(filecontent);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if(null!=in){
+                        try {
+                            in.close();
+                            in = null;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                //添加不为空判断
+                if(filecontent!=null){
+                    if(null!=canvas.getVerNum()){
+                        imgStrlst.add(new String(decompressor.decompress(filecontent,Integer.parseInt(canvas.getExtra()))));
+                        filecontent = null;
+                    }else{
+                        try {
+                            imgStrlst.add(new String(StringUtil.decrypt(filecontent,Constants.canvasSalt)));
+                        } catch (Exception e) {
+                            logger.error("查看旧版本快照异常=="+e.getMessage());
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        if(imgStrlst.size()==0){
+            logger.error("快照查询结果集为空。CanvasProvider-params："+params);
         }
         return imgStrlst;
     }
 
-    /**
-     * 加密
-     * @param datasource byte[]
-     * @param password String
-     * @return byte[]
-     */
-    private  byte[] encrypt(byte[] datasource, String password) {
-        try{
-            SecureRandom random = new SecureRandom();
-            DESKeySpec desKey = new DESKeySpec(password.getBytes());
-            //创建一个密匙工厂，然后用它把DESKeySpec转换成
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-            SecretKey securekey = keyFactory.generateSecret(desKey);
-            //Cipher对象实际完成加密操作
-            Cipher cipher = Cipher.getInstance("DES");
-            //用密匙初始化Cipher对象,ENCRYPT_MODE用于将 Cipher 初始化为加密模式的常量
-            cipher.init(Cipher.ENCRYPT_MODE, securekey, random);
-            //现在，获取数据并加密
-            //正式执行加密操作
-            return cipher.doFinal(datasource); //按单部分操作加密或解密数据，或者结束一个多部分操作
-        }catch(Throwable e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-    /**
-     * 解密
-     * @param src byte[]
-     * @param password String
-     * @return byte[]
-     * @throws Exception
-     */
-    private  byte[] decrypt(byte[] src, String password) throws Exception {
-        // DES算法要求有一个可信任的随机数源
-        SecureRandom random = new SecureRandom();
-        // 创建一个DESKeySpec对象
-        DESKeySpec desKey = new DESKeySpec(password.getBytes());
-        // 创建一个密匙工厂
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");//返回实现指定转换的 Cipher 对象
-        // 将DESKeySpec对象转换成SecretKey对象
-        SecretKey securekey = keyFactory.generateSecret(desKey);
-        // Cipher对象实际完成解密操作
-        Cipher cipher = Cipher.getInstance("DES");
-        // 用密匙初始化Cipher对象
-        cipher.init(Cipher.DECRYPT_MODE, securekey, random);
-        // 真正开始解密操作
-        return cipher.doFinal(src);
-    }
 }

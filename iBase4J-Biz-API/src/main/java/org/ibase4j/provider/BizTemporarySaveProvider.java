@@ -4,20 +4,21 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.ibase4j.core.base.BaseProvider;
 import org.ibase4j.model.BizTemporarySave;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 public interface BizTemporarySaveProvider extends BaseProvider<BizTemporarySave> {
 
     /**
-     * 存储内容到本地
+     * 暂存文件，支持自定义查询参数
      * @param o
      * @param params
      * @return
      */
     boolean saveTemporary(Object o,Map<String, Object> params);
     /**
-     * 存储内容到本地
+     * 方案暂存
      * @param o
      * @param params
      * @return
@@ -25,11 +26,26 @@ public interface BizTemporarySaveProvider extends BaseProvider<BizTemporarySave>
     boolean saveSchemeTemporary(Object o,Map<String, Object> params);
 
     /**
-     * 将本地存储的文件返回
+     * 条件暂存
+     * @param t
+     * @param params
+     * @return
+     */
+    boolean saveGrantTemporary(Object t, Map params);
+
+    /**
+     * 默认查询为BizTemporarySave
      * @param params
      * @return
      */
     Object getTemporary(Map<String, Object> params);
+
+    /**
+     * 将本地存储的文件返回
+     * @param params
+     * @return
+     */
+    <T extends Serializable> Object getTemporary(Map<String, Object> params,Class<T> clazz);
     
     /**
      * 通过编号查暂存文件内容
@@ -48,7 +64,7 @@ public interface BizTemporarySaveProvider extends BaseProvider<BizTemporarySave>
      * 删除暂存文件;
      * @param params
      */
-    void delTemporary(Map params);
+    boolean delTemporary(Map params);
     
     /**
      * 删除暂存文件数据以及服务器对应的文件;

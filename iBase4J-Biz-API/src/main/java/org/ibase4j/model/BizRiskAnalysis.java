@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -115,5 +116,25 @@ public class BizRiskAnalysis extends BaseModel implements Serializable{
 				.add("clcn", clcn)
 				.add("grade", grade)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizRiskAnalysis)) return false;
+		BizRiskAnalysis that = (BizRiskAnalysis) o;
+		return Objects.equal(debtNum, that.debtNum) &&
+				Objects.equal(getBackgroundBrief(), that.getBackgroundBrief()) &&
+				Objects.equal(getDogs(), that.getDogs()) &&
+				Objects.equal(getIndustryTo(), that.getIndustryTo()) &&
+				Objects.equal(getTbon(), that.getTbon()) &&
+				Objects.equal(getWtclnia(), that.getWtclnia()) &&
+				Objects.equal(getClcn(), that.getClcn()) &&
+				Objects.equal(getGrade(), that.getGrade());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(debtNum, getBackgroundBrief(), getDogs(), getIndustryTo(), getTbon(), getWtclnia(), getClcn(), getGrade());
 	}
 }

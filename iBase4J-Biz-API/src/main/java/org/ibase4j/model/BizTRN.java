@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -111,7 +112,7 @@ public class BizTRN extends BaseModel implements Serializable {
 	@TableField("ETYEXTKEY")
 	private String etyextkey;
 	/**
-	 * Applied Signatures复核的状态
+	 * 为*时代表业务中最新审批通过的数据
 	 */
 	@TableField("RELRES")
 	private String relres;
@@ -120,6 +121,30 @@ public class BizTRN extends BaseModel implements Serializable {
 	 */
 	@TableField("BCHKEYINR")
 	private String bchkeyinr;
+
+    /**
+     * 流程状态
+     */
+    @TableField("PROCESS_STATUS")
+	private Integer processStatus;
+
+	/**
+	 * 方案状态或发放状态
+	 */
+	@TableField("BIZ_STATUS")
+	private Integer bizStatus;
+
+	/**
+	 * 为Y时代表最新的流水
+	 */
+	@TableField("RELFLG")
+	private String relflg;
+
+    /**
+     * 修订版本号
+     */
+    @TableField("VERNUM_")
+	private Integer verNum;
 
 	public String getBchkeyinr() {
 		return bchkeyinr;
@@ -273,154 +298,71 @@ public class BizTRN extends BaseModel implements Serializable {
 		this.relres = relres;
 	}
 
+    public Integer getProcessStatus() {
+        return processStatus;
+    }
+
+    public void setProcessStatus(Integer processStatus) {
+        this.processStatus = processStatus;
+    }
+
+	public String getRelflg() {
+		return relflg;
+	}
+
+	public void setRelflg(String relflg) {
+		this.relflg = relflg;
+	}
+
+    public Integer getBizStatus() {
+        return bizStatus;
+    }
+
+    public void setBizStatus(Integer bizStatus) {
+        this.bizStatus = bizStatus;
+    }
+
+    public Integer getVerNum() {
+        return verNum;
+    }
+
+    public void setVerNum(Integer verNum) {
+        this.verNum = verNum;
+    }
+
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((etyextkey == null) ? 0 : etyextkey.hashCode());
-		result = prime * result + ((exedat == null) ? 0 : exedat.hashCode());
-		result = prime * result + ((inidattim == null) ? 0 : inidattim.hashCode());
-		result = prime * result + ((inifrm == null) ? 0 : inifrm.hashCode());
-		result = prime * result + ((ininam == null) ? 0 : ininam.hashCode());
-		result = prime * result + ((iniusr == null) ? 0 : iniusr.hashCode());
-		result = prime * result + ((objinr == null) ? 0 : objinr.hashCode());
-		result = prime * result + ((objnam == null) ? 0 : objnam.hashCode());
-		result = prime * result + ((objtyp == null) ? 0 : objtyp.hashCode());
-		result = prime * result + ((ownref == null) ? 0 : ownref.hashCode());
-		result = prime * result + ((relamt == null) ? 0 : relamt.hashCode());
-		result = prime * result + ((relcur == null) ? 0 : relcur.hashCode());
-		result = prime * result + ((reloriamt == null) ? 0 : reloriamt.hashCode());
-		result = prime * result + ((reloricur == null) ? 0 : reloricur.hashCode());
-		result = prime * result + ((xrecurblk == null) ? 0 : xrecurblk.hashCode());
-		result = prime * result + ((businessTypes == null) ? 0 : businessTypes.hashCode());
-		return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizTRN)) return false;
+		BizTRN bizTRN = (BizTRN) o;
+		return Objects.equal(getInidattim(), bizTRN.getInidattim()) &&
+				Objects.equal(getInifrm(), bizTRN.getInifrm()) &&
+				Objects.equal(getIninam(), bizTRN.getIninam()) &&
+				Objects.equal(getIniusr(), bizTRN.getIniusr()) &&
+				Objects.equal(getOwnref(), bizTRN.getOwnref()) &&
+				Objects.equal(getObjtyp(), bizTRN.getObjtyp()) &&
+				Objects.equal(getObjinr(), bizTRN.getObjinr()) &&
+				Objects.equal(getObjnam(), bizTRN.getObjnam()) &&
+				Objects.equal(getBusinessTypes(), bizTRN.getBusinessTypes()) &&
+				Objects.equal(getBusinessTypeName(), bizTRN.getBusinessTypeName()) &&
+				Objects.equal(getXrecurblk(), bizTRN.getXrecurblk()) &&
+				Objects.equal(getRelcur(), bizTRN.getRelcur()) &&
+				Objects.equal(getRelamt(), bizTRN.getRelamt()) &&
+				Objects.equal(getReloricur(), bizTRN.getReloricur()) &&
+				Objects.equal(getReloriamt(), bizTRN.getReloriamt()) &&
+				Objects.equal(getExedat(), bizTRN.getExedat()) &&
+				Objects.equal(getEtyextkey(), bizTRN.getEtyextkey()) &&
+				Objects.equal(getRelres(), bizTRN.getRelres()) &&
+				Objects.equal(getBchkeyinr(), bizTRN.getBchkeyinr()) &&
+				Objects.equal(getProcessStatus(), bizTRN.getProcessStatus()) &&
+				Objects.equal(getBizStatus(), bizTRN.getBizStatus()) &&
+				Objects.equal(getRelflg(), bizTRN.getRelflg()) &&
+				Objects.equal(getVerNum(), bizTRN.getVerNum());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		BizTRN other = (BizTRN) obj;
-		if (etyextkey == null) {
-			if (other.etyextkey != null) {
-				return false;
-			}
-		} else if (!etyextkey.equals(other.etyextkey)) {
-			return false;
-		}
-		if (exedat == null) {
-			if (other.exedat != null) {
-				return false;
-			}
-		} else if (!exedat.equals(other.exedat)) {
-			return false;
-		}
-		if (inidattim == null) {
-			if (other.inidattim != null) {
-				return false;
-			}
-		} else if (!inidattim.equals(other.inidattim)) {
-			return false;
-		}
-		if (inifrm == null) {
-			if (other.inifrm != null) {
-				return false;
-			}
-		} else if (!inifrm.equals(other.inifrm)) {
-			return false;
-		}
-		if (ininam == null) {
-			if (other.ininam != null) {
-				return false;
-			}
-		} else if (!ininam.equals(other.ininam)) {
-			return false;
-		}
-		if (iniusr == null) {
-			if (other.iniusr != null){
-				return false;
-			}
-		} else if (!iniusr.equals(other.iniusr)){
-			return false;
-		}
-		if (objinr == null) {
-			if (other.objinr != null) {
-				return false;
-			}
-		} else if (!objinr.equals(other.objinr)) {
-			return false;
-		}
-		if (objnam == null) {
-			if (other.objnam != null){
-				return false;
-			}
-		} else if (!objnam.equals(other.objnam)){
-			return false;
-		}
-		if (objtyp == null) {
-			if (other.objtyp != null) {
-				return false;
-			}
-		} else if (!objtyp.equals(other.objtyp)) {
-			return false;
-		}
-		if (ownref == null) {
-			if (other.ownref != null) {
-				return false;
-			}
-		} else if (!ownref.equals(other.ownref)){
-			return false;
-		}
-		if (relamt == null) {
-			if (other.relamt != null){
-				return false;
-			}
-		} else if (!relamt.equals(other.relamt)) {
-			return false;
-		}
-		if (relcur == null) {
-			if (other.relcur != null) {
-				return false;
-			}
-		} else if (!relcur.equals(other.relcur)) {
-			return false;
-		}
-		if (reloriamt == null) {
-			if (other.reloriamt != null){
-				return false;
-			}
-		} else if (!reloriamt.equals(other.reloriamt)){
-			return false;
-		}
-		if (reloricur == null) {
-			if (other.reloricur != null) {
-				return false;
-			}
-		} else if (!reloricur.equals(other.reloricur)) {
-			return false;
-		}
-		if (xrecurblk == null) {
-			if (other.xrecurblk != null) {
-				return false;
-			}
-		} else if (!xrecurblk.equals(other.xrecurblk)) {
-			return false;
-		}
-		if (businessTypes == null) {
-			if (other.businessTypes != null) {
-				return false;
-			}
-		} else if (!businessTypes.equals(other.businessTypes)) {
-			return false;
-		}
-		return true;
+	public int hashCode() {
+		return Objects.hashCode(getInidattim(), getInifrm(), getIninam(), getIniusr(), getOwnref(), getObjtyp(), getObjinr(), getObjnam(), getBusinessTypes(), getBusinessTypeName(), getXrecurblk(), getRelcur(), getRelamt(), getReloricur(), getReloriamt(), getExedat(), getEtyextkey(), getRelres(), getBchkeyinr(), getProcessStatus(), getBizStatus(), getRelflg(), getVerNum());
 	}
 
 	public BizTRN() {

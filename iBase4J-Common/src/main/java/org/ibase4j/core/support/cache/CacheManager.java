@@ -55,4 +55,18 @@ public interface CacheManager {
     boolean unlock(String key, String requestId);
 
     boolean lock(String key, String requestId, int seconds);
+<<<<<<< HEAD
+=======
+
+    Long zadd(final String key, Set<ZSetOperations.TypedTuple<Serializable>> tuples);
+
+    Boolean zadd(final String key, final Serializable value, double score);
+
+    Set<Serializable> zget(final String key,Long Smin,Long Smax,int offset,int count);
+
+    Set<Serializable> zgetDesc(final String key,Long Smin,Long Smax,int offset,int count);
+
+
+    List zgetAll(final String key);
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 }

@@ -12,5 +12,30 @@
 			</if>
 		</where>
 	</select>
+
+    <select id="queryByDebtCode" resultMap="BizTheRentFactoringMap">
+		select
+			DEBT_CODE,
+			BUSINESS_TYPES,
+			CUST_NO,
+			TOLERANCE_PERIOD,
+			FINANCE_PLATFORM,
+			CUST_NAME,
+			CUST_TATING
+		from
+			BIZ_RENTAL_FACTORING_KEY
+		WHERE
+			DEBT_CODE = #{debtCode , jdbcType=VARCHAR}
+	</select>
+
+    <resultMap id="BizTheRentFactoringMap" type="org.ibase4j.model.BizTheRentFactoring" >
+        <result column="DEBT_CODE" property="debtCode" jdbcType="VARCHAR" />
+        <result column="BUSINESS_TYPES" property="businessTypes" jdbcType="VARCHAR" />
+        <result column="CUST_NO" property="custNo" jdbcType="VARCHAR" />
+        <result column="TOLERANCE_PERIOD" property="tolerancePertod" jdbcType="INTEGER" />
+        <result column="FINANCE_PLATFORM" property="financePlatform" jdbcType="VARCHAR" />
+        <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
+        <result column="CUST_TATING" property="custTating" jdbcType="VARCHAR" />
+    </resultMap>
 		
 </mapper>

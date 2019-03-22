@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -184,5 +185,32 @@ public class BizGlobalProductRules extends BaseModel implements Serializable{
 				.add("bteaa", bteaa)
 				.add("debtNum", debtNum)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizGlobalProductRules)) return false;
+		BizGlobalProductRules that = (BizGlobalProductRules) o;
+		return Objects.equal(getLtnopa(), that.getLtnopa()) &&
+				Objects.equal(getTdwln(), that.getTdwln()) &&
+				Objects.equal(getMpc(), that.getMpc()) &&
+				Objects.equal(getAc(), that.getAc()) &&
+				Objects.equal(getOca(), that.getOca()) &&
+				Objects.equal(getSolutionAmount(), that.getSolutionAmount()) &&
+				Objects.equal(getDopo(), that.getDopo()) &&
+				Objects.equal(getStr(), that.getStr()) &&
+				Objects.equal(getPackageRates(), that.getPackageRates()) &&
+				Objects.equal(getPirr(), that.getPirr()) &&
+				Objects.equal(getEaaa(), that.getEaaa()) &&
+				Objects.equal(getPackageRate(), that.getPackageRate()) &&
+				Objects.equal(getPrr(), that.getPrr()) &&
+				Objects.equal(getBteaa(), that.getBteaa()) &&
+				Objects.equal(getDebtNum(), that.getDebtNum());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getLtnopa(), getTdwln(), getMpc(), getAc(), getOca(), getSolutionAmount(), getDopo(), getStr(), getPackageRates(), getPirr(), getEaaa(), getPackageRate(), getPrr(), getBteaa(), getDebtNum());
 	}
 }

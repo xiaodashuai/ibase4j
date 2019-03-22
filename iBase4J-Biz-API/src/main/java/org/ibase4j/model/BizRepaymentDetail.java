@@ -6,6 +6,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -53,73 +54,21 @@ public class BizRepaymentDetail extends BaseModel implements Serializable {
 	private String repaymentName;
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((interestAmt == null) ? 0 : interestAmt.hashCode());
-		result = prime * result + ((payCny == null) ? 0 : payCny.hashCode());
-		result = prime * result + ((payDate == null) ? 0 : payDate.hashCode());
-		result = prime * result + ((planId == null) ? 0 : planId.hashCode());
-		result = prime * result + ((principalAmt == null) ? 0 : principalAmt.hashCode());
-		result = prime * result + ((repaymentName == null) ? 0 : repaymentName.hashCode());
-		return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizRepaymentDetail)) return false;
+		BizRepaymentDetail that = (BizRepaymentDetail) o;
+		return Objects.equal(planId, that.planId) &&
+				Objects.equal(payDate, that.payDate) &&
+				Objects.equal(payCny, that.payCny) &&
+				Objects.equal(principalAmt, that.principalAmt) &&
+				Objects.equal(interestAmt, that.interestAmt) &&
+				Objects.equal(repaymentName, that.repaymentName);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj){
-			return true;
-		}
-		if (obj == null){
-			return false;
-		}
-		if (getClass() != obj.getClass()){
-			return false;
-		}
-		BizRepaymentDetail other = (BizRepaymentDetail) obj;
-		if (interestAmt == null) {
-			if (other.interestAmt != null){
-				return false;
-			}
-		} else if (!interestAmt.equals(other.interestAmt)){
-			return false;
-		}
-		if (payCny == null) {
-			if (other.payCny != null){
-				return false;
-			}
-		} else if (!payCny.equals(other.payCny)){
-			return false;
-		}
-		if (payDate == null) {
-			if (other.payDate != null){
-				return false;
-			}
-		} else if (!payDate.equals(other.payDate)){
-			return false;
-		}
-		if (planId == null) {
-			if (other.planId != null){
-				return false;
-			}
-		} else if (!planId.equals(other.planId)){
-			return false;
-		}
-		if (principalAmt == null) {
-			if (other.principalAmt != null){
-				return false;
-			}
-		} else if (!principalAmt.equals(other.principalAmt)){
-			return false;
-		}
-		if (repaymentName == null) {
-			if (other.repaymentName != null){
-				return false;
-			}
-		} else if (!repaymentName.equals(other.repaymentName)){
-			return false;
-		}
-		return true;
+	public int hashCode() {
+		return Objects.hashCode(planId, payDate, payCny, principalAmt, interestAmt, repaymentName);
 	}
 
 	public BizRepaymentDetail() {

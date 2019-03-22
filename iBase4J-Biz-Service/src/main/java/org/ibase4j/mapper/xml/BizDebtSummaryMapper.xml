@@ -2,88 +2,108 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.ibase4j.mapper.BizDebtSummaryMapper">
 	<select id="selectIdPage" resultType="java.lang.Long">
-		select id_ from BIZ_DEBT_MAIN
+		select m.id_ from BIZ_DEBT_MAIN m
+		LEFT JOIN
+		biz_trn t
+		ON (m.id_ = t.objinr
+		and t.objtyp = 'BIZ_DEBT_MAIN'
+        and m.vernum_ = t.vernum_
+		)
 		<where>
 			<if test="cm.debtCode != null and cm.debtCode != ''">
-				and DEBT_CODE = #{cm.debtCode}
+                <choose>
+                    <when test='cm.debtCode.length() == 16 and cm.verNum == null'>
+                        and m.DEBT_CODE = SUBSTR(#{cm.debtCode},0,13)
+                        and m.vernum_ = SUBSTR(#{cm.debtCode},16)
+                    </when>
+                    <otherwise>
+                        and m.DEBT_CODE = #{cm.debtCode}
+                    </otherwise>
+                </choose>
 			</if>
+            <if test="cm.verNum != null and cm.verNum != ''">
+                and m.VERNUM_ = #{cm.verNum}
+            </if>
 			<if test="cm.bankTellerId != null and cm.bankTellerId != ''">
-				and BANK_TELL_ID = #{cm.bankTellerId}
+				and m.BANK_TELL_ID = #{cm.bankTellerId}
 			</if>
 			<if test="cm.solutionState != null and cm.solutionState != ''">
-				and SOLUTION_STATE = #{cm.solutionState}
+				and t.BIZ_STATUS = #{cm.solutionState}
 			</if>
 			<if test="cm.inSolutionState != null and cm.inSolutionState != ''">
-				and SOLUTION_STATE = 6
+				and t.BIZ_STATUS in (6,10)
 			</if>
 			<if test="cm.institutionCode != null and cm.institutionCode != ''">
-				and INSTITUTION_CODE = #{cm.institutionCode}
+				and m.INSTITUTION_CODE = #{cm.institutionCode}
 			</if>
 			<if test="cm.projectName != null and cm.projectName != ''">
-				and PROJECT_NAME = #{cm.projectName}
+				and m.PROJECT_NAME = #{cm.projectName}
 			</if>
 			<if test="cm.proposer != null and cm.proposer != ''">
-				and PROPOSER = #{cm.proposer}
+				and m.PROPOSER = #{cm.proposer}
 			</if>
 			<if test="cm.mpc != null and cm.mpc != ''">
-				and M_CURRENCY = #{cm.mpc}
+				and m.M_CURRENCY = #{cm.mpc}
 			</if>
 			<if test="cm.solutionAmount != null and cm.solutionAmount != ''">
-				and SOLUTION_AMT = #{cm.solutionAmount}
+				and m.SOLUTION_AMT = #{cm.solutionAmount}
 			</if>
 			<if test="cm.createTime != null and cm.createTime != ''">
-				and CREATE_TIME = #{cm.createTime}
+				and m.CREATE_TIME = #{cm.createTime}
 			</if>
 			<if test="cm.enable != null and cm.enable != ''">
-				and enable_ = #{cm.enable}
+				and m.enable_ = #{cm.enable}
 			</if>
 			<if test="cm.pgEffectivDate != null and cm.pgEffectivDate != ''">
-				and PG_EFFECTIVE_DATE = #{cm.pgEffectivDate}
+				and m.PG_EFFECTIVE_DATE = #{cm.pgEffectivDate}
 			</if>
 			<if test="cm.pgExpiDate != null and cm.pgExpiDate != ''">
-				and PG_EXPI_DATE = #{cm.pgExpiDate}
+				and m.PG_EXPI_DATE = #{cm.pgExpiDate}
 			</if>
 			<if test="cm.solutionState2 != null and cm.solutionState2 != ''">
-				and SOLUTION_STATE &lt;&gt; #{cm.solutionState2}
+				and t.BIZ_STATUS &lt;&gt; #{cm.solutionState2}
 			</if>
 			<if test="cm.solutionState7 != null and cm.solutionState7 != ''">
-				and SOLUTION_STATE &lt;&gt; #{cm.solutionState7}
+				and t.BIZ_STATUS &lt;&gt; #{cm.solutionState7}
 			</if>
 			<if test="cm.solutionState8 != null and cm.solutionState8 != ''">
-				and SOLUTION_STATE &lt;&gt; #{cm.solutionState8}
+				and t.BIZ_STATUS &lt;&gt; #{cm.solutionState8}
 			</if>
 			<if test="cm.keyword != null and cm.keyword != ''">
-				and (DEBT_CODE like '%'||#{cm.keyword}||'%')
+				and (m.DEBT_CODE like '%'||#{cm.keyword}||'%')
+			</if>
+			<if test="cm.debtCodeCon != null and cm.debtCodeCon != ''">
+				and (m.DEBT_CODE &lt;&gt; '%'||#{cm.debtCodeCon}||'%')
 			</if>
 			<if test="cm.schemeNum != null and cm.schemeNum != ''">
-				and (DEBT_CODE like '%'||#{cm.schemeNum}||'%')
+				and (m.DEBT_CODE like '%'||#{cm.schemeNum}||'%')
 			</if>
 			<if test="cm.projectNam != null and cm.projectNam != ''">
-				and (PROJECT_NAME like '%'||#{cm.projectNam}||'%')
+				and (m.PROJECT_NAME like '%'||#{cm.projectNam}||'%')
 			</if>
 			<if test="cm.applicant != null and cm.applicant != ''">
-				and (PROPOSER like '%'||#{cm.applicant}||'%')
+				and (m.PROPOSER like '%'||#{cm.applicant}||'%')
 			</if>
 			<if test="cm.deptCod != null and cm.deptCod != ''">
-				and (INSTITUTION_CODE like '%'|| #{cm.deptCod}||'%')
+				and (m.INSTITUTION_CODE like '%'|| #{cm.deptCod}||'%')
 			</if>
 			<if test="cm.stateTime != null and cm.stateTime != ''">
-				and (CREATE_TIME &gt;= TO_DATE(#{cm.stateTime}, 'yyyy-mm-dd'))
+				and (m.CREATE_TIME &gt;= TO_DATE(#{cm.stateTime}, 'yyyy-mm-dd'))
 			</if>
 			<if test="cm.endTime != null and cm.endTime != ''">
-				and (CREATE_TIME &lt;= TO_DATE(#{cm.endTime}, 'yyyy-mm-dd'))
+				and (m.CREATE_TIME &lt;= TO_DATE(#{cm.endTime}, 'yyyy-mm-dd'))
 			</if>
 			<if test="cm.debtStartTime != null and cm.debtStartTime != ''">
-				and (PG_EFFECTIVE_DATE &gt;= TO_DATE(#{cm.debtStartTime}||'00:00:00', 'yyyy-mm-dd hh24:mi:ss'))
+				and (m.PG_EFFECTIVE_DATE &gt;= TO_DATE(#{cm.debtStartTime}||'00:00:00', 'yyyy-mm-dd hh24:mi:ss'))
 			</if>
 			<if test="cm.debtEndTime != null and cm.debtEndTime != ''">
-				and (PG_EXPI_DATE  &lt;=  TO_DATE(#{cm.debtEndTime}||'23:59:59', 'yyyy-mm-dd hh24:mi:ss'))
+				and (m.PG_EXPI_DATE  &lt;=  TO_DATE(#{cm.debtEndTime}||'23:59:59', 'yyyy-mm-dd hh24:mi:ss'))
 			</if>
 			<if test="cm.startDate != null and cm.startDate != ''">
-				and (CREATE_TIME &gt;= TO_DATE(#{cm.startDate}||'00:00:00', 'yyyy-mm-dd hh24:mi:ss'))
+				and (m.CREATE_TIME &gt;= TO_DATE(#{cm.startDate}||'00:00:00', 'yyyy-mm-dd hh24:mi:ss'))
 			</if>
 			<if test="cm.endDate != null and cm.endDate != ''">
-				and (CREATE_TIME  &lt;=  TO_DATE(#{cm.endDate}||'23:59:59', 'yyyy-mm-dd hh24:mi:ss'))
+				and (m.CREATE_TIME  &lt;=  TO_DATE(#{cm.endDate}||'23:59:59', 'yyyy-mm-dd hh24:mi:ss'))
 			</if>
 		</where>
 	</select>
@@ -96,6 +116,7 @@
 			</if>
 		</where>
 	</select>
+
 
 	<select id="getCountByProductId" resultType="java.lang.Integer">
 		SELECT
@@ -124,11 +145,10 @@
 		<id column="RATE_RANGE_MAX" property="rateRangeMax" javaType="BigDecimal" jdbcType="NUMERIC" />
 		<id column="A_CURRENCY" property="aCurrency" jdbcType="VARCHAR" />
 		<id column="M_CURRENCY" property="mCurrency" jdbcType="VARCHAR" />
-		<id column="PROG_RATE_TYPE" property="progRateType" javaType="int" jdbcType="INTEGER" />
 	</resultMap>
 
 	<resultMap id="debtInfoMap" type="java.util.HashMap" >
-		<result column="ID_" property="objInr" jdbcType="VARCHAR" />
+		<result column="ID_" property="id" jdbcType="VARCHAR" />
 		<result column="DEBT_CODE" property="debtCode" jdbcType="VARCHAR" />
 		<result column="SINGLE_BATCH" property="singleBatch" jdbcType="INTEGER" />
 		<result column="SINGLE_BATCH_STRING" property="singleBatchString" jdbcType="VARCHAR" />
@@ -139,7 +159,8 @@
 		<result column="PG_EFFECTIVE_DATE" property="pgEffectiveDate" jdbcType="DATE"/>
 		<result column="PG_EXPI_DATE" property="pgExpiDate" jdbcType="DATE"/>
 		<result column="SOLUTION_STATE" property="solutionState" jdbcType="INTEGER" />
-		<result column="M_CURRENCY" property="mMurrency" jdbcType="VARCHAR" />
+		<!--<result column="SOLUTION_STATE" property="solutionState" jdbcType="VARCHAR" />-->
+		<result column="M_CURRENCY" property="mpc" jdbcType="VARCHAR" />
 		<result column="SOLUTION_AMT" property="solutionAmt" jdbcType="DOUBLE" />
 		<result column="APPROVED_UNUSED_AMT" property="approvedUnusedAmt" jdbcType="DOUBLE" />
 		<result column="TDWLN" property="tdwln" jdbcType="INTEGER" />
@@ -147,7 +168,6 @@
 		<result column="POLICY_STRING" property="policyString" jdbcType="VARCHAR"/>
 		<result column="USER_NAME" property="bankTellName" jdbcType="VARCHAR" />
 		<result column="DEPT_NAME" property="deptName" jdbcType="VARCHAR" />
-		<result column="DEPT_CODE" property="deptCode" jdbcType="VARCHAR" />
 		<result column="CODE_NAME" property="codeName" jdbcType="VARCHAR"/>
 	</resultMap>
 
@@ -155,7 +175,6 @@
 		SELECT
 		b.PG_EFFECTIVE_DATE,
 		b.PG_EXPI_DATE,
-		b.PROG_RATE_TYPE,
 		b.RULE_TYPE,
 		b.LTNOPA,
 		b.A_CURRENCY,
@@ -211,7 +230,8 @@
 		A .BANK_TELL_ID,
 		A .PG_EFFECTIVE_DATE,
 		A .PG_EXPI_DATE,
-		A .SOLUTION_STATE,
+-- 		A .SOLUTION_STATE,
+		trn.BIZ_STATUS
 		A .M_CURRENCY,
 		A .SOLUTION_AMT,
 		A .APPROVED_UNUSED_AMT,
@@ -235,6 +255,7 @@
 		INNER JOIN SYS_CURRENCY E ON A .M_CURRENCY = E .MON_CODE
 		INNER JOIN BIZ_SIGLE_PRODUCT_RULE F ON A .DEBT_CODE = F.DEBT_CODE
 		INNER JOIN BIZ_PRODUCT_TYPES G ON F.BUSINESS_TYPE = G .CODE_
+		INNER JOIN BIZ_TRN trn ON (A.id_ = trn.objinr and trn.objtyp='BIZ_DEBT_MAIN' and trn.vernum_ = a.vernum_)
 		<where>
 			<if test="cm.debtCode != null and cm.debtCode != ''">
 				AND A.DEBT_CODE =  #{cm.debtCode}
@@ -327,22 +348,26 @@
 		<result column="CREATE_TIME" property="creatTime" javaType="java.sql.Date" jdbcType="DATE" />
 		<result column="UPDATE_TIME" property="updateTime" javaType="java.sql.Date" jdbcType="DATE" />
 		<result column="PG_EXPI_DATE" property="pgExpiDate" javaType="java.sql.Date" jdbcType="DATE" />
+		<result column="vernum_" property="verNum" javaType="Integer" jdbcType="NUMERIC" />
 	</resultMap>
 	<select id="getDebtInfo" resultMap="custDicMap">
 		SELECT
 		TO_CHAR (b.ID_) ID_,
-		b.DEBT_CODE,
+-- 		b.DEBT_CODE,
+        b.DEBT_CODE || replace(lpad(to_char(b.vernum_),3),' ','0') as DEBT_CODE,
 		b.PROJECT_NAME,
 		b.PROPOSER,
 		AA.DEPT_NAME,
 		b.M_CURRENCY,
 		b.SOLUTION_AMT,
-		b.SOLUTION_STATE,
+-- 		b.SOLUTION_STATE,
+        dd.biz_status as SOLUTION_STATE,
 		b.HISTORY_STATE,
 		CC.USER_NAME,
 		b.CREATE_TIME,
 		b.UPDATE_TIME,
-		b.PG_EXPI_DATE
+		b.PG_EXPI_DATE,
+        b.vernum_
 		FROM
 		BIZ_DEBT_MAIN b
 		LEFT JOIN
@@ -353,6 +378,12 @@
 		SYS_USER CC
 		ON
 		(b.CREATE_BY = CC.ID_)
+		LEFT JOIN
+		biz_trn dd
+		ON (b.id_ = dd.objinr
+		and dd.objtyp='BIZ_DEBT_MAIN'
+		and dd.vernum_=b.vernum_
+		)
 		<where>
 			<if test="cm.deptCod != null and cm.deptCod != ''">
 				AND (b.INSTITUTION_CODE like '%'||#{cm.deptCod}||'%')
@@ -382,18 +413,83 @@
 				AND (b.UPDATE_TIME &lt;= TO_DATE(#{cm.endTime}||'23:59:59','yyyy-mm-dd hh24:mi:ss'))
 			</if>
 			<if test="cm.solutionState != null and cm.solutionState != ''">
-				AND (b.SOLUTION_STATE = #{cm.solutionState})
+				AND (dd.biz_status like '%'||#{cm.solutionState}||'%')
 			</if>
 			<if test="cm.solutionState2 != null and cm.solutionState2 != ''">
-				AND b.SOLUTION_STATE &lt;&gt; #{cm.solutionState2}
+				AND dd.biz_status &lt;&gt; #{cm.solutionState2}
 			</if>
 			<if test="cm.solutionState7 != null and cm.solutionState7 != ''">
-				AND b.SOLUTION_STATE &lt;&gt; #{cm.solutionState7}
+				AND dd.biz_status &lt;&gt; #{cm.solutionState7}
 			</if>
 			<if test="cm.solutionState8 != null and cm.solutionState8 != ''">
-				AND b.SOLUTION_STATE &lt;&gt; #{cm.solutionState8}
+				AND dd.biz_status &lt;&gt; #{cm.solutionState8}
 			</if>
+			<if test="cm.relflg != null and cm.relflg != ''">
+				AND dd.RELFLG = #{cm.relflg}
+			</if>
+            <if test="cm.relres != null and cm.relres != ''">
+                AND dd.RELRES = #{cm.relres}
+            </if>
 		</where>
 	</select>
+
+    <select id="queryByDebtCode" resultMap="BizDebtSummary">
+		select
+			*
+		from
+			BIZ_DEBT_MAIN
+		WHERE
+			DEBT_CODE = #{debtCode , jdbcType=VARCHAR}
+	</select>
+
+    <resultMap id="BizDebtSummary" type="org.ibase4j.model.BizDebtSummary"
+               autoMapping="true">
+        <id column="ID_" property="id" />
+        <result column="DEBT_CODE" property="debtCode" javaType="String" jdbcType="VARCHAR" />
+        <result column="PROJECT_NAME" property="projectNam" javaType="String" jdbcType="VARCHAR" />
+        <result column="BANK_TELL_ID" property="bankTellerId" javaType="Long" jdbcType="NUMERIC" />
+        <result column="WF_TIME" property="processInitiatTime" javaType="java.sql.Date" jdbcType="DATE" />
+        <result column="VALIDITY_CYCLE_GAUGE" property="validityCcycleGauge" javaType="Long" jdbcType="NUMERIC" />
+        <result column="PG_EFFECTIVE_DATE" property="pgEffectivDate" javaType="java.sql.Date" jdbcType="DATE" />
+        <result column="PG_EXPI_DATE" property="pgExpiDate" javaType="java.sql.Date" jdbcType="DATE" />
+        <result column="LOOP_FLAG" property="ls" javaType="Long" jdbcType="NUMERIC" />
+        <result column="RULE_TYPE" property="ruleType" javaType="Long" jdbcType="NUMERIC" />
+        <result column="LTNOPA" property="ltnopa" javaType="Long" jdbcType="NUMERIC" />
+        <result column="TDWLN" property="tdwln" javaType="Long" jdbcType="NUMERIC" />
+        <result column="M_CURRENCY" property="mpc" javaType="String" jdbcType="VARCHAR" />
+        <result column="SOLUTION_AMT" property="solutionAmount" javaType="BigDecimal" jdbcType="NUMERIC" />
+        <result column="A_CURRENCY" property="aCurrrency" javaType="String" jdbcType="VARCHAR" />
+        <result column="O_CURRENCY" property="oc" javaType="String" jdbcType="VARCHAR" />
+        <result column="SCOPE_BUSIN_PERIOD" property="dopo" javaType="Long" jdbcType="NUMERIC" />
+        <result column="PROG_RATE_TYPE" property="progRateType" javaType="Long" jdbcType="NUMERIC" />
+        <result column="SCHEME_RATE_FORM" property="schemeRateForm" javaType="Long" jdbcType="NUMERIC" />
+        <result column="RATE_RANGE_MIX" property="rateRangeMix" javaType="BigDecimal" jdbcType="NUMERIC" />
+        <result column="RATE_RANGE_MAX" property="rateRangeMax" javaType="BigDecimal" jdbcType="NUMERIC" />
+        <result column="PACKAGE_RATE" property="packageRate" javaType="BigDecimal" jdbcType="NUMERIC" />
+        <result column="APPROVE" property="approve" javaType="Long" jdbcType="NUMERIC" />
+        <result column="RATE_APPROVAL_ORG" property="raaa" javaType="Long" jdbcType="NUMERIC" />
+        <result column="WHETHER_RATE_DISCOUNT" property="whetherRateDiscount" javaType="Long" jdbcType="NUMERIC" />
+        <result column="PROGRAM_RATE_DISCOUNT" property="programRateDiscount" javaType="BigDecimal" jdbcType="NUMERIC" />
+        <result column="DESCRIPTION_PROGRAM_QUOQATE" property="descriptionProgramQuoqate" javaType="String" jdbcType="VARCHAR" />
+        <result column="DESCRIPTION_RATE_RULES" property="descriptionRateRules" javaType="String" jdbcType="VARCHAR" />
+        <result column="BRIF_BACKGROUND" property="brifBackground" javaType="String" jdbcType="VARCHAR" />
+        <result column="TRAD_BACKGROUND" property="tradBackground" javaType="String" jdbcType="VARCHAR" />
+        <result column="BUSINESS_BACKGROUND_BRIEF" property="businessBackgroundBrief" javaType="String" jdbcType="VARCHAR" />
+        <result column="GOODS_SKETCH" property="goodsSketch" javaType="String" jdbcType="VARCHAR" />
+        <result column="POLICY_DESCRIPTION" property="policyDescription" javaType="String" jdbcType="VARCHAR" />
+        <result column="POLICY" property="policy" javaType="String" jdbcType="VARCHAR" />
+        <result column="PROPOSER" property="proposer" javaType="String" jdbcType="VARCHAR" />
+        <result column="PROPOSER_NUM" property="proposerNum" javaType="String" jdbcType="VARCHAR" />
+        <result column="SINGLE_BATCH" property="SINGLE_BATCH" javaType="Long" jdbcType="NUMERIC" />
+        <result column="INSTITUTION_CODE" property="institutionCode" javaType="String" jdbcType="VARCHAR" />
+        <result column="DEBT_TRN_CODE" property="debtTrnCode" javaType="String" jdbcType="VARCHAR" />
+        <result column="IDENT_NUMBER" property="identNumber" javaType="String" jdbcType="VARCHAR" />
+        <result column="ERR_NO" property="errNo" javaType="String" jdbcType="VARCHAR" />
+        <result column="TRANSOK" property="transok" javaType="String" jdbcType="VARCHAR" />
+        <result column="PROCESS_STATUS" property="processStatus" javaType="String" jdbcType="VARCHAR" />
+        <result column="SOLUTION_STATE" property="solutionState" javaType="Long" jdbcType="NUMERIC" />
+        <result column="HISTORY_STATE" property="historyState" javaType="String" jdbcType="VARCHAR" />
+        <result column="vernum_" property="verNum" javaType="Integer" jdbcType="NUMERIC" />
+    </resultMap>
 
 </mapper>

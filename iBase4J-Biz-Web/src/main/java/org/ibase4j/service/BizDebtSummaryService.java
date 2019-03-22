@@ -2,24 +2,32 @@ package org.ibase4j.service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.toolkit.IdWorker;
 import org.apache.commons.lang3.StringUtils;
 import org.ibase4j.core.Constants;
 import org.ibase4j.core.base.BaseService;
 import org.ibase4j.core.config.BizStatus;
 import org.ibase4j.core.support.Assert;
 import org.ibase4j.core.support.cache.RedisHelper;
-import org.ibase4j.core.util.BizWebUtil;
-import org.ibase4j.core.util.DateUtil;
-import org.ibase4j.core.util.InstanceUtil;
-import org.ibase4j.core.util.StringUtil;
+import org.ibase4j.core.util.*;
 import org.ibase4j.model.*;
 import org.ibase4j.provider.*;
 import org.ibase4j.vo.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+<<<<<<< HEAD
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+=======
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -58,7 +66,7 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
     @Reference
     private BizBetInformationProvider bizBetInformationProvider;
     @Reference
-    private BizCustomerProvider bizCustomerProvider;
+    private BizFileProvider bizFileProvider;
     @Reference
     private BizProductLinesTypeProvider bizProductLinesTypeProvider;
     @Reference
@@ -75,6 +83,12 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
     private RedisHelper redisHelper;
     @Reference
     private ISysCurrencyProvider iSysCurrencyProvider;
+    @Reference
+    private BizTRNProvider bizTRNProvider;
+    @Reference
+    private BizDebtSummaryProvider bizDebtSummaryProvider;
+    @Reference
+    private BizApprSummaryInfoProvider bizApprSummaryInfoProvider;
 
     @Reference
     public void setProvider(BizDebtSummaryProvider debtSummaryProvider) {
@@ -94,6 +108,7 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
         //生成债项方案id
         String debtCode="CLD";
         debtCode=debtCode+ DateUtil.getDateYearMonth();
+
         debtCode=bizCntProvider.getNextNumberFormat(debtCode, 4);
 
         //首先查询第一级节点
@@ -291,9 +306,10 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
      * 返回：返回债项方案信息
      */
     public BizDebtSummary getByCode(String debtCode){
-        Map<String, Object> params = new HashMap<String,Object>();
-        params.put("debtCode", debtCode);
-        return this.queryOne(params);
+        BizDebtSummary bizDebtSummary = new BizDebtSummary();
+        bizDebtSummary.setDebtCode(debtCode);
+        bizDebtSummary = bizDebtSummaryProvider.selectOneBizDebtSummary(bizDebtSummary);
+        return bizDebtSummary;
     }
 
     /**删除债项概要页面展示的产品*/
@@ -315,7 +331,8 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
 		} else {
 			params.put("properInfo", "0");
 		}
-		params.put("debtCode", debtCode);
+		String debtNo = StringUtils.substring(debtCode, 0, 13);
+		params.put("debtCode", debtNo);
 		List<GrantRuleVerifVo> dsList = provider.getGrantRuleVo(params);
 		GrantRuleVerifVo ds = new GrantRuleVerifVo();
 		if (dsList != null && dsList.size() > 0) {
@@ -330,65 +347,189 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
 		return ds;
 	}
 
-    /**保存债项方案
-     * @param */
+    /**
+     * 保存债项方案
+     * @param params
+     * + 数据存储形式调整;
+     */
     public void save(JSONObject params) {
 
         //得到债项方案的id
-        String debtCode=params.get("debtCode").toString();
+        String debtCode=(String)params.get("debtCode");
+        Integer vernum = null;
+        //PTS List保存用户的角色信息
+        List<BizPTS> ptsList=new ArrayList<>();
+
+        //流程改造，更新方案号，增加版本号
+        if(null != debtCode && debtCode.length()==16){
+            //版本号从前台获取，处理附件关联历史修订的问题（同时修订）
+            vernum = Integer.parseInt(debtCode.substring(13));
+            debtCode = debtCode.substring(0,13);
+        }else{
+            throw new RuntimeException("未获取到方案编号！BizDebtSummarySerivice Line : 342 ;");
+        }
+
         //判断是补录的保存，还是修订的保存
         String state=params.get("state").toString();
         //得到债项信息表数据
         BizDebtSummary bizDebtSummary=JSON.parseObject(JSON.toJSONString(params.get("debtMain")),BizDebtSummary.class);
-        if(state.equals("方案修订")){
-            Map<String,Object> sumMap=new HashMap<>();
-            sumMap.put("debtCode", debtCode);
-            List<BizDebtSummary>bizDebtList=provider.queryList(sumMap);
-            BizDebtSummary bizDebt=bizDebtList.get(0);
-            //把原来的债项方案状态改成2，冻结
-            bizDebt.setSolutionState(BizStatus.DEBTFROZ);
-            bizDebt.setEnable(1);
-            provider.update(bizDebt);
+        Long idDebtSummary = null;
 
-            //修订后的债项方案记录原来的债项方案编号
-            bizDebtSummary.setDebtTrnCode(debtCode);
-            //生成新的债项编号
-            String debtCode1=debtCode.substring(0, 13);
-            String debtCode2=debtCode.substring(13);
-            Long debtCode3=StringUtil.stringToLong(debtCode2);
-            debtCode3=debtCode3+1;
-            String debtCode4=debtCode3.toString();
-            if(debtCode4.length()==1){
-                debtCode=debtCode1+"00"+debtCode4;
-            }
-            if(debtCode4.length()==2){
-                debtCode=debtCode1+"0"+debtCode4;
-            }
-            bizDebtSummary.setDebtCode(debtCode);
-            bizDebtSummary.setSolutionState(BizStatus.DEBTREAT);
-            bizDebtSummary.setProcessStatus(BizStatus.DEPRNEAT);
-        }
         if(state.equals("方案补录")){
-            bizDebtSummary.setSolutionState(BizStatus.DEBTSUAT);
-            bizDebtSummary.setProcessStatus(BizStatus.DEPRNEAT);
-            debtCode=debtCode;
+
+            idDebtSummary = IdWorker.getId();
+            bizDebtSummary.setId(idDebtSummary);
+            bizDebtSummary.setVerNum(vernum);
             bizDebtSummary.setDebtCode(debtCode);
 
+        }else if(state.equals("方案修订")){
+
+//            vernum = bizCntProvider.getNextNumber(debtCode);
+            BizDebtSummary selDebt = new BizDebtSummary();
+            selDebt.setDebtCode(debtCode);
+            BizDebtSummary oldDebt = provider.selectOne(new EntityWrapper<>(selDebt));
+            idDebtSummary = oldDebt.getId();
+            bizDebtSummary.setId(idDebtSummary);
+            bizDebtSummary.setDebtCode(debtCode);
+            bizDebtSummary.setVerNum(vernum);
         }
+
+        Map<String, Object> tmpSaveParams = new HashMap<String, Object>();
+        tmpSaveParams.put("bizcode",debtCode);
+        tmpSaveParams.put("remark",vernum);
+        tmpSaveParams.put("projectName","ReSubmit_debtMain");
+
+        Map reviewObj = (Map)params;
+//        boolean saveResSaveFile = provider.saveReSubmitFile(reviewObj, tmpSaveParams);
+        boolean saveResSaveFile = bizTemporarySaveProvider.saveTemporary(new BizTemporarySave(reviewObj), tmpSaveParams);
+        if(null == reviewObj || !saveResSaveFile){
+            logger.error("saveReSubmitFile异常...");
+            throw new RuntimeException("save ReSubmit_debtMain ERROR...");
+        }
+
+        Date dat = new Date();
+
+        //全局规则
+        bizDebtSummary.setRuleType(1L);
+        //流程发起时间
+        bizDebtSummary.setProcessInitiatTime(dat);
+        bizDebtSummary.setCreateTime(dat);
+        bizDebtSummary.setUpdateTime(dat);
+        bizDebtSummary.setCreateBy(bizDebtSummary.getBankTellerId());
+        bizDebtSummary.setUpdateBy(bizDebtSummary.getBankTellerId());
+        bizDebtSummary.setEnable(1);
+        bizDebtSummary.setCreatePersonName(bizDebtSummary.getCreatePersonName());
+
+//        bizDebtSummary.setDebtCode(bizDebtSummary.getDebtCode());
+//        bizDebtSummary.setVerNum(bizCntProvider.getNextNumber(bizDebtSummary.getDebtCode()));
+
+        BizPTS mainPts = new BizPTS();
+        BizCust selMainCust = new BizCust();
+        selMainCust.setCustNo(bizDebtSummary.getProposerNum());
+        mainPts.setPtyinr(bizCustProvider.selectOne(new EntityWrapper<>(selMainCust)).getId_());
+        mainPts.setCustNameCN(bizDebtSummary.getProposer());
+        mainPts.setObjtyp("BIZ_DEBT_MAIN");
+        mainPts.setObjinr(idDebtSummary+"");
+        mainPts.setRole("APPT");
+<<<<<<< HEAD
+        mainPts.setDebtCode(debtCode);
+=======
+        mainPts.setBizId(idDebtSummary+"");
+        BizPTS selmainPts = bizPTSProvider.selectOne(new EntityWrapper<BizPTS>(mainPts));
+        if(null != selmainPts){
+            mainPts.setId(selmainPts.getId());
+        }
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
+        mainPts.setCreateBy(bizDebtSummary.getBankTellerId());
+        mainPts.setUpdateBy(bizDebtSummary.getBankTellerId());
+        ptsList.add(mainPts);
+
+        //文件签发日期
+        JSONArray bizFileList=JSON.parseArray(JSON.toJSONString(params.get("issueDateList")));
+        BizFile bizfile = new BizFile();
+        String debtCode2 = debtCode + "001";
+        bizfile.setBizCode(debtCode2);
+        List<BizFile> fieldList = bizFileProvider.selectList(new EntityWrapper<>(bizfile));
+        for (BizFile fdn:fieldList) {
+            if ("Meetingupload".equals(fdn.getFieldName()) && null == fdn.getIssueDate()){
+                for (Object bz:bizFileList) {
+                    String bbz = bz.toString();
+                    Date bzz = DateUtil.stringToDate(bbz);
+                    fdn.setIssueDate(bzz);
+                    bizFileProvider.update(fdn);
+                }
+            }
+        }
+
         //得到担保信息表数据
         List<BizGuaranteeInfo> bizGuaranteeInfoList=JSON.parseArray(JSON.toJSONString(params.get("bizGuaranteeInfoList")),BizGuaranteeInfo.class);
+        List<BizBetInformation> bizBetInformationList = new ArrayList<>();
         for(BizGuaranteeInfo guarantee:bizGuaranteeInfoList){
             guarantee.setDebtCode(debtCode);
+            Long idGuar = IdWorker.getId();
+            guarantee.setId(idGuar);
+            guarantee.setCreateBy(bizDebtSummary.getBankTellerId());
+            guarantee.setUpdateBy(bizDebtSummary.getBankTellerId());
+            guarantee.setCreateTime(dat);
+            guarantee.setUpdateTime(dat);
+            for (BizBetInformation bet:guarantee.getBetInformationList()){
+                //担保合同编号
+                bet.setGuarNo(guarantee.getWarrantyContractNumber());
+                bet.setDebtCode(bizDebtSummary.getDebtCode());
+                bet.setId(IdWorker.getId());
+                bet.setCreateTime(dat);
+                bet.setUpdateTime(dat);
+                bet.setCreateBy(bizDebtSummary.getBankTellerId());
+                bet.setUpdateBy(bizDebtSummary.getBankTellerId());
+                bizBetInformationList.add(bet);
+            }
+
+            BizPTS guaranteePts = new BizPTS();
+            BizCust selGuaranteeCust = new BizCust();
+            selGuaranteeCust.setCustNo(guarantee.getGuarantorCustId());
+            guaranteePts.setPtyinr(bizCustProvider.selectOne(new EntityWrapper<>(selGuaranteeCust)).getId_());
+            guaranteePts.setCustNameCN(guarantee.getGuarantor());
+            guaranteePts.setObjtyp("BIZ_GUARANTEE_INFO");
+            guaranteePts.setObjinr(idGuar+"");
+            guaranteePts.setRole("GUAR");
+            guaranteePts.setDebtCode(debtCode);
+            guaranteePts.setCreateBy(bizDebtSummary.getBankTellerId());
+            guaranteePts.setUpdateBy(bizDebtSummary.getBankTellerId());
+            ptsList.add(guaranteePts);
+
+            //添加被担保人 warrantee
+            if(null!=guarantee.getWarranteeCustId()){
+                BizPTS warranteePts = new BizPTS();
+                BizCust selWarranteeCust = new BizCust();
+                selWarranteeCust.setCustNo(guarantee.getWarranteeCustId());
+                warranteePts.setPtyinr(bizCustProvider.selectOne(new EntityWrapper<>(selWarranteeCust)).getId_());
+                warranteePts.setCustNameCN(guarantee.getWarrantee());
+                warranteePts.setObjtyp("BIZ_GUARANTEE_INFO");
+                warranteePts.setObjinr(idGuar+"");
+                warranteePts.setRole("WARR");
+                warranteePts.setDebtCode(debtCode);
+                warranteePts.setCreateBy(bizDebtSummary.getBankTellerId());
+                warranteePts.setUpdateBy(bizDebtSummary.getBankTellerId());
+                ptsList.add(warranteePts);
+            }
         }
 
         List<BizProductTypes> rentFacList=JSON.parseArray(JSON.toJSONString(params.get("rentFacList")),BizProductTypes.class);
         List<BizSingleProductRule> bizSingleProductRuleList=new ArrayList<>();
         List<BizProductLinesType> productLinesTypesList=new ArrayList<>();
-        Set<BizCustomer> cuSet=new HashSet<>();
+//        Set<BizCust> cuSet=new HashSet<>();
+
         List<BizTheRentFactoring> rentList=new ArrayList<>();
+        List<BizCreditLines> bizCreditLinesList=new ArrayList<>();
         for (BizProductTypes productTypes:rentFacList){
             //得到单一规则表
             BizSingleProductRule s=new BizSingleProductRule();
+            long sigleId = IdWorker.getId();
+            s.setId(sigleId);
+            s.setCreateTime(dat);
+            s.setUpdateTime(dat);
+            s.setCreateBy(bizDebtSummary.getBankTellerId());
+            s.setUpdateBy(bizDebtSummary.getBankTellerId());
             s.setBusinessType(productTypes.getCode());
             s.setDebtCode(debtCode);
             s.setIndustryInvestment(productTypes.getIndustryTo());
@@ -397,6 +538,7 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
 
             //得到租金保理表数据
             BizTheRentFactoring rent=new BizTheRentFactoring();
+            Long idRent = IdWorker.getId();
             rent.setTolerancePertod(productTypes.getTolerancePertod());
             rent.setDebtCode(debtCode);
             rent.setBusinessTypes(productTypes.getCode());
@@ -405,27 +547,81 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
             rent.setCustTating(productTypes.getCustTating());
             rent.setTolerancePertod(productTypes.getTolerancePertod());
             rent.setFinancePlatform(productTypes.getFinancePlatform());
+            rent.setCreateTime(dat);
+            rent.setUpdateTime(dat);
+            rent.setCreateBy(bizDebtSummary.getBankTellerId());
+            rent.setUpdateBy(bizDebtSummary.getBankTellerId());
             rentList.add(rent);
+            BizCust selRentCust = new BizCust();
+            selRentCust.setCustNo(productTypes.getCustNo());
+            BizPTS rentPts = new BizPTS();
+            rentPts.setPtyinr(bizCustProvider.selectOne(new EntityWrapper<>(selRentCust)).getId_());
+            rentPts.setCustNameCN(productTypes.getCustName());
+            rentPts.setObjtyp("BIZ_RENTAL_FACTORING_KEY");
+            rentPts.setObjinr(idRent+"");
+            rentPts.setRole("CONE");
+            rentPts.setDebtCode(debtCode);
+            rentPts.setCreateBy(bizDebtSummary.getBankTellerId());
+            rentPts.setUpdateBy(bizDebtSummary.getBankTellerId());
+            ptsList.add(rentPts);
 
-            //得到额度类型表数据
-            List<BizCustomer> customerList=productTypes.getCustomersList();
+            //得到额度类型表数据  用信主体
+            List<BizCust> custList = productTypes.getCustomersList();
 
             //存储没有重复客户的list
-            List<BizCustomer>cuList=new ArrayList<>();
+//            List<BizCust> cuList = new ArrayList<>();
 
-            for(BizCustomer cus:customerList){
+            for(BizCust cus:custList){
                 //得到额度类型表数据
                 BizProductLinesType lines=new BizProductLinesType();
+                lines.setId(IdWorker.getId());
                 lines.setDebtCode(debtCode);
                 lines.setCustNo(cus.getCustNo());
+                lines.setObjtyp("BIZ_SIGLE_PRODUCT_RULE");
+                lines.setObjinr(sigleId+"");
                 lines.setBusinessType(productTypes.getCode());
                 lines.setCreditLinesId(cus.getCreditLinesId());
                 lines.setCreditRatio(cus.getCreditRatio());
+                lines.setCreateBy(bizDebtSummary.getBankTellerId());
+                lines.setUpdateBy(bizDebtSummary.getBankTellerId());
+                lines.setCreateTime(dat);
+                lines.setUpdateTime(dat);
                 productLinesTypesList.add(lines);
                 //得到客户表数据
-                cuSet.add(cus);
+//                cuSet.add(cus);
+                BizPTS custPts = new BizPTS();
+                //前台传递的参数不包含BizCust的id，需要后台根据编号查询，编号唯一
+                BizCust selCust = new BizCust();
+                selCust.setCustNo(cus.getCustNo());
+                long custid = bizCustProvider.selectOne(new EntityWrapper<>(selCust)).getId();
+                custPts.setPtyinr(custid+"");
+                custPts.setDebtCode(debtCode);
+                custPts.setCustNameCN(cus.getCustNameCN());
+                custPts.setObjtyp("BIZ_SIGLE_PRODUCT_RULE");
+                custPts.setObjinr(sigleId+"");
+                custPts.setRole("LETS");
+                custPts.setDebtCode(debtCode);
+                custPts.setCreateBy(bizDebtSummary.getBankTellerId());
+                custPts.setUpdateBy(bizDebtSummary.getBankTellerId());
+                ptsList.add(custPts);
+
+                //保存用户主体授信信息表
+                for (BizCreditLines li: cus.getCreditLinesList()){
+                    li.setId(IdWorker.getId());
+                    li.setDebtCode(debtCode);
+                    li.setCustomerId(custid);
+                    li.setCustNo(cus.getCustNo());
+                    li.setObjtyp("BIZ_DEBT_MAIN");
+                    li.setObjinr(idDebtSummary+"");
+                    li.setCreateBy(bizDebtSummary.getBankTellerId());
+                    li.setUpdateBy(bizDebtSummary.getBankTellerId());
+                    li.setCreateTime(dat);
+                    li.setUpdateTime(dat);
+                    bizCreditLinesList.add(li);
+                }
             }
         }
+
         Long userId = BizWebUtil.getCurrentUser();
         Map map=new HashMap();
         map.put("userId",userId);
@@ -435,13 +631,21 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
         mapObj.put("bizDebtSummary", bizDebtSummary);
         mapObj.put("bizGuaranteeInfoList", bizGuaranteeInfoList);
         mapObj.put("bizSingleProductRuleList", bizSingleProductRuleList);
-        mapObj.put("cuSet", cuSet);
         mapObj.put("rentList", rentList);
         mapObj.put("productLinesTypesList", productLinesTypesList);
         mapObj.put("userId", userId.toString());
         mapObj.put("list", list);
-        provider.saveDebt(mapObj);
+        mapObj.put("ptsList", ptsList);
+        mapObj.put("bizCreditLinesList", bizCreditLinesList);
+        mapObj.put("bizBetInformationList", bizBetInformationList);
 
+        for(BizPTS ptstmp : (List<BizPTS>)ptsList){
+            if(null == ptstmp.getPtyinr()){
+                logger.error("未获取到客户表biz_cust的id。");
+                throw new RuntimeException("ptyinr is null!");
+            }
+        }
+        provider.saveDebt(mapObj);
     }
 
 
@@ -459,7 +663,10 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
         }
         debtCode=debtCode+ DateUtil.getDateYearMonth();
         debtCode=bizCntProvider.getNextNumberFormat(debtCode, 4);
-        debtCode=debtCode+"001";
+
+//        debtCode=debtCode+"001";
+        debtCode=bizCntProvider.getNextNumberFormat(debtCode, 3);
+//        int versionNum = bizCntProvider.getNextNumber(debtCode);
 
         Map<String,Object> rentMap=new HashMap<>();
         rentMap.put("parentCode","PT0500000000");
@@ -483,6 +690,7 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
         ownref.put("solutionState2", 2);
         ownref.put("solutionState7", 7);
         ownref.put("solutionState8", 8);
+        ownref.put("relflg", "Y");
         Page<BizDebtSummary> bizdebtList= (Page<BizDebtSummary>) provider.getDebtInfo(ownref);
         return bizdebtList;
     }
@@ -519,12 +727,148 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
     }
 
     //方案修订的回显
+//    public Map<String,Object> getAllSchemeInformation(Map<String, Object> param) {
+//
+//        String debtCode=param.get("debtCode").toString();
+//        String olddebtCode=param.get("debtCode").toString();
+//
+//        if(null != debtCode && debtCode.length()==16){
+//            Integer vernum = Integer.parseInt(debtCode.substring(13));
+//            debtCode = debtCode.substring(0,13);
+//
+//            Map<String, Object> oldParams = new HashMap<String, Object>();
+//            oldParams.put("bizcode",debtCode);
+//            oldParams.put("remark",vernum);
+//            oldParams.put("projectName","ReSubmit_debtMain");
+//            Object oldTempSave = bizTemporarySaveProvider.getTemporary(oldParams);
+//            //存库的数据从文件中获得
+//            if(null != oldTempSave){
+//                //附件和变更号绑定 + 需要更新变更号
+//                JSONObject oldDebt = (JSONObject)oldTempSave;//(Map<String, Object>)
+//                String newCode = bizCntProvider.getNextNumberFormat("FA_"+debtCode,3);
+//
+//                //将旧数据方案号更新
+//                oldDebt.put("debtCode",newCode);
+//                Map<String, Object> newDebtMain = (Map<String, Object>)oldDebt.get("debtMain");
+//                newDebtMain.put("debtCode",newCode);
+//                JSONArray bizGuaranteeInfoList = (JSONArray)oldDebt.get("bizGuaranteeInfoList");
+//                if(null != bizGuaranteeInfoList && bizGuaranteeInfoList.size()>0){
+//                    for (int i = 0; i < bizGuaranteeInfoList.size(); i++) {
+//                        JSONObject bizGuaranteeInfo = bizGuaranteeInfoList.getJSONObject(i);
+//                        if(null != bizGuaranteeInfo.getString("debtCode")){
+//                            bizGuaranteeInfo.put("debtCode",newCode);
+//                        }
+//                    }
+//                }
+//                JSONArray rentFacList = (JSONArray)oldDebt.get("rentFacList");
+//                if(null != rentFacList && rentFacList.size()>0){
+//                    for (int i = 0; i < rentFacList.size(); i++) {
+//                        JSONObject rentFac = rentFacList.getJSONObject(i);
+//                        if(null != rentFac.getString("debtCode")){
+//                            rentFac.put("debtCode",newCode);
+//                        }
+//                    }
+//                }
+//
+//                //附件复制（数据复制、文件复制）
+//                EntityWrapper<BizFile> sel = new EntityWrapper<BizFile>();
+//                sel.eq("BIZ_CODE",olddebtCode).orderBy("CREATE_TIME",true);
+//                List<BizFile> bizFileList = bizFileProvider.selectList(sel);
+//                if(null!=bizFileList && bizFileList.size()>0){
+//                    for(BizFile bizfile : bizFileList){
+//                        bizfile.setBizCode(newCode);
+//
+//                        try {
+//                            String filePath = PropertiesUtil.getString("uploader.dir");
+//                            String newfilePath = filePath+"/"+newCode+"/"+bizfile.getCreateBy()+"/"+DateUtil.getDateYYYYMMDD()+"/";
+//                            File f = new File(newfilePath);
+//                            if (!f.exists())
+//                            {f.mkdirs();}
+//                            File sourcefile = new File(filePath+"/"+olddebtCode+"/"+bizfile.getCreateBy()+"/"+DateUtil.formatYYYYMMDD(bizfile.getCreateTime())+"/"+bizfile.getFileName());
+//                            if (sourcefile.exists() && sourcefile.isFile()) {
+//                                boolean copyFileRes = DataUtil.copyFile(sourcefile,new File(newfilePath+bizfile.getFileName()));
+//                                String[] cmd = new String[]{"sh","-c","chmod 777 "+ newfilePath+bizfile.getRealName()};
+//                                Process process = Runtime.getRuntime().exec(cmd);
+//                                if(copyFileRes){
+//                                    if(!bizFileProvider.saveFile(bizfile)){
+//                                        logger.error("copy file success, save bizfile error!"+bizfile.toString());
+//                                        throw new RuntimeException("copy file success, save bizfile error!");
+//                                    }
+//                                }else{
+//                                    logger.error("copy file failed!");
+//                                    throw new RuntimeException("copy file failed!");
+//                                }
+//                            }
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        } finally {
+//                        }
+//                    }
+//                }
+//                return (Map<String,Object>)oldDebt;
+//            }else{
+//                logger.error("(BizTempSave)No records queried from the database!params="+oldParams.toString());
+//                throw new RuntimeException("再次修订获取数据失败！BizDebtSummarySerivice Line : 684 ;");
+//            }
+//
+//        }else{
+//            throw new RuntimeException("未获取到方案编号！BizDebtSummarySerivice Line : 688 ;debtCode="+debtCode);
+//        }
+//    }
     public Map<String,Object> getAllSchemeInformation(Map<String, Object> param) {
         String debtCode=param.get("debtCode").toString();
+        String debtCode2 = debtCode + "001" ;
+        Map<String,Object> ddet=new HashMap();
+        ddet.put("bizCode",debtCode2);
         //得到债项信息表数据
         List<BizDebtSummary>debtSummaryList=provider.queryList(param);
         BizDebtSummary bizDebtSummary=debtSummaryList.get(0);
 
+<<<<<<< HEAD
+            Map<String, Object> oldParams = new HashMap<String, Object>();
+            oldParams.put("bizcode",debtCode);
+            oldParams.put("remark",vernum);
+            oldParams.put("projectName","ReSubmit_debtMain");
+            Object oldTempSave = bizTemporarySaveProvider.getTemporary(oldParams);
+            //存库的数据从文件中获得
+            if(null != oldTempSave){
+                //附件和变更号绑定 + 需要更新变更号
+                JSONObject oldDebt = (JSONObject)oldTempSave;//(Map<String, Object>)
+                String newCode = bizCntProvider.getNextNumberFormat(debtCode,3);
+
+                //将旧数据方案号更新
+                oldDebt.put("debtCode",newCode);
+                Map<String, Object> newDebtMain = (Map<String, Object>)oldDebt.get("debtMain");
+                newDebtMain.put("debtCode",newCode);
+                JSONArray bizGuaranteeInfoList = (JSONArray)oldDebt.get("bizGuaranteeInfoList");
+                if(null != bizGuaranteeInfoList && bizGuaranteeInfoList.size()>0){
+                    for (int i = 0; i < bizGuaranteeInfoList.size(); i++) {
+                        JSONObject bizGuaranteeInfo = bizGuaranteeInfoList.getJSONObject(i);
+                        if(null != bizGuaranteeInfo.getString("debtCode")){
+                            bizGuaranteeInfo.put("debtCode",newCode);
+                        }
+                    }
+                }
+                JSONArray rentFacList = (JSONArray)oldDebt.get("rentFacList");
+                if(null != rentFacList && rentFacList.size()>0){
+                    for (int i = 0; i < rentFacList.size(); i++) {
+                        JSONObject rentFac = rentFacList.getJSONObject(i);
+                        if(null != rentFac.getString("debtCode")){
+                            rentFac.put("debtCode",newCode);
+                        }
+                    }
+                }
+=======
+        //得到文件签发日期
+        List<BizFile> issueDateList = bizFileProvider.queryList(ddet);
+        ArrayList issueDate = new ArrayList();
+        for (BizFile issd:issueDateList) {
+            Map<String,Object> issdMap=new HashMap();
+            if (issd.getIssueDate() != null){
+            issdMap.put("issueDate",issd.getIssueDate());
+            issueDate.add(issdMap);
+         }
+        }
         //得到担保信息表数据
         List<BizGuaranteeInfo>bizGuaranteeInfoList =bizGuaranteeInfoProvider.queryList(param);
         //通过担保信息中的担保合同查询押品信息
@@ -535,29 +879,30 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
             List<BizBetInformation>betList= bizBetInformationProvider.queryList(betMap);
             guar.setBetInformationList(betList);
         }
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 
         //得到客户信息表,先查PTS，再查客户
         List<BizPTS>bizPTSList =bizPTSProvider.queryList(param);
-        List<BizCustomer>customersList=new ArrayList<>();
+        List<BizCust>customersList=new ArrayList<>();
         for(BizPTS bizt:bizPTSList){
             if(bizt.getRole().equals("LETS")){
                 String idCuss=bizt.getPtyinr();
-                BizCustomer cu= bizCustomerProvider.queryById(Long.valueOf(idCuss));
+                BizCust cu= bizCustProvider.queryById(Long.valueOf(idCuss));
                 //得到额度类型表
                 Map<String,Object> proLinesMap=new HashMap();
-                proLinesMap.put("debtCode", cu.getDebtCode());
+                proLinesMap.put("debtCode", debtCode);
                 proLinesMap.put("custNo",cu.getCustNo());
                 List<BizProductLinesType>productLinesTypesList =bizProductLinesTypeProvider.queryList(proLinesMap);
 
                 BizProductLinesType productLinesType=productLinesTypesList.get(0);
                 cu.setCreditLinesId(productLinesType.getCreditLinesId().toString());
                 cu.setCreditRatio(productLinesType.getCreditRatio());
-                cu.setProductLinesTypeId(productLinesType.getId().toString());
+                //cu.setProductLinesTypeId(productLinesType.getId().toString());
 
 
                 //得到用户主体授信信息表
                 Map<String,Object> crelinesMap=new HashMap();
-                crelinesMap.put("debtCode", cu.getDebtCode());
+                crelinesMap.put("debtCode", debtCode);
                 crelinesMap.put("custNo",cu.getCustNo());
                 crelinesMap.put("objtyp","BIZ_DEBT_MAIN");
                 crelinesMap.put("objinr",bizDebtSummary.getId());
@@ -602,6 +947,7 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
 
         Map<String,Object> mapObj=new HashMap<>();
         mapObj.put("debtMain", bizDebtSummary);
+        mapObj.put("issueDateList", issueDate);
         mapObj.put("rentFacList", bizProductTypesList);
         mapObj.put("bizGuaranteeInfoList",bizGuaranteeInfoList);
         return  mapObj;
@@ -666,8 +1012,17 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
 
     //得到摘要信息
     public SumInformationVo getSumInformation(Map<String, Object> params) {
-        List<BizDebtSummary>  bizDebtList=provider.queryList(params);
-        BizDebtSummary bizDebt=bizDebtList.get(0);
+        String debtCode = (String)params.get("debtCode");
+        if(debtCode.length()==16){
+            params.put("debtCode",debtCode.substring(0,13));
+            params.put("verNum",Integer.parseInt(debtCode.substring(13)));
+        }else{
+            logger.error("获取摘要信息查询失败，debtCode="+debtCode);
+        }
+
+        Wrapper<BizApprSummaryInfo> wrapper = new EntityWrapper<>();
+        wrapper.eq("VERNUM_",(Integer)params.get("verNum")).eq("DEBT_CODE",(String)params.get("debtCode"));
+        BizApprSummaryInfo bizDebt = bizApprSummaryInfoProvider.selectOne(wrapper);
         SumInformationVo sumInformationVo=new SumInformationVo();
         //债项方案总金额
         sumInformationVo.setTotalAmont(bizDebt.getSolutionAmount());
@@ -684,10 +1039,17 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
         sumInformationVo.setaCurrrency(bizDebt.getaCurrrency());
         //方案其他币种
         sumInformationVo.setOc(bizDebt.getOc());
+
+        BizTRN selTrn = new BizTRN();
+        selTrn.setObjtyp("BIZ_DEBT_MAIN");
+        selTrn.setOwnref((String)params.get("debtCode"));
+        selTrn.setVerNum((Integer) params.get("verNum"));
+
+        BizTRN debtTrn = bizTRNProvider.selectOne(new EntityWrapper<>(selTrn));
         //方案状态
-        sumInformationVo.setSolutionState(bizDebt.getSolutionState());
+        sumInformationVo.setSolutionState(debtTrn.getBizStatus());
         //方案审核状态
-        sumInformationVo.setProcessStatus(bizDebt.getProcessStatus());
+        sumInformationVo.setProcessStatus(debtTrn.getProcessStatus());
         //合同创建状态
         String transok = bizDebt.getTransok();
         sumInformationVo.setTransok(transok);
@@ -701,7 +1063,7 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
             }else{
                 BizCbsErrorMessage bizCbsErrorMessage = new BizCbsErrorMessage();
                 bizCbsErrorMessage.setErrorCode(errNo);
-                BizCbsErrorMessage bizCbsErrorMessage1 = bizCbsErrorMessageProvider.selectOne(bizCbsErrorMessage);
+                BizCbsErrorMessage bizCbsErrorMessage1 = bizCbsErrorMessageProvider.selectOne(new EntityWrapper<>(bizCbsErrorMessage));
                 if(bizCbsErrorMessage1==null){
                     sumInformationVo.setErrorMessage("数据库中无此错误码");
                 }else {
@@ -730,15 +1092,15 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
         //利率描述
         sumInformationVo.setAggregateRates(bizDebt.getDescriptionRateRules());
 
-        List<BizCustomer>custList=new ArrayList<>();
-        //用信主体
-        List<BizPTS>bizPTSList=bizPTSProvider.queryList(params);
+        List<BizCust>custList=new ArrayList<>();
+        //用信主体 用信主体不展示
+        /*List<BizPTS> bizPTSList=bizPTSProvider.queryList(params);
         for (BizPTS bizPTS:bizPTSList){
             if(bizPTS.getRole().equals("LETS")){
-                BizCustomer bizCustomer=bizCustomerProvider.queryById(Long.valueOf(bizPTS.getPtyinr()));
+                BizCust bizCustomer=bizCustProvider.queryById(Long.valueOf(bizPTS.getPtyinr()));
                 custList.add(bizCustomer);
             }
-        }
+        }*/
         sumInformationVo.setCustList(custList);
         //产品组合
         List<BizSingleProductRule> singleList=singleProductRuleProvider.queryList(params);
@@ -783,12 +1145,12 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
 
         //得到客户信息表,先查PTS，再查客户
         List<BizPTS>bizPTSList =bizPTSProvider.queryList(param);
-        List<BizCustomer>customersList=new ArrayList<>();
+        List<BizCust> customersList=new ArrayList<>();
         if(bizPTSList!=null){
             for(BizPTS bizt:bizPTSList){
                 if(bizt.getRole().equals("LETS")){
                     String idCuss=bizt.getPtyinr();
-                    BizCustomer cu= bizCustomerProvider.queryById(Long.valueOf(idCuss));
+                    BizCust cu= bizCustProvider.queryById(Long.valueOf(idCuss));
                     //得到额度类型表
                     Map<String,Object> proLinesMap=new HashMap();
                     proLinesMap.put("debtCode", cu.getDebtCode());
@@ -866,48 +1228,22 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
     //已驳回的删除
     public void checkState(BizDebtSummary bizDebtSummary) {
         String debtCode=bizDebtSummary.getDebtCode();
-        String debtCode1=debtCode.substring(0, 13);
-        String debtCode2=debtCode.substring(13);
+//        String debtCode1=debtCode.substring(0, 13);
+//        String debtCode2=debtCode.substring(13);
+        String vernum = debtCode.substring(13);
+        debtCode=debtCode.substring(0, 13);
 
         //通过debtCode2来判断是否补录的后的驳回，还是修订后的驳回
-        if(debtCode2.equals("001")){
-            BizDebtSummary bizDebtSummary1=new BizDebtSummary();
-            bizDebtSummary1.setDebtCode(debtCode);
-            BizDebtSummary bizDebtSu1=provider.selectOne(bizDebtSummary1);
-            bizDebtSu1.setSolutionState(bizDebtSummary.getSolutionState());
-            provider.update(bizDebtSu1);
-        }else{
-            String debtCode5=null;
-            Long debtCode3=StringUtil.stringToLong(debtCode2);
-            debtCode3=debtCode3-1;
-            String debtCode4=debtCode3.toString();
-            if(debtCode4.length()==1){
-                debtCode5=debtCode1+"00"+debtCode4;
-            }
-            if(debtCode4.length()==2){
-                debtCode5=debtCode1+"0"+debtCode4;
-            }
-            BizDebtSummary bizDebtSummary2=new BizDebtSummary();
-            bizDebtSummary2.setDebtCode(debtCode5);
-            BizDebtSummary bizDebtSummary3= provider.selectOne(bizDebtSummary2);
-            //旧方案状态改成6
-            bizDebtSummary3.setSolutionState(BizStatus.DEBTAVAI);
-            bizDebtSummary3.setProcessStatus(BizStatus.DEPRAPPR);
-            provider.update(bizDebtSummary3);
-            //新方案制成8
-            BizDebtSummary bizDebtS=new BizDebtSummary();
-            bizDebtS.setDebtCode(debtCode);
-            BizDebtSummary bizDebtSu1=provider.selectOne(bizDebtS);
-            bizDebtSu1.setSolutionState(bizDebtSummary.getSolutionState());
-            provider.update(bizDebtSu1);
-        }
-
+        bizDebtSummary.setVerNum(Integer.parseInt(vernum));
+        bizDebtSummary.setDebtCode(debtCode);
+        //修改流水
+        provider.rejectAndDel(bizDebtSummary);
     }
 
     //已驳回的重新提交
     public void ReSaveDebt(Map<String, Object> param) {
         //得到债项方案的id
-        String debtCode=param.get("debtCode").toString();
+       /* String debtCode=param.get("debtCode").toString();
 
         String debtCode1=debtCode.substring(0, 13);
         String debtCode2=debtCode.substring(13);
@@ -933,7 +1269,7 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
         List<BizProductTypes> rentFacList=JSON.parseArray(JSON.toJSONString(param.get("rentFacList")),BizProductTypes.class);
         List<BizSingleProductRule> bizSingleProductRuleList=new ArrayList<>();
         List<BizProductLinesType> productLinesTypesList=new ArrayList<>();
-        Set<BizCustomer> cuSet=new HashSet<>();
+        Set<BizCust> cuSet=new HashSet<>();
         List<BizTheRentFactoring> rentList=new ArrayList<>();
         for (BizProductTypes productTypes:rentFacList){
             //得到单一规则表
@@ -957,9 +1293,9 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
             rentList.add(rent);
 
             //得到额度类型表数据
-            List<BizCustomer> customerList=productTypes.getCustomersList();
+            List<BizCust> customerList=productTypes.getCustomersList();
 
-            for(BizCustomer cus:customerList){
+            for(BizCust cus:customerList){
                 cus.setDebtCode(debtCode);
                 //得到额度类型表数据
                 BizProductLinesType lines=new BizProductLinesType();
@@ -988,7 +1324,7 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
         mapObj.put("productLinesTypesList", productLinesTypesList);
         mapObj.put("userId", userId.toString());
         mapObj.put("list", list);
-        provider.ReSaveDebt(mapObj);
+        provider.ReSaveDebt(mapObj);*/
 
 
     }
@@ -1057,19 +1393,5 @@ public class BizDebtSummaryService extends BaseService<BizDebtSummaryProvider,Bi
     public List<SysDic> getBackground(Map<String, Object> params) {
         List<SysDic>sysDics=sysDicProvider.queryList(params);
         return sysDics;
-    }
-
-
-    /**
-    * @Description:  先查询发放条件是否是废弃6，删除12，已发放5的状态，是的话，允许做修订操作
-    * @Author: xiaoshuiquan
-    * @Date: 2019/2/14
-    */
-    public List<BizDebtGrant> queryGrantStatus(Map<String, Object> params) {
-        Map grantmap=new HashMap();
-        String debtCode=params.get("bizcode").toString();
-        grantmap.put("debtCode", debtCode);
-        List<BizDebtGrant>grantList=debtGrantProvider.queryList(grantmap);
-        return grantList;
     }
 }

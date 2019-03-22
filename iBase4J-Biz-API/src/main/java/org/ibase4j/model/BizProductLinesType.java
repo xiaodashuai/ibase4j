@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -42,6 +43,18 @@ public class BizProductLinesType extends BaseModel implements Serializable {
 	 */
 	@TableField("CREDIT_RATIO")
 	private String creditRatio;
+
+	/**
+	 * 业务表名称 单一产品规则表 表名
+	 *
+	 */
+	@TableField("OBJTYP")
+	private String objtyp;
+	/**
+	 * 业务表INR  单一产品规则表主键
+	 */
+	@TableField("OBJINR")
+	private String objinr;
 
 
 	public String getCustNo() {
@@ -84,7 +97,42 @@ public class BizProductLinesType extends BaseModel implements Serializable {
 		this.creditRatio = creditRatio;
 	}
 
-	public BizProductLinesType() {
+    public String getObjtyp() {
+        return objtyp;
+    }
+
+    public void setObjtyp(String objtyp) {
+        this.objtyp = objtyp;
+    }
+
+    public String getObjinr() {
+        return objinr;
+    }
+
+    public void setObjinr(String objinr) {
+        this.objinr = objinr;
+    }
+
+    public BizProductLinesType() {
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizProductLinesType)) return false;
+		BizProductLinesType that = (BizProductLinesType) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessType(), that.getBusinessType()) &&
+				Objects.equal(getCustNo(), that.getCustNo()) &&
+				Objects.equal(getCreditLinesId(), that.getCreditLinesId()) &&
+				Objects.equal(getCreditRatio(), that.getCreditRatio()) &&
+				Objects.equal(getObjtyp(), that.getObjtyp()) &&
+				Objects.equal(getObjinr(), that.getObjinr());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessType(), getCustNo(), getCreditLinesId(), getCreditRatio(), getObjtyp(), getObjinr());
 	}
 
 	@Override
@@ -95,6 +143,8 @@ public class BizProductLinesType extends BaseModel implements Serializable {
 				.add("custNo", custNo)
 				.add("creditLinesId", creditLinesId)
 				.add("creditRatio", creditRatio)
+				.add("objtyp", objtyp)
+				.add("objinr", objinr)
 				.toString();
 	}
 }

@@ -1,5 +1,7 @@
 package org.ibase4j.vo;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.matrix.engine.foundation.domain.TaskVO;
 
 import java.math.BigDecimal;
@@ -131,5 +133,47 @@ public class BizGrantTaskVo extends TaskVO {
 
     public void setPaymentAmt(Double paymentAmt) {
         this.paymentAmt = paymentAmt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizGrantTaskVo)) return false;
+        BizGrantTaskVo that = (BizGrantTaskVo) o;
+        return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+                Objects.equal(getGrantCode(), that.getGrantCode()) &&
+                Objects.equal(getUserName(), that.getUserName()) &&
+                Objects.equal(getUserNameStart(), that.getUserNameStart()) &&
+                Objects.equal(getCurrency(), that.getCurrency()) &&
+                Objects.equal(getCodeName(), that.getCodeName()) &&
+                Objects.equal(getPaymentAmt(), that.getPaymentAmt()) &&
+                Objects.equal(getScopeBusinPeriod(), that.getScopeBusinPeriod()) &&
+                Objects.equal(getName_(), that.getName_()) &&
+                Objects.equal(getDeptCode(), that.getDeptCode()) &&
+                Objects.equal(getRoleIdNow(), that.getRoleIdNow()) &&
+                Objects.equal(getRoleIdProvider(), that.getRoleIdProvider());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getDebtCode(), getGrantCode(), getUserName(), getUserNameStart(), getCurrency(), getCodeName(), getPaymentAmt(), getScopeBusinPeriod(), getName_(), getDeptCode(), getRoleIdNow(), getRoleIdProvider());
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("debtCode", debtCode)
+                .add("grantCode", grantCode)
+                .add("userName", userName)
+                .add("userNameStart", userNameStart)
+                .add("currency", currency)
+                .add("codeName", codeName)
+                .add("paymentAmt", paymentAmt)
+                .add("scopeBusinPeriod", scopeBusinPeriod)
+                .add("name_", name_)
+                .add("deptCode", deptCode)
+                .add("roleIdNow", roleIdNow)
+                .add("roleIdProvider", roleIdProvider)
+                .toString();
     }
 }

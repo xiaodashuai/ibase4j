@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSON;
 import org.ibase4j.core.Constants;
 import org.ibase4j.core.base.BaseProviderImpl;
 import org.ibase4j.core.support.cache.RedisHelper;
+import org.ibase4j.mapper.BizCustMapper;
 import org.ibase4j.model.BizCust;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author XiaoYu
@@ -22,6 +24,8 @@ public class BizCustProviderImpl extends BaseProviderImpl<BizCust> implements Bi
 
     @Autowired
     private RedisHelper redisHelper;
+    @Autowired
+    private BizCustMapper bizCustomerMapper;
 
     @Override
     public void init() {
@@ -34,6 +38,20 @@ public class BizCustProviderImpl extends BaseProviderImpl<BizCust> implements Bi
             logger.info("==========BizCustProviderImpl===========init==cust=="+ redisHelper.get(Constants.CACHE_BIZCUST_NAMESPACE + cust.getCustNo()+cust.getCustNameCN(),86400));
         }
 
+    }
+
+
+
+    @Override
+    public List queryByCustNo(String custNo) {
+        List customer = bizCustomerMapper.queryByCustNo(custNo);
+        logger.debug(customer);
+        return customer;
+    }
+
+    @Override
+    public List<BizCust> getBizCustomerList(Map<String, Object> params) {
+        return bizCustomerMapper.getBizCustomerList(params);
     }
 }
 

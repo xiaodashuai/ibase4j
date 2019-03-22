@@ -40,6 +40,8 @@
 		<result column="SRV1" property="srv1" jdbcType="VARCHAR" />
 		<result column="PLEDGE_TYPE" property="pledgeType" jdbcType="VARCHAR" />
 		<result column="GUARANTEE_AMOUNT" property="guaranteeAmount" jdbcType="VARCHAR" />
+		<result column="change_num" property="changeNum" jdbcType="INTEGER"/>
+		<result column="IDENT_NUMBER" property="identNumber" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<select id="getBizGuaranteeResultList" resultMap="BizGuaranteeResultMap">
@@ -68,7 +70,7 @@
 	</select>
 
 	<select id="getGuaranteeInfoList" resultMap="BizGuaranteeResultMap">
-		SELECT
+  		SELECT
 		A .GRANT_CODE,
 		B.TYPE_POINT,
 		C.SRV1,
@@ -84,10 +86,38 @@
 		LEFT JOIN BIZ_GUARANTEE_INFO B ON A .GUARAN_TYPE = B.ID_
 		LEFT JOIN BIZ_GUARANTEE_TYPE C ON A .PLEDGE_TYPE = C.CODE_
 		AND C.TYPE_ = '001'
+
 		<where>
+
+		<if test="cm.grantCode != null and cm.grantCode != ''">
+			and A.GRANT_CODE = #{cm.grantCode}
+		</if>
+
+		</where>
+	</select>
+
+	<select id="getGuaranteeRelationInfoList" resultMap="BizGuaranteeResultMap">
+		SELECT
+		A .GRANT_CODE,
+		C.SRV1,
+		A.GUARANTOR_CUST_ID,
+		A.WARRANTY_CONTRACT_NUMBER,
+		A .PLEDGE_TYPE,
+		A .CLEAR_RATIO_AMT,
+		A .NOT_CLEAR_AMT,
+		bdg.IDENT_NUMBER,
+		A.change_num
+		FROM
+		BIZ_GUARANTEE_RESULT A
+		LEFT JOIN BIZ_GUARANTEE_TYPE C ON A .PLEDGE_TYPE = C.CODE_
+		AND C.TYPE_ = '001'
+		JOIN biz_debt_grant bdg ON A.GRANT_CODE = bdg.GRANT_CODE
+		<where>
+			AND 	(bdg.change_num = a.change_num or  a.change_num  = bdg.change_num -1)
 			<if test="cm.grantCode != null and cm.grantCode != ''">
 				and A.GRANT_CODE = #{cm.grantCode}
 			</if>
+			order by A.change_num DESC
 		</where>
 	</select>
 

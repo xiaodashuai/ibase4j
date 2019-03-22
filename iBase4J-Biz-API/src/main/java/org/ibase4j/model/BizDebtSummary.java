@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 import org.ibase4j.vo.ProductVo;
 
@@ -37,6 +38,16 @@ public class BizDebtSummary extends BaseModel implements Serializable {
 	 */
 	@TableField("BANK_TELL_ID")
 	private Long bankTellerId;
+	/**
+	 * 创建人id
+	 */
+	@TableField("CREATE_PERSON_ID")
+	private Long createPersonId;
+	/**
+	 * 创建人名称
+	 */
+	@TableField(exist=false)
+	private String createPersonName;
 	/**
 	 * 流程发起时间
 	 */
@@ -281,6 +292,22 @@ public class BizDebtSummary extends BaseModel implements Serializable {
 	 */
 	@TableField(exist=false)
 	private String deptName;
+
+	/**
+	 * 版本号：记录方案变更版本;
+	 */
+	@TableField("VERNUM_")
+	private Integer verNum;
+	/**
+	 * 创建人客户号
+	 */
+	@TableField("CREATE_PERSON_NUM")
+	private String createPersonNum;
+	/**
+	 * 创建人名称
+	 */
+	@TableField("CREATE_PERSON_NAME")
+	private String createPersonName;
 
 	public String getHistoryState() {
 		return historyState;
@@ -654,6 +681,22 @@ public class BizDebtSummary extends BaseModel implements Serializable {
 		this.processStatus = processStatus;
 	}
 
+	public Long getCreatePersonId() {
+		return createPersonId;
+	}
+
+	public void setCreatePersonId(Long createPersonId) {
+		this.createPersonId = createPersonId;
+	}
+
+	public String getCreatePersonName() {
+		return createPersonName;
+	}
+
+	public void setCreatePersonName(String createPersonName) {
+		this.createPersonName = createPersonName;
+	}
+
 	public String getSolutionAmountStr() {
 		if(solutionAmount!=null){
 			DecimalFormat numberFormat = new DecimalFormat(",###.00");
@@ -665,16 +708,171 @@ public class BizDebtSummary extends BaseModel implements Serializable {
 	public void setSolutionAmountStr(String solutionAmountStr) {
 		this.solutionAmountStr = solutionAmountStr;
 	}
+	
+	public Integer getVerNum() {
+		return verNum;
+	}
 
+	public String getVerNumStr() {
+		return String.format("%0" + 3 + "d", verNum);
+	}
+
+	public void setVerNum(Integer verNum) {
+		this.verNum = verNum;
+	}
+
+<<<<<<< HEAD
     public BizDebtSummary() {
+=======
+	public String getCreatePersonNum() {
+		return createPersonNum == "" ? null : createPersonNum;
+	}
+
+	public void setCreatePersonNum(String createPersonNum) {
+		this.createPersonNum = createPersonNum;
+	}
+
+	public String getCreatePersonName() {
+		return createPersonName == "" ? null : createPersonName;
+	}
+
+	public void setCreatePersonName(String createPersonName) {
+		this.createPersonName = createPersonName;
+	}
+
+	public BizDebtSummary() {
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
     }
 
-    @Override
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+<<<<<<< HEAD
+		if (o == null || getClass() != o.getClass()) return false;
+		BizDebtSummary that = (BizDebtSummary) o;
+		return java.util.Objects.equals(debtCode, that.debtCode) &&
+				java.util.Objects.equals(projectName, that.projectName) &&
+				java.util.Objects.equals(bankTellerId, that.bankTellerId) &&
+				java.util.Objects.equals(createPersonId, that.createPersonId) &&
+				java.util.Objects.equals(createPersonName, that.createPersonName) &&
+				java.util.Objects.equals(processInitiatTime, that.processInitiatTime) &&
+				java.util.Objects.equals(validityCcycleGauge, that.validityCcycleGauge) &&
+				java.util.Objects.equals(pgEffectivDate, that.pgEffectivDate) &&
+				java.util.Objects.equals(pgExpiDate, that.pgExpiDate) &&
+				java.util.Objects.equals(ls, that.ls) &&
+				java.util.Objects.equals(ruleType, that.ruleType) &&
+				java.util.Objects.equals(ltnopa, that.ltnopa) &&
+				java.util.Objects.equals(tdwln, that.tdwln) &&
+				java.util.Objects.equals(mpc, that.mpc) &&
+				java.util.Objects.equals(solutionAmount, that.solutionAmount) &&
+				java.util.Objects.equals(aCurrrency, that.aCurrrency) &&
+				java.util.Objects.equals(oc, that.oc) &&
+				java.util.Objects.equals(dopo, that.dopo) &&
+				java.util.Objects.equals(progRateType, that.progRateType) &&
+				java.util.Objects.equals(schemeRateForm, that.schemeRateForm) &&
+				java.util.Objects.equals(rateRangeMix, that.rateRangeMix) &&
+				java.util.Objects.equals(rateRangeMax, that.rateRangeMax) &&
+				java.util.Objects.equals(packageRate, that.packageRate) &&
+				java.util.Objects.equals(approve, that.approve) &&
+				java.util.Objects.equals(raaa, that.raaa) &&
+				java.util.Objects.equals(whetherRateDiscount, that.whetherRateDiscount) &&
+				java.util.Objects.equals(programRateDiscount, that.programRateDiscount) &&
+				java.util.Objects.equals(descriptionProgramQuoqate, that.descriptionProgramQuoqate) &&
+				java.util.Objects.equals(descriptionRateRules, that.descriptionRateRules) &&
+				java.util.Objects.equals(brifBackground, that.brifBackground) &&
+				java.util.Objects.equals(tradBackground, that.tradBackground) &&
+				java.util.Objects.equals(businessBackgroundBrief, that.businessBackgroundBrief) &&
+				java.util.Objects.equals(goodsSketch, that.goodsSketch) &&
+				java.util.Objects.equals(policyDescription, that.policyDescription) &&
+				java.util.Objects.equals(policy, that.policy) &&
+				java.util.Objects.equals(proposer, that.proposer) &&
+				java.util.Objects.equals(proposerNum, that.proposerNum) &&
+				java.util.Objects.equals(singleBtch, that.singleBtch) &&
+				java.util.Objects.equals(institutionCode, that.institutionCode) &&
+				java.util.Objects.equals(debtTrnCode, that.debtTrnCode) &&
+				java.util.Objects.equals(identNumber, that.identNumber) &&
+				java.util.Objects.equals(errNo, that.errNo) &&
+				java.util.Objects.equals(transok, that.transok) &&
+				java.util.Objects.equals(processStatus, that.processStatus) &&
+				java.util.Objects.equals(historyState, that.historyState) &&
+				java.util.Objects.equals(solutionState, that.solutionState) &&
+				java.util.Objects.equals(productSet, that.productSet) &&
+				java.util.Objects.equals(solutionAmountStr, that.solutionAmountStr) &&
+				java.util.Objects.equals(deptName, that.deptName) &&
+				java.util.Objects.equals(verNum, that.verNum);
+=======
+		if (!(o instanceof BizDebtSummary)) return false;
+		BizDebtSummary that = (BizDebtSummary) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getProjectName(), that.getProjectName()) &&
+				Objects.equal(getBankTellerId(), that.getBankTellerId()) &&
+				Objects.equal(getProcessInitiatTime(), that.getProcessInitiatTime()) &&
+				Objects.equal(getValidityCcycleGauge(), that.getValidityCcycleGauge()) &&
+				Objects.equal(getPgEffectivDate(), that.getPgEffectivDate()) &&
+				Objects.equal(getPgExpiDate(), that.getPgExpiDate()) &&
+				Objects.equal(getLs(), that.getLs()) &&
+				Objects.equal(getRuleType(), that.getRuleType()) &&
+				Objects.equal(getLtnopa(), that.getLtnopa()) &&
+				Objects.equal(getTdwln(), that.getTdwln()) &&
+				Objects.equal(getMpc(), that.getMpc()) &&
+				Objects.equal(getSolutionAmount(), that.getSolutionAmount()) &&
+				Objects.equal(getaCurrrency(), that.getaCurrrency()) &&
+				Objects.equal(getOc(), that.getOc()) &&
+				Objects.equal(getDopo(), that.getDopo()) &&
+				Objects.equal(getProgRateType(), that.getProgRateType()) &&
+				Objects.equal(getSchemeRateForm(), that.getSchemeRateForm()) &&
+				Objects.equal(getRateRangeMix(), that.getRateRangeMix()) &&
+				Objects.equal(getRateRangeMax(), that.getRateRangeMax()) &&
+				Objects.equal(getPackageRate(), that.getPackageRate()) &&
+				Objects.equal(getApprove(), that.getApprove()) &&
+				Objects.equal(getRaaa(), that.getRaaa()) &&
+				Objects.equal(getWhetherRateDiscount(), that.getWhetherRateDiscount()) &&
+				Objects.equal(getProgramRateDiscount(), that.getProgramRateDiscount()) &&
+				Objects.equal(getDescriptionProgramQuoqate(), that.getDescriptionProgramQuoqate()) &&
+				Objects.equal(getDescriptionRateRules(), that.getDescriptionRateRules()) &&
+				Objects.equal(getBrifBackground(), that.getBrifBackground()) &&
+				Objects.equal(getTradBackground(), that.getTradBackground()) &&
+				Objects.equal(getBusinessBackgroundBrief(), that.getBusinessBackgroundBrief()) &&
+				Objects.equal(getGoodsSketch(), that.getGoodsSketch()) &&
+				Objects.equal(getPolicyDescription(), that.getPolicyDescription()) &&
+				Objects.equal(getPolicy(), that.getPolicy()) &&
+				Objects.equal(getProposer(), that.getProposer()) &&
+				Objects.equal(getProposerNum(), that.getProposerNum()) &&
+				Objects.equal(getSingleBtch(), that.getSingleBtch()) &&
+				Objects.equal(getInstitutionCode(), that.getInstitutionCode()) &&
+				Objects.equal(getDebtTrnCode(), that.getDebtTrnCode()) &&
+				Objects.equal(getIdentNumber(), that.getIdentNumber()) &&
+				Objects.equal(getErrNo(), that.getErrNo()) &&
+				Objects.equal(getTransok(), that.getTransok()) &&
+				Objects.equal(getProcessStatus(), that.getProcessStatus()) &&
+				Objects.equal(getHistoryState(), that.getHistoryState()) &&
+				Objects.equal(getSolutionState(), that.getSolutionState()) &&
+				Objects.equal(getSolutionAmountStr(), that.getSolutionAmountStr()) &&
+				Objects.equal(getDeptName(), that.getDeptName()) &&
+				Objects.equal(getVerNum(), that.getVerNum()) &&
+				Objects.equal(getCreatePersonNum(), that.getCreatePersonNum()) &&
+				Objects.equal(getCreatePersonName(), that.getCreatePersonName());
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
+	}
+
+	@Override
+	public int hashCode() {
+<<<<<<< HEAD
+
+		return java.util.Objects.hash(debtCode, projectName, bankTellerId, createPersonId, createPersonName, processInitiatTime, validityCcycleGauge, pgEffectivDate, pgExpiDate, ls, ruleType, ltnopa, tdwln, mpc, solutionAmount, aCurrrency, oc, dopo, progRateType, schemeRateForm, rateRangeMix, rateRangeMax, packageRate, approve, raaa, whetherRateDiscount, programRateDiscount, descriptionProgramQuoqate, descriptionRateRules, brifBackground, tradBackground, businessBackgroundBrief, goodsSketch, policyDescription, policy, proposer, proposerNum, singleBtch, institutionCode, debtTrnCode, identNumber, errNo, transok, processStatus, historyState, solutionState, productSet, solutionAmountStr, deptName, verNum);
+=======
+		return Objects.hashCode(getDebtCode(), getProjectName(), getBankTellerId(), getProcessInitiatTime(), getValidityCcycleGauge(), getPgEffectivDate(), getPgExpiDate(), getLs(), getRuleType(), getLtnopa(), getTdwln(), getMpc(), getSolutionAmount(), getaCurrrency(), getOc(), getDopo(), getProgRateType(), getSchemeRateForm(), getRateRangeMix(), getRateRangeMax(), getPackageRate(), getApprove(), getRaaa(), getWhetherRateDiscount(), getProgramRateDiscount(), getDescriptionProgramQuoqate(), getDescriptionRateRules(), getBrifBackground(), getTradBackground(), getBusinessBackgroundBrief(), getGoodsSketch(), getPolicyDescription(), getPolicy(), getProposer(), getProposerNum(), getSingleBtch(), getInstitutionCode(), getDebtTrnCode(), getIdentNumber(), getErrNo(), getTransok(), getProcessStatus(), getHistoryState(), getSolutionState(), getSolutionAmountStr(), getDeptName(), getVerNum(), getCreatePersonNum(), getCreatePersonName());
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
+	}
+
+	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("debtCode", debtCode)
 				.add("projectName", projectName)
 				.add("bankTellerId", bankTellerId)
+				.add("createPersonId", createPersonId)
+				.add("createPersonName", createPersonName)
 				.add("processInitiatTime", processInitiatTime)
 				.add("validityCcycleGauge", validityCcycleGauge)
 				.add("pgEffectivDate", pgEffectivDate)
@@ -719,6 +917,12 @@ public class BizDebtSummary extends BaseModel implements Serializable {
 				.add("productSet", productSet)
 				.add("solutionAmountStr", solutionAmountStr)
 				.add("deptName", deptName)
+				.add("verNum", verNum)
+<<<<<<< HEAD
+=======
+				.add("createPersonNum", createPersonNum)
+				.add("createPersonName", createPersonName)
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 				.toString();
 	}
 }

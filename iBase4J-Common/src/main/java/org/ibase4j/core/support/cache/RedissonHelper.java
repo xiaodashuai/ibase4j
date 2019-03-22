@@ -210,4 +210,32 @@ public class RedissonHelper implements CacheManager {
     public boolean lock(String key, String requestId, int seconds) {
         return redissonClient.getBucket(key).trySet(requestId, seconds, TimeUnit.SECONDS);
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public Long zadd(String key, Set<ZSetOperations.TypedTuple<Serializable>> tuples) {
+        return null;
+    }
+
+    @Override
+    public Boolean zadd(String key, Serializable value, double score) {
+        return null;
+    }
+
+    @Override
+    public Set<Serializable> zget(String key, Long Smin, Long Smax, int offset, int count) {
+        return null;
+    }
+
+    @Override
+    public Set<Serializable> zgetDesc(String key, Long Smin, Long Smax, int offset, int count) {
+        return null;
+    }
+
+    @Override
+    public List zgetAll(String key) {
+        return null;
+    }
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 }

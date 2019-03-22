@@ -7,6 +7,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -101,5 +102,23 @@ public class BizLeave extends BaseModel implements Serializable {
 				.add("reason", reason)
 				.add("piid", piid)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizLeave)) return false;
+		BizLeave bizLeave = (BizLeave) o;
+		return Objects.equal(getTitle(), bizLeave.getTitle()) &&
+				Objects.equal(getDays(), bizLeave.getDays()) &&
+				Objects.equal(getStartDate(), bizLeave.getStartDate()) &&
+				Objects.equal(getEndDate(), bizLeave.getEndDate()) &&
+				Objects.equal(getReason(), bizLeave.getReason()) &&
+				Objects.equal(getPiid(), bizLeave.getPiid());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getTitle(), getDays(), getStartDate(), getEndDate(), getReason(), getPiid());
 	}
 }

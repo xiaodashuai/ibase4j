@@ -52,7 +52,7 @@ public class BizRentalFactoringController extends BaseController {
 		// 查询用信主体
 		Map<String, Object> debtCodeMap = new HashMap<>();
 		debtCodeMap.put("debtCode", debtCode);
-		List<BizCustomer> customerList = bizCustomerService.getBizCustomerList(debtCodeMap);
+		List<BizCust> customerList = bizCustomerService.getBizCustomerList(debtCodeMap);
 
 		List<BizDebtSummary> bizDebtSummaryList = bizDebtSummaryService.queryList(debtCodeMap);
 		BizDebtSummary bizDebtSummary = bizDebtSummaryList.get(0);
@@ -88,7 +88,7 @@ public class BizRentalFactoringController extends BaseController {
 		// 查询用信主体
 		Map<String, Object> query = new HashMap<String, Object>();
 		query.put("debtCode", debtCode);
-		List<BizCustomer> customerList = bizCustomerService.getBizCustomerList(query);
+		List<BizCust> customerList = bizCustomerService.getBizCustomerList(query);
 		return setSuccessModelMap(modelMap, customerList);
 	}
 	

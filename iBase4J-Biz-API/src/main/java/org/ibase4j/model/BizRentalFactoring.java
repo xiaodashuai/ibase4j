@@ -6,6 +6,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -58,9 +59,6 @@ public class BizRentalFactoring extends BaseModel implements Serializable {
 
 	@TableField("FINANCE_PLATFORM") // 承租人是否是地方性融资平台
 	private String financePlatform;
-	
-	@TableField("REN_FILE_NAME") // 租金保理合同附件名称
-	private String renFileName;
 
 	public String getDebtCode() {
 		return debtCode;
@@ -166,14 +164,6 @@ public class BizRentalFactoring extends BaseModel implements Serializable {
 		this.financePlatform = financePlatform;
 	}
 
-	public String getRenFileName() {
-		return renFileName;
-	}
-
-	public void setRenFileName(String renFileName) {
-		this.renFileName = renFileName;
-	}
-
 	public BizRentalFactoring() {
 	}
 
@@ -194,5 +184,30 @@ public class BizRentalFactoring extends BaseModel implements Serializable {
 				.add("iouCode", iouCode)
 				.add("financePlatform", financePlatform)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizRentalFactoring)) return false;
+		BizRentalFactoring that = (BizRentalFactoring) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessTypes(), that.getBusinessTypes()) &&
+				Objects.equal(getGrantCode(), that.getGrantCode()) &&
+				Objects.equal(getLeasehold(), that.getLeasehold()) &&
+				Objects.equal(getBizRentalFactoringCode(), that.getBizRentalFactoringCode()) &&
+				Objects.equal(getLesseName(), that.getLesseName()) &&
+				Objects.equal(getLesseCode(), that.getLesseCode()) &&
+				Objects.equal(getLesseRate(), that.getLesseRate()) &&
+				Objects.equal(getIndustryInvestment(), that.getIndustryInvestment()) &&
+				Objects.equal(getBackgroundNationality(), that.getBackgroundNationality()) &&
+				Objects.equal(getRepaymentType(), that.getRepaymentType()) &&
+				Objects.equal(getIouCode(), that.getIouCode()) &&
+				Objects.equal(getFinancePlatform(), that.getFinancePlatform());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessTypes(), getGrantCode(), getLeasehold(), getBizRentalFactoringCode(), getLesseName(), getLesseCode(), getLesseRate(), getIndustryInvestment(), getBackgroundNationality(), getRepaymentType(), getIouCode(), getFinancePlatform());
 	}
 }

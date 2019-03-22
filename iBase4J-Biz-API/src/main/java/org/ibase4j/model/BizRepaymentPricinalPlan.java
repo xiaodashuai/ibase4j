@@ -6,6 +6,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -99,5 +100,22 @@ public class BizRepaymentPricinalPlan extends BaseModel implements Serializable 
 				.add("principalAmy", principalAmy)
 				.add("payCny", payCny)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizRepaymentPricinalPlan)) return false;
+		BizRepaymentPricinalPlan that = (BizRepaymentPricinalPlan) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getGrantCode(), that.getGrantCode()) &&
+				Objects.equal(getPayDate(), that.getPayDate()) &&
+				Objects.equal(getPrincipalAmy(), that.getPrincipalAmy()) &&
+				Objects.equal(getPayCny(), that.getPayCny());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getGrantCode(), getPayDate(), getPrincipalAmy(), getPayCny());
 	}
 }

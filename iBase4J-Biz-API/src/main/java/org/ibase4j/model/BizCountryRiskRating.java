@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -86,5 +87,22 @@ public class BizCountryRiskRating extends BaseModel implements Serializable {
 				.add("shortEN", shortEN)
 				.add("riskLevel", riskLevel)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizCountryRiskRating)) return false;
+		BizCountryRiskRating that = (BizCountryRiskRating) o;
+		return Objects.equal(getCode(), that.getCode()) &&
+				Objects.equal(getNameCN(), that.getNameCN()) &&
+				Objects.equal(getNameEN(), that.getNameEN()) &&
+				Objects.equal(getShortEN(), that.getShortEN()) &&
+				Objects.equal(getRiskLevel(), that.getRiskLevel());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getCode(), getNameCN(), getNameEN(), getShortEN(), getRiskLevel());
 	}
 }

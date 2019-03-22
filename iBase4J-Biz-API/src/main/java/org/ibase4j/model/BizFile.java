@@ -2,9 +2,11 @@ package org.ibase4j.model;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
+import java.util.Date;
 
 
 @TableName("BIZ_FILE")
@@ -30,6 +32,9 @@ public class BizFile extends BaseModel implements Serializable {
 
     @TableField("FILE_TYPE")
     private String fileType;
+
+    @TableField("ISSUEDATE")
+    private Date issueDate;
 
     @TableField("URL_")
     private String URL;
@@ -92,6 +97,10 @@ public class BizFile extends BaseModel implements Serializable {
         this.realName = realName;
     }
 
+    public Date getIssueDate() { return issueDate; }
+
+    public void setIssueDate(Date issueDate) { this.issueDate = issueDate; }
+
     public String getFileType() {
         return fileType;
     }
@@ -143,12 +152,34 @@ public class BizFile extends BaseModel implements Serializable {
                 .add("fileName", fileName)
                 .add("realName", realName)
                 .add("fileType", fileType)
+                .add("issueDate", issueDate)
                 .add("URL", URL)
                 .add("size_", size_)
                 .add("ext", ext)
                 .toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizFile)) return false;
+        BizFile bizFile = (BizFile) o;
+        return Objects.equal(getBizCode(), bizFile.getBizCode()) &&
+                Objects.equal(getBizType(), bizFile.getBizType()) &&
+                Objects.equal(getProduct(), bizFile.getProduct()) &&
+                Objects.equal(getFieldName(), bizFile.getFieldName()) &&
+                Objects.equal(getFileName(), bizFile.getFileName()) &&
+                Objects.equal(getRealName(), bizFile.getRealName()) &&
+                Objects.equal(getFileType(), bizFile.getFileType()) &&
+                Objects.equal(getIssueDate(), bizFile.getIssueDate()) &&
+                Objects.equal(getURL(), bizFile.getURL()) &&
+                Objects.equal(getSize_(), bizFile.getSize_()) &&
+                Objects.equal(getExt(), bizFile.getExt());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getBizCode(), getBizType(), getProduct(), getFieldName(), getFileName(), getRealName(), getFileType(),getIssueDate(), getURL(), getSize_(), getExt());
+    }
 }
 

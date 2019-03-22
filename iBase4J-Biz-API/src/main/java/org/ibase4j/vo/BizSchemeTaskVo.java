@@ -1,5 +1,7 @@
 package org.ibase4j.vo;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.matrix.engine.foundation.domain.TaskVO;
 
 import java.math.BigDecimal;
@@ -27,6 +29,8 @@ public class BizSchemeTaskVo extends TaskVO {
     private String roleIdNow;
     //roleIdProvider
     private String roleIdProvider;
+    //添加版本号
+    private Integer verNum;
 
 
     public String getDebtCode() {
@@ -117,5 +121,58 @@ public class BizSchemeTaskVo extends TaskVO {
 
     public void setSolutionAmt(Double solutionAmt) {
         this.solutionAmt = solutionAmt;
+    }
+
+    public Integer getVerNum() {
+        return verNum;
+    }
+
+    public void setVerNum(Integer verNum) {
+        this.verNum = verNum;
+    }
+    public String getVerNumStr() {
+        return String.format("%0" + 3 + "d", verNum);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizSchemeTaskVo)) return false;
+        BizSchemeTaskVo that = (BizSchemeTaskVo) o;
+        return Objects.equal(getProjectName(), that.getProjectName()) &&
+                Objects.equal(getDebtCode(), that.getDebtCode()) &&
+                Objects.equal(getMainCurrency(), that.getMainCurrency()) &&
+                Objects.equal(getMainCodeName(), that.getMainCodeName()) &&
+                Objects.equal(getProposer(), that.getProposer()) &&
+                Objects.equal(getSolutionAmt(), that.getSolutionAmt()) &&
+                Objects.equal(getRoleCode(), that.getRoleCode()) &&
+                Objects.equal(getRoleName(), that.getRoleName()) &&
+                Objects.equal(getUserNameStart(), that.getUserNameStart()) &&
+                Objects.equal(getRoleIdNow(), that.getRoleIdNow()) &&
+                Objects.equal(getRoleIdProvider(), that.getRoleIdProvider()) &&
+                Objects.equal(getVerNum(), that.getVerNum());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getProjectName(), getDebtCode(), getMainCurrency(), getMainCodeName(), getProposer(), getSolutionAmt(), getRoleCode(), getRoleName(), getUserNameStart(), getRoleIdNow(), getRoleIdProvider(), getVerNum());
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("projectName", projectName)
+                .add("debtCode", debtCode)
+                .add("mainCurrency", mainCurrency)
+                .add("mainCodeName", mainCodeName)
+                .add("proposer", proposer)
+                .add("solutionAmt", solutionAmt)
+                .add("roleCode", roleCode)
+                .add("roleName", roleName)
+                .add("userNameStart", userNameStart)
+                .add("roleIdNow", roleIdNow)
+                .add("roleIdProvider", roleIdProvider)
+                .add("verNum", verNum)
+                .toString();
     }
 }

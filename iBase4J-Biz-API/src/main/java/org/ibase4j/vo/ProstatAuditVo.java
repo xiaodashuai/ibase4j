@@ -1,5 +1,8 @@
 package org.ibase4j.vo;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+
 public class ProstatAuditVo implements java.io.Serializable {
 	private Long id;
 	private String userId;
@@ -117,5 +120,49 @@ public class ProstatAuditVo implements java.io.Serializable {
 
 	public void setTdid(String tdid) {
 		this.tdid = tdid;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ProstatAuditVo)) return false;
+		ProstatAuditVo that = (ProstatAuditVo) o;
+		return isSubmit() == that.isSubmit() &&
+				Objects.equal(getId(), that.getId()) &&
+				Objects.equal(getUserId(), that.getUserId()) &&
+				Objects.equal(getUserName(), that.getUserName()) &&
+				Objects.equal(getAuditOpinion(), that.getAuditOpinion()) &&
+				Objects.equal(getActivityName(), that.getActivityName()) &&
+				Objects.equal(getAdid(), that.getAdid()) &&
+				Objects.equal(getAiid(), that.getAiid()) &&
+				Objects.equal(getPiid(), that.getPiid()) &&
+				Objects.equal(getPtid(), that.getPtid()) &&
+				Objects.equal(getSubject(), that.getSubject()) &&
+				Objects.equal(getTaskId(), that.getTaskId()) &&
+				Objects.equal(getTdid(), that.getTdid());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getId(), getUserId(), getUserName(), getAuditOpinion(), getActivityName(), getAdid(), getAiid(), getPiid(), getPtid(), getSubject(), isSubmit(), getTaskId(), getTdid());
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("id", id)
+				.add("userId", userId)
+				.add("userName", userName)
+				.add("auditOpinion", auditOpinion)
+				.add("activityName", activityName)
+				.add("adid", adid)
+				.add("aiid", aiid)
+				.add("piid", piid)
+				.add("ptid", ptid)
+				.add("subject", subject)
+				.add("isSubmit", isSubmit)
+				.add("taskId", taskId)
+				.add("tdid", tdid)
+				.toString();
 	}
 }

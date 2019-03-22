@@ -100,57 +100,13 @@
 		<result column="SEND_DATE" property="sendDate" jdbcType="DATE"/>
 		<result column="END_DATE" property="endDate" jdbcType="DATE"/>
 
+
+
+
+
+
 	</resultMap>
 
-	<select id="getMakeLoansDebts" resultMap="MakeLoansDebtsMap">
-		SELECT
-			TO_CHAR (A .ID_) ID_,
-			A .DEBT_CODE,
-			A .GRANT_CODE,
-			A .BUSINESS_TYPES,
-			A .GRANT_STATUS,
-			A.PASS_DATE,
-			CASE A .GRANT_STATUS
-				WHEN 1 THEN
-				'已变更'
-				WHEN 3 THEN
-				'已批未放'
-				WHEN 4 THEN
-				'发放中'
-				WHEN 5 THEN
-				'已发放'
-				WHEN 11 THEN
-				'冻结'
-			END GRANT_STATUS_STRING,
-			A .SCOPE_BUSIN_PERIOD,
-			B.PROPOSER,
-			C.NAME_
-		FROM
-		BIZ_DEBT_GRANT A
-		INNER JOIN BIZ_DEBT_MAIN B ON A .DEBT_CODE = B.DEBT_CODE
-		INNER JOIN BIZ_PRODUCT_TYPES C ON A .BUSINESS_TYPES = C.CODE_
-		<where>
-			A .GRANT_STATUS IN (1,3,4,5,11)
-			<if test="cm.grantCode != null and cm.grantCode != ''">
-				and (A.GRANT_CODE like '%'||#{cm.grantCode}||'%')
-			</if>
-			<if test="cm.proposer != null and cm.proposer != ''">
-				and (B.PROPOSER like '%'||#{cm.proposer}||'%')
-			</if>
-			<if test="cm.productName != null and cm.productName != ''">
-				and (C.NAME_ like '%'||#{cm.productName}||'%')
-			</if>
-			<if test="cm.beginDate != null and cm.beginDate != ''">
-        			and A.PASS_DATE &gt;=  TO_DATE(#{cm.beginDate}, 'yyyy-mm-dd')
-			</if>
-			<if test="cm.endDate != null and cm.endDate != ''">
-            		and A.PASS_DATE &lt;= TO_DATE(#{cm.endDate}, 'yyyy-mm-dd')
-			</if>
-			<if test="cm.institutionCode != null and cm.institutionCode != ''">
-				and A.INSTITUTION_CODE = #{cm.institutionCode}
-			</if>
-		</where>
-	</select>
 
 	<select id="getDebtInfoForMakeLoan" resultMap="MakeLoansDebtsMap">
 		SELECT
@@ -171,8 +127,8 @@
 		B.BANK_TELL_ID,
 		C.USER_NAME,
 		C.DEPT_CODE,
-		D .DEPT_NAME,
-		E .NAME_
+		D.DEPT_NAME,
+		E.NAME_
 		FROM
 		BIZ_DEBT_GRANT A
 		INNER JOIN BIZ_DEBT_MAIN B ON A .DEBT_CODE = B.DEBT_CODE
@@ -193,33 +149,39 @@
 	</select>
 
 	<select id="getProductCustomerInfo" resultMap="MakeLoansDebtsMap">
-		SELECT
-		A .CUST_NAME_CN,
-		C.CREDIT_RATIO,
-		A .CUST_NO,
-		D .CREDIT_NO,
-		D .AMOUNT_TYPE,
-		D .CREDIT_LINE_NAME
-		FROM
-		BIZ_CUSTOMER A
-		INNER JOIN BIZ_PTS B ON A .DEBT_CODE = B.DEBT_CODE
-		AND B.ROL = 'LETS'
-		AND A .ID_ = B.PTYINR
-		INNER JOIN BIZ_PRODUCT_LINESTYPE C ON A .DEBT_CODE = C.DEBT_CODE
-		AND C.CUST_NO = A .CUST_NO
-		INNER JOIN BIZ_CREDIT_LINES D ON D .DEBT_CODE = A .DEBT_CODE
-		AND D .OBJTYP = 'BIZ_DEBT_MAIN'
-		AND D .AMOUNT_TYPE = C.BIZ_CREDIT_LINES_ID
-		AND D.CUST_NO = C.CUST_NO
+		SELECT cust.CUST_NAME_CN,
+		ltype.CREDIT_RATIO,
+		cust.CUST_NO,
+		lines.CREDIT_NO,
+		lines.AMOUNT_TYPE,
+		lines.CREDIT_LINE_NAME
+		FROM BIZ_CUST cust
+		INNER JOIN BIZ_PTS pts
+		ON pts.ROL = 'LETS'
+		AND pts.OBJTYP = 'BIZ_SIGLE_PRODUCT_RULE'
+		AND pts.PTYINR = cust.id_
+		INNER JOIN biz_sigle_product_rule pdt
+		ON pts.OBJINR = pdt.ID_
+		AND pts.DEBT_CODE = pdt.DEBT_CODE
+		INNER JOIN BIZ_PRODUCT_LINESTYPE ltype
+		ON ltype.DEBT_CODE = pdt.DEBT_CODE
+		AND ltype.CUST_NO = cust.CUST_NO
+		INNER JOIN BIZ_CREDIT_LINES lines
+		ON lines.DEBT_CODE = pdt.DEBT_CODE
+		AND lines.OBJTYP = 'BIZ_DEBT_MAIN'
+		AND lines.AMOUNT_TYPE = ltype.BIZ_CREDIT_LINES_ID
+		AND lines.CUST_NO = ltype.CUST_NO
 		<where>
 			<if test="cm.debtCode != null and cm.debtCode != ''">
-				and A.DEBT_CODE = #{cm.debtCode}
+				AND pdt.DEBT_CODE = #{cm.debtCode}
 			</if>
 			<if test="cm.businessTypes != null and cm.businessTypes != ''">
-				and C.BUSINESS_TYPE = #{cm.businessTypes}
+				AND ltype.BUSINESS_TYPE = #{cm.businessTypes}
 			</if>
 		</where>
 	</select>
+
+
 
 	<select id="getDebtStandingBookList" resultMap="MakeLoansDebtsMap">
 		SELECT

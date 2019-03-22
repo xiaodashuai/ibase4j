@@ -19,4 +19,11 @@ public interface BizCntProvider extends BaseProvider<BizCnt> {
      * 根据参数名获取下个序号，不存在返回1,前面补0,m为长度(4:0001)
      */
     String getNextNumberFormat(String name, int format);
+
+    /**
+     * 新增获取当前的号码;
+     * @param name
+     * @return
+     */
+    public int getNumber(String name);
 }

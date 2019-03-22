@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -91,57 +92,21 @@ public class BizSession extends BaseModel implements Serializable {
         this.startTime = startTime;
     }
 
-    /**
-     */
     @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        BizSession other = (BizSession) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getSessionId() == null ? other.getSessionId() == null
-                : this.getSessionId().equals(other.getSessionId()))
-                && (this.getAccount() == null ? other.getAccount() == null : this.getAccount().equals(other.getAccount()))
-                && (this.getIp() == null ? other.getIp() == null : this.getIp().equals(other.getIp()))
-                && (this.getStartTime() == null ? other.getStartTime() == null
-                : this.getStartTime().equals(other.getStartTime()))
-                && (this.getEnable() == null ? other.getEnable() == null : this.getEnable().equals(other.getEnable()))
-                && (this.getRemark() == null ? other.getRemark() == null : this.getRemark().equals(other.getRemark()))
-                && (this.getCreateTime() == null ? other.getCreateTime() == null
-                : this.getCreateTime().equals(other.getCreateTime()))
-                && (this.getCreateBy() == null ? other.getCreateBy() == null
-                : this.getCreateBy().equals(other.getCreateBy()))
-                && (this.getUpdateTime() == null ? other.getUpdateTime() == null
-                : this.getUpdateTime().equals(other.getUpdateTime()))
-                && (this.getUpdateBy() == null ? other.getUpdateBy() == null
-                : this.getUpdateBy().equals(other.getUpdateBy()));
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizSession)) return false;
+        BizSession that = (BizSession) o;
+        return Objects.equal(getSessionId(), that.getSessionId()) &&
+                Objects.equal(getAccount(), that.getAccount()) &&
+                Objects.equal(getIp(), that.getIp()) &&
+                Objects.equal(getSessionState(), that.getSessionState()) &&
+                Objects.equal(getStartTime(), that.getStartTime());
     }
 
-    /**
-     */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getSessionId() == null) ? 0 : getSessionId().hashCode());
-        result = prime * result + ((getAccount() == null) ? 0 : getAccount().hashCode());
-        result = prime * result + ((getIp() == null) ? 0 : getIp().hashCode());
-        result = prime * result + ((getStartTime() == null) ? 0 : getStartTime().hashCode());
-        result = prime * result + ((getEnable() == null) ? 0 : getEnable().hashCode());
-        result = prime * result + ((getRemark() == null) ? 0 : getRemark().hashCode());
-        result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
-        result = prime * result + ((getCreateBy() == null) ? 0 : getCreateBy().hashCode());
-        result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
-        result = prime * result + ((getUpdateBy() == null) ? 0 : getUpdateBy().hashCode());
-        return result;
+        return Objects.hashCode(getSessionId(), getAccount(), getIp(), getSessionState(), getStartTime());
     }
 
     public BizSession() {

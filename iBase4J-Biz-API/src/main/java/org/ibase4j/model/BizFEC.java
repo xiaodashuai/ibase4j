@@ -6,6 +6,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -462,5 +463,48 @@ public class BizFEC extends BaseModel implements Serializable {
 				.add("fristRepayDate", fristRepayDate)
 				.add("paymentMode", paymentMode)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizFEC)) return false;
+		BizFEC bizFEC = (BizFEC) o;
+		return Objects.equal(getObjTyp(), bizFEC.getObjTyp()) &&
+				Objects.equal(getObjInr(), bizFEC.getObjInr()) &&
+				Objects.equal(getRules(), bizFEC.getRules()) &&
+				Objects.equal(getCurrency(), bizFEC.getCurrency()) &&
+				Objects.equal(getConvertedPrice(), bizFEC.getConvertedPrice()) &&
+				Objects.equal(getPaymentAmt(), bizFEC.getPaymentAmt()) &&
+				Objects.equal(getIrSign(), bizFEC.getIrSign()) &&
+				Objects.equal(getType(), bizFEC.getType()) &&
+				Objects.equal(getIrBk(), bizFEC.getIrBk()) &&
+				Objects.equal(getTerm(), bizFEC.getTerm()) &&
+				Objects.equal(getFloatDirectioin(), bizFEC.getFloatDirectioin()) &&
+				Objects.equal(getFloatMode(), bizFEC.getFloatMode()) &&
+				Objects.equal(getSlidingScales(), bizFEC.getSlidingScales()) &&
+				Objects.equal(getFloatingRate(), bizFEC.getFloatingRate()) &&
+				Objects.equal(getRateVal(), bizFEC.getRateVal()) &&
+				Objects.equal(getVarCycle(), bizFEC.getVarCycle()) &&
+				Objects.equal(getChgCycleUnit(), bizFEC.getChgCycleUnit()) &&
+				Objects.equal(getOverdueRateCalcMode(), bizFEC.getOverdueRateCalcMode()) &&
+				Objects.equal(getOverdueIncrRatio(), bizFEC.getOverdueIncrRatio()) &&
+				Objects.equal(getEmbeRateCalcMode(), bizFEC.getEmbeRateCalcMode()) &&
+				Objects.equal(getEmbeNcrRatio(), bizFEC.getEmbeNcrRatio()) &&
+				Objects.equal(getCalcDays(), bizFEC.getCalcDays()) &&
+				Objects.equal(getCalcWay(), bizFEC.getCalcWay()) &&
+				Objects.equal(getFirstDay(), bizFEC.getFirstDay()) &&
+				Objects.equal(getPlanType(), bizFEC.getPlanType()) &&
+				Objects.equal(getLastRepayDay(), bizFEC.getLastRepayDay()) &&
+				Objects.equal(getFirstLoanFlag(), bizFEC.getFirstLoanFlag()) &&
+				Objects.equal(getLastLoanFlag(), bizFEC.getLastLoanFlag()) &&
+				Objects.equal(getRepaymentMode(), bizFEC.getRepaymentMode()) &&
+				Objects.equal(getFristRepayDate(), bizFEC.getFristRepayDate()) &&
+				Objects.equal(getPaymentMode(), bizFEC.getPaymentMode());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getObjTyp(), getObjInr(), getRules(), getCurrency(), getConvertedPrice(), getPaymentAmt(), getIrSign(), getType(), getIrBk(), getTerm(), getFloatDirectioin(), getFloatMode(), getSlidingScales(), getFloatingRate(), getRateVal(), getVarCycle(), getChgCycleUnit(), getOverdueRateCalcMode(), getOverdueIncrRatio(), getEmbeRateCalcMode(), getEmbeNcrRatio(), getCalcDays(), getCalcWay(), getFirstDay(), getPlanType(), getLastRepayDay(), getFirstLoanFlag(), getLastLoanFlag(), getRepaymentMode(), getFristRepayDate(), getPaymentMode());
 	}
 }

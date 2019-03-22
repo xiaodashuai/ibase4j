@@ -6,6 +6,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -371,5 +372,41 @@ public class BizMakeLoans extends BaseModel implements Serializable {
 				.add("subserNo", subserNo)
 				.add("listNo", listNo)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizMakeLoans)) return false;
+		BizMakeLoans that = (BizMakeLoans) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessTypes(), that.getBusinessTypes()) &&
+				Objects.equal(getGrantCode(), that.getGrantCode()) &&
+				Objects.equal(getProjectName(), that.getProjectName()) &&
+				Objects.equal(getProductName(), that.getProductName()) &&
+				Objects.equal(getProposer(), that.getProposer()) &&
+				Objects.equal(getProposerNum(), that.getProposerNum()) &&
+				Objects.equal(getBankTellId(), that.getBankTellId()) &&
+				Objects.equal(getBankTellName(), that.getBankTellName()) &&
+				Objects.equal(getDeptCode(), that.getDeptCode()) &&
+				Objects.equal(getDeptName(), that.getDeptName()) &&
+				Objects.equal(getScopeBusinPeriod(), that.getScopeBusinPeriod()) &&
+				Objects.equal(getIssNo(), that.getIssNo()) &&
+				Objects.equal(getFrsNo(), that.getFrsNo()) &&
+				Objects.equal(getDateOfLoan(), that.getDateOfLoan()) &&
+				Objects.equal(getValueDate(), that.getValueDate()) &&
+				Objects.equal(getDueDate(), that.getDueDate()) &&
+				Objects.equal(getGracePeriod(), that.getGracePeriod()) &&
+				Objects.equal(getToierancePeriod(), that.getToierancePeriod()) &&
+				Objects.equal(getInstitutionCode(), that.getInstitutionCode()) &&
+				Objects.equal(getIdentNumber(), that.getIdentNumber()) &&
+				Objects.equal(getProtseNo(), that.getProtseNo()) &&
+				Objects.equal(getSubserNo(), that.getSubserNo()) &&
+				Objects.equal(getListNo(), that.getListNo());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessTypes(), getGrantCode(), getProjectName(), getProductName(), getProposer(), getProposerNum(), getBankTellId(), getBankTellName(), getDeptCode(), getDeptName(), getScopeBusinPeriod(), getIssNo(), getFrsNo(), getDateOfLoan(), getValueDate(), getDueDate(), getGracePeriod(), getToierancePeriod(), getInstitutionCode(), getIdentNumber(), getProtseNo(), getSubserNo(), getListNo());
 	}
 }

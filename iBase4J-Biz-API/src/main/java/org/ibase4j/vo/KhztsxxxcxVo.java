@@ -1,6 +1,7 @@
 package org.ibase4j.vo;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.io.Serializable;
 
@@ -93,5 +94,25 @@ public class KhztsxxxcxVo implements Serializable {
                 .add("maturityDate", maturityDate)
                 .add("amountType", amountType)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof KhztsxxxcxVo)) return false;
+        KhztsxxxcxVo that = (KhztsxxxcxVo) o;
+        return Objects.equal(getCreditLineName(), that.getCreditLineName()) &&
+                Objects.equal(getCreditNo(), that.getCreditNo()) &&
+                Objects.equal(getTotalAmount(), that.getTotalAmount()) &&
+                Objects.equal(getUsedAmount(), that.getUsedAmount()) &&
+                Objects.equal(getAvailableBalance(), that.getAvailableBalance()) &&
+                Objects.equal(getStartDate(), that.getStartDate()) &&
+                Objects.equal(getMaturityDate(), that.getMaturityDate()) &&
+                Objects.equal(getAmountType(), that.getAmountType());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getCreditLineName(), getCreditNo(), getTotalAmount(), getUsedAmount(), getAvailableBalance(), getStartDate(), getMaturityDate(), getAmountType());
     }
 }

@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -390,5 +391,22 @@ public class BizSingleProductRule extends BaseModel implements Serializable {
                 .add("backgroundNationality", backgroundNationality)
                 .add("industryInvestment", industryInvestment)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizSingleProductRule)) return false;
+        BizSingleProductRule that = (BizSingleProductRule) o;
+        return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+                Objects.equal(getObjType(), that.getObjType()) &&
+                Objects.equal(getBusinessType(), that.getBusinessType()) &&
+                Objects.equal(getBackgroundNationality(), that.getBackgroundNationality()) &&
+                Objects.equal(getIndustryInvestment(), that.getIndustryInvestment());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getDebtCode(), getObjType(), getBusinessType(), getBackgroundNationality(), getIndustryInvestment());
     }
 }

@@ -1,6 +1,7 @@
 package org.ibase4j.service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import org.ibase4j.core.base.BaseService;
 import org.ibase4j.core.util.StringUtil;
@@ -10,7 +11,10 @@ import org.ibase4j.vo.SumInformationVo;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 审批相关
@@ -47,7 +51,7 @@ public class BizApprovalService extends BaseService<BizApprovalProvider, BizAppr
     private BizPTSProvider bizPTSProvider;
 
     @Reference
-    private BizCustomerProvider bizCustomerProvider;
+    private BizCustProvider bizCustomerProvider;
 
     @Reference
     private BizSingleProductRuleProvider singleProductRuleProvider;
@@ -61,6 +65,9 @@ public class BizApprovalService extends BaseService<BizApprovalProvider, BizAppr
     @Reference
     private BizFECProvider bizFECProvider;
 
+    @Reference
+    private BizTRNProvider bizTrnProvider;
+
     /**
     * @Description: 保存债项发放审批check项的值
     * @Param: [params]
@@ -70,9 +77,31 @@ public class BizApprovalService extends BaseService<BizApprovalProvider, BizAppr
         String debtCode=params.get("debtCode").toString();
         Map map=new HashMap();
         map.put("debtCode",debtCode);
-        List<BizDebtSummary> bizDebtSummaries = bizDebtSummaryProvider.queryList(map);
-        BizDebtSummary bizDebtSummary = bizDebtSummaries.get(0);
-        Integer solutionState = bizDebtSummary.getSolutionState();
+        if(debtCode.length()==16){
+            map.put("debtCode",debtCode.substring(0,13));
+            map.put("verNum",debtCode.substring(13));
+<<<<<<< HEAD
+        }else{
+            logger.error("提交流程失败，未查询到方案，debtCode="+debtCode);
+=======
+        } else if (debtCode.length() == 13) {
+            String gantCode=params.get("grantCode").toString();
+            map.put("debtCode", debtCode.substring(0, 13));
+            BizDebtGrant bizDebtGrant = new BizDebtGrant();
+            bizDebtGrant.setDebtCode(debtCode);
+            bizDebtGrant.setGrantCode(gantCode);
+            BizDebtGrant bizDebtGrant1 = bizDebtGrantProvider.selectOne(bizDebtGrant);
+            map.put("verNum", bizDebtGrant1.getVerNumStr());
+        } else {
+            logger.error("提交流程失败，未查询到方案，debtCode=" + debtCode);
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
+        }
+        BizTRN selTrn = new BizTRN();
+        selTrn.setOwnref(debtCode.substring(0,13));
+        selTrn.setVerNum(Integer.parseInt(debtCode.substring(13)));
+        BizTRN trn = bizTrnProvider.selectOne(new EntityWrapper<>(selTrn));
+
+        Integer solutionState = trn.getBizStatus();
         String process=StringUtil.objectToString(params.get("process"));
         if("FFSH".equals(process)){
             String grantCode=params.get("grantCode").toString();
@@ -81,36 +110,15 @@ public class BizApprovalService extends BaseService<BizApprovalProvider, BizAppr
             List<BizDebtGrant> bizDebtGrants = bizDebtGrantProvider.queryList(map1);
             BizDebtGrant bizDebtGrant = bizDebtGrants.get(0);
             Integer enable = bizDebtGrant.getEnable();
-            //判断一下发放失效时间
-            Date endDate = bizDebtGrant.getEndDate();
-            if (solutionState == 7 || solutionState == 8|| solutionState == 10 || enable==0) {
-                logger.debug("=====debtCode={};============solutionState={};",debtCode,solutionState);
-                params.put("solutionState",solutionState);
+            if (solutionState == 7 || solutionState == 8 || enable==0) {
                 String resply = provider.stopProcess(params);
                 return resply;
-            } else if (System.currentTimeMillis()>endDate.getTime()) {
-                //发放条件时间过期  失效(自定义的solutionState=11)
-                solutionState=11;
-                logger.debug("=====debtCode={};============solutionState={};",debtCode,solutionState);
-                params.put("solutionState",solutionState);
-                String resply = provider.stopProcess(params);
-                return resply;
+            } else {
+                provider.submitApprovalForm(params);
             }
-        }else if ("FASH".equals(process)){
-            Integer enable = bizDebtSummary.getEnable();
-            Date pgExpiDate = bizDebtSummary.getPgExpiDate();
-            logger.debug("=====debtCode={};============solutionState={};",debtCode,solutionState);
-            //方案失效或者删除后 停止工作流
-            if (solutionState == 7 || solutionState == 8  || solutionState == 10||  enable == 0 ) {
-                String resply = provider.stopProcess(params);
-                return resply;
-            }else if (System.currentTimeMillis()>pgExpiDate.getTime()) {
-                //方案失效时间到期 停止流程
-                String resply = provider.stopProcess(params);
-                return resply;
-            }
+        }else {
+            provider.submitApprovalForm(params);
         }
-        provider.submitApprovalForm(params);
         return null;
     }
 
@@ -175,6 +183,12 @@ public class BizApprovalService extends BaseService<BizApprovalProvider, BizAppr
         String debtCode=params.get("debtCode").toString();
         Map mapDebtCode=new HashMap();
         mapDebtCode.put("debtCode",debtCode);
+        if(debtCode.length()==16){
+            mapDebtCode.put("debtCode",debtCode.substring(0,13));
+            mapDebtCode.put("verNum",debtCode.substring(13));
+        }else{
+            logger.error("查询方案失败，debtCode="+debtCode);
+        }
         List<BizDebtSummary> bizDebtList=bizDebtSummaryProvider.queryList(mapDebtCode);
         BizDebtSummary bizDebt=bizDebtList.get(0);
         SumInformationVo informationVo=new SumInformationVo();
@@ -259,15 +273,15 @@ public class BizApprovalService extends BaseService<BizApprovalProvider, BizAppr
         List<BizFEC>  fecList= bizFECProvider.queryList(objMap);
         //汇总利率
         informationVo.setFecList(fecList);
-        List<BizCustomer> custList=new ArrayList<>();
-        //用信主体
-        List<BizPTS>bizPTSList=bizPTSProvider.queryList(params);
+        List<BizCust> custList=new ArrayList<>();
+        //用信主体 sinosong 注释掉，发放审核的概要要调整为概要表联查，pts不展示
+        /*List<BizPTS>bizPTSList=bizPTSProvider.queryList(params);
         for (BizPTS bizPTS:bizPTSList){
             if(bizPTS.getRole().equals("LETS")){
-                BizCustomer bizCustomer=bizCustomerProvider.queryById(Long.valueOf(bizPTS.getPtyinr()));
+                BizCust bizCustomer=bizCustomerProvider.queryById(Long.valueOf(bizPTS.getPtyinr()));
                 custList.add(bizCustomer);
             }
-        }
+        }*/
         informationVo.setCustList(custList);
         //产品组合
         List<BizSingleProductRule> singleList=singleProductRuleProvider.queryList(params);

@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -257,5 +258,33 @@ public class BizApprovalWorkflowTask extends BaseModel implements Serializable {
 				.add("activityName", activityName)
 				.add("processName", processName)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizApprovalWorkflowTask)) return false;
+		BizApprovalWorkflowTask that = (BizApprovalWorkflowTask) o;
+		return Objects.equal(getTaskId(), that.getTaskId()) &&
+				Objects.equal(getApprovalId(), that.getApprovalId()) &&
+				Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getRoleId(), that.getRoleId()) &&
+				Objects.equal(getRoleName(), that.getRoleName()) &&
+				Objects.equal(getUserId(), that.getUserId()) &&
+				Objects.equal(getUserName(), that.getUserName()) &&
+				Objects.equal(getCommentId(), that.getCommentId()) &&
+				Objects.equal(getCommentInfo(), that.getCommentInfo()) &&
+				Objects.equal(getObjtyp(), that.getObjtyp()) &&
+				Objects.equal(getObjinr(), that.getObjinr()) &&
+				Objects.equal(getProcessInsId(), that.getProcessInsId()) &&
+				Objects.equal(getActivityInsId(), that.getActivityInsId()) &&
+				Objects.equal(getActivityDefId(), that.getActivityDefId()) &&
+				Objects.equal(getActivityName(), that.getActivityName()) &&
+				Objects.equal(getProcessName(), that.getProcessName());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getTaskId(), getApprovalId(), getDebtCode(), getRoleId(), getRoleName(), getUserId(), getUserName(), getCommentId(), getCommentInfo(), getObjtyp(), getObjinr(), getProcessInsId(), getActivityInsId(), getActivityDefId(), getActivityName(), getProcessName());
 	}
 }

@@ -55,6 +55,13 @@ public class BizDeptGrantService extends BaseService<BizDebtGrantProvider, BizDe
 	private ISysDeptProvider sysDeptProvider;
 	@Reference
 	private BizProStatementProvider bizProStatementProvider;
+<<<<<<< HEAD
+=======
+	@Reference
+	private BizCustLimitProvider bizCustLimitProvider;
+	@Reference
+	private BizCntProvider bizCntProvider;
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 	
 	/**
 	 * 功能：导出迁移的数据
@@ -373,7 +380,20 @@ public class BizDeptGrantService extends BaseService<BizDebtGrantProvider, BizDe
 	public List<NameValuePair> getGuaranteeInfoList(String debtCode) {
 		// 查询债项保存的担保类型
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("debtCode", debtCode);
+        BizDebtSummary bizDebtSummary = new BizDebtSummary();
+        bizDebtSummary.setDebtCode(debtCode);
+        bizDebtSummary = debtSummaryProvider.selectOneBizDebtSummary(bizDebtSummary);
+        Integer verNum = bizDebtSummary.getVerNum();
+        String debtVerNum = new String();
+        if (StringUtil.objectToString(verNum).length() == 1) {
+            debtVerNum = "00" + StringUtil.objectToString(verNum);
+        } else if (((StringUtil.objectToString(verNum).length() == 2))) {
+            debtVerNum = "0" + StringUtil.objectToString(verNum);
+        } else {
+            debtVerNum = StringUtil.objectToString(verNum);
+        }
+        debtCode=debtCode+debtVerNum;
+        params.put("debtCode", debtCode);
 		List<BizGuaranteeInfo> infoList = guaranteeInfoProvider.queryList(params);
 		// 查询所有担保类型
 		params.clear(); 
@@ -451,6 +471,20 @@ public class BizDeptGrantService extends BaseService<BizDebtGrantProvider, BizDe
 		List<BizGuaranteeType> typeList = guaranteeTypeProvider.queryList(params);
 		// 查询债项保存的担保类型
 		params.clear();
+
+        BizDebtSummary bizDebtSummary = new BizDebtSummary();
+        bizDebtSummary.setDebtCode(debtCode);
+        bizDebtSummary = debtSummaryProvider.selectOneBizDebtSummary(bizDebtSummary);
+        Integer verNum = bizDebtSummary.getVerNum();
+        String debtVerNum = new String();
+        if (StringUtil.objectToString(verNum).length() == 1) {
+            debtVerNum = "00" + StringUtil.objectToString(verNum);
+        } else if (((StringUtil.objectToString(verNum).length() == 2))) {
+            debtVerNum = "0" + StringUtil.objectToString(verNum);
+        } else {
+            debtVerNum = StringUtil.objectToString(verNum);
+        }
+        debtCode=debtCode+debtVerNum;
 		params.put("debtCode", debtCode);// 方案编码
 		params.put("typePoint", parentCode);// 担保类型编码
 		List<BizGuaranteeInfo> infoList = guaranteeInfoProvider.queryList(params);
@@ -460,6 +494,10 @@ public class BizDeptGrantService extends BaseService<BizDebtGrantProvider, BizDe
 			String code = StringUtil.objectToString(bean.getGuaranteeContractType());
 			long id = bean.getId();
 			String wcNo = bean.getWarrantyContractNumber();
+			// wcNo是方案存的担保合同编号，最高担保合同有值，一般担保合同为空，为空时需系统自动生成
+			if (null == wcNo || "".equals(wcNo)){
+				wcNo =bizCntProvider.getNextNumberFormat("TEST",4);
+			}
 			//额度类型名称
 			String edTypeName = getNameByCode(code, typeList);
 			//如果是其他担保类型(直接拼接)

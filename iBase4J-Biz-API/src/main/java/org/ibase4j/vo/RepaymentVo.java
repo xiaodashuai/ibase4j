@@ -1,5 +1,8 @@
 package org.ibase4j.vo;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+
 /**
  * @Description: 64004接口参数vo类
  * @Author: dj
@@ -51,6 +54,32 @@ public class RepaymentVo implements java.io.Serializable,Comparable {
     public int compareTo(Object o) {
         RepaymentVo repaymentVo = (RepaymentVo)o;
         return gbdate.compareTo(repaymentVo.gbdate);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RepaymentVo)) return false;
+        RepaymentVo that = (RepaymentVo) o;
+        return Objects.equal(getGbdate(), that.getGbdate()) &&
+                Objects.equal(getEndintd(), that.getEndintd()) &&
+                Objects.equal(getGbamount(), that.getGbamount()) &&
+                Objects.equal(getIntrtnf(), that.getIntrtnf());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getGbdate(), getEndintd(), getGbamount(), getIntrtnf());
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("gbdate", gbdate)
+                .add("endintd", endintd)
+                .add("gbamount", gbamount)
+                .add("intrtnf", intrtnf)
+                .toString();
     }
 }
 

@@ -235,8 +235,9 @@ public class BizDebtSummaryController extends BaseController {
 	@ApiOperation(value = "已驳回重新提交")
 	@RequiresPermissions("before.base.reponse.read")
 	@PostMapping(value = "/ReSaveDebt/list")
-	public Object ReSaveDebt(ModelMap modelMap, @RequestBody Map<String, Object> param) {
-		debtSummaryService.ReSaveDebt(param);
+	public Object ReSaveDebt(ModelMap modelMap, @RequestBody JSONObject param) {
+		param.put("state","方案修订");
+		debtSummaryService.save(param);
 		return setSuccessModelMap(modelMap);
 	}
 
@@ -270,13 +271,5 @@ public class BizDebtSummaryController extends BaseController {
 	public Object getBackground(ModelMap modelMap, @RequestBody Map<String, Object> params) {
 		List<SysDic>dicList = debtSummaryService.getBackground(params);
 		return setSuccessModelMap(modelMap, dicList);
-	}
-
-	@ApiOperation(value = "查询发放条件的状态")
-	@RequiresPermissions("before.base.reponse.read")
-	@PostMapping(value = "/queryGrantStatus/list")
-	public Object queryGrantStatus(ModelMap modelMap, @RequestBody Map<String, Object> params) {
-		List<BizDebtGrant>debtGrantList = debtSummaryService.queryGrantStatus(params);
-		return setSuccessModelMap(modelMap, debtGrantList);
 	}
 }

@@ -6,11 +6,10 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
-
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * 功能：还款计划
@@ -223,30 +222,29 @@ public class BizRepaymentPlan extends BaseModel implements Serializable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) {return true;}
-		if (o == null || getClass() != o.getClass()){ return false;}
+		if (this == o) return true;
+		if (!(o instanceof BizRepaymentPlan)) return false;
 		BizRepaymentPlan that = (BizRepaymentPlan) o;
-		return Objects.equals(debtCode, that.debtCode) &&
-				Objects.equals(businessTypes, that.businessTypes) &&
-				Objects.equals(planName, that.planName) &&
-				Objects.equals(grantCode, that.grantCode) &&
-				Objects.equals(rfId, that.rfId) &&
-				Objects.equals(loanId, that.loanId) &&
-				Objects.equals(firstRepayDay, that.firstRepayDay) &&
-				Objects.equals(lastRepaymentDay, that.lastRepaymentDay) &&
-				Objects.equals(payDate, that.payDate) &&
-				Objects.equals(payCny, that.payCny) &&
-				Objects.equals(principalAmy, that.principalAmy) &&
-				Objects.equals(interestDate, that.interestDate) &&
-				Objects.equals(repaymentCostMode, that.repaymentCostMode) &&
-				Objects.equals(firstDay, that.firstDay) &&
-				Objects.equals(caclWay, that.caclWay);
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessTypes(), that.getBusinessTypes()) &&
+				Objects.equal(getPlanName(), that.getPlanName()) &&
+				Objects.equal(getGrantCode(), that.getGrantCode()) &&
+				Objects.equal(getRfId(), that.getRfId()) &&
+				Objects.equal(getLoanId(), that.getLoanId()) &&
+				Objects.equal(getFirstRepayDay(), that.getFirstRepayDay()) &&
+				Objects.equal(getLastRepaymentDay(), that.getLastRepaymentDay()) &&
+				Objects.equal(getPayDate(), that.getPayDate()) &&
+				Objects.equal(getPayCny(), that.getPayCny()) &&
+				Objects.equal(getPrincipalAmy(), that.getPrincipalAmy()) &&
+				Objects.equal(getInterestDate(), that.getInterestDate()) &&
+				Objects.equal(getRepaymentCostMode(), that.getRepaymentCostMode()) &&
+				Objects.equal(getFirstDay(), that.getFirstDay()) &&
+				Objects.equal(getCaclWay(), that.getCaclWay());
 	}
 
 	@Override
 	public int hashCode() {
-
-		return Objects.hash(debtCode, businessTypes, planName, grantCode, rfId, loanId, firstRepayDay, lastRepaymentDay, payDate, payCny, principalAmy, interestDate, repaymentCostMode, firstDay, caclWay);
+		return Objects.hashCode(getDebtCode(), getBusinessTypes(), getPlanName(), getGrantCode(), getRfId(), getLoanId(), getFirstRepayDay(), getLastRepaymentDay(), getPayDate(), getPayCny(), getPrincipalAmy(), getInterestDate(), getRepaymentCostMode(), getFirstDay(), getCaclWay());
 	}
 
 	public BizRepaymentPlan() {

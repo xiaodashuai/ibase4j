@@ -96,6 +96,8 @@
 			jdbcType="INTEGER" />
 		<result column="TYPE_" property="type" javaType="Integer"
 			jdbcType="INTEGER" />
+		<result column="DEPT_LEVEL" property="deptLevel" javaType="Integer"
+			jdbcType="INTEGER" />
 		<result column="PROVINCE_" property="province" javaType="String"
 			jdbcType="VARCHAR" />
 		<result column="CITY_" property="city" javaType="String"
@@ -111,7 +113,7 @@
 	</resultMap>
 	
 	<select id="queryDeptByCode" resultMap="codeMap">
-		select id_ ,code_,DEPT_NAME,PARENT_CODE,UNIT_ID,ADDR_,TYPE_,FIN_LICENSE_NO,BIZ_LICENSE_NO,ORG_CERT_NO,LEAF_
+		select id_ ,code_,DEPT_NAME,PARENT_CODE,UNIT_ID,ADDR_,TYPE_,DEPT_LEVEL,FIN_LICENSE_NO,BIZ_LICENSE_NO,ORG_CERT_NO,LEAF_
 		from
 		sys_dept
 		where

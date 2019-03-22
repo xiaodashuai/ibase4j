@@ -126,47 +126,133 @@
 		<result column="BUSINESS_NAME" property="businessName" jdbcType="VARCHAR" />
 		<result column="GRANT_AMT" property="grantAmt" jdbcType="VARCHAR" />
 		<result column="CODE_NAME" property="codeName" jdbcType="VARCHAR" />
+
+
+		<result column="IOU_CODE" property="iouCode" jdbcType="VARCHAR" />
+		<result column="PROTSENO" property="protseno" jdbcType="VARCHAR" />
+		<result column="WORKDATE" property="workdate" jdbcType="DATE" />
+		<result column="PAYACTA" property="payacta" jdbcType="VARCHAR" />
+		<result column="TOTFFAMT" property="totffamt" jdbcType="VARCHAR" />
+		<result column="TOTHKAMT" property="tothkamt" jdbcType="VARCHAR" />
+		<result column="FEE" property="fee" jdbcType="VARCHAR" />
+		<result column="OVRAMT" property="ovramt" jdbcType="VARCHAR" />
+		<result column="OVRBAL" property="ovrbal" jdbcType="VARCHAR" />
+		<result column="INAMT" property="inamt" jdbcType="VARCHAR" />
+		<result column="INCURBAL" property="incurbal" jdbcType="VARCHAR" />
+		<result column="OFAMT" property="ofamt" jdbcType="VARCHAR" />
+		<result column="OFCURBAL" property="ofcurbal" jdbcType="VARCHAR" />
+		<result column="INTRATE" property="intrate" jdbcType="VARCHAR" />
+		<result column="RLVRATE" property="rlvrate" jdbcType="VARCHAR" />
+		<result column="OVRRATE" property="ovrrate" jdbcType="VARCHAR" />
+		<result column="INCIRATE" property="incirate" jdbcType="VARCHAR" />
+		<result column="OFCIRATE" property="ofcirate" jdbcType="VARCHAR" />
+		<result column="AMOUNT" property="amount" jdbcType="VARCHAR" />
+		<result column="CUST_NO" property="custNo" jdbcType="VARCHAR" />
+		<result column="RECAMT" property="recamt" jdbcType="DOUBLE" />
+		<result column="DEPTCODE" property="deptCode" jdbcType="VARCHAR" />
+
+		<result column="ROWNUM" property="rownum" jdbcType="VARCHAR" />
+		<result column="ISSUEDATE" property="issuedate" jdbcType="VARCHAR" />
+        <result column="PROPNO" property="propno" jdbcType="VARCHAR" />
+        <result column="PROPCN" property="propcn" jdbcType="VARCHAR" />
+        <result column="PROPSCALE" property="propscale" jdbcType="VARCHAR" />
+        <result column="PROPORGNUM" property="proporgnum" jdbcType="VARCHAR" />
+        <result column="PROPRAT" property="proprat" jdbcType="VARCHAR" />
+        <result column="CONENO" property="coneno" jdbcType="VARCHAR" />
+        <result column="CONECN" property="conecn" jdbcType="VARCHAR" />
+        <result column="CONESCALE" property="conescale" jdbcType="VARCHAR" />
+        <result column="CONEORGNUM" property="coneorgnum" jdbcType="VARCHAR" />
+        <result column="CONERAT" property="conerat" jdbcType="VARCHAR" />
+        <result column="RECOURSE" property="recourse" jdbcType="VARCHAR" />
+        <result column="LEASEHOLD" property="leasehold" jdbcType="VARCHAR" />
+        <result column="VALUEDAY" property="valueday" jdbcType="VARCHAR" />
+        <result column="MATUDATE" property="matudate" jdbcType="VARCHAR" />
+        <result column="LOANTERM" property="loanterm" jdbcType="VARCHAR" />
+        <result column="NLONSUR" property="nlonsur" jdbcType="VARCHAR" />
+        <result column="RATEINCM1" property="rateincm1" jdbcType="VARCHAR" />
+        <result column="INT1" property="int1" jdbcType="VARCHAR" />
+        <result column="M_CURRENCY" property="mCurrency" jdbcType="VARCHAR" />
+        <result column="SOLUTION_AMT" property="solutionAmount" jdbcType="DOUBLE" />
+
+
 	</resultMap>
 
 	<select id="getGrantStandingBookList" resultMap="MakeLoansDebtsMap">
-		SELECT
-		TO_CHAR (A.ID_) ID_,
-		TO_CHAR (C.ID_) GRANTID,
-		A .GRANT_CODE,
-		A.DEBT_CODE,
-		A .PROPOSER,
-		A .PRODUCT_NAME,
-		B.DEPT_NAME,
-		D.IDENT_NUMBER,
-		E .AMT
-		FROM
-		BIZ_MAKE_LOANS A
-		INNER JOIN SYS_DEPT B ON A .INSTITUTION_CODE = B.CODE_
-		INNER JOIN BIZ_DEBT_GRANT C ON C.GRANT_CODE = A .GRANT_CODE
-		INNER JOIN BIZ_DEBT_MAIN D ON D.DEBT_CODE = A.DEBT_CODE
-		INNER JOIN BIZ_CBB E ON A .ID_ = E .OBJINR
-		<where>
-			<if test="cm.deptCode != null and cm.deptCode != ''">
-				and A.INSTITUTION_CODE = #{cm.deptCode}
-			</if>
-			<if test="cm.grantCode != null and cm.grantCode != ''">
-				and A.GRANT_CODE like '%'||#{cm.grantCode}||'%'
-			</if>
-			<if test="cm.endDate != null and cm.endDate != ''">
-				AND A.DATE_OF_LOAN &lt;= TO_DATE(#{cm.endDate},'YYYY-MM-DD HH24:MI:SS')
-				and E.BEGDAT &lt;=  TO_DATE(#{cm.endDate}, 'YYYY-MM-DD HH24:MI:SS')
-				and TO_DATE(#{cm.endDate}, 'YYYY-MM-DD HH24:MI:SS') &lt; E.ENDDAT
-			</if>
-			<if test="cm.beginDate != null and cm.beginDate != ''">
-				AND A.DATE_OF_LOAN &gt;= TO_DATE(#{cm.beginDate},'YYYY-MM-DD HH24:MI:SS')
-			</if>
-			<if test="cm.proposer != null and cm.proposer != ''">
-				and A.PROPOSER like '%'||#{cm.proposer}||'%'
-			</if>
-			<if test="cm.enable != null and cm.enable != ''">
-				and A.ENABLE_ = #{cm.enable}
-			</if>
-		</where>
+        select gt.id_ GRANTID,
+        gt.debt_code,
+        gt.grant_code,
+        gt.iou_code,
+        gt.currency,
+        gt.grant_amt,
+        gt.business_types,
+        gt.product_name,
+        rec.amount recamt,
+		m.project_name,
+		dept.dept_name,
+        dept.CODE_ deptCode,
+        mem.protseno,
+        mem.mediumid ident_number,
+        mem.workdate,
+        mem.ltrddate,
+        lndtl.PAYACTA,
+        mem.totffamt,
+        mem.tothkamt,
+        dvi.fee,
+        lndtl.OVRAMT,
+        lndtl.OVRBAL,
+        lndtl.INAMT,
+        lndtl.INCURBAL,
+        lndtl.OFAMT,
+        lndtl.OFCURBAL,
+        lndtl.INTRATE,
+        lndtl.RLVRATE,
+        lndtl.OVRRATE,
+        lndtl.INCIRATE,
+        lndtl.OFCIRATE,
+        cdtl.AMOUNT,
+        cone.cust_no,
+        cone.cust_name_cn
+        from INF_AFPCMEM mem
+        INNER join biz_debt_main m
+        on (m.enable_ = 1 and m.ident_number = mem.MEDIUMID)
+        left join (select protype_.name_ PRODUCT_NAME,gt.* from BIZ_DEBT_GRANT gt,BIZ_PRODUCT_TYPES protype_
+        where gt.business_types = protype_.CODE_) gt
+        on (gt.enable_ = 1 and gt.ident_number = mem.MEDIUMID)
+        left join INF_AFRLNDTL lndtl
+        on (mem.workdate = lndtl.workdate and
+        mem.protseno = lndtl.protseno)
+        left join INF_AFLNADVI dvi
+        on (mem.workdate = dvi.workdate and
+        mem.protseno = dvi.protseno)
+        left join INF_AFRCDTL cdtl
+        on (mem.protseno = cdtl.protseno and cdtl.listtype = '001')
+        INNER JOIN SYS_DEPT dept
+        ON gt.institution_code = dept.CODE_
+        left join BIZ_REPAYMENT_REC rec
+        on (rec.enable_ = 1 and mem.workdate = rec.workdate and
+        mem.protseno = rec.protseno)
+        left join (select pts.cust_no,pts.cust_name_cn,renkey.debt_code from BIZ_RENTAL_FACTORING_KEY renkey,BIZ_PTS pts
+        where pts.objtyp='BIZ_RENTAL_FACTORING_KEY' and pts.objinr=renkey.id_ and pts.rol='CONE') cone
+        ON (cone.debt_code=gt.debt_code)
+        where exists
+        (select 1 from biz_debt_grant g where g.ident_number = mem.MEDIUMID)
+
+		<if test="cm.deptCode != null and cm.deptCode != ''">
+			and gt.INSTITUTION_CODE = #{cm.deptCode}
+		</if>
+		<if test="cm.grantCode != null and cm.grantCode != ''">
+			and gt.iou_code like '%'||#{cm.grantCode}||'%'
+		</if>
+		<if test="cm.endDate != null and cm.endDate != ''">
+			AND mem.workdate &lt;= TO_DATE(#{cm.endDate},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+		<if test="cm.beginDate != null and cm.beginDate != ''">
+			AND mem.workdate &gt;= TO_DATE(#{cm.beginDate},'YYYY-MM-DD HH24:MI:SS')
+		</if>
+		<if test="cm.proposer != null and cm.proposer != ''">
+			and cone.cust_no like '%'||#{cm.proposer}||'%'
+		</if>
+
 	</select>
 
 	<select id="getDiscardMakeLoansInfo" resultMap="MakeLoansDebtsMap">
@@ -198,64 +284,107 @@
 		</where>
 	</select>
 
-	<select id="getGrantAMTDetailForStandingBook" resultMap="MakeLoansDebtsMap">
-		SELECT
-			TO_CHAR (C.ID_) ID_,
-			D.IDENT_NUMBER,
-			A .DATE_OF_LOAN,
-			CASE F.CBT
-				WHEN 'LOANOUT' THEN
-				'本金发生额'
-				WHEN 'LOANIN' THEN
-				'本金发生额'
-				WHEN 'OVEDUIN' THEN
-				'逾期本金发生额'
-				WHEN 'OVEDUOUT' THEN
-				'逾期本金发生额'
-				WHEN 'PRITEIN' THEN
-				'利息发生额'
-				WHEN 'PRITEOUT' THEN
-				'利息发生额'
-				WHEN 'INATEIN' THEN
-				'表内欠息发生额'
-				WHEN 'INATEOUT' THEN
-				'表内欠息发生额'
-				WHEN 'OUATEIN' THEN
-				'表外欠息发生额'
-				WHEN 'OUATEOUT' THEN
-				'表外欠息发生额'
-				WHEN 'COTEAIN' THEN
-				'费用发生额'
-				WHEN 'COTEAOUT' THEN
-				'费用发生额'
-			END CBTSTRING,
-			F.AMT， E .AMT AMTBALANCE,
-			A .DEBT_CODE,
-			A .GRANT_CODE,
-			D.IDENT_NUMBER,
-			B.DEPT_NAME， A .PROJECT_NAME,
-			A .PRODUCT_NAME， A .PROPOSER
-		FROM
-		BIZ_MAKE_LOANS A
-		INNER JOIN SYS_DEPT B ON A .INSTITUTION_CODE = B.ID_
-		INNER JOIN BIZ_DEBT_GRANT C ON A.DEBT_CODE = C.DEBT_CODE AND A.GRANT_CODE = C.GRANT_CODE
-		INNER JOIN BIZ_DEBT_MAIN D ON A.DEBT_CODE = D.DEBT_CODE
-		INNER JOIN BIZ_CBB E ON A .ID_ = E .OBJINR
-		AND E .CBC = 'LOANSUM'
-		INNER JOIN BIZ_CBE F ON A .ID_ = F.OBJINR
-		AND E .CBEINR = F.ID_
-		<where>
-			F.DAT BETWEEN E .BEGDAT AND E .ENDDAT
-			<if test="cm.debtCode != null and cm.debtCode != ''">
-				and A.DEBT_CODE = #{cm.debtCode}
-			</if>
-			<if test="cm.grantCode != null and cm.grantCode != ''">
-				and A.GRANT_CODE = #{cm.grantCode}
-			</if>
-			<if test="cm.enable != null and cm.enable != ''">
-				and A.ENABLE_ = #{cm.enable}
-			</if>
-		</where>
+	<select id="getGrantMessageStandingBook" resultMap="MakeLoansDebtsMap">
+
+		select gt.id_ GRANTID,
+		gt.debt_code,
+		gt.grant_code,
+		gt.iou_code,
+        dept.code_ dept_code,
+		dept.dept_name,
+		m.bank_tell_id,
+		m.project_name,
+		gt.product_name,
+        gt.currency,
+		m.m_currency,
+		m.SOLUTION_AMT,
+		'是否联合承租',
+		rental.biz_rental_factoring_code,
+		'ISSUEDATE',
+		prop.cust_no propNo,
+		prop.cust_name_cn propCn,
+		prop.CUST_SCALE propScale,
+		prop.ORGANIZATION_CODE propOrgNum,
+		prop.CREDIT_RATING propRat,
+		cone.cust_no coneNo,
+		cone.cust_name_cn coneCn,
+		cone.FINANCE_PLATFORM,
+		cone.cust_scale coneScale,
+		cone.ORGANIZATION_CODE coneOrgNum,
+		cone.CREDIT_RATING coneRat,
+		'担保方式',
+		CASE gt.business_types
+		WHEN 'PT0501000000' THEN
+		'有追索权'
+		WHEN 'PT0502000000' THEN
+		'无追索权'
+		END recourse,
+		rental.leasehold,
+		interest.TRADE_INTEREST_RATE,
+		interest.POLICY_ATTRIBUTRE_CLASSIFY,
+		'是否与他行银团放款',
+		interest.Syndicated_Status,
+		nlon.valueday,
+		nlon.matudate,
+		nlon.LOANTERM,
+		nlon.currtype nlonsur,
+		cdtl.amount,
+		mem.totffamt,
+		mem.tothkamt,
+		lndtl.OVRAMT,
+		'本金逾期天数',
+		nlon.rateincm1,
+		lndtl.Intrate,
+		dvi.int1,
+		dvi.fee
+		from INF_AFPCMEM mem
+		INNER join biz_debt_main m
+		on (m.enable_ = 1 and m.ident_number = mem.MEDIUMID)
+		inner join (select protype_.name_ PRODUCT_NAME,gt.* from BIZ_DEBT_GRANT gt,BIZ_PRODUCT_TYPES protype_
+		where gt.business_types = protype_.CODE_) gt
+		on (gt.enable_ = 1 and gt.ident_number = mem.MEDIUMID)
+		left join BIZ_INTEREST_RATE interest
+		on (interest.enable_=1 and interest.debt_code=gt.debt_code and interest.grant_code=gt.grant_code)
+		left join biz_rental_factoring rental
+		on (rental.enable_=1 and rental.debt_code=gt.debt_code and interest.grant_code=gt.grant_code)
+		left join INF_AELNLON nlon
+		on (mem.workdate = nlon.workdate and
+		mem.protseno = nlon.ACCNO)
+		left join INF_AFRLNDTL lndtl
+		on (mem.workdate = lndtl.workdate and
+		mem.protseno = lndtl.protseno)
+		left join INF_AFLNADVI dvi
+		on (mem.workdate = dvi.workdate and
+		mem.protseno = dvi.protseno)
+		left join INF_AFRCDTL cdtl
+		on (mem.protseno = cdtl.protseno and cdtl.listtype = '001')
+		INNER JOIN SYS_DEPT dept
+		ON gt.institution_code = dept.CODE_
+		left join BIZ_REPAYMENT_REC rec
+		on (rec.enable_ = 1 and mem.workdate = rec.workdate and
+		mem.protseno = rec.protseno)
+		left join (select pts.cust_no,pts.cust_name_cn,renkey.debt_code,renkey.FINANCE_PLATFORM,cust.CUST_SCALE,cust.ORGANIZATION_CODE,cust.CREDIT_RATING from BIZ_RENTAL_FACTORING_KEY renkey,BIZ_PTS pts,biz_cust cust
+		where pts.objtyp='BIZ_RENTAL_FACTORING_KEY' and pts.objinr=renkey.id_ and pts.rol='CONE' and pts.ptyinr=cust.id_) cone
+		ON (cone.debt_code=gt.debt_code)
+		left join (select pts.objinr,pts.cust_no,pts.cust_name_cn,cust.CUST_SCALE,cust.ORGANIZATION_CODE,cust.CREDIT_RATING from BIZ_PTS pts,biz_cust cust
+		where pts.objtyp='BIZ_DEBT_MAIN' and pts.rol='APPT' and pts.ptyinr=cust.id_) prop
+		ON (prop.objinr=m.id_)
+		where  exists
+		(select 1 from biz_debt_grant g where g.ident_number = mem.MEDIUMID)
+
+		<if test="cm.deptCode != null and cm.deptCode != ''">
+			and gt.INSTITUTION_CODE = #{cm.deptCode}
+		</if>
+		<if test="cm.grantCode != null and cm.grantCode != ''">
+			and gt.iou_code like '%'||#{cm.grantCode}||'%'
+		</if>
+		<if test="cm.workdate != null and cm.workdate != ''">
+			AND mem.workdate = TO_DATE(#{cm.workdate},'yyyy-mm-dd hh24:mi:ss')
+		</if>
+		<if test="cm.proposer != null and cm.proposer != ''">
+			and cone.cust_no like '%'||#{cm.proposer}||'%'
+		</if>
+
 	</select>
 
 	<select id="getStatisticInfoList" resultMap="MakeLoansDebtsMap">

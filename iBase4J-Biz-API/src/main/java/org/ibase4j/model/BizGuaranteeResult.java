@@ -5,7 +5,7 @@ package org.ibase4j.model;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
-import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -83,6 +83,26 @@ public class BizGuaranteeResult extends BaseModel implements Serializable {
 	 */
 	@TableField("BNS_CONTRACT_NO")
 	private String bnsContractNo;
+
+
+	/**
+	 * 担保人客户编号
+	 */
+	@TableField("GUARANTOR_CUST_ID")
+	private String  guarantorCustId;
+
+	/**
+	 * 修改次数
+	 */
+	@TableField("CHANGE_NUM")
+	private int changeNum;
+
+	/**
+	 * 担保方式
+	 */
+	@TableField("TYPE_POINT")
+	private String  typePoint;
+
 
 	public String getGuaranType() {
 		return guaranType;
@@ -188,25 +208,81 @@ public class BizGuaranteeResult extends BaseModel implements Serializable {
 		this.grantCode = grantCode;
 	}
 
+	public String getGuarantorCustId() {
+		return guarantorCustId;
+	}
+
+	public void setGuarantorCustId(String guarantorCustId) {
+		this.guarantorCustId = guarantorCustId;
+	}
+
+
+	public int getChangeNum() {
+		return changeNum;
+	}
+
+	public void setChangeNum(int changeNum) {
+		this.changeNum = changeNum;
+	}
+
+	public String getTypePoint() {
+		return typePoint == "" ? null : typePoint;
+	}
+
+	public void setTypePoint(String typePoint) {
+		this.typePoint = typePoint;
+	}
+
 	public BizGuaranteeResult() {
 	}
 
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("guaranType", guaranType)
-				.add("grantCode", grantCode)
-				.add("guaranPortType", guaranPortType)
-				.add("clearRatio", clearRatio)
-				.add("clearRatioAmt", clearRatioAmt)
-				.add("notClearAmt", notClearAmt)
-				.add("pledgeState", pledgeState)
-				.add("pledgeName", pledgeName)
-				.add("pledgeNo", pledgeNo)
-				.add("schemeNo", schemeNo)
-				.add("pledgeType", pledgeType)
-				.add("guaranteeContractNo", guaranteeContractNo)
-				.add("bnsContractNo", bnsContractNo)
-				.toString();
+		return "BizGuaranteeResult{" +
+				"guaranType='" + guaranType + '\'' +
+				", grantCode='" + grantCode + '\'' +
+				", guaranPortType='" + guaranPortType + '\'' +
+				", clearRatio=" + clearRatio +
+				", clearRatioAmt=" + clearRatioAmt +
+				", notClearAmt=" + notClearAmt +
+				", pledgeState='" + pledgeState + '\'' +
+				", pledgeName='" + pledgeName + '\'' +
+				", pledgeNo='" + pledgeNo + '\'' +
+				", schemeNo='" + schemeNo + '\'' +
+				", pledgeType='" + pledgeType + '\'' +
+				", guaranteeContractNo='" + guaranteeContractNo + '\'' +
+				", bnsContractNo='" + bnsContractNo + '\'' +
+				", guarantorCustId='" + guarantorCustId + '\'' +
+				", changeNum='" + changeNum + '\'' +
+				", typePoint='" + typePoint + '\'' +
+				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizGuaranteeResult)) return false;
+		BizGuaranteeResult that = (BizGuaranteeResult) o;
+		return Objects.equal(getGuaranType(), that.getGuaranType()) &&
+				Objects.equal(getGrantCode(), that.getGrantCode()) &&
+				Objects.equal(getGuaranPortType(), that.getGuaranPortType()) &&
+				Objects.equal(getClearRatio(), that.getClearRatio()) &&
+				Objects.equal(getClearRatioAmt(), that.getClearRatioAmt()) &&
+				Objects.equal(getNotClearAmt(), that.getNotClearAmt()) &&
+				Objects.equal(getPledgeState(), that.getPledgeState()) &&
+				Objects.equal(getPledgeName(), that.getPledgeName()) &&
+				Objects.equal(getPledgeNo(), that.getPledgeNo()) &&
+				Objects.equal(getSchemeNo(), that.getSchemeNo()) &&
+				Objects.equal(getPledgeType(), that.getPledgeType()) &&
+				Objects.equal(getGuaranteeContractNo(), that.getGuaranteeContractNo()) &&
+				Objects.equal(getGuarantorCustId(), that.getGuarantorCustId())&&
+				Objects.equal(getChangeNum(), that.getChangeNum())&&
+				Objects.equal(getTypePoint(), that.getTypePoint()
+				);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getGuaranType(), getGrantCode(), getGuaranPortType(), getClearRatio(), getClearRatioAmt(), getNotClearAmt(), getPledgeState(), getPledgeName(), getPledgeNo(), getSchemeNo(), getPledgeType(), getGuaranteeContractNo(), getBnsContractNo(),getGuarantorCustId(), getChangeNum(), getTypePoint());
 	}
 }

@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -85,5 +86,21 @@ public class BizApprovalAuditValue extends BaseModel implements Serializable {
                 .add("auditName", auditName)
                 .add("auditValue", auditValue)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizApprovalAuditValue)) return false;
+        BizApprovalAuditValue that = (BizApprovalAuditValue) o;
+        return Objects.equal(getCategoryId(), that.getCategoryId()) &&
+                Objects.equal(getApprovalId(), that.getApprovalId()) &&
+                Objects.equal(getAuditName(), that.getAuditName()) &&
+                Objects.equal(getAuditValue(), that.getAuditValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getCategoryId(), getApprovalId(), getAuditName(), getAuditValue());
     }
 }

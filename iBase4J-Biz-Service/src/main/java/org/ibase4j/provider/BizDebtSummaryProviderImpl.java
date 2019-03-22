@@ -2,6 +2,8 @@ package org.ibase4j.provider;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.toolkit.IdWorker;
 import org.apache.log4j.LogManager;
@@ -10,11 +12,13 @@ import org.ibase4j.core.base.BaseProviderImpl;
 import org.ibase4j.core.config.BizContant;
 import org.ibase4j.core.config.BizStatus;
 import org.ibase4j.core.support.cache.RedisHelper;
+import org.ibase4j.core.util.DataUtil;
 import org.ibase4j.core.util.DateUtil;
 import org.ibase4j.core.util.StringUtil;
 import org.ibase4j.mapper.*;
 import org.ibase4j.model.*;
 import org.ibase4j.vo.BizDebtInfo;
+import org.ibase4j.vo.BookkeepkingVo;
 import org.ibase4j.vo.GrantRuleVerifVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +29,9 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static org.ibase4j.core.config.BizContant.*;
 
 /**
  * @author xiaoshuiquan
@@ -35,82 +40,274 @@ import java.util.*;
 @CacheConfig(cacheNames = "bizDebtSummary")
 @Service(interfaceClass = BizDebtSummaryProvider.class)
 public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary> implements BizDebtSummaryProvider {
-	private static final Logger log = LogManager.getLogger(BizDebtSummaryProviderImpl.class);
+    private static final Logger log = LogManager.getLogger(BizDebtSummaryProviderImpl.class);
     @Autowired
     private BizSingleProductRuleMapper singleProductRuleMapper;
     @Autowired
     private BizDebtSummaryMapper bizDebtSummaryMapper;
-	@Autowired
-	private BizGuaranteeInfoMapper bizGuaranteeInfoMapper;
-	@Autowired
-	private BizDebtProductMapper bizDebtProductMapper;
-	@Autowired
-	private BizTheRentFactoringMapper bizTheRentFactoringMapper;
-	@Autowired
-	private BizProductLinesTypeMapper bizProductLinesTypeMapper;
-	@Autowired
-	private BizCustomerMapper bizCustomerMapper;
-	@Autowired
-	private BizCustMapper bizCustMapper;
-	@Autowired
-	private BizTRNMapper bizTRNMapper;
-	@Autowired
-	private BizCBBMapper bizCBBMapper;
-	@Autowired
-	private BizCBEMapper bizCBEMapper;
-	@Autowired
-	private BizSingleProductRuleMapper bizSingleProductRuleMapper;
-	@Autowired
-	private BizCreditLinesMapper bizCreditLinesMapper;
-	@Autowired
-	private BizBetInformationMapper bizBetInformationMapper;
-	@Autowired
-	private BizPTSMapper bizPTSMapper;
-	@Autowired
-	private BizProStatementProvider bizProStatementProvider;
-	@Autowired
-	private BizDebtSummaryProvider bizDebtSummaryProvider;
-	@Autowired
-	private BizGuaranteeInfoProvider bizGuaranteeInfoProvider;
-	@Autowired
-	private BizBetInformationProvider bizBetInformationProvider;
-	@Autowired
-	private BizSingleProductRuleProvider singleProductRuleProvider;
-	@Autowired
-	private BizTheRentFactoringProvider bizTheRentFactoringProvider;
-	@Autowired
-	private BizProductLinesTypeProvider bizProductLinesTypeProvider;
-	@Autowired
-	private BizCustomerProvider bizCustomerProvider;
-	@Autowired
-	private BizPTSProvider bizPTSProvider;
-	@Autowired
-	private BizTRNProvider bizTRNProvider;
-	@Autowired
-	private BizCBEProvider bizCBEProvider;
-	@Autowired
-	private BizCBBProvider bizCBBProvider;
-	@Autowired
-	private BizCreditLinesProvider bizCreditLinesProvider;
-	@Autowired
-	private BizSingleProductRuleProvider bizSingleProductRuleProvider;
-	@Autowired
-	RedisHelper redisHelper;
-	@Autowired
-	private PlatformTransactionManager txManager;
+    @Autowired
+    private BizGuaranteeInfoMapper bizGuaranteeInfoMapper;
+    @Autowired
+    private BizDebtProductMapper bizDebtProductMapper;
+    @Autowired
+    private BizTheRentFactoringMapper bizTheRentFactoringMapper;
+    @Autowired
+    private BizProductLinesTypeMapper bizProductLinesTypeMapper;
+    @Autowired
+    private BizCustMapper bizCustomerMapper;
+    @Autowired
+    private BizCustMapper bizCustMapper;
+    @Autowired
+    private BizTRNMapper bizTRNMapper;
+    @Autowired
+    private BizCBBMapper bizCBBMapper;
+    @Autowired
+    private BizCBEMapper bizCBEMapper;
+    @Autowired
+    private BizSingleProductRuleMapper bizSingleProductRuleMapper;
+    @Autowired
+    private BizCreditLinesMapper bizCreditLinesMapper;
+    @Autowired
+    private BizBetInformationMapper bizBetInformationMapper;
+    @Autowired
+    private BizPTSMapper bizPTSMapper;
+    @Autowired
+    private BizApprSummaryInfoMapper bizApprSummaryInfoMapper;
+    @Autowired
+    private BizProStatementProvider bizProStatementProvider;
+    @Autowired
+    private BizDebtSummaryProvider bizDebtSummaryProvider;
+    @Autowired
+    private BizGuaranteeInfoProvider bizGuaranteeInfoProvider;
+    @Autowired
+    private BizBetInformationProvider bizBetInformationProvider;
+    @Autowired
+    private BizSingleProductRuleProvider singleProductRuleProvider;
+    @Autowired
+    private BizTheRentFactoringProvider bizTheRentFactoringProvider;
+    @Autowired
+    private BizProductLinesTypeProvider bizProductLinesTypeProvider;
+    @Autowired
+    private BizCustProvider bizCustomerProvider;
+    @Autowired
+    private BizPTSProvider bizPTSProvider;
+    @Autowired
+    private BizTRNProvider bizTRNProvider;
+    @Autowired
+    private BizCBEProvider bizCBEProvider;
+    @Autowired
+    private BizCBBProvider bizCBBProvider;
+    @Autowired
+    private BizCreditLinesProvider bizCreditLinesProvider;
+    @Autowired
+    private BizSingleProductRuleProvider bizSingleProductRuleProvider;
+    @Autowired
+    RedisHelper redisHelper;
+    @Autowired
+    private PlatformTransactionManager txManager;
+    @Autowired
+    private BizCntProvider bizCntProvider;
+    @Autowired
+    private BizTemporarySaveProvider bizTemporarySaveProvider;
+
+    @Transactional(rollbackFor = Exception.class)
+    public void dealWithEntity(Object list, Map<String,Object> paramMap){
+        //理想状态：拿到单一实体，查询库是否存在,判断关键项是否被修改，再选择新增修改或者删除 ==》 装到List里统一处理
+
+        Date dat = new Date();
+        List entityList;
+        
+        if(list instanceof List){
+            entityList = (List)list;
+        }else{
+            entityList = new ArrayList();
+            entityList.add(list);
+        }
+
+        if(entityList.get(0) instanceof BizTheRentFactoring){
+            Map resMap = DataUtil.getMinusMap(entityList,bizTheRentFactoringProvider.queryList(paramMap),new String[]{"debtCode","businessTypes","custNo","tolerancePertod","financePlatform","custName","custTating"},true);
+            for(BizTheRentFactoring obj : (List<BizTheRentFactoring>)resMap.get("addEntityList")){
+                obj.setCreateTime(dat);
+                obj.setUpdateTime(dat);
+                int resNum = bizTheRentFactoringMapper.insert(obj);
+                if(resNum != 1){
+                    throw new RuntimeException("insert error,entity ==> "+obj.toString());
+                }
+            }
+            for(BizTheRentFactoring ud : (List<BizTheRentFactoring>)resMap.get("updateEntityList")){
+                ud.setUpdateTime(dat);
+                int resNum = bizTheRentFactoringMapper.updateById(ud);
+                if(resNum != 1){
+                    throw new RuntimeException("update error,entity ==> "+ud.toString());
+                }
+            }
+            for(String delid : (List<String>)resMap.get("delIDList")){
+                int resNum = bizTheRentFactoringMapper.deleteById(Long.parseLong(delid));
+                if(resNum != 1){
+                    throw new RuntimeException("delete error,del id ==> "+delid);
+                }
+            }
+        }else if(entityList.get(0) instanceof BizCreditLines){
+            Map resMap = DataUtil.getMinusMap(entityList,bizCreditLinesProvider.queryList(paramMap),new String[]{"createTime","updateTime"},false);
+            for(BizCreditLines obj : (List<BizCreditLines>)resMap.get("addEntityList")){
+                obj.setCreateTime(dat);
+                obj.setUpdateTime(dat);
+                int resNum = bizCreditLinesMapper.insert(obj);
+                if(resNum != 1){
+                    throw new RuntimeException("insert error,entity ==> "+obj.toString());
+                }
+            }
+            for(BizCreditLines ud : (List<BizCreditLines>)resMap.get("updateEntityList")){
+                ud.setUpdateTime(dat);
+                bizCreditLinesMapper.updateById(ud);
+            }
+            for(String delid : (List<String>)resMap.get("delIDList")){
+                bizCreditLinesMapper.deleteById(Long.parseLong(delid));
+            }
+        }else if(entityList.get(0) instanceof BizSingleProductRule){
+            Map resMap = DataUtil.getMinusMap(entityList,bizSingleProductRuleProvider.queryList(paramMap),new String[]{"createTime","updateTime"},false);
+            for(BizSingleProductRule obj : (List<BizSingleProductRule>)resMap.get("addEntityList")){
+                obj.setCreateTime(dat);
+                obj.setUpdateTime(dat);
+                int resNum = bizSingleProductRuleMapper.insert(obj);
+                if(resNum != 1){
+                    throw new RuntimeException("insert error,entity ==> "+obj.toString());
+                }
+            }
+            for(BizSingleProductRule ud : (List<BizSingleProductRule>)resMap.get("updateEntityList")){
+                ud.setUpdateTime(dat);
+                bizSingleProductRuleMapper.updateById(ud);
+            }
+            for(String delid : (List<String>)resMap.get("delIDList")){
+                bizSingleProductRuleMapper.deleteById(Long.parseLong(delid));
+            }
+        }else if(entityList.get(0) instanceof BizGuaranteeInfo){
+            Map resMap = DataUtil.getMinusMap(entityList,bizGuaranteeInfoProvider.queryList(paramMap),new String[]{"createTime","updateTime","betInformationList"},false);
+            for(BizGuaranteeInfo obj : (List<BizGuaranteeInfo>)resMap.get("addEntityList")){
+                obj.setCreateTime(dat);
+                obj.setUpdateTime(dat);
+                int resNum = bizGuaranteeInfoMapper.insert(obj);
+                if(resNum != 1){
+                    throw new RuntimeException("insert error,entity ==> "+obj.toString());
+                }
+            }
+            for(BizGuaranteeInfo ud : (List<BizGuaranteeInfo>)resMap.get("updateEntityList")){
+                ud.setUpdateTime(dat);
+                bizGuaranteeInfoMapper.updateById(ud);
+            }
+            for(String delid : (List<String>)resMap.get("delIDList")){
+                bizGuaranteeInfoMapper.deleteById(Long.parseLong(delid));
+            }
+        }
+        else if(entityList.get(0) instanceof BizPTS){
+
+            List<Map<String,Object>> ptslist = new ArrayList();
+
+            for(BizPTS pts : (List<BizPTS>) entityList){
+
+               String ptsOinr = pts.getObjinr();
+               String ptsOtyp = pts.getObjtyp();
+               if((null!=ptsOtyp && !"".equals(ptsOtyp)) && (null!=ptsOinr && !"".equals(ptsOinr))){
+
+                   String ptsKey = ptsOtyp + ptsOinr;
+                   boolean addPts = true;
+                   for(Map ptsmap : ptslist){
+                       if(ptsKey.equals(ptsmap.get("ptsKey"))){
+                           addPts = false;
+                           List tmpList = (List)ptsmap.get("ptsList");
+                           tmpList.add(pts);
+                       }
+                   }
+                   if(addPts){
+                       Map newMap = new HashMap<>();
+                       Map newSelMap = new HashMap<>();
+                       List newList = new ArrayList();
+                       newList.add(pts);
+                       newMap.put("ptsKey",ptsKey);
+                       newMap.put("ptsList",newList);
+                       newSelMap.put("objtyp",ptsOtyp);
+                       newSelMap.put("objinr",ptsOinr);
+                       newMap.put("selMap",newSelMap);
+                       ptslist.add(newMap);
+                   }
+               }else{
+                   log.error("pts error=="+pts.toString());
+                   throw new RuntimeException("pts error=="+pts.toString());
+               }
+
+            }
+            for(Map<String,Object> iserMap : ptslist){
+
+                Map resMap = DataUtil.getMinusMap((List)iserMap.get("ptsList"),bizPTSMapper.selectByMap((Map)iserMap.get("selMap")),new String[]{"role","custNameCN"},true);
+
+                for(BizPTS obj : (List<BizPTS>)resMap.get("addEntityList")){
+                    obj.setCreateTime(dat);
+                    obj.setUpdateTime(dat);
+                    int resNum = bizPTSMapper.insert(obj);
+                    if(resNum != 1){
+                        throw new RuntimeException("insert error,entity ==> "+obj.toString());
+                    }
+                }
+                for(BizPTS ud : (List<BizPTS>)resMap.get("updateEntityList")){
+                    ud.setUpdateTime(dat);
+                    bizPTSMapper.updateById(ud);
+                }
+                for(String delid : (List<String>)resMap.get("delIDList")){
+                    bizPTSMapper.deleteById(Long.parseLong(delid));
+                }
+            }
+        }
+        else if(entityList.get(0) instanceof BizProductLinesType){
+            Map resMap = DataUtil.getMinusMap(entityList,bizProductLinesTypeProvider.queryList(paramMap),new String[]{"createTime","updateTime"},false);
+            for(BizProductLinesType obj : (List<BizProductLinesType>)resMap.get("addEntityList")){
+                obj.setCreateTime(dat);
+                obj.setUpdateTime(dat);
+                int resNum = bizProductLinesTypeMapper.insert(obj);
+                if(resNum != 1){
+                    throw new RuntimeException("insert error,entity ==> "+obj.toString());
+                }
+            }
+            for(BizProductLinesType ud : (List<BizProductLinesType>)resMap.get("updateEntityList")){
+                ud.setUpdateTime(dat);
+                bizProductLinesTypeMapper.updateById(ud);
+            }
+            for(String delid : (List<String>)resMap.get("delIDList")){
+                bizProductLinesTypeMapper.deleteById(Long.parseLong(delid));
+            }
+        }
+        else if(entityList.get(0) instanceof BizBetInformation){
+            Map resMap = DataUtil.getMinusMap(entityList,bizBetInformationProvider.queryList(paramMap),new String[]{"createTime","updateTime","betInformationList"},false);
+            for(BizBetInformation obj : (List<BizBetInformation>)resMap.get("addEntityList")){
+                obj.setCreateTime(dat);
+                obj.setUpdateTime(dat);
+                int resNum = bizBetInformationMapper.insert(obj);
+                if(resNum != 1){
+                    throw new RuntimeException("insert error,entity ==> "+obj.toString());
+                }
+            }
+            for(BizBetInformation ud : (List<BizBetInformation>)resMap.get("updateEntityList")){
+                ud.setUpdateTime(dat);
+                bizBetInformationMapper.updateById(ud);
+            }
+            for(String delid : (List<String>)resMap.get("delIDList")){
+                bizBetInformationMapper.deleteById(Long.parseLong(delid));
+            }
+        }
+
+    }
 
 	@Override
 	public Page<BizDebtSummary> queryByCompletedSolutions(Map<String, Object> params) {
-		log.info("开始查询所有已审核通过的债项...");
+		log.debug("开始查询所有已审核通过的债项...");
 		//TODO 此处以后加入数据权限过滤，登录用户只能发放自己管理权限内的债项
-		params.put("inSolutionState", BizContant.SOLUTION_STATE_06);
+		params.put("solutionState", BizContant.SOLUTION_STATE_06);
 		Page<BizDebtSummary> result = query(params);
 		return result;
 	}
 
 	@Override
 	public List<GrantRuleVerifVo> getGrantRuleVo(Map<String, Object> params) {
-		log.info("开始查询发放约束规则...");
+		log.debug("开始查询发放约束规则...");
 		return bizDebtSummaryMapper.getGrantRuleVo(params);
 	}
 
@@ -119,484 +316,291 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 		Page page = getPage(params);
 		page.setSize(StringUtil.objToInteger(params.get("countPage")));
 		params.remove("countPage");
-		List<BizDebtInfo> bizDebtSummaryList = bizDebtSummaryMapper.getDebtInfo(page,params);
+        List<BizDebtInfo> bizDebtSummaryList = bizTRNMapper.selectSummaryInfo(page,params);
 		page.setRecords(bizDebtSummaryList);
 		return page;
 	}
 
-	//保存债项方案
+	//保存债项方案（新增、修订、驳回时的数据恢复）
 	@Override
-
+	@Transactional(rollbackFor = Exception.class)
 	public boolean saveDebt(Map<String, Object> mapObj) {
-		log.info("====================保存方案的方法开始执行==========================");
-		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+
+		Date dat= new Date();
+
+        BizTRN bizTRN = null;
+        BizDebtSummary bizDebtSummary = null;
+        Long bizDebtId = null;
+        Long trnId = null;
+
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
 		def.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+        TransactionStatus status = txManager.getTransaction(def);
 
-		TransactionStatus status = txManager.getTransaction(def);
-		try {
-			Date dat = new Date();
+        try {
 
-			//保存债项信息表
-			BizDebtSummary bizDebtSummary = (BizDebtSummary) mapObj.get("bizDebtSummary");
-			log.info("=========保存债项信息表（BIZ_DEBT_MAIN）开始执行-方案编号："+bizDebtSummary+"==========================");
-			Long idDebtSummary = IdWorker.getId();
-			bizDebtSummary.setId(idDebtSummary);
-			//全局规则
-			bizDebtSummary.setRuleType((long) 1);
-			//流程发起时间
-			bizDebtSummary.setProcessInitiatTime(dat);
-			bizDebtSummary.setCreateTime(dat);
-			bizDebtSummary.setUpdateTime(dat);
-			bizDebtSummary.setCreateBy(bizDebtSummary.getBankTellerId());
-			bizDebtSummary.setUpdateBy(bizDebtSummary.getBankTellerId());
-			bizDebtSummary.setEnable(1);
-			bizDebtSummaryMapper.insert(bizDebtSummary);
-			log.info("============保存债项信息表（BIZ_DEBT_MAIN）执行成功-方案编号："+bizDebtSummary+"==========================");
+            //true=驳回
+            if(null != mapObj.get("fromTempSave") && (boolean)mapObj.get("fromTempSave") == true){
 
-			//保存客户信息
-			log.info("==========保存用信主体的客户信息表（BIZ_CUSTOMER）开始执行-方案编号："+bizDebtSummary+"==========================");
-			Set<BizCustomer> bizCustomerList = (Set<BizCustomer>) mapObj.get("cuSet");
-			for (BizCustomer cu : bizCustomerList) {
-				Long idCust = IdWorker.getId();
-				cu.setDebtCode(bizDebtSummary.getDebtCode());
-				cu.setId(idCust);
-				cu.setCreateTime(dat);
-				cu.setUpdateTime(dat);
-				cu.setCreateBy(bizDebtSummary.getBankTellerId());
-				cu.setUpdateBy(bizDebtSummary.getBankTellerId());
-				bizCustomerMapper.insert(cu);
-				log.info("===========保存用信主体的客户信息表（BIZ_CUSTOMER）执行成功-方案编号："+bizDebtSummary+"==========================");
+                //当前流水
+                Wrapper<BizTRN> wrapper = new EntityWrapper<>();
+                wrapper.eq("RELFLG","Y").eq("OWNREF",(String)mapObj.get("ownref")).ne("RELRES","Y");
+                bizTRN = bizTRNProvider.selectOne(wrapper);
+                //历史审批通过流水
+                Wrapper<BizTRN> oldResWrapper = new EntityWrapper<>();
+                oldResWrapper.eq("RELRES","Y").eq("OWNREF",(String)mapObj.get("ownref")).ne("RELFLG","Y");
+                BizTRN oldResTRN = bizTRNProvider.selectOne(oldResWrapper);
 
-				//保存PTS表 用信客户
-				log.info("====================保存用信主体的PTS表（BIZ_TRN）开始执行-方案编号："+bizDebtSummary+"==========================");
-				BizPTS bizPTS = new BizPTS();
-				bizPTS.setDebtCode(bizDebtSummary.getDebtCode());
-				bizPTS.setObjtyp("BIZ_CUSTOMER");
-				bizPTS.setObjinr(idCust.toString());
-				bizPTS.setRole("LETS");
-				bizPTS.setPtyinr(idCust.toString());
-				bizPTS.setCreateTime(dat);
-				bizPTS.setUpdateTime(dat);
-				bizPTS.setCreateBy(bizDebtSummary.getBankTellerId());
-				bizPTS.setUpdateBy(bizDebtSummary.getBankTellerId());
-				bizPTSMapper.insert(bizPTS);
-				log.info("====================保存用信主体的PTS表（BIZ_TRN）执行成功-方案编号："+bizDebtSummary+"==========================");
+                trnId = bizTRN.getId();
 
-				//保存用户主体授信信息表
-				log.info("=================保存用户主体授信信息表（BIZ_CREDIT_LINES）开始执行-方案编号："+bizDebtSummary+"==========================");
-				List<BizCreditLines> bizProductLinesTypeList = cu.getCreditLinesList();
-				for (BizCreditLines li : bizProductLinesTypeList) {
-					li.setDebtCode(bizDebtSummary.getDebtCode());
-					li.setCustomerId(idCust);
-					li.setCustNo(cu.getCustNo());
-					li.setObjtyp("BIZ_DEBT_MAIN");
-					li.setObjinr(idDebtSummary.toString());
-					Long idCre = IdWorker.getId();
-					li.setId(idCre);
-					li.setCreateTime(dat);
-					li.setUpdateTime(dat);
-					li.setCreateBy(bizDebtSummary.getBankTellerId());
-					li.setUpdateBy(bizDebtSummary.getBankTellerId());
-					bizCreditLinesMapper.insert(li);
-					log.info("====================保存用户主体授信信息表（BIZ_CREDIT_LINES）执行成功-方案编号："+bizDebtSummary+"==========================");
-				}
-			}
+                if(bizTRN == null || oldResTRN == null){
+                    logger.debug("未查询到通过审批的历史方案，驳回时不会恢复数据。selRelresTrn+"+wrapper.getParamAlias());
+                }else{
 
-			//保存额度类型表
-			log.info("====================保存保存额度类型表（BIZ_PRODUCT_LINESTYPE）开始执行-方案编号："+bizDebtSummary+"==========================");
-			List<BizProductLinesType> productLineList = (List<BizProductLinesType>) mapObj.get("productLinesTypesList");
-			for (BizProductLinesType proLine : productLineList) {
-				Long idProLine = IdWorker.getId();
-				proLine.setId(idProLine);
-				proLine.setCreateTime(dat);
-				proLine.setUpdateTime(dat);
-				proLine.setCreateBy(bizDebtSummary.getBankTellerId());
-				proLine.setUpdateBy(bizDebtSummary.getBankTellerId());
-				bizProductLinesTypeMapper.insert(proLine);
-				log.info("====================保存保存额度类型表（BIZ_PRODUCT_LINESTYPE）执行成功-方案编号："+bizDebtSummary+"==========================");
-			}
+                    bizTRN.setInifrm("DEBTDOWN");
+                    bizTRN.setIninam("修订驳回");
+                    bizTRN.setBizStatus(BizStatus.DEBTDOWN);
+                    bizTRN.setProcessStatus(BizStatus.DEPRDOWN);
 
-			//保存交易流水表 trn
-			log.info("====================保存交易流水表（BIZ_TRN）开始执行-方案编号："+bizDebtSummary+"==========================");
-			BizTRN bizTRN = new BizTRN();
-			bizTRN.setBchkeyinr(bizDebtSummary.getInstitutionCode());
-			bizTRN.setInifrm("ADEBT");
-			bizTRN.setIninam("方案补录");
-			bizTRN.setIniusr(bizDebtSummary.getBankTellerId());
-			bizTRN.setOwnref(bizDebtSummary.getDebtCode());
-			bizTRN.setObjtyp("BIZ_DEBT_MAIN");
-			bizTRN.setObjinr(idDebtSummary);
-			bizTRN.setExedat(dat);
-			bizTRN.setInidattim(dat);
-			Long id = IdWorker.getId();
-			bizTRN.setId(id);
-			bizTRN.setCreateTime(dat);
-			bizTRN.setUpdateTime(dat);
-			bizTRN.setCreateBy(bizDebtSummary.getBankTellerId());
-			bizTRN.setUpdateBy(bizDebtSummary.getBankTellerId());
-			bizTRNMapper.insert(bizTRN);
-			log.info("====================保存交易流水表（BIZ_TRN）执行成功-方案编号："+bizDebtSummary+"==========================");
+                    Map<String, Object> oldParams = new HashMap<String, Object>();
+                    oldParams.put("taskid",oldResTRN.getId());
+                    oldParams.put("projectName","Trn_debtMain");
+//                  oldParams.put("bizcode",resTrn.getOwnref());
+                    Map<String, Object> selResTempSave = (Map<String, Object>)bizTemporarySaveProvider.getTemporary(oldParams);
+                    if(null != selResTempSave){
+                        //存库的数据从文件中获得
+                        mapObj = selResTempSave;
+                        bizDebtSummary=(BizDebtSummary)mapObj.get("bizDebtSummary");
+                        bizDebtSummaryMapper.updateById(bizDebtSummary);
+                        bizDebtId = bizDebtSummary.getId();
+                        //撤销台账（根据cbe：where ==trninr,cbe: where cbeinr）
+                        bizCBEProvider.delCbeCbbByTrninr(bizTRN.getId());
+                    }else{
+                        logger.error("(BizTempSave)No records queried from the database!params="+oldParams.toString());
+                    }
+                }
 
-			//保存发生额信息表cbe 方案金额
-			log.info("====================保存方案金额的发生额信息表cbe（BIZ_CBE）开始执行-方案编号："+bizDebtSummary+"==========================");
-			BizCBE bizCBE = new BizCBE();
-			Long idCbe = IdWorker.getId();
-			bizCBE.setId(idCbe);
-			bizCBE.setObjType("BIZ_DEBT_MAIN");
-			bizCBE.setObjInr(idDebtSummary);
-			bizCBE.setCbt("SOLUIN");
-			bizCBE.setDat(dat);
-			bizCBE.setCur(bizDebtSummary.getMpc());
-			bizCBE.setAmt(StringUtil.stringToBigDecimal(bizDebtSummary.getSolutionAmount()));
-			bizCBE.setCredat(dat);
-			//bizCBE.setXrfcur(bizDebtSummary.getMpc());
-			//bizCBE.setXrfamt(StringUtil.stringToBigDecimal(bizDebtSummary.getSolutionAmount()));
-			bizCBE.setCreateTime(dat);
-			bizCBE.setUpdateTime(dat);
-			bizCBE.setCredat(dat);
-			bizCBE.setCreateBy(bizDebtSummary.getBankTellerId());
-			bizCBE.setUpdateBy(bizDebtSummary.getBankTellerId());
-			bizCBEMapper.insert(bizCBE);
-			log.info("====================保存方案金额的发生额信息表cbe（BIZ_CBE）执行成功-方案编号："+bizDebtSummary+"==========================");
+                bizTRNMapper.updateById(bizTRN);
 
-			//保存余额信息表cbb 方案金额
-			log.info("====================保存方案金额的余额信息表cbb（BIZ_CBB）开始执行-方案编号："+bizDebtSummary+"==========================");
-			BizCBB bizCBB = new BizCBB();
-			Long idCbb = IdWorker.getId();
-			bizCBB.setId(idCbb);
-			bizCBB.setObjType("BIZ_DEBT_MAIN");
-			bizCBB.setObjInr(idDebtSummary);
-			bizCBB.setCbc(BizContant.DEBT_SUMMARY_CBCTXT);
-			bizCBB.setAmt(StringUtil.stringToBigDecimal(bizDebtSummary.getSolutionAmount().toString()));
-			bizCBB.setBegdat(dat);
-			bizCBB.setEnddat(DateUtil.stringToDate(BizContant.END_DATE));
-			bizCBB.setCur(bizDebtSummary.getMpc());
-			bizCBB.setAmt(StringUtil.stringToBigDecimal(bizDebtSummary.getSolutionAmount()));
-			//bizCBB.setXrfcur(bizDebtSummary.getMpc());
-			//bizCBB.setXrfamt(StringUtil.stringToBigDecimal(bizDebtSummary.getSolutionAmount()));
-			bizCBB.setCbeInr(idCbe);
-			bizCBB.setCreateTime(dat);
-			bizCBB.setUpdateTime(dat);
-			bizCBB.setCreateBy(bizDebtSummary.getBankTellerId());
-			bizCBB.setUpdateBy(bizDebtSummary.getBankTellerId());
-			bizCBBMapper.insert(bizCBB);
-			log.info("====================保存方案金额的余额信息表cbb（BIZ_CBB）执行成功-方案编号："+bizDebtSummary+"==========================");
+            }else{
 
-			//保存单一规则表
-			log.info("====================保存单一规则表（BIZ_SIGLE_PRODUCT_RULE）开始执行-方案编号："+bizDebtSummary+"==========================");
-			List<BizSingleProductRule> bizSingleProductRuleList = (List<BizSingleProductRule>) mapObj.get("bizSingleProductRuleList");
-			for (BizSingleProductRule sing : bizSingleProductRuleList) {
-				Long idSing = IdWorker.getId();
-				sing.setId(idSing);
-				sing.setCreateTime(dat);
-				sing.setUpdateTime(dat);
-				sing.setCreateBy(bizDebtSummary.getBankTellerId());
-				sing.setUpdateBy(bizDebtSummary.getBankTellerId());
-				bizSingleProductRuleMapper.insert(sing);
-				log.info("====================保存单一规则表（BIZ_SIGLE_PRODUCT_RULE）执行成功-方案编号："+bizDebtSummary+"==========================");
-			}
+                bizDebtSummary=(BizDebtSummary)mapObj.get("bizDebtSummary");
+                bizDebtId = bizDebtSummary.getId();
+                trnId = IdWorker.getId();
+                bizTRN=new BizTRN();
+                bizTRN.setBchkeyinr(bizDebtSummary.getInstitutionCode());
+                bizTRN.setIniusr(bizDebtSummary.getBankTellerId());
+                bizTRN.setOwnref(bizDebtSummary.getDebtCode());
+                bizTRN.setObjtyp("BIZ_DEBT_MAIN");
+                bizTRN.setObjinr(bizDebtId);
+                //执行日期-->标识为审批通过的时间
+//                bizTRN.setExedat(dat);
+                bizTRN.setInidattim(dat);
+                bizTRN.setId(trnId);
+                bizTRN.setCreateTime(dat);
+                bizTRN.setUpdateTime(dat);
+                bizTRN.setCreateBy(bizDebtSummary.getBankTellerId());
+                bizTRN.setUpdateBy(bizDebtSummary.getBankTellerId());
+                bizTRN.setEnable(1);
+                bizTRN.setVerNum(bizDebtSummary.getVerNum());
+                //补充概要信息
+                //项目名称
+                bizTRN.setObjnam(bizDebtSummary.getProjectName());
+                //币种
+                bizTRN.setReloricur(bizDebtSummary.getMpc());
+                //金额
+                bizTRN.setReloriamt(bizDebtSummary.getSolutionAmount());
+                //为Y时代表最新的流水
+                bizTRN.setRelflg("Y");
+                //为Y时代表业务中最新审批通过的数据
+                bizTRN.setRelres("N");
+                if(bizDebtSummary.getVerNum() == 1){
+                    // 发起补录流程
+                    bizTRN.setInifrm("DEBOPN");
+                    bizTRN.setIninam("方案补录");
+                    bizTRN.setBizStatus(BizStatus.DEBTSUAT);
+                    bizTRN.setProcessStatus(BizStatus.DEPRNEAT);
+                    bizDebtSummaryMapper.insert(bizDebtSummary);
+                }else {
+                    Wrapper<BizTRN> wrapper = new EntityWrapper<BizTRN>();
+                    wrapper.eq("RELRES","Y");
+                    List<BizTRN> oldResLst = bizTRNMapper.selectList(wrapper);
+                    if(null != oldResLst && oldResLst.size()>0){
+                        //发起修订流程
+                        bizTRN.setInifrm("DEBAME");
+                        bizTRN.setIninam("方案修订");
+                        bizTRN.setBizStatus(BizStatus.DEBTREAT);
+                        bizTRN.setProcessStatus(BizStatus.DEPRNEAT);
+                    }else{
+                        // 发起补录流程
+                        bizTRN.setInifrm("DEBOPN");
+                        bizTRN.setIninam("方案补录");
+                        bizTRN.setBizStatus(BizStatus.DEBTSUAT);
+                        bizTRN.setProcessStatus(BizStatus.DEPRNEAT);
+                    }
+                    bizDebtSummaryMapper.updateById(bizDebtSummary);
+                }
+                //记两条台账，方案金额和可发放金额
+                //判断 1.增额还是减额 2.余额是多少
+                String solucbt = DEBT_SOLU_IN_CBTTXT;
+                String debtcbt = DEBT_DEBT_IN_CBTTXT;
+                BizCBB lastCbb = bizCBBMapper.selectOne(new BizCBB("BIZ_DEBT_MAIN",bizDebtId,BizContant.DEBT_SUMMARY_SOLU_CBCTXT,DateUtil.stringToDate("22991231 23:59:59")));
+                if(null != lastCbb && lastCbb.getAmt().compareTo(bizDebtSummary.getSolutionAmount()) == 1){
+                    solucbt = DEBT_SOLU_OUT_CBTTXT;
+                    debtcbt = DEBT_DEBT_OUT_CBTTXT;
+                }
+                boolean bookres1 = bizCBEProvider.bookkeepking(new BookkeepkingVo("BIZ_DEBT_MAIN",bizDebtId,trnId,solucbt,BizContant.DEBT_SUMMARY_SOLU_CBCTXT,bizDebtSummary.getMpc(),StringUtil.stringToBigDecimal(bizDebtSummary.getSolutionAmount()),null,null,dat,bizDebtSummary.getBankTellerId()));
+                boolean bookres2 = bizCBEProvider.bookkeepking(new BookkeepkingVo("BIZ_DEBT_MAIN",bizDebtId,trnId,debtcbt,BizContant.DEBT_SUMMARY_DEBT_CBCTXT,bizDebtSummary.getMpc(),StringUtil.stringToBigDecimal(bizDebtSummary.getSolutionAmount()),null,null,dat,bizDebtSummary.getBankTellerId()));
+                logger.debug("记方案台账结果：bookres1=="+bookres1+" bookres2=="+bookres2);
+                bizTRNProvider.updateTRNStatus(bizTRN);
 
-			int a = 0;
-			//保存PTS表 申请人
-			for (BizCustomer cucu : bizCustomerList) {
-				if (cucu.getCustNo().equals(bizDebtSummary.getProposerNum())) {
-					a++;
-				}
-			}
-			if (a == 0) {
-				//说明申请人没有插入数据库
-				log.info("====================保存申请人的客户信息（BIZ_CUSTOMER）开始执行-方案编号："+bizDebtSummary+"==========================");
-				BizCust custt = new BizCust();
-				custt.setCustNo(bizDebtSummary.getProposerNum());
-				BizCust cuuu = bizCustMapper.selectOne(custt);
-				BizCustomer cult = new BizCustomer();
-				BeanUtils.copyProperties(cuuu, cult);
-				Long idCust = IdWorker.getId();
-				cult.setDebtCode(bizDebtSummary.getDebtCode());
-				cult.setId(idCust);
-				cult.setCreateTime(dat);
-				cult.setUpdateTime(dat);
-				cult.setCreateBy(bizDebtSummary.getBankTellerId());
-				cult.setUpdateBy(bizDebtSummary.getBankTellerId());
-				bizCustomerMapper.insert(cult);
-				log.info("====================保存申请人的客户信息（BIZ_CUSTOMER）执行成功-方案编号："+bizDebtSummary+"==========================");
+                BizApprSummaryInfo bizApprSummaryInfo = new BizApprSummaryInfo();
+                //项目名称
+                bizApprSummaryInfo.setProjectName(bizDebtSummary.getProjectName());
+                //申请人名称
+                bizApprSummaryInfo.setProposer(bizDebtSummary.getProposer());
+                //币种
+                bizApprSummaryInfo.setMpc(bizDebtSummary.getMpc());
+                //金额
+                bizApprSummaryInfo.setSolutionAmount(bizDebtSummary.getSolutionAmount());
+                //失效日期
+                bizApprSummaryInfo.setPgExpiDate(bizDebtSummary.getPgExpiDate());
+                //关联流水
+                bizApprSummaryInfo.setTrnInr(trnId);
+                bizApprSummaryInfo.setDebtCode(bizDebtSummary.getDebtCode());
+                bizApprSummaryInfo.setVerNum(bizDebtSummary.getVerNum());
 
-				log.info("====================保存申请人的PTS（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
-				BizPTS bizPTSPro = new BizPTS();
-				bizPTSPro.setDebtCode(bizDebtSummary.getDebtCode());
-				bizPTSPro.setObjtyp("BIZ_DEBT_MAIN");
-				bizPTSPro.setObjinr(idDebtSummary.toString());
-				bizPTSPro.setRole("APPT");
-				bizPTSPro.setPtyinr(idCust.toString());
-				bizPTSPro.setCreateTime(dat);
-				bizPTSPro.setUpdateTime(dat);
-				bizPTSPro.setCreateBy(bizDebtSummary.getBankTellerId());
-				bizPTSPro.setUpdateBy(bizDebtSummary.getBankTellerId());
-				bizPTSMapper.insert(bizPTSPro);
-				log.info("====================保存申请人的PTS（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
-			} else {
-				log.info("====================保存申请人的PTS（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
-				BizPTS bizPTSPro = new BizPTS();
-				bizPTSPro.setDebtCode(bizDebtSummary.getDebtCode());
-				bizPTSPro.setObjtyp("BIZ_DEBT_MAIN");
-				bizPTSPro.setObjinr(idDebtSummary.toString());
-				bizPTSPro.setRole("APPT");
-				bizPTSPro.setPtyinr(bizDebtSummary.getProposerNum());
-				bizPTSPro.setCreateTime(dat);
-				bizPTSPro.setUpdateTime(dat);
-				bizPTSPro.setCreateBy(bizDebtSummary.getBankTellerId());
-				bizPTSPro.setUpdateBy(bizDebtSummary.getBankTellerId());
-				bizPTSMapper.insert(bizPTSPro);
-				log.info("====================保存申请人的PTS（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
-			}
+                bizApprSummaryInfo.setaCurrrency(bizDebtSummary.getaCurrrency());
+                bizApprSummaryInfo.setApprove(bizDebtSummary.getApprove());
+                bizApprSummaryInfo.setBankTellerId(bizDebtSummary.getBankTellerId());
+                bizApprSummaryInfo.setBrifBackground(bizDebtSummary.getBrifBackground());
+                bizApprSummaryInfo.setBusinessBackgroundBrief(bizDebtSummary.getBusinessBackgroundBrief());
+                bizApprSummaryInfo.setDeptName(bizDebtSummary.getDeptName());
+                bizApprSummaryInfo.setDescriptionProgramQuoqate(bizDebtSummary.getDescriptionProgramQuoqate());
+                bizApprSummaryInfo.setDopo(bizDebtSummary.getDopo());
+                bizApprSummaryInfo.setErrNo(bizDebtSummary.getErrNo());
+                bizApprSummaryInfo.setGoodsSketch(bizDebtSummary.getGoodsSketch());
+                bizApprSummaryInfo.setIdentNumber(bizDebtSummary.getIdentNumber());
+                bizApprSummaryInfo.setLs(bizDebtSummary.getLs());
+                bizApprSummaryInfo.setLtnopa(bizDebtSummary.getLtnopa());
+                bizApprSummaryInfo.setOc(bizDebtSummary.getOc());
+                bizApprSummaryInfo.setDeptName(bizDebtSummary.getDeptName());
+                bizApprSummaryInfo.setInstitutionCode(bizDebtSummary.getInstitutionCode());
+                bizApprSummaryInfo.setPgEffectivDate(bizDebtSummary.getPgEffectivDate());
+                bizApprSummaryInfo.setRaaa(bizDebtSummary.getRaaa());
+                bizApprSummaryInfo.setSingleBtch(bizDebtSummary.getSingleBtch());
+                bizApprSummaryInfo.setCreateTime(bizDebtSummary.getCreateTime());
+                bizApprSummaryInfo.setUpdateTime(bizDebtSummary.getUpdateTime());
+                bizApprSummaryInfo.setCreateBy(bizDebtSummary.getCreateBy());
+                bizApprSummaryInfo.setUpdateBy(bizDebtSummary.getUpdateBy());
 
-			//保存担保信息
-			log.info("====================保存担保信息表（BIZ_GUARANTEE_INFO）开始执行-方案编号："+bizDebtSummary+"==========================");
-			List<BizGuaranteeInfo> bizGuaranteeInfoList = (List<BizGuaranteeInfo>) mapObj.get("bizGuaranteeInfoList");
-			for (BizGuaranteeInfo gu : bizGuaranteeInfoList) {
-				Long idGuar = IdWorker.getId();
-				gu.setCreateTime(dat);
-				gu.setUpdateTime(dat);
-				gu.setCreateBy(bizDebtSummary.getBankTellerId());
-				gu.setUpdateBy(bizDebtSummary.getBankTellerId());
-				gu.setId(idGuar);
-				bizGuaranteeInfoMapper.insert(gu);
-				log.info("====================保存担保信息表（BIZ_GUARANTEE_INFO）执行成功-方案编号："+bizDebtSummary+"==========================");
-
-				//保存押品信息表
-				log.info("====================保存押品信息表（BIZ_CONTRACT_COLLATERAL）开始执行-方案编号："+bizDebtSummary+"==========================");
-				if (gu.getBetInformationList() != null) {
-					List<BizBetInformation> betList = gu.getBetInformationList();
-					for (BizBetInformation bet : betList) {
-						//担保合同编号
-						bet.setGuarNo(gu.getWarrantyContractNumber());
-						Long idbetInf = IdWorker.getId();
-						bet.setDebtCode(bizDebtSummary.getDebtCode());
-						bet.setId(idbetInf);
-						bet.setCreateTime(dat);
-						bet.setUpdateTime(dat);
-						bet.setCreateBy(bizDebtSummary.getBankTellerId());
-						bet.setUpdateBy(bizDebtSummary.getBankTellerId());
-						bizBetInformationMapper.insert(bet);
-						log.info("====================保存押品信息表（BIZ_CONTRACT_COLLATERAL）执行成功-方案编号："+bizDebtSummary+"==========================");
-					}
-				}
-
-				//保存担保金额cbe 方案
-				log.info("====================保存担保金额的cbe表（BIZ_CBE）开始执行-方案编号："+bizDebtSummary+"==========================");
-				BizCBE bizCBE2 = new BizCBE();
-				Long idCb = IdWorker.getId();
-				bizCBE2.setId(idCb);
-				bizCBE2.setObjType("BIZ_GUARANTEE_INFO");
-				bizCBE2.setObjInr(idGuar);
-				bizCBE2.setCbt("SOLUIN");
-				bizCBE2.setDat(dat);
-				bizCBE2.setCur(gu.getCurrencyGuarantee());
-				bizCBE2.setAmt(StringUtil.stringToBigDecimal(gu.getGuaranteeAmount()));
-				bizCBE2.setCredat(dat);
-				//bizCBE2.setXrfcur(gu.getCurrencyGuarantee());
-				//bizCBE2.setXrfamt(StringUtil.stringToBigDecimal(gu.getGuaranteeAmount()));
-				bizCBE2.setCreateTime(dat);
-				bizCBE2.setUpdateTime(dat);
-				bizCBE2.setCredat(dat);
-				bizCBE2.setCreateBy(bizDebtSummary.getBankTellerId());
-				bizCBE2.setUpdateBy(bizDebtSummary.getBankTellerId());
-				bizCBEMapper.insert(bizCBE2);
-				log.info("====================保存担保金额cbe（BIZ_CBE） 执行成功-方案编号："+bizDebtSummary+"==========================");
-
-				//保存担保金额cbb 方案
-				log.info("====================保存担保金额cbb（BIZ_CBB）开始执行-方案编号："+bizDebtSummary+"==========================");
-				BizCBB bizCBB2 = new BizCBB();
-				Long idCbb2 = IdWorker.getId();
-				bizCBB2.setId(idCbb2);
-				bizCBB2.setObjType("BIZ_GUARANTEE_INFO");
-				bizCBE2.setObjInr(idGuar);
-				bizCBB2.setCbc(BizContant.DEBT_SUMMARY_CBCTXT);
-				bizCBB2.setAmt(StringUtil.stringToBigDecimal(gu.getGuaranteeAmount()));
-				bizCBB2.setBegdat(dat);
-				bizCBB2.setEnddat(DateUtil.stringToDate(BizContant.END_DATE));
-				bizCBB2.setCur(gu.getCurrencyGuarantee());
-				bizCBB2.setAmt(StringUtil.stringToBigDecimal(gu.getGuaranteeAmount()));
-				//bizCBB2.setXrfcur(gu.getCurrencyGuarantee());
-				//bizCBB2.setXrfamt(StringUtil.stringToBigDecimal(gu.getGuaranteeAmount()));
-				bizCBB2.setCbeInr(idCb);
-				bizCBB2.setCreateTime(dat);
-				bizCBB2.setUpdateTime(dat);
-				bizCBB2.setCreateBy(bizDebtSummary.getBankTellerId());
-				bizCBB2.setUpdateBy(bizDebtSummary.getBankTellerId());
-				bizCBBMapper.insert(bizCBB2);
-				log.info("====================保存担保金额cbb（BIZ_CBB）执行成功-方案编号："+bizDebtSummary+"==========================");
-
-				//PTS表，担保人
-				int b = 0;
-				for (BizCustomer cucu : bizCustomerList) {
-					if (cucu.getCustNo().equals(gu.getGuarantorCustId().toString())) {
-						b++;
-					}
-				}
-				if (b == 0) {
-					//说明担保人没有插入数据库
-					log.info("====================保存担保人的客户信息表（BIZ_CUSTOMER）开始执行-方案编号："+bizDebtSummary+"==========================");
-					BizCust custt = new BizCust();
-					custt.setCustNo(gu.getGuarantorCustId().toString());
-					BizCust cuuu = bizCustMapper.selectOne(custt);
-					if (cuuu != null) {
-						BizCustomer cult1 = new BizCustomer();
-						BeanUtils.copyProperties(cuuu, cult1);
-						Long idCust1 = IdWorker.getId();
-						cult1.setDebtCode(bizDebtSummary.getDebtCode());
-						cult1.setId(idCust1);
-						cult1.setCreateTime(dat);
-						cult1.setUpdateTime(dat);
-						cult1.setCreateBy(bizDebtSummary.getBankTellerId());
-						cult1.setUpdateBy(bizDebtSummary.getBankTellerId());
-						bizCustomerMapper.insert(cult1);
-						log.info("====================保存担保人的客户信息表（BIZ_CUSTOMER）执行成功-方案编号："+bizDebtSummary+"==========================");
-
-						log.info("====================保存担保人的PTS表（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
-						BizPTS bizPTSguaran = new BizPTS();
-						bizPTSguaran.setDebtCode(bizDebtSummary.getDebtCode());
-						bizPTSguaran.setObjtyp("BIZ_GUARANTEE_INFO");
-						bizPTSguaran.setObjinr(idGuar.toString());
-						bizPTSguaran.setRole("GUAR");
-						bizPTSguaran.setPtyinr(idCust1.toString());
-						bizPTSguaran.setCreateTime(dat);
-						bizPTSguaran.setUpdateTime(dat);
-						bizPTSguaran.setCreateBy(bizDebtSummary.getBankTellerId());
-						bizPTSguaran.setUpdateBy(bizDebtSummary.getBankTellerId());
-						bizPTSMapper.insert(bizPTSguaran);
-						log.info("====================保存担保人的PTS表（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
-					}
-				} else {
-					log.info("====================保存担保人的PTS表（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
-					BizPTS bizPTSguaran = new BizPTS();
-					bizPTSguaran.setDebtCode(bizDebtSummary.getDebtCode());
-					bizPTSguaran.setObjtyp("BIZ_GUARANTEE_INFO");
-					bizPTSguaran.setObjinr(idGuar.toString());
-					bizPTSguaran.setRole("GUAR");
-					bizPTSguaran.setPtyinr(gu.getGuarantorCustId().toString());
-					bizPTSguaran.setCreateTime(dat);
-					bizPTSguaran.setUpdateTime(dat);
-					bizPTSguaran.setCreateBy(bizDebtSummary.getBankTellerId());
-					bizPTSguaran.setUpdateBy(bizDebtSummary.getBankTellerId());
-					bizPTSMapper.insert(bizPTSguaran);
-					log.info("====================保存担保人的PTS表（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
-				}
-			}
-			//保存租金保理表
-			log.info("====================保存租金保理表（BIZ_RENTAL_FACTORING_KEY）开始执行-方案编号："+bizDebtSummary+"==========================");
-			List<BizTheRentFactoring> bizTheRentFactorList = (List<BizTheRentFactoring>) mapObj.get("rentList");
-			for (BizTheRentFactoring re : bizTheRentFactorList) {
-				Long idRent = IdWorker.getId();
-				re.setId(idRent);
-				re.setCreateTime(dat);
-				re.setUpdateTime(dat);
-				re.setCreateBy(bizDebtSummary.getBankTellerId());
-				re.setUpdateBy(bizDebtSummary.getBankTellerId());
-				bizTheRentFactoringMapper.insert(re);
-				log.info("====================保存租金保理表（BIZ_RENTAL_FACTORING_KEY）执行成功-方案编号："+bizDebtSummary+"==========================");
-
-				//PTS表，担保人
-				int c = 0;
-				for (BizCustomer cucu : bizCustomerList) {
-					if (cucu.getCustNo().equals(re.getCustNo())) {
-						c++;
-					}
-				}
-				if (c == 0) {
-					//说明承销人没有插入数据库
-					log.info("====================保存承销人的客户信息表（BIZ_CUSTOMER）开始执行-方案编号："+bizDebtSummary+"==========================");
-					BizCust cust3 = new BizCust();
-					cust3.setCustNo(re.getCustNo());
-					BizCust cuuu = bizCustMapper.selectOne(cust3);
-					BizCustomer cult3 = new BizCustomer();
-					BeanUtils.copyProperties(cuuu, cult3);
-					Long idCust3 = IdWorker.getId();
-					cult3.setDebtCode(bizDebtSummary.getDebtCode());
-					cult3.setId(idCust3);
-					cult3.setCreateTime(dat);
-					cult3.setUpdateTime(dat);
-					cult3.setCreateBy(bizDebtSummary.getBankTellerId());
-					cult3.setUpdateBy(bizDebtSummary.getBankTellerId());
-					bizCustomerMapper.insert(cult3);
-					log.info("====================保存承销人的客户信息表（BIZ_CUSTOMER）执行成功-方案编号："+bizDebtSummary+"==========================");
-
-					//保存PTS表 承销人
-					log.info("====================保存承销人的PTS表（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
-					BizPTS bizPTSRen3 = new BizPTS();
-					bizPTSRen3.setDebtCode(bizDebtSummary.getDebtCode());
-					bizPTSRen3.setObjtyp("BIZ_RENTAL_FACTORING_KEY");
-					bizPTSRen3.setObjinr(idRent.toString());
-					bizPTSRen3.setRole("CONE");
-					bizPTSRen3.setPtyinr(idCust3.toString());
-					bizPTSRen3.setCreateTime(dat);
-					bizPTSRen3.setUpdateTime(dat);
-					bizPTSRen3.setCreateBy(bizDebtSummary.getBankTellerId());
-					bizPTSRen3.setUpdateBy(bizDebtSummary.getBankTellerId());
-					bizPTSMapper.insert(bizPTSRen3);
-					log.info("====================保存承销人的PTS表（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
-				} else {
-					//保存PTS表 承销人
-					log.info("====================保存承销人的PTS表（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
-					BizPTS bizPTSRen3 = new BizPTS();
-					bizPTSRen3.setDebtCode(bizDebtSummary.getDebtCode());
-					bizPTSRen3.setObjtyp("BIZ_RENTAL_FACTORING_KEY");
-					bizPTSRen3.setObjinr(idRent.toString());
-					bizPTSRen3.setRole("CONE");
-					bizPTSRen3.setPtyinr(re.getCustNo());
-					bizPTSRen3.setCreateTime(dat);
-					bizPTSRen3.setUpdateTime(dat);
-					bizPTSRen3.setCreateBy(bizDebtSummary.getBankTellerId());
-					bizPTSRen3.setUpdateBy(bizDebtSummary.getBankTellerId());
-					bizPTSMapper.insert(bizPTSRen3);
-					log.info("====================保存承销人的PTS表（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
-				}
-
-			}
-			log.info("====================保存方案的方法执行完成-方案编号："+bizDebtSummary+"==========================");
-		}catch (Exception ex) {
-				txManager.rollback(status);
-				throw ex;
-			}
-			txManager.commit(status);
-
-		String userIdNew = mapObj.get("userId").toString();
-		log.info("userIdNew============="+userIdNew);
-		BizDebtSummary bizDebtSummary = (BizDebtSummary) mapObj.get("bizDebtSummary");
-		String debtCodeNew=bizDebtSummary.getDebtCode();
-		String debtCodeNew1=debtCodeNew.substring(13);
-		List<SysUserRole> list=(List)mapObj.get("list");
-		// 发起补录流程
-		Map<String, Object> param1 = new HashMap<String, Object>();
-		for(SysUserRole sysUserRole:list){
-			String roleId = sysUserRole.getRoleId().toString();
-			if("001".equals(debtCodeNew1)){
-			// 发起补录流程
-			param1.put("userId", userIdNew);
-			param1.put("mBizId", debtCodeNew);
-			if("451117558502785025".equals(roleId)){
-				param1.put("pdid", "blprocess");
-			}else if("451117558506979339".equals(roleId)){
-				param1.put("pdid", "zhblprocess");
-			}
-		}else {
-			// 发起修订流程
-				param1.put("userId", userIdNew);
-				param1.put("mBizId", debtCodeNew);
-			if("451117558502785025".equals(roleId)){
-				param1.put("pdid", "xdprocess");
-			}else if("451117558506979339".equals(roleId)){
-				param1.put("pdid", "zhxdprocess");
-			}
-		  }
-		}
-		param1.put("debtCode",bizDebtSummary.getDebtCode());
-		bizProStatementProvider.createAndstartProcess(param1);
-			return true;
-		}
+                bizApprSummaryInfo.setTransok(bizDebtSummary.getTransok());
+                bizApprSummaryInfo.setPolicy(bizDebtSummary.getPolicy());
+                bizApprSummaryInfo.setPolicyDescription(bizDebtSummary.getPolicyDescription());
+                bizApprSummaryInfo.setPackageRate(bizDebtSummary.getPackageRate());
+                bizApprSummaryInfo.setRateRangeMix(bizDebtSummary.getRateRangeMix());
+                bizApprSummaryInfo.setRateRangeMax(bizDebtSummary.getRateRangeMax());
+                bizApprSummaryInfo.setDescriptionRateRules(bizDebtSummary.getDescriptionRateRules());
+                bizApprSummaryInfoMapper.insert(bizApprSummaryInfo);
+            }
 
 
+
+            //获取客户角色信息
+            List<BizPTS> ptsList = (List<BizPTS>)mapObj.get("ptsList");
+
+            this.dealWithEntity(ptsList,null);
+
+            Map<String,Object> debtCodeSelMap = new HashMap<>();
+            debtCodeSelMap.put("debtCode", bizDebtSummary.getDebtCode());
+
+            List<BizCreditLines> bizCreditLinesList = (List<BizCreditLines>)mapObj.get("bizCreditLinesList");
+
+            this.dealWithEntity(bizCreditLinesList,debtCodeSelMap);
+
+            //保存额度类型表
+            List<BizProductLinesType> productLineList=(List<BizProductLinesType>)mapObj.get("productLinesTypesList");
+
+            this.dealWithEntity(productLineList,debtCodeSelMap);
+
+
+            //保存单一规则表
+            List<BizSingleProductRule> bizSingleProductRuleList=(List<BizSingleProductRule>)mapObj.get("bizSingleProductRuleList");
+
+            this.dealWithEntity(bizSingleProductRuleList,debtCodeSelMap);
+
+            //保存担保信息
+            List<BizGuaranteeInfo> bizGuaranteeInfoList = (List<BizGuaranteeInfo>)mapObj.get("bizGuaranteeInfoList");
+
+            this.dealWithEntity(bizGuaranteeInfoList,debtCodeSelMap);
+
+            //保存押品信息
+            List<BizBetInformation> bizBetInformationList = (List<BizBetInformation>)mapObj.get("bizBetInformationList");
+
+            this.dealWithEntity(bizBetInformationList,debtCodeSelMap);
+
+            //保存租金保理表
+            List<BizTheRentFactoring> bizTheRentFactorList=(List<BizTheRentFactoring>)mapObj.get("rentList");
+
+            this.dealWithEntity(bizTheRentFactorList,debtCodeSelMap);
+
+
+            String userIdNew = mapObj.get("userId").toString();
+            log.info("userIdNew============="+userIdNew);
+            String debtCodeNew=bizDebtSummary.getDebtCode() + bizDebtSummary.getVerNumStr();
+            List<SysUserRole> list=(List)mapObj.get("list");
+            // 发起补录流程
+            Map<String, Object> param1 = new HashMap<String, Object>();
+            for(SysUserRole sysUserRole:list){
+                String roleId = sysUserRole.getRoleId().toString();
+//                if("001".equals(debtCodeNew1)){
+                if(null!=bizTRN && bizTRN.getBizStatus()==BizStatus.DEBTSUAT){
+                    // 发起补录流程
+                    param1.put("userId", userIdNew);
+                    param1.put("mBizId", debtCodeNew);
+                    if("451117558502785025".equals(roleId)){
+                        param1.put("pdid", "blprocess");
+                    }else if("451117558506979339".equals(roleId)){
+                        param1.put("pdid", "zhblprocess");
+                    }
+                }else if(null!=bizTRN && bizTRN.getBizStatus()==BizStatus.DEBTREAT){
+                    // 发起修订流程
+                    param1.put("userId", userIdNew);
+                    param1.put("mBizId", debtCodeNew);
+                    if("451117558502785025".equals(roleId)){
+                        param1.put("pdid", "xdprocess");
+                    }else if("451117558506979339".equals(roleId)){
+                        param1.put("pdid", "zhxdprocess");
+                    }
+                }else{
+                    logger.info("其它状态不发起流程！bizTRN.getBizStatus()="+bizTRN.getBizStatus());
+                }
+            }
+            if(null!=bizTRN && bizTRN.getBizStatus()==BizStatus.DEBTDOWN){
+                txManager.commit(status);
+                return true;
+            }else{
+			    param1.put("debtCode",bizDebtSummary.getDebtCode()+bizDebtSummary.getVerNumStr());
+                bizProStatementProvider.createAndstartProcess(param1);
+                Map<String, Object> tmpSaveParams = new HashMap<String, Object>();
+                tmpSaveParams.put("taskid",trnId);
+                tmpSaveParams.put("bizcode",bizDebtSummary.getDebtCode());
+                tmpSaveParams.put("remark",bizDebtSummary.getVerNum());
+                tmpSaveParams.put("projectName","Trn_debtMain");
+                if(bizTemporarySaveProvider.saveTemporary(new BizTemporarySave(mapObj), tmpSaveParams)){
+                    txManager.commit(status);
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        } catch (Exception es) {
+            txManager.rollback(status);
+            es.printStackTrace();
+            throw new RuntimeException("save debtMain error! reason=="+es.getMessage());
+        }
+	}
 
 	@Override
 	public BizDebtSummary selectOneBizDebtSummary(BizDebtSummary bizDebtSummary) {
@@ -662,7 +666,7 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 		BizCBB bizCBB=new BizCBB();
 		bizCBB.setObjType("BIZ_DEBT_MAIN");
 		bizCBB.setObjInr(bizDebtSummary1.getId());
-		bizCBB.setCbc(BizContant.DEBT_SUMMARY_CBCTXT);
+		bizCBB.setCbc(BizContant.DEBT_SUMMARY_DEBT_CBCTXT);
 		bizCBB.setAmt(bizDebtSummary1.getSolutionAmount());
 		bizCBB.setBegdat(date1);
 		bizCBB.setEnddat(DateUtil.stringToDate(BizContant.END_DATE));
@@ -681,6 +685,8 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			//保存担保金额cbe 方案
 			BizCBE bizCBEGuar=new BizCBE();
 			bizCBEGuar.setObjType("BIZ_GUARANTEE_INFO");
+
+
 			bizCBEGuar.setObjInr(guarantee.getId());
 			bizCBEGuar.setCbt("SOLUIN");
 			bizCBEGuar.setDat(date1);
@@ -695,7 +701,7 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			BizCBB bizCBBGuar=new BizCBB();
 			bizCBBGuar.setObjType("BIZ_GUARANTEE_INFO");
 			bizCBBGuar.setObjInr(guarantee.getId());
-			bizCBBGuar.setCbc(BizContant.DEBT_SUMMARY_CBCTXT);
+			bizCBBGuar.setCbc(BizContant.DEBT_SUMMARY_DEBT_CBCTXT);
 			bizCBBGuar.setAmt(guarantee.getGuaranteeAmount());
 			bizCBBGuar.setBegdat(date1);
 			bizCBBGuar.setEnddat(DateUtil.stringToDate(BizContant.END_DATE));
@@ -707,12 +713,12 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			BizCBB bizCBBGuar1=bizCBBProvider.update(bizCBBGuar);
 
 			//判断担保人在customer表是否重复
-			BizCustomer cult1 = new BizCustomer();
+            BizCust cult1 = new BizCust();
 			cult1.setDebtCode(debtCode);
 			cult1.setCustNo(guarantee.getGuarantorCustId().toString());
-			BizCustomer cuuu=bizCustomerMapper.selectOne(cult1);
+            BizCust cuuu=bizCustomerMapper.selectOne(cult1);
 			if(cuuu==null){
-				BizCustomer cust12=bizCustomerProvider.update(cult1);
+                BizCust cust12=bizCustomerProvider.update(cult1);
 				//保存担保人的pts
 				BizPTS bizPTSguaran=new BizPTS();
 				bizPTSguaran.setDebtCode(debtCode);
@@ -772,8 +778,8 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			rent.setId(StringUtil.stringToLong(productTypes.getTheRentFactorId()));
 			BizTheRentFactoring rent1=bizTheRentFactoringProvider.update(rent);
 
-			List<BizCustomer> customerList=productTypes.getCustomersList();
-			for(BizCustomer cus:customerList){
+			List<BizCust> customerList=productTypes.getCustomersList();
+			for(BizCust cus:customerList){
 				//保存额度类型表数据
 				BizProductLinesType lines=new BizProductLinesType();
 				Long idProLine = IdWorker.getId();
@@ -781,7 +787,7 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 				lines.setDebtCode(debtCode);
 				lines.setCustNo(cus.getCustNo());
 				lines.setBusinessType(productTypes.getCode());
-				lines.setCreditLinesId(cus.getCreditLinesId());
+				lines.setCreditLinesId(cus.getCreditLinesId()+"");
 				lines.setCreditRatio(cus.getCreditRatio());
 				lines.setCreateTime(date1);
 				lines.setUpdateTime(date1);
@@ -790,15 +796,15 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 				bizProductLinesTypeMapper.insert(lines);
 
 				//判断用信主体在customer表是否重复
-				BizCustomer customer1=new BizCustomer();
+                BizCust customer1=new BizCust();
 				customer1.setDebtCode(debtCode);
 				customer1.setCustNo(cus.getCustNo());
 				customer1.setCustNameCN(cus.getCustNameCN());
-				BizCustomer cuuu1=bizCustomerMapper.selectOne(customer1);
+                BizCust cuuu1=bizCustomerMapper.selectOne(customer1);
 				if(cuuu1==null){
 					//保存客户信息表
 					cus.setDebtCode(debtCode);
-					BizCustomer bizCustomer1=bizCustomerProvider.update(cus);
+                    BizCust bizCustomer1=bizCustomerProvider.update(cus);
 
 					//保存PTS表 用信客户
 					BizPTS bizPTS=new BizPTS();
@@ -840,92 +846,52 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 	}
 
 	@Override
-	public void getSchemeState(Map<String, Object> params) {
-		Date date =new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String format = sdf.format(date);
-		Date passDate=null;
-		try {
-			passDate = sdf.parse(format);
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+    @Transactional(rollbackFor = Exception.class)
+	public boolean getSchemeState(Map<String, Object> params) {
 
 		List<BizDebtSummary> bizDebtList=queryList(params);
 		BizDebtSummary bizDebt=bizDebtList.get(0);
-		//补录，修订通过
-		if("TT".equals(params.get("commite").toString())){
-			bizDebt.setSolutionState(BizStatus.DEBTAVAI);
-			bizDebt.setProcessStatus(BizStatus.DEPRAPPR);
-			bizDebt.setUpdateTime(passDate);
-			update(bizDebt);
-		} if("XDTT".equals(params.get("commite").toString())){
-			bizDebt.setSolutionState(BizStatus.DEBTAVAI);
-			bizDebt.setProcessStatus(BizStatus.DEPRAPPR);
-			bizDebt.setUpdateTime(passDate);
-			update(bizDebt);
+        BizTRN selTrn = new BizTRN();
+        selTrn.setObjtyp("BIZ_DEBT_MAIN");
+        selTrn.setObjinr(bizDebt.getId());
+        selTrn.setRelflg("Y");
+        BizTRN debtTrn = bizTRNProvider.selectOne(new EntityWrapper<>(selTrn));
 
-			String debtCode=params.get("debtCode").toString();
-			String debtCode1=debtCode.substring(0, 13);
-			String debtCode2=debtCode.substring(13);
-			Long debtCode3=StringUtil.stringToLong(debtCode2);
-			debtCode3=debtCode3-1;
-			String debtCode4=debtCode3.toString();
-			String debtCode5=null;
-			if(debtCode4.length()==1){
-				debtCode5=debtCode1+"00"+debtCode4;
-			} else if(debtCode4.length()==2){
-				debtCode5=debtCode1+"0"+debtCode4;
-			}
-
-			Map<String,Object>oldMap=new HashMap<>();
-			oldMap.put("debtCode", debtCode5);
-			List<BizDebtSummary>bizDebt1List=queryList(oldMap);
-			BizDebtSummary bizDebt1=bizDebt1List.get(0);
-			bizDebt1.setSolutionState(BizStatus.DEBTINVA);
-			bizDebt1.setProcessStatus(BizStatus.DEPRAPPR);
-			bizDebt1.setUpdateTime(passDate);
-			update(bizDebt1);
-		}
-		//补录驳回
-		if("BLBH".equals(params.get("commite").toString())){
-			bizDebt.setSolutionState(BizStatus.DEBTDOWN);
-			bizDebt.setProcessStatus(BizStatus.DEPRDOWN);
-			update(bizDebt);
-		}
-		//修订驳回
-		if("XDBH".equals(params.get("commite").toString())){
-			String debtCode=params.get("debtCode").toString();
-			String debtCode1=debtCode.substring(0, 13);
-			String debtCode2=debtCode.substring(13);
-			Long debtCode3=StringUtil.stringToLong(debtCode2);
-			debtCode3=debtCode3-1;
-			String debtCode4=debtCode3.toString();
-			String debtCode5=null;
-			if(debtCode4.length()==1){
-				debtCode5=debtCode1+"00"+debtCode4;
-			} else if(debtCode4.length()==2){
-				debtCode5=debtCode1+"0"+debtCode4;
-			}
-			//把原来的方案重新制成冻结
-			Map<String,Object>oldMap=new HashMap<>();
-			oldMap.put("debtCode", debtCode5);
-			List<BizDebtSummary>bizDebt1List=queryList(oldMap);
-			BizDebtSummary bizDebt1=bizDebt1List.get(0);
-			bizDebt1.setSolutionState(BizStatus.DEBTFROZ);
-			bizDebt.setProcessStatus(BizStatus.DEPRAPPR);
-			update(bizDebt1);
-
-			//现有方案已驳回
-			Map<String,Object>newMap=new HashMap<>();
-			newMap.put("debtCode", debtCode);
-			List<BizDebtSummary>bizDebt2List=queryList(newMap);
-			BizDebtSummary bizDebt2=bizDebt2List.get(0);
-			bizDebt2.setSolutionState(BizStatus.DEBTDOWN);
-			bizDebt2.setProcessStatus(BizStatus.DEPRDOWN);
-			update(bizDebt2);
-		}
-
+        if("TT".equals(params.get("commite").toString()) || "XDTT".equals(params.get("commite").toString())){
+            //可发放
+            debtTrn.setBizStatus(BizStatus.DEBTAVAI);
+            //已审批
+            debtTrn.setProcessStatus(BizStatus.DEPRAPPR);
+            //标记为最新的审批通过状态
+            debtTrn.setRelres("Y");
+            bizTRNProvider.updateTRNStatus(debtTrn);
+            return true;
+        }
+        //补录驳回
+        if("BLBH".equals(params.get("commite").toString())){
+            debtTrn.setInifrm("DEBTDOWN");
+            debtTrn.setIninam("补录驳回");
+            debtTrn.setBizStatus(BizStatus.DEBTDOWN);
+            debtTrn.setProcessStatus(BizStatus.DEPRDOWN);
+            if(bizTRNMapper.updateById(debtTrn) == 1){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        if("XDBH".equals(params.get("commite").toString())){
+            Map<String, Object> mapObj = new HashMap<>();
+            mapObj.put("fromTempSave",true);
+            mapObj.put("ownref",debtTrn.getOwnref());
+            if(!this.saveDebt(mapObj)){
+                logger.error("驳回时回滚数据异常...");
+                throw new RuntimeException("驳回时回滚数据异常...");
+            }else{
+                return true;
+            }
+        }
+        logger.error("getSchemeState error, params==" + params.toString());
+        return false;
 	}
 
 	/**
@@ -934,21 +900,13 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void ReSaveDebt(Map<String, Object> mapObj) {
-		log.info("====================重新提交保存方案的方法开始执行==========================");
-		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-
-		TransactionStatus status = txManager.getTransaction(def);
-		try {
 		Date dat = new Date();
 
 		//保存债项信息表
 		BizDebtSummary bizDebtSummary = (BizDebtSummary) mapObj.get("bizDebtSummary");
 		//全局规则
 		bizDebtSummary.setRuleType((long) 0);
-		log.info("=========重新提交保存债项信息表（BIZ_DEBT_MAIN）开始执行-方案编号："+bizDebtSummary+"==========================");
 		BizDebtSummary bizDebtSummary1 = bizDebtSummaryProvider.update(bizDebtSummary);
-			log.info("============重新提交保存债项信息表（BIZ_DEBT_MAIN）执行成功-方案编号："+bizDebtSummary+"==========================");
 
 		//先删除原来的客户信息
 		Map<String, Object> customerMap = new HashMap<>();
@@ -962,9 +920,8 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 		bizPTSProvider.deleteByParams(customerMap);
 
 		//保存客户信息
-		log.info("==========重新提交保存用信主体的客户信息表（BIZ_CUSTOMER）开始执行-方案编号："+bizDebtSummary+"==========================");
-		Set<BizCustomer> bizCustomerList = (Set<BizCustomer>) mapObj.get("cuSet");
-		for (BizCustomer cu : bizCustomerList) {
+		Set<BizCust> bizCustomerList = (Set<BizCust>) mapObj.get("cuSet");
+		for (BizCust cu : bizCustomerList) {
 			Long idCust = IdWorker.getId();
 			cu.setDebtCode(bizDebtSummary1.getDebtCode());
 			cu.setId(idCust);
@@ -973,10 +930,8 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			cu.setCreateBy(bizDebtSummary1.getBankTellerId());
 			cu.setUpdateBy(bizDebtSummary1.getBankTellerId());
 			bizCustomerMapper.insert(cu);
-			log.info("===========重新提交保存用信主体的客户信息表（BIZ_CUSTOMER）执行成功-方案编号："+bizDebtSummary+"==========================");
 
 			//保存PTS表 用信客户
-			log.info("====================重新提交保存用信主体的PTS表（BIZ_TRN）开始执行-方案编号："+bizDebtSummary+"==========================");
 			BizPTS bizPTS = new BizPTS();
 			bizPTS.setDebtCode(bizDebtSummary1.getDebtCode());
 			bizPTS.setObjtyp("BIZ_CUSTOMER");
@@ -988,10 +943,8 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			bizPTS.setCreateBy(bizDebtSummary1.getBankTellerId());
 			bizPTS.setUpdateBy(bizDebtSummary1.getBankTellerId());
 			bizPTSMapper.insert(bizPTS);
-			log.info("====================重新提交保存用信主体的PTS表（BIZ_TRN）执行成功-方案编号："+bizDebtSummary+"==========================");
 
 			//保存用户主体授信信息表
-			log.info("=================重新提交保存用户主体授信信息表（BIZ_CREDIT_LINES）开始执行-方案编号："+bizDebtSummary+"==========================");
 			List<BizCreditLines> bizProductLinesTypeList = cu.getCreditLinesList();
 			for (BizCreditLines li : bizProductLinesTypeList) {
 				li.setDebtCode(bizDebtSummary1.getDebtCode());
@@ -1006,12 +959,10 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 				li.setCreateBy(bizDebtSummary1.getBankTellerId());
 				li.setUpdateBy(bizDebtSummary1.getBankTellerId());
 				bizCreditLinesMapper.insert(li);
-				log.info("====================重新提交保存用户主体授信信息表（BIZ_CREDIT_LINES）执行成功-方案编号："+bizDebtSummary+"==========================");
 			}
 		}
 
 		//保存额度类型表
-			log.info("====================重新提交保存重新提交保存额度类型表（BIZ_PRODUCT_LINESTYPE）开始执行-方案编号："+bizDebtSummary+"==========================");
 		List<BizProductLinesType> productLineList = (List<BizProductLinesType>) mapObj.get("productLinesTypesList");
 		for (BizProductLinesType proLine : productLineList) {
 			Long idProLine = IdWorker.getId();
@@ -1021,11 +972,9 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			proLine.setCreateBy(bizDebtSummary.getBankTellerId());
 			proLine.setUpdateBy(bizDebtSummary.getBankTellerId());
 			bizProductLinesTypeMapper.insert(proLine);
-			log.info("====================重新提交保存重新提交保存额度类型表（BIZ_PRODUCT_LINESTYPE）执行成功-方案编号："+bizDebtSummary+"==========================");
 		}
 
 		//保存交易流水表 trn
-			log.info("====================重新提交保存交易流水表（BIZ_TRN）开始执行-方案编号："+bizDebtSummary+"==========================");
 		BizTRN bizTRN = new BizTRN();
 		bizTRN.setBchkeyinr(bizDebtSummary1.getInstitutionCode());
 		bizTRN.setInifrm("ADEBT");
@@ -1043,10 +992,8 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 		bizTRN.setCreateBy(bizDebtSummary1.getBankTellerId());
 		bizTRN.setUpdateBy(bizDebtSummary1.getBankTellerId());
 		bizTRNMapper.insert(bizTRN);
-			log.info("====================重新提交保存交易流水表（BIZ_TRN）执行成功-方案编号："+bizDebtSummary+"==========================");
 
 		//保存发生额信息表cbe 方案金额
-			log.info("====================重新提交保存方案金额的发生额信息表cbe（BIZ_CBE）开始执行-方案编号："+bizDebtSummary+"==========================");
 		BizCBE bizCBE = new BizCBE();
 		bizCBE.setObjType("BIZ_DEBT_MAIN");
 		bizCBE.setCbt("SOLUIN");
@@ -1058,14 +1005,12 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 		//bizCBE1.setXrfcur(bizDebtSummary1.getMpc());
 		//bizCBE1.setXrfamt(bizDebtSummary1.getSolutionAmount());
 		BizCBE bizCBE2 = bizCBEProvider.update(bizCBE1);
-			log.info("====================重新提交保存方案金额的发生额信息表cbe（BIZ_CBE）执行成功-方案编号："+bizDebtSummary+"==========================");
 
 		//保存余额信息表cbb 方案金额
-			log.info("====================重新提交保存方案金额的余额信息表cbb（BIZ_CBB）开始执行-方案编号："+bizDebtSummary+"==========================");
 		BizCBB bizCBB = new BizCBB();
 		bizCBB.setObjType("BIZ_DEBT_MAIN");
 		bizCBB.setObjInr(bizDebtSummary1.getId());
-		bizCBB.setCbc(BizContant.DEBT_SUMMARY_CBCTXT);
+		bizCBB.setCbc(BizContant.DEBT_SUMMARY_DEBT_CBCTXT);
 		bizCBB.setCbeInr(bizCBE2.getId());
 		BizCBB bizCBB1 = bizCBBProvider.selectOne(bizCBB);
 		bizCBB1.setAmt(StringUtil.stringToBigDecimal(bizDebtSummary1.getSolutionAmount().toString()));
@@ -1076,31 +1021,27 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 		//bizCBB1.setXrfcur(bizDebtSummary1.getMpc());
 		//bizCBB1.setXrfamt(StringUtil.stringToBigDecimal(bizDebtSummary1.getSolutionAmount()));
 		BizCBB bizCBB2 = bizCBBProvider.update(bizCBB1);
-			log.info("====================重新提交保存方案金额的余额信息表cbb（BIZ_CBB）执行成功-方案编号："+bizDebtSummary+"==========================");
 
 
 		//保存单一规则表
-			log.info("====================重新提交保存单一规则表（BIZ_SIGLE_PRODUCT_RULE）开始执行-方案编号："+bizDebtSummary+"==========================");
 		List<BizSingleProductRule> bizSingleProductRuleList = (List<BizSingleProductRule>) mapObj.get("bizSingleProductRuleList");
 		for (BizSingleProductRule sing : bizSingleProductRuleList) {
 			bizSingleProductRuleProvider.update(sing);
-			log.info("====================重新提交保存单一规则表（BIZ_SIGLE_PRODUCT_RULE）执行成功-方案编号："+bizDebtSummary+"==========================");
 		}
 
 		int a = 0;
 		//保存PTS表 申请人
-		for (BizCustomer cucu : bizCustomerList) {
+		for (BizCust cucu : bizCustomerList) {
 			if (cucu.getCustNo().equals(bizDebtSummary1.getProposerNum())) {
 				a++;
 			}
 		}
 		if (a == 0) {
 			//说明申请人没有插入数据库
-			log.info("====================重新提交保存申请人的客户信息（BIZ_CUSTOMER）开始执行-方案编号："+bizDebtSummary+"==========================");
 			BizCust custt = new BizCust();
 			custt.setCustNo(bizDebtSummary1.getProposerNum());
 			BizCust cuuu = bizCustMapper.selectOne(custt);
-			BizCustomer cult = new BizCustomer();
+            BizCust cult = new BizCust();
 			BeanUtils.copyProperties(cuuu, cult);
 			Long idCust = IdWorker.getId();
 			cult.setDebtCode(bizDebtSummary1.getDebtCode());
@@ -1110,9 +1051,7 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			cult.setCreateBy(bizDebtSummary1.getBankTellerId());
 			cult.setUpdateBy(bizDebtSummary1.getBankTellerId());
 			bizCustomerMapper.insert(cult);
-			log.info("====================重新提交保存申请人的客户信息（BIZ_CUSTOMER）执行成功-方案编号："+bizDebtSummary+"==========================");
 
-			log.info("====================重新提交保存申请人的PTS（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
 			BizPTS bizPTSPro = new BizPTS();
 			bizPTSPro.setDebtCode(bizDebtSummary1.getDebtCode());
 			bizPTSPro.setObjtyp("BIZ_DEBT_MAIN");
@@ -1124,9 +1063,7 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			bizPTSPro.setCreateBy(bizDebtSummary1.getBankTellerId());
 			bizPTSPro.setUpdateBy(bizDebtSummary1.getBankTellerId());
 			bizPTSMapper.insert(bizPTSPro);
-			log.info("====================重新提交保存申请人的PTS（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
 		} else {
-			log.info("====================重新提交保存申请人的PTS（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
 			BizPTS bizPTSPro = new BizPTS();
 			bizPTSPro.setDebtCode(bizDebtSummary1.getDebtCode());
 			bizPTSPro.setObjtyp("BIZ_DEBT_MAIN");
@@ -1138,18 +1075,14 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			bizPTSPro.setCreateBy(bizDebtSummary1.getBankTellerId());
 			bizPTSPro.setUpdateBy(bizDebtSummary1.getBankTellerId());
 			bizPTSMapper.insert(bizPTSPro);
-			log.info("====================重新提交保存申请人的PTS（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
 		}
 
 		//保存担保信息
-			log.info("====================重新提交保存担保信息表（BIZ_GUARANTEE_INFO）开始执行-方案编号："+bizDebtSummary+"==========================");
 		List<BizGuaranteeInfo> bizGuaranteeInfoList = (List<BizGuaranteeInfo>) mapObj.get("bizGuaranteeInfoList");
 		for (BizGuaranteeInfo gu : bizGuaranteeInfoList) {
 			BizGuaranteeInfo bizGuaranteeInfo1 = bizGuaranteeInfoProvider.update(gu);
-			log.info("====================重新提交保存担保信息表（BIZ_GUARANTEE_INFO）执行成功-方案编号："+bizDebtSummary+"==========================");
 
 			//保存押品信息表
-			log.info("====================重新提交保存押品信息表（BIZ_CONTRACT_COLLATERAL）开始执行-方案编号："+bizDebtSummary+"==========================");
 			if (gu.getBetInformationList() != null) {
 				List<BizBetInformation> betList = gu.getBetInformationList();
 				for (BizBetInformation bet : betList) {
@@ -1157,12 +1090,10 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 					bet.setGuarNo(gu.getWarrantyContractNumber());
 					bet.setDebtCode(bizDebtSummary.getDebtCode());
 					BizBetInformation bizBetInformation1 = bizBetInformationProvider.update(bet);
-					log.info("====================重新提交保存押品信息表（BIZ_CONTRACT_COLLATERAL）执行成功-方案编号："+bizDebtSummary+"==========================");
 				}
 			}
 
 			//保存担保金额cbe 方案
-			log.info("====================重新提交保存担保金额的cbe表（BIZ_CBE）开始执行-方案编号："+bizDebtSummary+"==========================");
 			BizCBE bizCBE3 = new BizCBE();
 			Long idCb = IdWorker.getId();
 			bizCBE3.setId(idCb);
@@ -1181,16 +1112,14 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			bizCBE3.setCreateBy(bizDebtSummary1.getBankTellerId());
 			bizCBE3.setUpdateBy(bizDebtSummary1.getBankTellerId());
 			bizCBEMapper.insert(bizCBE3);
-			log.info("====================重新提交保存担保金额cbe（BIZ_CBE） 执行成功-方案编号："+bizDebtSummary+"==========================");
 
 			//保存担保金额cbb 方案
-			log.info("====================重新提交保存担保金额cbb（BIZ_CBB）开始执行-方案编号："+bizDebtSummary+"==========================");
 			BizCBB bizCBB4 = new BizCBB();
 			Long idCbb2 = IdWorker.getId();
 			bizCBB4.setId(idCbb2);
 			bizCBB4.setObjType("BIZ_GUARANTEE_INFO");
 			bizCBB4.setObjInr(idCb);
-			bizCBB4.setCbc(BizContant.DEBT_SUMMARY_CBCTXT);
+			bizCBB4.setCbc(BizContant.DEBT_SUMMARY_DEBT_CBCTXT);
 			bizCBB4.setAmt(StringUtil.stringToBigDecimal(gu.getGuaranteeAmount()));
 			bizCBB4.setBegdat(dat);
 			bizCBB4.setEnddat(DateUtil.stringToDate(BizContant.END_DATE));
@@ -1204,23 +1133,21 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 			bizCBB4.setCreateBy(bizDebtSummary1.getBankTellerId());
 			bizCBB4.setUpdateBy(bizDebtSummary1.getBankTellerId());
 			bizCBBMapper.insert(bizCBB4);
-			log.info("====================重新提交保存担保金额cbb（BIZ_CBB）执行成功-方案编号："+bizDebtSummary+"==========================");
 
 			//PTS表，担保人
 			int b = 0;
-			for (BizCustomer cucu : bizCustomerList) {
+			for (BizCust cucu : bizCustomerList) {
 				if (cucu.getCustNo().equals(gu.getGuarantorCustId().toString())) {
 					b++;
 				}
 			}
 			if (b == 0) {
 				//说明担保人没有插入数据库
-				log.info("====================重新提交保存担保人的客户信息表（BIZ_CUSTOMER）开始执行-方案编号："+bizDebtSummary+"==========================");
 				BizCust custt = new BizCust();
 				custt.setCustNo(gu.getGuarantorCustId().toString());
 				BizCust cuuu = bizCustMapper.selectOne(custt);
 				if (cuuu != null) {
-					BizCustomer cult1 = new BizCustomer();
+                    BizCust cult1 = new BizCust();
 					BeanUtils.copyProperties(cuuu, cult1);
 					Long idCust1 = IdWorker.getId();
 					cult1.setDebtCode(bizDebtSummary1.getDebtCode());
@@ -1230,9 +1157,7 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 					cult1.setCreateBy(bizDebtSummary1.getBankTellerId());
 					cult1.setUpdateBy(bizDebtSummary1.getBankTellerId());
 					bizCustomerMapper.insert(cult1);
-					log.info("====================重新提交保存担保人的客户信息表（BIZ_CUSTOMER）执行成功-方案编号："+bizDebtSummary+"==========================");
 
-					log.info("====================重新提交保存担保人的PTS表（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
 					BizPTS bizPTSguaran = new BizPTS();
 					bizPTSguaran.setDebtCode(bizDebtSummary1.getDebtCode());
 					bizPTSguaran.setObjtyp("BIZ_GUARANTEE_INFO");
@@ -1244,10 +1169,8 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 					bizPTSguaran.setCreateBy(bizDebtSummary1.getBankTellerId());
 					bizPTSguaran.setUpdateBy(bizDebtSummary1.getBankTellerId());
 					bizPTSMapper.insert(bizPTSguaran);
-					log.info("====================重新提交保存担保人的PTS表（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
 				}
 			} else {
-				log.info("====================重新提交保存担保人的PTS表（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
 				BizPTS bizPTSguaran = new BizPTS();
 				bizPTSguaran.setDebtCode(bizDebtSummary1.getDebtCode());
 				bizPTSguaran.setObjtyp("BIZ_GUARANTEE_INFO");
@@ -1259,31 +1182,27 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 				bizPTSguaran.setCreateBy(bizDebtSummary1.getBankTellerId());
 				bizPTSguaran.setUpdateBy(bizDebtSummary1.getBankTellerId());
 				bizPTSMapper.insert(bizPTSguaran);
-				log.info("====================重新提交保存担保人的PTS表（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
 			}
 		}
 
 		//保存租金保理表
-			log.info("====================重新提交保存租金保理表（BIZ_RENTAL_FACTORING_KEY）开始执行-方案编号："+bizDebtSummary+"==========================");
 		List<BizTheRentFactoring> bizTheRentFactorList = (List<BizTheRentFactoring>) mapObj.get("rentList");
 		for (BizTheRentFactoring re : bizTheRentFactorList) {
 			BizTheRentFactoring bizTheRentFactoring = bizTheRentFactoringProvider.update(re);
-			log.info("====================重新提交保存租金保理表（BIZ_RENTAL_FACTORING_KEY）执行成功-方案编号："+bizDebtSummary+"==========================");
 
 			//PTS表，担保人
 			int c = 0;
-			for (BizCustomer cucu : bizCustomerList) {
+			for (BizCust cucu : bizCustomerList) {
 				if (cucu.getCustNo().equals(re.getCustNo())) {
 					c++;
 				}
 			}
 			if (c == 0) {
 				//说明承销人没有插入数据库
-				log.info("====================重新提交保存承销人的客户信息表（BIZ_CUSTOMER）开始执行-方案编号："+bizDebtSummary+"==========================");
 				BizCust cust3 = new BizCust();
 				cust3.setCustNo(re.getCustNo());
 				BizCust cuuu = bizCustMapper.selectOne(cust3);
-				BizCustomer cult3 = new BizCustomer();
+                BizCust cult3 = new BizCust();
 				BeanUtils.copyProperties(cuuu, cult3);
 				Long idCust3 = IdWorker.getId();
 				cult3.setDebtCode(bizDebtSummary1.getDebtCode());
@@ -1293,10 +1212,8 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 				cult3.setCreateBy(bizDebtSummary1.getBankTellerId());
 				cult3.setUpdateBy(bizDebtSummary1.getBankTellerId());
 				bizCustomerMapper.insert(cult3);
-				log.info("====================重新提交保存承销人的客户信息表（BIZ_CUSTOMER）执行成功-方案编号："+bizDebtSummary+"==========================");
 
 				//保存PTS表 承销人
-				log.info("====================重新提交保存承销人的PTS表（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
 				BizPTS bizPTSRen3 = new BizPTS();
 				bizPTSRen3.setDebtCode(bizDebtSummary1.getDebtCode());
 				bizPTSRen3.setObjtyp("BIZ_RENTAL_FACTORING_KEY");
@@ -1308,10 +1225,8 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 				bizPTSRen3.setCreateBy(bizDebtSummary1.getBankTellerId());
 				bizPTSRen3.setUpdateBy(bizDebtSummary1.getBankTellerId());
 				bizPTSMapper.insert(bizPTSRen3);
-				log.info("====================重新提交保存承销人的PTS表（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
 			} else {
 				//保存PTS表 承销人
-				log.info("====================重新提交保存承销人的PTS表（BIZ_PTS）开始执行-方案编号："+bizDebtSummary+"==========================");
 				BizPTS bizPTSRen3 = new BizPTS();
 				bizPTSRen3.setDebtCode(bizDebtSummary1.getDebtCode());
 				bizPTSRen3.setObjtyp("BIZ_RENTAL_FACTORING_KEY");
@@ -1323,19 +1238,10 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 				bizPTSRen3.setCreateBy(bizDebtSummary1.getBankTellerId());
 				bizPTSRen3.setUpdateBy(bizDebtSummary1.getBankTellerId());
 				bizPTSMapper.insert(bizPTSRen3);
-				log.info("====================重新提交保存承销人的PTS表（BIZ_PTS）执行成功-方案编号："+bizDebtSummary+"==========================");
 			}
 
 		}
-			log.info("====================重新提交保存方案的方法执行完成-方案编号："+bizDebtSummary+"==========================");
 
-		}catch (Exception ex) {
-			txManager.rollback(status);
-			throw ex;
-		}
-		txManager.commit(status);
-
-		BizDebtSummary bizDebtSummary = (BizDebtSummary) mapObj.get("bizDebtSummary");
 		String userIdNew = mapObj.get("userId").toString();
 		log.info("userIdNew============="+userIdNew);
 		String debtCodeNew=bizDebtSummary.getDebtCode();
@@ -1365,7 +1271,7 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 				}
 			}
 		}
-		param1.put("debtCode",bizDebtSummary.getDebtCode());
+		param1.put("debtCode",bizDebtSummary.getDebtCode()+bizDebtSummary.getVerNumStr());
 		bizProStatementProvider.createAndstartProcess(param1);
 		}
 
@@ -1381,14 +1287,67 @@ public class BizDebtSummaryProviderImpl extends BaseProviderImpl<BizDebtSummary>
 		Map<String,Object>debtMap =new HashMap<>();
 		List<BizDebtSummary>bizDebtSummaryList=queryList(debtMap);
 		System.out.println("定时任务刷新方案过期时间执行："+date);
-		log.info("定时任务刷新方案过期时间执行："+date);
 		for (BizDebtSummary debtSummary:bizDebtSummaryList){
 			if(debtSummary.getPgExpiDate().before(date)){
-				debtSummary.setSolutionState(BizStatus.DEBTREGULAR);
-				update(debtSummary);
+			    //sinosong 待测
+//				debtSummary.setSolutionState(BizStatus.DEBTREGULAR);
+                Map<String,Object> params = new HashMap<String,Object>();
+                params.put("objinr", debtSummary.getId());
+                params.put("objtyp", "BIZ_DEBT_MAIN");
+                params.put("ownref", debtSummary.getDebtCode());
+                params.put("relres", "relres");
+                List<BizTRN> trnList = bizTRNProvider.queryList(params);
+                if(null!=trnList && trnList.size()==1){
+                    BizTRN trn = trnList.get(0);
+                    trn.setBizStatus(BizStatus.DEBTREGULAR);
+                    logger.info("检测方案已过期，后台更新状态。方案编号为=（"+debtSummary.getDebtCode()+"）");
+                    bizTRNProvider.update(trn);
+                }else{
+                    logger.error("方案已失效,未查询到已审批通过的方案流水或查询出多条，trnList="+trnList);
+                }
+//				update(debtSummary);
 		}
 			System.out.println("定时任务刷新方案过期时间执行完成："+date);
-			log.info("定时任务刷新方案过期时间执行完成："+date);
-	}
-}
+	    }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void rejectAndDel(BizDebtSummary bizDebt){
+
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = txManager.getTransaction(def);
+        try {
+            BizTRN selTrn = new BizTRN();
+            selTrn.setObjtyp("BIZ_DEBT_MAIN");
+            selTrn.setOwnref(bizDebt.getDebtCode());
+            selTrn.setRelflg("Y");
+            BizTRN willDel = bizTRNProvider.selectOne(new EntityWrapper<>(selTrn));
+            if(null == willDel){
+                logger.error("数据异常：未查到之前的流水记录！");
+                throw new RuntimeException("Exception=未查到之前的流水记录！");
+            }
+            willDel.setBizStatus(BizStatus.DEBTDELE);
+            willDel.setInifrm("DBEDEL");
+            willDel.setIninam("方案删除");
+            willDel.setRelflg("N");
+            bizTRNMapper.updateById(willDel);
+            selTrn.setRelflg("N");
+            selTrn.setRelres("Y");
+            BizTRN updatTrn = bizTRNProvider.selectOne(new EntityWrapper<>(selTrn));
+            if(null!=updatTrn){
+                //修订才会改历史流水
+                updatTrn.setRelflg("Y");
+                bizTRNMapper.updateById(updatTrn);
+            }
+        } catch (Exception es) {
+            txManager.rollback(status);
+            es.printStackTrace();
+            throw new RuntimeException("rejectAndDel error! reason=="+es.getMessage());
+        }
+    }
+
+
+
 }

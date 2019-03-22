@@ -212,14 +212,16 @@ public class BizProStaProviderImpl extends BaseProviderImpl<BizProStatement> imp
         bizFields.add(bizField9);
         QueryBizField bizField10=new QueryBizField("SOLUTION_AMT","solutionAmt",QueryBizField.DOUBLE_TYPE);
         bizFields.add(bizField10);
+        bizFields.add(new QueryBizField("VERNUM_","verNum",QueryBizField.INT_TYPE));
         //新建查询模型
         QueryBizTaskModel queryModel=new QueryBizTaskModel();
         //设置查询业务类
         queryModel.setBizCls("org.ibase4j.vo.BizSchemeTaskVo");
         //设置业务表
-        queryModel.setBizTableName("BIZ_DEBT_MAIN");
+        queryModel.setBizTableName("BIZ_APPRSUMMARY_INFO");
 
-        queryModel.setAssosiationFilter("t.EXATTRIBUTED=bo.DEBT_CODE");
+//        queryModel.setAssosiationFilter("t.EXATTRIBUTED=bo.DEBT_CODE");
+        queryModel.setAssosiationFilter("t.EXATTRIBUTED=bo.DEBT_CODE || replace(lpad(to_char(bo.vernum_),3),' ','0')");
 
         queryModel.setQueryBizFields(bizFields);
 
@@ -284,6 +286,10 @@ public class BizProStaProviderImpl extends BaseProviderImpl<BizProStatement> imp
                     bizSchemeTaskVo.setRoleIdProvider(roleIdProvider);
                     bizSchemeTaskVo.setUserNameStart(userName);
                 }
+                //待办中的debtcode添加版本号
+                bizSchemeTaskVo.setDebtCode(bizSchemeTaskVo.getDebtCode()+bizSchemeTaskVo.getVerNumStr());
+                //处理已办币种不显示
+                bizSchemeTaskVo.setMainCodeName(bizSchemeTaskVo.getMainCurrency());
             }
         }
         Page toSchemeDoTaskPage = convertToMyBatisPage(page, count);
@@ -435,15 +441,16 @@ public class BizProStaProviderImpl extends BaseProviderImpl<BizProStatement> imp
         bizFields.add(bizField9);
         QueryBizField bizField10=new QueryBizField("SOLUTION_AMT","solutionAmt",QueryBizField.DOUBLE_TYPE);
         bizFields.add(bizField10);
+        bizFields.add(new QueryBizField("VERNUM_","verNum",QueryBizField.INT_TYPE));
         //新建查询模型
         QueryBizTaskModel queryModel=new QueryBizTaskModel();
         //设置查询业务类
         queryModel.setBizCls("org.ibase4j.vo.BizSchemeTaskVo");
         //设置业务表
-        queryModel.setBizTableName("BIZ_DEBT_MAIN");
+        queryModel.setBizTableName("BIZ_APPRSUMMARY_INFO");
 
-        queryModel.setAssosiationFilter("t.EXATTRIBUTED=bo.DEBT_CODE");
-
+//        queryModel.setAssosiationFilter("t.EXATTRIBUTED=bo.DEBT_CODE");
+        queryModel.setAssosiationFilter("t.EXATTRIBUTED=bo.DEBT_CODE || replace(lpad(to_char(bo.vernum_),3),' ','0')");
         queryModel.setQueryBizFields(bizFields);
 
         // 构造查询条件，状态是就绪的任务
@@ -506,6 +513,10 @@ public class BizProStaProviderImpl extends BaseProviderImpl<BizProStatement> imp
                     String userName=map2.get("USER_NAME").toString();
                     bizSchemeTaskVo.setUserNameStart(userName);
                 }
+                //待办中的debtcode添加版本号
+                bizSchemeTaskVo.setDebtCode(bizSchemeTaskVo.getDebtCode()+bizSchemeTaskVo.getVerNumStr());
+                //处理已办币种不显示
+                bizSchemeTaskVo.setMainCodeName(bizSchemeTaskVo.getMainCurrency());
             }
         }
         Page haveSchemeDonePage = convertToMyBatisPage(page, count);
@@ -711,7 +722,7 @@ public class BizProStaProviderImpl extends BaseProviderImpl<BizProStatement> imp
         params.put("remark","1");
         // 生成流程审核ID  debtCode 不能为空 实际存debtCode  grantCode 都无所谓
         String debtCode =  StringUtil.objectToString(params.get("debtCode"));
-        String approvalId = bizCntProvider.getNextNumberFormat(debtCode,3);
+        String approvalId = bizCntProvider.getNextNumberFormat("APPR"+debtCode,3);
         params.put("approvalId",approvalId);
         bizApprovalWorkflowTaskProvider.saveApprovalWorkflowTask(params);
     }

@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -251,5 +252,33 @@ public class BizTF extends BaseModel implements Serializable {
 				.add("exportMerchant", exportMerchant)
 				.add("importer", importer)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizTF)) return false;
+		BizTF bizTF = (BizTF) o;
+		return Objects.equal(getDebtCode(), bizTF.getDebtCode()) &&
+				Objects.equal(getBusinessTypes(), bizTF.getBusinessTypes()) &&
+				Objects.equal(getTheApplicant(), bizTF.getTheApplicant()) &&
+				Objects.equal(getValueDate(), bizTF.getValueDate()) &&
+				Objects.equal(getDueDate(), bizTF.getDueDate()) &&
+				Objects.equal(getPeriodOfGrace(), bizTF.getPeriodOfGrace()) &&
+				Objects.equal(getClearForm(), bizTF.getClearForm()) &&
+				Objects.equal(getReceiptNo(), bizTF.getReceiptNo()) &&
+				Objects.equal(getLcNum(), bizTF.getLcNum()) &&
+				Objects.equal(getDraftsNo(), bizTF.getDraftsNo()) &&
+				Objects.equal(getDeliveryServiceNo(), bizTF.getDeliveryServiceNo()) &&
+				Objects.equal(getPolicyNum(), bizTF.getPolicyNum()) &&
+				Objects.equal(getSingleNum(), bizTF.getSingleNum()) &&
+				Objects.equal(getInvoiceNum(), bizTF.getInvoiceNum()) &&
+				Objects.equal(getExportMerchant(), bizTF.getExportMerchant()) &&
+				Objects.equal(getImporter(), bizTF.getImporter());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessTypes(), getTheApplicant(), getValueDate(), getDueDate(), getPeriodOfGrace(), getClearForm(), getReceiptNo(), getLcNum(), getDraftsNo(), getDeliveryServiceNo(), getPolicyNum(), getSingleNum(), getInvoiceNum(), getExportMerchant(), getImporter());
 	}
 }

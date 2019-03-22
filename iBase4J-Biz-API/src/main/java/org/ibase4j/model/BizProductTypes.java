@@ -6,6 +6,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -19,7 +20,6 @@ import java.util.List;
  * @version 1.0
  */
 @TableName("BIZ_PRODUCT_TYPES")
-@SuppressWarnings("serial")
 public class BizProductTypes extends BaseModel implements Serializable{
 	@TableField("NAME_") // 品种名称
 	private String name;
@@ -33,7 +33,7 @@ public class BizProductTypes extends BaseModel implements Serializable{
 	private Integer isChild;
 
 	@TableField(exist = false) // 绑定客户信息
-	private List<BizCustomer> customersList;
+	private List<BizCust> customersList;
 
 	@TableField(exist = false) // 债项方案id
 	private String debtCode;
@@ -180,11 +180,11 @@ public class BizProductTypes extends BaseModel implements Serializable{
 		this.debtCode = debtCode;
 	}
 
-	public List<BizCustomer> getCustomersList() {
+	public List<BizCust> getCustomersList() {
 		return customersList;
 	}
 
-	public void setCustomersList(List<BizCustomer> customersList) {
+	public void setCustomersList(List<BizCust> customersList) {
 		this.customersList = customersList;
 	}
 
@@ -263,5 +263,35 @@ public class BizProductTypes extends BaseModel implements Serializable{
 				.add("custName", custName)
 				.add("custTating", custTating)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizProductTypes)) return false;
+		BizProductTypes that = (BizProductTypes) o;
+		return Objects.equal(getName(), that.getName()) &&
+				Objects.equal(getCode(), that.getCode()) &&
+				Objects.equal(getParentCode(), that.getParentCode()) &&
+				Objects.equal(getLeaf(), that.getLeaf()) &&
+				Objects.equal(getIsChild(), that.getIsChild()) &&
+				Objects.equal(getCustomersList(), that.getCustomersList()) &&
+				Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getNames(), that.getNames()) &&
+				Objects.equal(getChecked(), that.getChecked()) &&
+				Objects.equal(getCustNo(), that.getCustNo()) &&
+				Objects.equal(getTolerancePertod(), that.getTolerancePertod()) &&
+				Objects.equal(getIndustryTo(), that.getIndustryTo()) &&
+				Objects.equal(getFinancePlatform(), that.getFinancePlatform()) &&
+				Objects.equal(getTbon(), that.getTbon()) &&
+				Objects.equal(getSingleId(), that.getSingleId()) &&
+				Objects.equal(getTheRentFactorId(), that.getTheRentFactorId()) &&
+				Objects.equal(getCustName(), that.getCustName()) &&
+				Objects.equal(getCustTating(), that.getCustTating());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getName(), getCode(), getParentCode(), getLeaf(), getIsChild(), getCustomersList(), getDebtCode(), getNames(), getChecked(), getCustNo(), getTolerancePertod(), getIndustryTo(), getFinancePlatform(), getTbon(), getSingleId(), getTheRentFactorId(), getCustName(), getCustTating());
 	}
 }

@@ -13,6 +13,7 @@ import org.ibase4j.core.util.MathUtil;
 import org.ibase4j.core.util.StringUtil;
 import org.ibase4j.mapper.BizDebtGrantMapper;
 import org.ibase4j.mapper.BizMakeLoansMapper;
+import org.ibase4j.mapper.BizTRNMapper;
 import org.ibase4j.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -41,6 +42,8 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
     private BizProStatementProvider bizProStatementProvider;
     @Autowired
     private BizTRNProvider bizTRNProvider;
+    @Autowired
+    private BizTRNMapper bizTRNMapper;
     @Autowired
     private BizDebtGrantProvider BizDebtGrantProvider;
     @Autowired
@@ -82,7 +85,7 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
         params.put("approvalId",approvalId);
         // 产品ID
         Map categoryId =new HashMap();
-        categoryId.put("debtCode",debtCode);
+        categoryId.put("debtCode",debtCode.substring(0,13));
         BizSingleProductRule bizSingleProductRule = (BizSingleProductRule)bizSingleProductRuleProvider.queryList(categoryId).get(0);
         String businessType = bizSingleProductRule.getBusinessType();
         params.put("businessType",businessType);
@@ -97,12 +100,19 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
         // 流水记录
         String trn=StringUtil.objectToString(params.get("trn"));
         if("main".equals(trn)){
-            Map params2=new HashMap();
+            /*Map params2=new HashMap();
             params2.put("debtCode",debtCode);
+            if(debtCode.length()==16){
+                params2.put("debtCode",debtCode.substring(0,13));
+                params2.put("verNum",debtCode.substring(13));
+            }else{
+                logger.error("查询方案失败，debtCode="+debtCode);
+            }
             BizDebtSummary bizDebtSummary = (BizDebtSummary)bizDebtSummaryProvider.queryList(params2).get(0);
             Long MainId = bizDebtSummary.getId();
-            params.put("MainId",MainId);
-            bizTRNProvider.saveDebtMainTRN(params);
+            params.put("MainId",MainId);*/
+            //sinosong 工作流不需要业务流水 xxx
+//            bizTRNProvider.saveDebtMainTRN(params);
 
 
 
@@ -111,13 +121,28 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
             bizLockingProvider.unlockUser(params4);
         } else if ("grant".equals(trn)){
             String grantCode=params.get("grantCode").toString();
+            if(grantCode.length()==19){
+                grantCode=grantCode.substring(0,16);
+            }
             Map params3=new HashMap();
             params3.put("grantCode",grantCode);
             BizDebtGrant bizDebtGrant = (BizDebtGrant)BizDebtGrantProvider.queryList(params3).get(0);
             Long GrantId = bizDebtGrant.getId();
             params.put("GrantId",GrantId);
             bizTRNProvider.saveDebtGrantTRN(params);
+<<<<<<< HEAD
 
+=======
+            //根据流水表状态，更新方案主表中的发放状态
+            BizTRN bizTRN = new BizTRN();
+            bizTRN.setOwnref(StringUtil.objectToString(grantCode));
+            bizTRN.setObjtyp(BizContant.DEBT_GRANT_OBJTYP);
+            bizTRN.setObjinr(Long.valueOf(params.get("GrantId").toString()));
+            bizTRN.setRelflg("Y");
+            BizTRN bizTRN1 = bizTRNMapper.selectOne(bizTRN);
+            bizDebtGrant.setGrantStatus(bizTRN1.getBizStatus());
+            bizDebtGrantMapper.updateById(bizDebtGrant);
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
             Map params5=new HashMap();
             params5.put("code",grantCode);
             bizLockingProvider.unlockUser(params5);
@@ -147,37 +172,80 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
                 param.put("debtCode",debtCode);
                 String commite=params.get("commite").toString();
                 param.put("commite", commite);
-                bizDebtSummaryProvider.getSchemeState(param);
+                if(!bizDebtSummaryProvider.getSchemeState(param)){
+                    logger.error("更新方案状态异常...");
+                    throw new RuntimeException("更新方案状态异常...");
+                }
             //}
 
         }
         //处长修改发放废弃、发放审核驳回及及变更状态updateGrant
         String updateGrant= StringUtil.objectToString(params.get("updateGrant"));
         if(updateGrant != null && updateGrant !=""){
+            //变更驳回时不需要在此更新biztrn，设置一个标记位用于控制
+            boolean updateTrnFlg = true;
+
             String commite=params.get("commite").toString();
             String grantCode=params.get("grantCode").toString();
+            if(grantCode.length()==19){
+                grantCode=grantCode.substring(0,16);
+            }
             Map params1=new HashMap();
             params1.put("grantCode",grantCode);
+<<<<<<< HEAD
+            if(grantCode.length()==19){
+                params1.put("grantCode",grantCode.substring(0,16));
+                params1.put("verNum",grantCode.substring(16));
+            }else{
+                logger.error("查询条件审批失败，grantCode="+grantCode);
+=======
+            BizDebtGrant bizDebtGrant =(BizDebtGrant)BizDebtGrantProvider.queryList(params1).get(0);
+            // 查询出TRN，并更新状态
+            BizTRN selTrn = new BizTRN();
+            selTrn.setObjtyp("BIZ_DEBT_GRANT");
+            selTrn.setObjinr(bizDebtGrant.getId());
+            selTrn.setRelflg("Y");
+            BizTRN grantTrn = bizTRNProvider.selectOne(new EntityWrapper<>(selTrn));
+            if(grantTrn == null){
+                logger.error("查询条件流水失败，grantCode="+grantCode);
+                throw new RuntimeException("查询发放条件流水失败...");
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
+            }
             BizDebtGrant bizDebtGrant =(BizDebtGrant)BizDebtGrantProvider.queryList(params1).get(0);
             if("FFTT".equals(commite)){
                 //已批未放
                 bizDebtGrant.setGrantStatus(BizStatus.GRANUNPU);
                 bizDebtGrant.setProcessStatus(BizStatus.GRPRAPPR);
                 bizDebtGrant.setPassDate(passDate);
+
+                //已审批
+                grantTrn.setProcessStatus(BizStatus.DEPRAPPR);
+                //已批未放
+                grantTrn.setBizStatus(BizStatus.GRANUNPU);
+                //标记为最新的审批通过状态
+                grantTrn.setRelres("Y");
+                // bizTRNProvider.updateTRNStatus(grantTrn);
+
             }else if("FFBH".equals(commite)){
-                //已驳回
+                //已驳回 //sinosong 条件驳回
                 bizDebtGrant.setGrantStatus(BizStatus.GRANDOWN);
                 bizDebtGrant.setProcessStatus(BizStatus.GRPRDOWN);
             }else if("TT".equals(commite)){
                 //已废弃
                 bizDebtGrant.setGrantStatus(BizStatus.GRANOBSO);
                 bizDebtGrant.setProcessStatus(BizStatus.GRPRAPPR);
+                grantTrn.setBizStatus(BizStatus.GRANOBSO);
+                grantTrn.setProcessStatus(BizStatus.GRPRAPPR);
             }else if("FQBH".equals(commite)){
                 //已驳回
                 bizDebtGrant.setGrantStatus(BizStatus.GRANUNPU);
                 bizDebtGrant.setProcessStatus(BizStatus.GRPRDOWN);
+
+                grantTrn.setBizStatus(BizStatus.GRANUNPU);
+                grantTrn.setProcessStatus(BizStatus.GRPRDOWN);
             }else if("BGTT".equals(commite)) {
                 //失效
+/*
                 String originalGrantCode = bizDebtGrant.getOriginalGrantCode();
                 Map params2=new HashMap();
                 params2.put("grantCode",originalGrantCode);
@@ -186,11 +254,15 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
                 bizDebtGrantBG.setProcessStatus(BizStatus.GRPRAPPR);
                 bizDebtGrantBG.setPassDate(passDate);
                 BizDebtGrantProvider.update(bizDebtGrantBG);
+*/
 
                 //已变更
                 bizDebtGrant.setGrantStatus(BizStatus.GRANCHAN);
                 bizDebtGrant.setProcessStatus(BizStatus.GRPRAPPR);
                 bizDebtGrant.setPassDate(passDate);
+
+                grantTrn.setBizStatus(BizStatus.GRANCHAN);
+                grantTrn.setProcessStatus(BizStatus.GRPRAPPR);
 
             }else if("BGBH".equals(commite)){
                 //已驳回
@@ -199,50 +271,76 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
                 String originalGrantCode = bizDebtGrant.getOriginalGrantCode();
                 Map params2=new HashMap();
                 params2.put("grantCode",originalGrantCode);
+                if(originalGrantCode.length()==19){
+                    params2.put("grantCode",originalGrantCode.substring(0,16));
+                    params2.put("verNum",originalGrantCode.substring(16));
+                }else{
+                    logger.error("查询条件审批失败，grantCode="+grantCode);
+                }
                 BizDebtGrant bizDebtGrantBG= (BizDebtGrant)BizDebtGrantProvider.queryList(params2).get(0);
                 //冻结
                 bizDebtGrantBG.setGrantStatus(BizStatus.GRANFROZ);
                 bizDebtGrantBG.setProcessStatus(BizStatus.GRPRAPPR);
+<<<<<<< HEAD
                 BizDebtGrantProvider.update(bizDebtGrantBG);
             }
             BizDebtGrantProvider.update(bizDebtGrant);
+=======
+                BizDebtGrantProvider.update(bizDebtGrantBG);*/
+
+               // 修订驳回，从文件恢复数据
+                /*grantTrn.setBizStatus(BizStatus.DEBTDOWN);
+                grantTrn.setProcessStatus(BizStatus.DEPRDOWN);*/
+
+                updateTrnFlg = false;
+                params.put("BIZTRN",grantTrn);
+                params.put("BIZGRANT",bizDebtGrant);
+                try {
+                    boolean res= BizDebtGrantProvider.saveRepairGrant(params);
+                    if(!res){
+                        logger.error("回滚发放条件修订失败，grantCode="+grantCode);
+                        throw new RuntimeException("回滚发放条件修订数据异常...");
+                    }
+                }catch (Exception e){
+                    logger.error("回滚发放条件修订失败，grantCode="+grantCode);
+                    throw new RuntimeException("回滚发放条件修订数据异常...");
+                }
+            }
+            if (updateTrnFlg) {
+                BizDebtGrantProvider.update(bizDebtGrant);
+                bizTRNProvider.updateTRNStatus(grantTrn);
+            }
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
         }
     }
 
     @Override
     public String stopProcess(Map<String,Object> params){
-        String process=StringUtil.objectToString(params.get("process"));
-        if("FFSH".equals(process)){
-            Map processParams = (Map)params.get("processParams");
-            String piid = processParams.get("piid").toString();
-            Map map=new HashMap();
-            map.put("piid",piid);
-            wfInsTaskProvider.updateAllInfo(map);
+        Map processParams = (Map)params.get("processParams");
+        String piid = processParams.get("piid").toString();
+        Map map=new HashMap();
+        map.put("piid",piid);
+        wfInsTaskProvider.updateAllInfo(map);
 
-            String grantCode=params.get("grantCode").toString();
-            Map map1=new HashMap();
-            map1.put("grantCode",grantCode);
-            List<BizDebtGrant> bizDebtGrants = BizDebtGrantProvider.queryList(map1);
-            BizDebtGrant bizDebtGrant = bizDebtGrants.get(0);
-            Integer enable = bizDebtGrant.getEnable();
-            if(enable!=0) {
-                bizDebtGrant.setGrantStatus(BizStatus.GRANINVA);
-                BizDebtGrantProvider.update(bizDebtGrant);
-                Integer solutionState = (Integer) params.get("solutionState");
-                if(solutionState==11){
-                    return "此笔发放审核已失效";
-                }
-                return "发放对应方案已修订，此笔作废";
-            }
-            return "此笔发放审核已删除";
+        String grantCode=params.get("grantCode").toString();
+        Map map1=new HashMap();
+        map1.put("grantCode",grantCode);
+        if(grantCode.length()==19){
+            map1.put("grantCode",grantCode.substring(0,16));
+            map1.put("verNum",grantCode.substring(16));
         }else{
-            Map processParams = (Map)params.get("processParams");
-            String piid = processParams.get("piid").toString();
-            Map map=new HashMap();
-            map.put("piid",piid);
-            wfInsTaskProvider.updateAllInfo(map);
-            return "此笔方案审核已失效";
+            logger.error("查询条件审批失败，grantCode="+grantCode);
         }
+        List<BizDebtGrant> bizDebtGrants = BizDebtGrantProvider.queryList(map1);
+        BizDebtGrant bizDebtGrant = bizDebtGrants.get(0);
+        Integer enable = bizDebtGrant.getEnable();
+        if(enable!=0) {
+            bizDebtGrant.setGrantStatus(BizStatus.GRANINVA);
+            BizDebtGrantProvider.update(bizDebtGrant);
+            return "方案已修订，此笔作废";
+        }
+        return "此笔发放审核已删除";
+
     }
     /**
     * @Description: 查询债项发放历史审批意见
@@ -275,6 +373,12 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
         String debtCode =  StringUtil.objectToString(params.get("debtCode"));
         Map map3=new HashMap();
         map3.put("debtCode",debtCode);
+        if(debtCode.length()==16){
+            map3.put("debtCode",debtCode.substring(0,13));
+            map3.put("verNum",debtCode.substring(13));
+        }else{
+            logger.error("查询方案失败，debtCode="+debtCode);
+        }
         BizDebtSummary bizDebtSummary1=(BizDebtSummary)bizDebtSummaryProvider.queryList(map3).get(0);
         logger.debug("==============invokeInf=============方案信息================================"+bizDebtSummary1);
         if(bizDebtSummary1!=null){
@@ -294,7 +398,7 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
             //担保类型
             String typePoint="";
             Map map2=new HashMap();
-            map2.put("debtCode",debtCode);
+            map2.put("debtCode",debtCode.substring(0,13));
             List<BizGuaranteeInfo> list = bizGuaranteeInfoProvider.queryList(map2);
             for(BizGuaranteeInfo bizGuaranteeInfo2:list) {
                 typePoint =typePoint+bizGuaranteeInfo2.getTypePoint();
@@ -307,7 +411,7 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
             String format = new SimpleDateFormat("yyyy-MM-dd").format(createTime);
             //容忍期(BIZ_RENTAL_FACTORING_KEY)
             Map map=new HashMap();
-            map.put("debtCode",debtCode);
+            map.put("debtCode",debtCode.substring(0,13));
             BizTheRentFactoring bizTheRentFactoring1 = (BizTheRentFactoring)bizTheRentFactoringProvider.queryList(map).get(0);
             Long tolerancePertod = bizTheRentFactoring1.getTolerancePertod();
             //方案币种
@@ -344,6 +448,7 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
             params.put("requestParams", Arrays.toString(requestParams));
             // 请求前记录
             BizInterfaceResult bizInterfaceResult = new BizInterfaceResult(null,debtCode, "", "cjdkhtxy", new Date(), params.toString());
+<<<<<<< HEAD
             BizInterfaceResult returnResult = bizInterfaceResultProvider.update(bizInterfaceResult);
             logger.debug("=======Before calling 64007 interface:" + "cjdkhtxy:" + " start ;" + "params : " + params.toString());
             //调用接口
@@ -388,6 +493,69 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
             } else{
                 logger.debug("===============invokeInf============接口返回值================================"+value);
                 return false;
+=======
+            final BizInterfaceResult returnResult = bizInterfaceResultProvider.update(bizInterfaceResult);
+            logger.debug("=======Before calling 64007 interface:" + "cjdkhtxy:" + " start ;" + "params : " + params.toString()+";OkHttpUtils.PINTERFACE_URL:"+OkHttpUtils.PINTERFACE_URL);
+            List requestParamsList = Arrays.asList(requestParams);
+            //等待异步请求，响应回之后再执行下面程序
+            final CountDownLatch latch = new CountDownLatch(1);
+            try {
+                OkHttpUtils.post()
+                        .url(OkHttpUtils.PINTERFACE_URL)
+                        .addParams("actionSet","cjdkhtxy")
+                        .addParams("action","cjdkhtxy")
+                        .addParams("args", StringUtil.joinInterfaceParams(requestParamsList))
+                        .build()
+                        .connTimeOut(10000)
+                        .readTimeOut(15000)
+                        .execute(new KernelInterCallback<CjdkhtxyVo>() {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                logger.debug("=======After calling  64007 interface:" + "cjdkhtxy:" + " end " + " e.getMessage() is " +  e.getMessage());
+                                e.printStackTrace();
+                                //响应后记录
+                                BizInterfaceResult responseResult = new BizInterfaceResult(returnResult.getId(), null, new Date(), e.getMessage());
+                                bizInterfaceResultProvider.update(responseResult);
+                                latch.countDown();
+                            }
+
+                            @Override
+                            public void onResponse(List<CjdkhtxyVo> response, int id) {
+                                logger.info("=======After calling  64007 interface:cjdkhtxy: end , response.toString() is " +  response);
+                                //响应后记录
+                                BizInterfaceResult responseResult = new BizInterfaceResult(returnResult.getId(), response.toString(), new Date(), null);
+                                bizInterfaceResultProvider.update(responseResult);
+
+                                //处理业务
+                                if(response!=null && response.size()>0){
+                                    for(int i = 0 ; i < response.size() ; i++ ){
+                                        CjdkhtxyVo cjdkhtxyVo = response.get(i);
+                                        String mediumid = cjdkhtxyVo.getMediumid();
+                                        String transok = cjdkhtxyVo.getTransok();
+                                        String errNo = cjdkhtxyVo.getErrNo();
+                                        logger.debug("============invokeInf===============接口返回值:mediumid={};transok={};errNo={};",mediumid,transok,errNo);
+
+                                        //存储接口返回值
+                                        BizDebtSummary bizDebtSummary2=new BizDebtSummary();
+                                        bizDebtSummary2.setId(bizDebtSummary1Id);
+                                        bizDebtSummary2.setTransok(transok);
+                                        if("0".equals(transok)){
+                                            bizDebtSummary2.setIdentNumber(mediumid);
+                                        }
+                                        bizDebtSummary2.setErrNo(errNo);
+                                        bizDebtSummaryProvider.update(bizDebtSummary2);
+                                        //线程间同步
+                                        latch.countDown();
+                                    }
+                                } else{
+                                    logger.debug("===============invokeInf============接口返回值================================"+response);
+                                }
+                            }
+                        });
+                latch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
             }
         }else{
               logger.debug("=================invokeInf==========方案信息================================"+bizDebtSummary1);
@@ -412,12 +580,35 @@ public class BizApprovalProviderImpl extends BaseProviderImpl<BizApprovalAuditVa
 
         Map params2=new HashMap();
         params2.put("debtCode",debtCode);
+        if(debtCode.length()==16){
+            params2.put("debtCode",debtCode.substring(0,13));
+            params2.put("verNum",debtCode.substring(13));
+        }else{
+            logger.error("查询方案失败，debtCode="+debtCode);
+        }
         BizDebtSummary bizDebtSummary1 = (BizDebtSummary)bizDebtSummaryProvider.queryList(params2).get(0);
-        Long id = bizDebtSummary1.getId();
+
+        BizTRN selTrn = new BizTRN();
+        selTrn.setObjtyp("BIZ_DEBT_MAIN");
+        selTrn.setObjinr(bizDebtSummary1.getId());
+        selTrn.setVerNum(bizDebtSummary1.getVerNum());
+        BizTRN lastTrn = bizTRNMapper.selectOne(selTrn);
+        if(null != lastTrn){
+            //sinosong ? 上一条生效置为失效
+            lastTrn.setBizStatus(BizStatus.DEBTAVAI);
+            lastTrn.setRelres("Y");
+        }else{
+            logger.error("查询方案流水异常....");
+        }
+
+        bizTRNMapper.updateById(lastTrn);
+
+        /*Long id = bizDebtSummary1.getId();
         BizDebtSummary bizDebtSummary=new BizDebtSummary();
         bizDebtSummary.setSolutionState(BizStatus.DEBTAVAI);
         bizDebtSummary.setId(id);
-        bizDebtSummaryProvider.update(bizDebtSummary);
+        bizDebtSummaryProvider.update(bizDebtSummary);*/
+
     }
 
 }

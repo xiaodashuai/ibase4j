@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -56,7 +57,7 @@ public class BizGuaranteeInfo extends BaseModel implements Serializable {
     @TableField("WARRANTEE")
     private String warrantee;
     /**
-     * 担保人客户编号
+     * 被担保人客户编号
      */
     @TableField("WARRANTEE_CUST_ID")
     private String warranteeCustId;
@@ -148,22 +149,6 @@ public class BizGuaranteeInfo extends BaseModel implements Serializable {
         this.guaranteedUseProduct = guaranteedUseProduct;
     }
 
-    public String getWarrantee() {
-        return warrantee;
-    }
-
-    public void setWarrantee(String warrantee) {
-        this.warrantee = warrantee;
-    }
-
-    public String getWarranteeCustId() {
-        return warranteeCustId;
-    }
-
-    public void setWarranteeCustId(String warranteeCustId) {
-        this.warranteeCustId = warranteeCustId;
-    }
-
     public String getWarrantyContractNumber() {
         return warrantyContractNumber;
     }
@@ -207,6 +192,22 @@ public class BizGuaranteeInfo extends BaseModel implements Serializable {
     public BizGuaranteeInfo() {
     }
 
+    public String getWarrantee() {
+        return warrantee;
+    }
+
+    public void setWarrantee(String warrantee) {
+        this.warrantee = warrantee;
+    }
+
+    public String getWarranteeCustId() {
+        return warranteeCustId;
+    }
+
+    public void setWarranteeCustId(String warranteeCustId) {
+        this.warranteeCustId = warranteeCustId;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -225,5 +226,31 @@ public class BizGuaranteeInfo extends BaseModel implements Serializable {
                 .add("note", note)
                 .add("betInformationList", betInformationList)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizGuaranteeInfo)) return false;
+        BizGuaranteeInfo that = (BizGuaranteeInfo) o;
+        return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+                Objects.equal(getTypePoint(), that.getTypePoint()) &&
+                Objects.equal(getGuaranteeContractType(), that.getGuaranteeContractType()) &&
+                Objects.equal(getWarrantyContractNumber(), that.getWarrantyContractNumber()) &&
+                Objects.equal(getGuarantor(), that.getGuarantor()) &&
+                Objects.equal(getGuarantorCustId(), that.getGuarantorCustId()) &&
+                Objects.equal(getWarrantee(), that.getWarrantee()) &&
+                Objects.equal(getWarranteeCustId(), that.getWarranteeCustId()) &&
+                Objects.equal(getCurrencyGuarantee(), that.getCurrencyGuarantee()) &&
+                Objects.equal(getGuaranteeAmount(), that.getGuaranteeAmount()) &&
+                Objects.equal(getGuaranteedUseProduct(), that.getGuaranteedUseProduct()) &&
+                Objects.equal(getGuarmartType(), that.getGuarmartType()) &&
+                Objects.equal(getNote(), that.getNote()) &&
+                Objects.equal(getBetInformationList(), that.getBetInformationList());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getDebtCode(), getTypePoint(), getGuaranteeContractType(), getWarrantyContractNumber(), getGuarantor(), getGuarantorCustId(), getWarrantee(), getWarranteeCustId(), getCurrencyGuarantee(), getGuaranteeAmount(), getGuaranteedUseProduct(), getGuarmartType(), getNote(), getBetInformationList());
     }
 }

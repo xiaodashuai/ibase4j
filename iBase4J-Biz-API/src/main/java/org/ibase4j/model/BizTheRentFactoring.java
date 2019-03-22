@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -126,4 +127,23 @@ public class BizTheRentFactoring extends BaseModel implements Serializable {
 				.add("custTating", custTating)
 				.toString();
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizTheRentFactoring)) return false;
+        BizTheRentFactoring that = (BizTheRentFactoring) o;
+        return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+                Objects.equal(getBusinessTypes(), that.getBusinessTypes()) &&
+                Objects.equal(getCustNo(), that.getCustNo()) &&
+                Objects.equal(getTolerancePertod(), that.getTolerancePertod()) &&
+                Objects.equal(getFinancePlatform(), that.getFinancePlatform()) &&
+                Objects.equal(getCustName(), that.getCustName()) &&
+                Objects.equal(getCustTating(), that.getCustTating());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getDebtCode(), getBusinessTypes(), getCustNo(), getTolerancePertod(), getFinancePlatform(), getCustName(), getCustTating());
+    }
 }

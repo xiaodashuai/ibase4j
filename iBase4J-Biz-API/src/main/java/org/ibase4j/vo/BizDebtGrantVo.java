@@ -1,5 +1,7 @@
 package org.ibase4j.vo;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.model.BizDebtGrant;
 
 /**
@@ -21,5 +23,26 @@ public class BizDebtGrantVo extends BizDebtGrant {
 
     public void setMpcName(String mpcName) {
         this.mpcName = mpcName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizDebtGrantVo)) return false;
+        if (!super.equals(o)) return false;
+        BizDebtGrantVo that = (BizDebtGrantVo) o;
+        return Objects.equal(getMpcName(), that.getMpcName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), getMpcName());
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("mpcName", mpcName)
+                .toString();
     }
 }

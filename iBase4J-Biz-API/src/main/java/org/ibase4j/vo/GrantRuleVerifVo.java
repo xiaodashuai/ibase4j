@@ -3,6 +3,8 @@
  */
 package org.ibase4j.vo;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.util.DateUtil;
 
 import java.io.Serializable;
@@ -60,8 +62,6 @@ public class GrantRuleVerifVo implements Serializable {
 	private String mCurrency;
 	// 发放编码
 	private String grantCode;
-	//方案费率类型(0无、1优惠费率、2非优惠费率)
-	private Integer progRateType;
 
 	public Timestamp getEfeectiveDatedt() {
 		return efeectiveDatedt;
@@ -245,12 +245,63 @@ public class GrantRuleVerifVo implements Serializable {
 		this.rateRangeMax = rateRangeMax;
 	}
 
-	public Integer getProgRateType() {
-		return progRateType;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof GrantRuleVerifVo)) return false;
+		GrantRuleVerifVo that = (GrantRuleVerifVo) o;
+		return Objects.equal(getRuleType(), that.getRuleType()) &&
+				Objects.equal(getEfeectiveDate(), that.getEfeectiveDate()) &&
+				Objects.equal(getExpiDate(), that.getExpiDate()) &&
+				Objects.equal(getEfeectiveDatedt(), that.getEfeectiveDatedt()) &&
+				Objects.equal(getExpiDatedt(), that.getExpiDatedt()) &&
+				Objects.equal(getLtnopa(), that.getLtnopa()) &&
+				Objects.equal(getTdwln(), that.getTdwln()) &&
+				Objects.equal(getAmt(), that.getAmt()) &&
+				Objects.equal(getAmtStr(), that.getAmtStr()) &&
+				Objects.equal(getScopeBnsPeriod(), that.getScopeBnsPeriod()) &&
+				Objects.equal(getLoopFlag(), that.getLoopFlag()) &&
+				Objects.equal(getNumLimit(), that.getNumLimit()) &&
+				Objects.equal(getDealNum(), that.getDealNum()) &&
+				Objects.equal(getUsedNum(), that.getUsedNum()) &&
+				Objects.equal(getSchemeRateForm(), that.getSchemeRateForm()) &&
+				Objects.equal(getPackageRate(), that.getPackageRate()) &&
+				Objects.equal(getRateRangeMix(), that.getRateRangeMix()) &&
+				Objects.equal(getRateRangeMax(), that.getRateRangeMax()) &&
+				Objects.equal(getaCurrency(), that.getaCurrency()) &&
+				Objects.equal(getmCurrency(), that.getmCurrency()) &&
+				Objects.equal(getGrantCode(), that.getGrantCode());
 	}
 
-	public void setProgRateType(Integer progRateType) {
-		this.progRateType = progRateType;
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getRuleType(), getEfeectiveDate(), getExpiDate(), getEfeectiveDatedt(), getExpiDatedt(), getLtnopa(), getTdwln(), getAmt(), getAmtStr(), getScopeBnsPeriod(), getLoopFlag(), getNumLimit(), getDealNum(), getUsedNum(), getSchemeRateForm(), getPackageRate(), getRateRangeMix(), getRateRangeMax(), getaCurrency(), getmCurrency(), getGrantCode());
 	}
-	
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("ruleType", ruleType)
+				.add("efeectiveDate", efeectiveDate)
+				.add("expiDate", expiDate)
+				.add("efeectiveDatedt", efeectiveDatedt)
+				.add("expiDatedt", expiDatedt)
+				.add("ltnopa", ltnopa)
+				.add("tdwln", tdwln)
+				.add("amt", amt)
+				.add("amtStr", amtStr)
+				.add("scopeBnsPeriod", scopeBnsPeriod)
+				.add("loopFlag", loopFlag)
+				.add("numLimit", numLimit)
+				.add("dealNum", dealNum)
+				.add("usedNum", usedNum)
+				.add("schemeRateForm", schemeRateForm)
+				.add("packageRate", packageRate)
+				.add("rateRangeMix", rateRangeMix)
+				.add("rateRangeMax", rateRangeMax)
+				.add("aCurrency", aCurrency)
+				.add("mCurrency", mCurrency)
+				.add("grantCode", grantCode)
+				.toString();
+	}
 }

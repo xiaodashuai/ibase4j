@@ -49,6 +49,21 @@ public class BizGrantService extends BaseService<BizDebtGrantProvider, BizDebtGr
 	private ISysDeptProvider sysDeptProvider;
 	@Reference
 	private ISysCurrencyProvider iSysCurrencyProvider;
+<<<<<<< HEAD
+=======
+	@Reference
+    private BizDebtSummaryProvider bizDebtSummaryProvider;
+    @Reference
+    private BizDebtGrantProvider bizDebtGrantProvider;
+    @Reference
+    private BizTemporarySaveProvider bizTemporarySaveProvider;
+    @Reference
+    private BizGuaranteeTypeProvider bizGuaranteeTypeProvider;
+    @Reference
+    private BizTRNProvider bizTRNProvider;
+	@Reference
+	private BizCntProvider bizCntProvider;
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 	
 	/**
 	 * 功能 ：根据id主键查询发放信息，币种显示币种英文字母+汉字
@@ -222,7 +237,19 @@ public class BizGrantService extends BaseService<BizDebtGrantProvider, BizDebtGr
 		BizDebtGrant model = provider.queryById(id);
 		String debtCode = model.getDebtCode();
 		String grantCode = model.getGrantCode();
+<<<<<<< HEAD
 		Map<String, Object> record = provider.getEditGrant(grantCode, debtCode);
+=======
+		// Map<String, Object> record = provider.getEditGrant(grantCode, debtCode);
+
+		// record作为返回前台的数据，在文件中（经办保存时生成）获取
+		Map<String, Object> record = provider.getEditGrantFromTempFile(grantCode, debtCode);
+
+		// 前台页面初始化时，生成新的 前端业务号 = 固定的后端业务号+ 变动的版本号
+		String UIGrantCode = bizCntProvider.getNextNumberFormat(grantCode, 3);
+		record.put("grantCode", UIGrantCode);
+
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 		// 查询经办人和机构
 		Long userId = BizWebUtil.getCurrentUser();
 		SysUser user = sysUserProvider.queryById(userId);
@@ -245,7 +272,10 @@ public class BizGrantService extends BaseService<BizDebtGrantProvider, BizDebtGr
 		BizDebtGrant model = provider.queryById(id);
 		String debtCode = model.getDebtCode();
 		String grantCode = model.getGrantCode();
-		Map<String, Object> record = provider.getEditGrant(grantCode, debtCode);
+		// 变更从数据库读数据
+		 Map<String, Object> record = provider.getEditGrant(grantCode, debtCode);
+		// record作为返回前台的数据，在文件中（经办保存时生成）获取
+		// Map<String, Object> record = provider.getEditGrantFromTempFile(grantCode, debtCode);
 		// 查询经办人和机构
 		Long userId = BizWebUtil.getCurrentUser();
 		SysUser user = sysUserProvider.queryById(userId);
@@ -254,11 +284,21 @@ public class BizGrantService extends BaseService<BizDebtGrantProvider, BizDebtGr
 		record.put("agencies", dept.getDeptName());// 经办机构
 		//变更流程将使用新生成一个发放编码并与旧编码关联
 		record.put("originalGrantCode", grantCode);//原编码成为旧编码
-		String newCode = "";
+
+		// 前台页面初始化时，生成新的 前端业务号 = 固定的后端业务号+ 变动的版本号
+		String UIGrantCode = bizCntProvider.getNextNumberFormat(grantCode, 3);
+		record.put("grantCode", UIGrantCode);
+
+		/*String newCode = "";
 		if(record.get("NewCode")!=null){
 			newCode = record.get("NewCode").toString();
 		}
+<<<<<<< HEAD
 		record.put("grantCode",newCode);//新编码成为发放编码
+=======
+		// 发放编码不变，查询record的时候已经将newcode赋值为旧编码
+		record.put("grantCode",newCode);//新编码成为发放编码*/
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 		return record;
 	}
 }

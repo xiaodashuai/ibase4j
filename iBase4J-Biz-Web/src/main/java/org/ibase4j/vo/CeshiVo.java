@@ -1,6 +1,6 @@
 package org.ibase4j.vo;
 
-import org.ibase4j.model.BizCustomer;
+import org.ibase4j.model.BizCust;
 import org.ibase4j.model.BizGuaranteeContract;
 
 import java.io.Serializable;
@@ -47,7 +47,7 @@ public class CeshiVo implements Serializable{
      */
     private String backgroundNationality;
 
-    private List<BizCustomer> custUserLetter;
+    private List<BizCust> custUserLetter;
 
     private List<BizGuaranteeContract> bizGuaranteeContractList;
 
@@ -139,11 +139,11 @@ public class CeshiVo implements Serializable{
         this.iouCode = iouCode;
     }
 
-    public List<BizCustomer> getCustUserLetter() {
+    public List<BizCust> getCustUserLetter() {
         return custUserLetter;
     }
 
-    public void setCustUserLetter(List<BizCustomer> custUserLetter) {
+    public void setCustUserLetter(List<BizCust> custUserLetter) {
         this.custUserLetter = custUserLetter;
     }
 

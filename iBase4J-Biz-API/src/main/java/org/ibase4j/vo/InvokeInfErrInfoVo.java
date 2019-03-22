@@ -1,6 +1,7 @@
 package org.ibase4j.vo;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.io.Serializable;
 
@@ -53,5 +54,21 @@ public class InvokeInfErrInfoVo implements Serializable {
                 .add("RspMsg", RspMsg)
                 .add("ErrorNo", ErrorNo)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof InvokeInfErrInfoVo)) return false;
+        InvokeInfErrInfoVo that = (InvokeInfErrInfoVo) o;
+        return Objects.equal(getErrorInfo(), that.getErrorInfo()) &&
+                Objects.equal(getRspCode(), that.getRspCode()) &&
+                Objects.equal(getRspMsg(), that.getRspMsg()) &&
+                Objects.equal(getErrorNo(), that.getErrorNo());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getErrorInfo(), getRspCode(), getRspMsg(), getErrorNo());
     }
 }

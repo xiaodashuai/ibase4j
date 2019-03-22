@@ -48,7 +48,7 @@
 		</where>
 	</select>
 	
-	<resultMap id="custmoerMap" type="org.ibase4j.model.BizCustomer"
+	<resultMap id="custmoerMap" type="org.ibase4j.model.BizCust"
 		autoMapping="true">
 		<id column="ID_" property="id" />
 		<result column="CUST_NO" property="custNo" javaType="String"

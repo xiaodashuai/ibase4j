@@ -2,6 +2,7 @@ package org.ibase4j.mapper;
 
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.RowBounds;
 import org.ibase4j.core.base.BaseMapper;
 import org.ibase4j.model.BizDebtSummary;
 import org.ibase4j.vo.BizDebtInfo;
@@ -11,6 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 public interface BizDebtSummaryMapper extends BaseMapper<BizDebtSummary> {
+
+	@Override
+	List<Long> selectIdPage(@Param("cm") Map<String, Object> params);
+
+    @Override
+    List<Long> selectIdPage(RowBounds rowBounds, @Param("cm") Map<String, Object> params);
 
 	/**
 	 * 功能：发放产品前需要验证发放的规则

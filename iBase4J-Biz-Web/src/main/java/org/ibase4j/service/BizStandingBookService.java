@@ -66,14 +66,15 @@ public class BizStandingBookService extends BaseService<BizDebtGrantProvider, Bi
         Map map = settingDefaultParameters(params);
         List statisticInfoList = bizStandingBookProvider.getStatisticInfoList(map);
         // 统计信息表头
-        String[] titles = {"债项方案编号", "发放条件编号", "业务编号", "所属机构", "信贷员", "项目名称", "产品名称",
-                "合同编号", "币种", "本金期末余额 (原币)", "本金期末余额 (折人民币)", "本金期末余额 (折美元)",
-                "起息日", "到期日", "业务期限", "发放金额", "担保方式（总）", "客户编号", "客户名称", "是否同业客户",
-                "所属行业", "企业规模", "组织机构代码", "客户信用等级", "是否地方政府融资平台", "贷款产品类型",
-                "创新业务类型", "背景国别", "贷款领域", "进出口货物及服务", "中国制造2025及战略新兴产业分类",
-                "产业结构调整类型", "商务合同编码", "商务合同签订日期", "商务合同金额 (折美元)", "对外投资贷款分类",
-                "是否工业转型升级", "是否文化产业", "是否精准扶贫", "贸金业务政策性属性","政策性属性分类",
-                "行业投向", "支农投向", "是否银团","是否银团代理行", "我行银团地位", "是否 421","支付方式"};
+        String[] titles = {"序号","债项方案编号","发放条件编号","业务编号（借据编号）","所属机构","信贷员","项目名称",
+                "产品名称","方案主币种","方案金额","是否联合承租","合同编号","审批日期","出租人客户编号","出租人客户名称",
+                "出租人企业规模","出租人组织机构代码","出租人客户信用等级","承租人客户编号","承租人客户名称","承租人是否地方政府融资平台",
+                "承租人企业规模","承租人组织机构代码","承租人客户信用等级","担保方式（总）","追索权","租赁物名称","贸金业务政策性属性",
+                "政策性属性分类","是否与他行银团放款","我行银团地位","起息日","到期日","业务期限","币种","发放金额",
+                "本金期末余额 (原币)","本金期末余额 (折人民币)","本金期末余额 (折美元)","累计发放金额 原币","累计发放金额 人民币",
+                "累计回收本金金额 原币","累计回收本金金额 人民币","逾期本金金额 原币","逾期本金金额 人民币","本金逾期天数","利率方式",
+                "利率","利息收入","费用收入"};
+
         // 统计信息明细
         String[][] centerVal = transformStatisticInfoList(statisticInfoList,titles);
         // 导出
@@ -145,11 +146,11 @@ public class BizStandingBookService extends BaseService<BizDebtGrantProvider, Bi
         return param;
     }
 
-    public void exportExcelForAMTDetail(Map<String, Object> params, HttpServletResponse response){
+    public void exportExcelForAMTDetail(Map<String, Object> params, HttpServletResponse response){//sinosong
         // 查询出所有满足条件的发放业务编码
         List excelDataList = new ArrayList();
         Map map = settingDefaultParameters(params);
-        List grantStandingBookList = bizStandingBookProvider.getGrantStandingBookList(map);
+        /*List grantStandingBookList = bizStandingBookProvider.getGrantStandingBookList(map);
         // 查询每笔业务对应的金额流水
         if(grantStandingBookList != null && grantStandingBookList.size() >0){
             for (int i = 0; i < grantStandingBookList.size(); i++) {
@@ -163,12 +164,16 @@ public class BizStandingBookService extends BaseService<BizDebtGrantProvider, Bi
                 List grantAMTDetailForStandingBook = bizStandingBookProvider.getGrantAMTDetailForStandingBook(dataMap);
                 excelDataList.addAll(grantAMTDetailForStandingBook);
             }
-        }
+        }*/
+        // 查询流水
+        List grantAMTDetailForStandingBook = bizStandingBookProvider.getGrantAMTDetailForStandingBook(map);
+        excelDataList.addAll(grantAMTDetailForStandingBook);
         // 金额流水明细表头
-        String[] titles = {"业务编号", "债项方案编号", "发放条件编号", "所属机构", "项目名称", "产品名称",
-                "客户名称", "发放金额", "发生日期", "币种", "发生额类型","发生金额","本金期末余额 (原币)",
-                "本金期末余额 (折人民币)", "本金期末余额 (折美元)", "本金累计收回金额（原币）", "本金累计收回金额 (折人民币)",
-               "逾期本金余额",  "表内欠息余额", "表外欠息余额", "当前利率"};
+        String[] titles = {"业务编号","发生日期","币种","本金发生额","本金期末余额 (原币)","本金期末余额 (折人民币)",
+                "本金期末余额 (折美元)","本金累计收回金额（原币）","本金累计收回金额 (折人民币)","利息发生额",
+                "费用发生额","逾期本金发生额","逾期本金余额","表内欠息发生额","表内欠息余额","表外欠息发生额",
+                "表外欠息余额","当前利率","发放金额","债项方案编号","发放条件编号","所属机构","项目名称",
+                "产品名称","承租人客户编号","承租人客户名称"};
         // 金额流水表格内容
         String[][] centerVal = transformGrantAMTDetailList(excelDataList, titles);
         // 导出
@@ -180,28 +185,33 @@ public class BizStandingBookService extends BaseService<BizDebtGrantProvider, Bi
         if(list != null && list.size() >0){
             for (int i = 0; i < list.size(); i++) {
                 Map amtInfo = (Map) list.get(i);
-                    centerVal[i][0] =StringUtil.objectToString(amtInfo.get("identNumber"));
-                    centerVal[i][1] = StringUtil.objectToString(amtInfo.get("debtCode"));
-                    centerVal[i][2] = StringUtil.objectToString(amtInfo.get("grantCode"));
-                    centerVal[i][3] = StringUtil.objectToString(amtInfo.get("deptName"));
-                    centerVal[i][4] = StringUtil.objectToString(amtInfo.get("projectName"));
-                    centerVal[i][5] = StringUtil.objectToString(amtInfo.get("productName"));
-                    centerVal[i][6] = StringUtil.objectToString(amtInfo.get("proposer"));
-                    centerVal[i][7] = StringUtil.objectToString(amtInfo.get("paymentAmt"));
-                    centerVal[i][8] = StringUtil.objectToString(amtInfo.get("dateOfLoan"));
-                    centerVal[i][9] = StringUtil.objectToString(amtInfo.get("currency"));
-                    centerVal[i][10] = StringUtil.objectToString(amtInfo.get("cbtString"));
-                    centerVal[i][11] = StringUtil.objectToString(amtInfo.get("amt"));
-                    centerVal[i][12] = StringUtil.objectToString(amtInfo.get("amtBalance"));
-                    centerVal[i][13] = StringUtil.objectToString(amtInfo.get("amtBalanceCNY"));
-                    centerVal[i][14] = StringUtil.objectToString(amtInfo.get("amtBalanceUSD"));
-                    centerVal[i][15] = StringUtil.objectToString(amtInfo.get("grantAMTInAll"));
-                    centerVal[i][16] = StringUtil.objectToString(amtInfo.get("grantAMTInAllCNY"));
-                    centerVal[i][17] = StringUtil.objectToString(amtInfo.get("oveduSum"));
-                    centerVal[i][18] = StringUtil.objectToString(amtInfo.get("inateSum"));
-                    centerVal[i][19] = StringUtil.objectToString(amtInfo.get("ouateSum"));
-                    centerVal[i][20] = StringUtil.objectToString(amtInfo.get("rateVal"));
-           }
+                    centerVal[i][0] =StringUtil.objectToString(amtInfo.get("iouCode"));
+                    centerVal[i][1] = StringUtil.objectToString(amtInfo.get("workdate"));
+                    centerVal[i][2] = StringUtil.objectToString(amtInfo.get("currency"));
+                    centerVal[i][3] = StringUtil.objectToString(amtInfo.get("recamt"));
+                    centerVal[i][4] = StringUtil.objectToString(amtInfo.get("closingBal"));
+                    centerVal[i][5] = StringUtil.objectToString(amtInfo.get("closingBalCNY"));
+                    centerVal[i][6] = StringUtil.objectToString(amtInfo.get("closingBalUSD"));
+                    centerVal[i][7] = StringUtil.objectToString(amtInfo.get("tothkamt"));
+                    centerVal[i][8] = StringUtil.objectToString(amtInfo.get("tothkamtCNY"));
+                    centerVal[i][9] = StringUtil.objectToString(amtInfo.get("inoffAmt"));
+                    centerVal[i][10] = StringUtil.objectToString(amtInfo.get("fee"));
+                    centerVal[i][11] = StringUtil.objectToString(amtInfo.get("ovramt"));
+                    centerVal[i][12] = StringUtil.objectToString(amtInfo.get("ovrbal"));
+                    centerVal[i][13] = StringUtil.objectToString(amtInfo.get("inamt"));
+                    centerVal[i][14] = StringUtil.objectToString(amtInfo.get("incurbal"));
+                    centerVal[i][15] = StringUtil.objectToString(amtInfo.get("ofamt"));
+                    centerVal[i][16] = StringUtil.objectToString(amtInfo.get("ofcurbal"));
+                    centerVal[i][17] = StringUtil.objectToString(amtInfo.get("intrate"));
+                    centerVal[i][18] = StringUtil.objectToString(amtInfo.get("grantAmt"));
+                    centerVal[i][19] = StringUtil.objectToString(amtInfo.get("debtCode"));
+                    centerVal[i][20] = StringUtil.objectToString(amtInfo.get("grantCode"));
+                    centerVal[i][21] = StringUtil.objectToString(amtInfo.get("deptName"));
+                    centerVal[i][22] = StringUtil.objectToString(amtInfo.get("projectName"));
+                    centerVal[i][23] = StringUtil.objectToString(amtInfo.get("productName"));
+                    centerVal[i][24] = StringUtil.objectToString(amtInfo.get("custNo"));
+                    centerVal[i][25] = StringUtil.objectToString(amtInfo.get("custNameCn"));
+            }
         }
         return centerVal;
     }
@@ -211,54 +221,56 @@ public class BizStandingBookService extends BaseService<BizDebtGrantProvider, Bi
         if(list != null && list.size() >0){
             for (int i = 0; i < list.size(); i++) {
                 Map statisticInfo = (Map) list.get(i);
-                centerVal[i][0] = StringUtil.objectToString(statisticInfo.get("debtCode"));
-                centerVal[i][1] = StringUtil.objectToString(statisticInfo.get("grantCode"));
-                centerVal[i][2] = StringUtil.objectToString(statisticInfo.get("identNumber"));
-                centerVal[i][3] = StringUtil.objectToString(statisticInfo.get("deptName"));
-                centerVal[i][4] = StringUtil.objectToString(statisticInfo.get("banktellName"));
-                centerVal[i][5] = StringUtil.objectToString(statisticInfo.get("projectName"));
-                centerVal[i][6] = StringUtil.objectToString(statisticInfo.get("productName"));
-                centerVal[i][7] = StringUtil.objectToString(statisticInfo.get("bizRentalFactoringCode"));
-                centerVal[i][8] = StringUtil.objectToString(statisticInfo.get("currency"));
-                centerVal[i][9] = StringUtil.objectToString(statisticInfo.get("amtBalance"));
-                centerVal[i][10] = StringUtil.objectToString(statisticInfo.get("amtBalanceCNY"));
-                centerVal[i][11] = StringUtil.objectToString(statisticInfo.get("amtBalanceUSD"));
-                centerVal[i][12] = StringUtil.objectToString(statisticInfo.get("valueDate"));
-                centerVal[i][13] = StringUtil.objectToString(statisticInfo.get("dueDate"));
-                centerVal[i][14] = StringUtil.objectToString(statisticInfo.get("dayBetween"));
-                centerVal[i][15] = StringUtil.objectToString(statisticInfo.get("paymentAmt"));
-                centerVal[i][16] = StringUtil.objectToString(statisticInfo.get("guaranteeTypeTotal"));
-                centerVal[i][17] = StringUtil.objectToString(statisticInfo.get("proposerNum"));
-                centerVal[i][18] = StringUtil.objectToString(statisticInfo.get("proposer"));
-                centerVal[i][19] = "否";
-                centerVal[i][20] = StringUtil.objectToString(statisticInfo.get("mainBusiness"));
-                centerVal[i][21] = StringUtil.objectToString(statisticInfo.get("custScale"));
-                centerVal[i][22] = StringUtil.objectToString(statisticInfo.get("organizationCode"));
-                centerVal[i][23] = StringUtil.objectToString(statisticInfo.get("creditRating"));
-                centerVal[i][24] = StringUtil.objectToString(statisticInfo.get("financePlatform"));
-                centerVal[i][25] = StringUtil.objectToString(statisticInfo.get("businessTypeString"));
-                centerVal[i][26] = StringUtil.objectToString(statisticInfo.get("innovativeBusinessType"));
-                centerVal[i][27] = StringUtil.objectToString(statisticInfo.get("backgroundNationality"));
-                centerVal[i][28] = StringUtil.objectToString(statisticInfo.get("loanDomain"));
-                centerVal[i][29] = StringUtil.objectToString(statisticInfo.get("impoertExportGoodsService"));
-                centerVal[i][30] = StringUtil.objectToString(statisticInfo.get("emergingIndustryClassify"));
-                centerVal[i][31] = StringUtil.objectToString(statisticInfo.get("tyoesIndustrial"));
-                centerVal[i][32] = StringUtil.objectToString(statisticInfo.get("businessContractCode"));
-                centerVal[i][33] = StringUtil.objectToString(statisticInfo.get("businessContractDate"));
-                centerVal[i][34] = StringUtil.objectToString(statisticInfo.get("businessContractAmount"));
-                centerVal[i][35] = StringUtil.objectToString(statisticInfo.get("loanCkassification"));
-                centerVal[i][36] = StringUtil.objectToString(statisticInfo.get("industrialTransformation"));
-                centerVal[i][37] = StringUtil.objectToString(statisticInfo.get("curturalProduct"));
-                centerVal[i][38] = StringUtil.objectToString(statisticInfo.get("alleviationLoan"));
-                centerVal[i][39] = StringUtil.objectToString(statisticInfo.get("tradeFinanceBusiness"));
-                centerVal[i][40] = StringUtil.objectToString(statisticInfo.get("policyAttributreClassify"));
-                centerVal[i][41] = StringUtil.objectToString(statisticInfo.get("industryInvestment"));
-                centerVal[i][42] = StringUtil.objectToString(statisticInfo.get("compare"));
-                centerVal[i][43] = StringUtil.objectToString(statisticInfo.get("isSyndicated"));
-                centerVal[i][44] = StringUtil.objectToString(statisticInfo.get("isSyndicatedAgency"));
-                centerVal[i][45] = StringUtil.objectToString(statisticInfo.get("syndicatedStatus"));
-                centerVal[i][46] = StringUtil.objectToString(statisticInfo.get("is421"));
-                centerVal[i][47] = StringUtil.objectToString(statisticInfo.get("paymentMode"));
+                centerVal[i][0] = StringUtil.objectToString(statisticInfo.get("ROW_ID"));
+                centerVal[i][1] = StringUtil.objectToString(statisticInfo.get("debtCode"));
+                centerVal[i][2] = StringUtil.objectToString(statisticInfo.get("grantCode"));
+                centerVal[i][3] = StringUtil.objectToString(statisticInfo.get("iouCode"));
+                centerVal[i][4] = StringUtil.objectToString(statisticInfo.get("deptName"));
+                centerVal[i][5] = StringUtil.objectToString(statisticInfo.get("bankTellId"));
+                centerVal[i][6] = StringUtil.objectToString(statisticInfo.get("projectName"));
+                centerVal[i][7] = StringUtil.objectToString(statisticInfo.get("productName"));
+                centerVal[i][8] = StringUtil.objectToString(statisticInfo.get("mCurrency"));
+                centerVal[i][9] = StringUtil.objectToString(statisticInfo.get("solutionAmt"));
+                centerVal[i][10] = StringUtil.objectToString(statisticInfo.get("'是否联合承租'"));
+                centerVal[i][11] = StringUtil.objectToString(statisticInfo.get("bizRentalFactoringCode"));
+                centerVal[i][12] = StringUtil.objectToString(statisticInfo.get("'issuedate'"));
+                centerVal[i][13] = StringUtil.objectToString(statisticInfo.get("propno"));
+                centerVal[i][14] = StringUtil.objectToString(statisticInfo.get("propcn"));
+                centerVal[i][15] = StringUtil.objectToString(statisticInfo.get("propscale"));
+                centerVal[i][16] = StringUtil.objectToString(statisticInfo.get("proporgnum"));
+                centerVal[i][17] = StringUtil.objectToString(statisticInfo.get("proprat"));
+                centerVal[i][18] = StringUtil.objectToString(statisticInfo.get("coneno"));
+                centerVal[i][19] = StringUtil.objectToString(statisticInfo.get("conecn"));
+                centerVal[i][20] = StringUtil.objectToString(statisticInfo.get("financePlatform"));
+                centerVal[i][21] = StringUtil.objectToString(statisticInfo.get("conescale"));
+                centerVal[i][22] = StringUtil.objectToString(statisticInfo.get("coneorgnum"));
+                centerVal[i][23] = StringUtil.objectToString(statisticInfo.get("conerat"));
+                centerVal[i][24] = StringUtil.objectToString(statisticInfo.get("'担保方式'"));
+                centerVal[i][25] = StringUtil.objectToString(statisticInfo.get("recourse"));
+                centerVal[i][26] = StringUtil.objectToString(statisticInfo.get("leasehold"));
+                centerVal[i][27] = StringUtil.objectToString(statisticInfo.get("tradeRnterestRate"));
+                centerVal[i][28] = StringUtil.objectToString(statisticInfo.get("policyAttributreClassify"));
+                centerVal[i][29] = StringUtil.objectToString(statisticInfo.get("'是否与他行银团放款'"));
+                centerVal[i][30] = StringUtil.objectToString(statisticInfo.get("syndicatedStatus"));
+                centerVal[i][31] = StringUtil.objectToString(statisticInfo.get("valueday"));
+                centerVal[i][32] = StringUtil.objectToString(statisticInfo.get("matudate"));
+                centerVal[i][33] = StringUtil.objectToString(statisticInfo.get("loanterm"));
+                centerVal[i][34] = StringUtil.objectToString(statisticInfo.get("nlonsur"));
+                centerVal[i][35] = StringUtil.objectToString(statisticInfo.get("amount"));
+                centerVal[i][36] = StringUtil.objectToString(statisticInfo.get("closingBal"));
+                centerVal[i][37] = StringUtil.objectToString(statisticInfo.get("closingBalCNY"));
+                centerVal[i][38] = StringUtil.objectToString(statisticInfo.get("closingBalUSD"));
+                centerVal[i][39] = StringUtil.objectToString(statisticInfo.get("totffamt"));
+                centerVal[i][40] = StringUtil.objectToString(statisticInfo.get("totffamtCNY"));
+                centerVal[i][41] = StringUtil.objectToString(statisticInfo.get("tothkamt"));
+                centerVal[i][42] = StringUtil.objectToString(statisticInfo.get("tothkamtCNY"));
+                centerVal[i][43] = StringUtil.objectToString(statisticInfo.get("ovramt"));
+                centerVal[i][44] = StringUtil.objectToString(statisticInfo.get("ovramtCNY"));
+                centerVal[i][45] = StringUtil.objectToString(statisticInfo.get("'本金逾期天数'"));
+                centerVal[i][46] = StringUtil.objectToString(statisticInfo.get("rateincm1"));
+                centerVal[i][47] = StringUtil.objectToString(statisticInfo.get("intrate"));
+                centerVal[i][48] = StringUtil.objectToString(statisticInfo.get("int1"));
+                centerVal[i][49] = StringUtil.objectToString(statisticInfo.get("fee"));
             }
         }
         return centerVal;

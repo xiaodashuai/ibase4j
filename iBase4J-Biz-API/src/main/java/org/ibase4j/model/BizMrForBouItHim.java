@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -364,5 +365,41 @@ public class BizMrForBouItHim extends BaseModel implements Serializable {
 				.add("receviName", receviName)
 				.add("receviAcct", receviAcct)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizMrForBouItHim)) return false;
+		BizMrForBouItHim that = (BizMrForBouItHim) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessTypes(), that.getBusinessTypes()) &&
+				Objects.equal(getApplyType(), that.getApplyType()) &&
+				Objects.equal(getApplyName(), that.getApplyName()) &&
+				Objects.equal(getApplyCountry(), that.getApplyCountry()) &&
+				Objects.equal(getSelierTrans(), that.getSelierTrans()) &&
+				Objects.equal(getBeneficiaryType(), that.getBeneficiaryType()) &&
+				Objects.equal(getBeneficiaryName(), that.getBeneficiaryName()) &&
+				Objects.equal(getBeneficiaryCountry(), that.getBeneficiaryCountry()) &&
+				Objects.equal(getValueDate(), that.getValueDate()) &&
+				Objects.equal(getDueDate(), that.getDueDate()) &&
+				Objects.equal(getPeriodOfGrace(), that.getPeriodOfGrace()) &&
+				Objects.equal(getSettlementType(), that.getSettlementType()) &&
+				Objects.equal(getBayerCountry(), that.getBayerCountry()) &&
+				Objects.equal(getBayerName(), that.getBayerName()) &&
+				Objects.equal(getSellerCountry(), that.getSellerCountry()) &&
+				Objects.equal(getSellerName(), that.getSellerName()) &&
+				Objects.equal(getBnsContractNo(), that.getBnsContractNo()) &&
+				Objects.equal(getReveDescri(), that.getReveDescri()) &&
+				Objects.equal(getTranDescri(), that.getTranDescri()) &&
+				Objects.equal(getRateDescri(), that.getRateDescri()) &&
+				Objects.equal(getReceviBak(), that.getReceviBak()) &&
+				Objects.equal(getReceviName(), that.getReceviName()) &&
+				Objects.equal(getReceviAcct(), that.getReceviAcct());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessTypes(), getApplyType(), getApplyName(), getApplyCountry(), getSelierTrans(), getBeneficiaryType(), getBeneficiaryName(), getBeneficiaryCountry(), getValueDate(), getDueDate(), getPeriodOfGrace(), getSettlementType(), getBayerCountry(), getBayerName(), getSellerCountry(), getSellerName(), getBnsContractNo(), getReveDescri(), getTranDescri(), getRateDescri(), getReceviBak(), getReceviName(), getReceviAcct());
 	}
 }

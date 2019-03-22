@@ -103,6 +103,10 @@ public class BizContant {
 	public static final String MAKE_LOANS_MAIN = "BIZ_MAKE_LOANS";
 	// 放款操作交易名称
 	public static final String MAKE_LOANS_NAME = "放款操作";
+	// 发送还款计划交易代码
+	public static final String LOANS_PLAN_APPRL = "LOANP";
+	// 发送还款计划交易名称
+	public static final String LOANS_PLAN_NAME = "发送还款计划";
 
 	// 方案操作主表
 	public static final String BIZ_DEBT_MAIN = "BIZ_DEBT_MAIN";
@@ -116,12 +120,28 @@ public class BizContant {
 	public static final String MAKE_LOANS_OUT_CBTTXT = "LOANOUT";
 	public static final String DEBT_GRANT_IN_CBTTXT = "GRANIN";
 	public static final String DEBT_GRANT_OUT_CBTTXT = "GRANOUT";
-	public static final String DEBT_SUMMARY_IN_CBTTXT = "SOLUIN";
-	public static final String DEBT_SUMMARY_OUT_CBTTXT = "AKZOUT";
+	public static final String DEBT_SOLU_IN_CBTTXT = "SOLUIN";
+	public static final String DEBT_SOLU_OUT_CBTTXT = "AKZOUT";
+	public static final String DEBT_DEBT_IN_CBTTXT = "DEBTIN";
+	public static final String DEBT_DEBT_OUT_CBTTXT = "DEBTOUT";
+<<<<<<< HEAD
+=======
+	public static final String LIMIT_IN_CBTTXT = "LIMITIN";
+	public static final String LIMIT_OUT_CBTTXT = "LIMITOUT";
+	public static final String LIMIT_REPOUT_CBTTXT = "REPLIMITOUT";
+	public static final String LOAN_IN_OVERDUE = "OVERIN";
+
+
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 	// CBCTXT 金额类型
 	public static final String MAKE_LOANS_CBCTXT = "LOANSUM";
 	public static final String DEBT_GRANT_CBCTXT = "GRANSUM";
-	public static final String DEBT_SUMMARY_CBCTXT = "SOLUSUM";
+	//方案总金额
+	public static final String DEBT_SUMMARY_SOLU_CBCTXT = "SOLUSUM";
+	//可发放金额
+	public static final String DEBT_SUMMARY_DEBT_CBCTXT = "DEBTSUM";
+	public static final String DEBT_SUMMARY_CBCTXT = "DEBTSUM";
+
 	public static final String OVEDUSUM_CBCTXT = "OVEDUSUM";
 	public static final String INATESUM_CBCTXT = "INATESUM";
 	public static final String OUATESUM_CBCTXT = "OUATESUM";

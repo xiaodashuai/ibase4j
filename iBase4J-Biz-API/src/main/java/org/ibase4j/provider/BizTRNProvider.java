@@ -45,6 +45,12 @@ public interface BizTRNProvider extends BaseProvider<BizTRN> {
      */
     Page<BizTRN> checkDebtSchem(String u,String bizTRN);
 
+    /**
+     * 更新流水
+     * @param bizTRN
+     */
+    void updateTRNStatus(BizTRN bizTRN);
+
 
 
 }

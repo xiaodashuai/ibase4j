@@ -4,6 +4,8 @@
 package org.ibase4j.vo;
 
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.util.Set;
 
@@ -150,46 +152,44 @@ public class PairVo implements java.io.Serializable {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof PairVo)) return false;
+		PairVo pairVo = (PairVo) o;
+		return isChildren() == pairVo.isChildren() &&
+				isChecked() == pairVo.isChecked() &&
+				Objects.equal(getCode(), pairVo.getCode()) &&
+				Objects.equal(getName(), pairVo.getName()) &&
+				Objects.equal(getParentCode(), pairVo.getParentCode()) &&
+				Objects.equal(getChirenList(), pairVo.getChirenList()) &&
+				Objects.equal(getType(), pairVo.getType()) &&
+				Objects.equal(getDebtCode(), pairVo.getDebtCode()) &&
+				Objects.equal(getCreditLinesId(), pairVo.getCreditLinesId()) &&
+				Objects.equal(getCreditRatio(), pairVo.getCreditRatio()) &&
+				Objects.equal(getIndustryTo(), pairVo.getIndustryTo()) &&
+				Objects.equal(getTbon(), pairVo.getTbon());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj){
-			return true;
-		}
-		if (obj == null){
-			return false;
-		}
-		if (getClass() != obj.getClass()){
-			return false;
-		}
-		PairVo other = (PairVo) obj;
-		if (code == null) {
-			if (other.code != null){
-				return false;
-			}
-		} else if (!code.equals(other.code)){
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null){
-				return false;
-			}
-		} else if (!name.equals(other.name)){
-			return false;
-		}
-		return true;
+	public int hashCode() {
+		return Objects.hashCode(getCode(), getName(), getParentCode(), isChildren(), isChecked(), getChirenList(), getType(), getDebtCode(), getCreditLinesId(), getCreditRatio(), getIndustryTo(), getTbon());
 	}
 
 	@Override
 	public String toString() {
-		return "PairVo [code=" + code + ", name=" + name + "]";
+		return MoreObjects.toStringHelper(this)
+				.add("code", code)
+				.add("name", name)
+				.add("parentCode", parentCode)
+				.add("children", children)
+				.add("checked", checked)
+				.add("chirenList", chirenList)
+				.add("type", type)
+				.add("debtCode", debtCode)
+				.add("creditLinesId", creditLinesId)
+				.add("creditRatio", creditRatio)
+				.add("industryTo", industryTo)
+				.add("tbon", tbon)
+				.toString();
 	}
-
 }

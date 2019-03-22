@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -211,5 +212,30 @@ public class BizCreditLines extends BaseModel implements Serializable {
 				.add("startDate", startDate)
 				.add("maturityDate", maturityDate)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizCreditLines)) return false;
+		BizCreditLines that = (BizCreditLines) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getCustomerId(), that.getCustomerId()) &&
+				Objects.equal(getObjtyp(), that.getObjtyp()) &&
+				Objects.equal(getObjinr(), that.getObjinr()) &&
+				Objects.equal(getCustNo(), that.getCustNo()) &&
+				Objects.equal(getAmountType(), that.getAmountType()) &&
+				Objects.equal(getCreditNo(), that.getCreditNo()) &&
+				Objects.equal(getCreditLineName(), that.getCreditLineName()) &&
+				Objects.equal(getTotalAmount(), that.getTotalAmount()) &&
+				Objects.equal(getUsedAmount(), that.getUsedAmount()) &&
+				Objects.equal(getAvailableBalance(), that.getAvailableBalance()) &&
+				Objects.equal(getStartDate(), that.getStartDate()) &&
+				Objects.equal(getMaturityDate(), that.getMaturityDate());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getCustomerId(), getObjtyp(), getObjinr(), getCustNo(), getAmountType(), getCreditNo(), getCreditLineName(), getTotalAmount(), getUsedAmount(), getAvailableBalance(), getStartDate(), getMaturityDate());
 	}
 }

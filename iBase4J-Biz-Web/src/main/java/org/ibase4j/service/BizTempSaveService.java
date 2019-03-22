@@ -155,6 +155,12 @@ public class BizTempSaveService extends BaseService<BizTemporarySaveProvider, Bi
 		String debtCode = grantCode.substring(0,16);//截取前16位是方案编号
 		Map<String, Object> queryMap = new HashMap<String, Object>();
 		queryMap.put("debtCode",debtCode);
+		if(debtCode.length()==16){
+			queryMap.put("debtCode",debtCode.substring(0,13));
+			queryMap.put("verNum",debtCode.substring(13));
+		}else{
+			logger.error("暂存发放申请失败，debtCode="+debtCode);
+		}
 		List<BizDebtSummary> debtSummaryList = bizDebtSummaryProvider.queryList(queryMap);
 		//设置方案的申请人就是发放的申请人
 		if(CollectionUtils.isNotEmpty(debtSummaryList)){

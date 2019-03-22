@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -145,6 +146,27 @@ public class BizLocking extends BaseModel implements Serializable {
     }
 
     public BizLocking() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizLocking)) return false;
+        BizLocking that = (BizLocking) o;
+        return Objects.equal(getCode(), that.getCode()) &&
+                Objects.equal(getDebtCode(), that.getDebtCode()) &&
+                Objects.equal(getPgExpiDate(), that.getPgExpiDate()) &&
+                Objects.equal(getStatus(), that.getStatus()) &&
+                Objects.equal(getRoleId(), that.getRoleId()) &&
+                Objects.equal(getRoleName(), that.getRoleName()) &&
+                Objects.equal(getUserId(), that.getUserId()) &&
+                Objects.equal(getUserName(), that.getUserName()) &&
+                Objects.equal(getLockingDate(), that.getLockingDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getCode(), getDebtCode(), getPgExpiDate(), getStatus(), getRoleId(), getRoleName(), getUserId(), getUserName(), getLockingDate());
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -73,5 +74,21 @@ public class BizPrincipalCreditProgram extends BaseModel implements Serializable
 				.add("ratingStartDate", ratingStartDate)
 				.add("interbankCreditAmount", interbankCreditAmount)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizPrincipalCreditProgram)) return false;
+		BizPrincipalCreditProgram that = (BizPrincipalCreditProgram) o;
+		return Objects.equal(getCustNo(), that.getCustNo()) &&
+				Objects.equal(getCreditTatings(), that.getCreditTatings()) &&
+				Objects.equal(getRatingStartDate(), that.getRatingStartDate()) &&
+				Objects.equal(getInterbankCreditAmount(), that.getInterbankCreditAmount());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getCustNo(), getCreditTatings(), getRatingStartDate(), getInterbankCreditAmount());
 	}
 }

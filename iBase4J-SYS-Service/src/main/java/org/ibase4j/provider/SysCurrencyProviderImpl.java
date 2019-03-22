@@ -31,5 +31,38 @@ public class SysCurrencyProviderImpl extends BaseProviderImpl<SysCurrency> imple
 		}
 		return null;
 	}
+<<<<<<< HEAD
 	
+=======
+
+    @Override
+    public String getCodeByNO(String monNO) {
+
+	    if("".equals(monNO) || null == monNO){
+            return null;
+        }
+
+        String redisKey = Constants.CACHE_SYS_CURRENCY_NAMESPACE + monNO;
+
+        if(redisHelper.exists(redisKey)){
+            return (String) redisHelper.get(redisKey);
+        }else {
+            SysCurrency selCur = new SysCurrency();
+            selCur.setMonCode(monNO);
+            List<SysCurrency> curList = mapper.selectList(new EntityWrapper<SysCurrency>(selCur));
+            if(curList.size()==0){
+                redisHelper.set(redisKey,"N/A",86400);
+                return "N/A";
+            }else if(curList.size()==1){
+                SysCurrency resCur = curList.get(0);
+                redisHelper.set(redisKey,resCur.getMonCode(),86400);
+                return resCur.getMonCode();
+            }else{
+                logger.error("sysCurrency ERROR===币种码表中不应该存在多条记录。币种号：("+monNO+") 表名==（SYS_CURRENCY）");
+                throw new RuntimeException("sysCurrency ERROR:more than one record:table=SYS_CURRENCY:monNO="+monNO);
+            }
+        }
+    }
+
+>>>>>>> 058ce521fe683b2266ba3db1a9cfae778303501a
 }

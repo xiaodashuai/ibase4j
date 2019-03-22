@@ -6,6 +6,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -96,7 +97,29 @@ public class BizCBB extends BaseModel implements Serializable {
 	@TableField("XCOAMT")
 	private BigDecimal xcoamt;
 
-	public String getObjType() {
+    public BizCBB() {
+    }
+
+    public BizCBB(String objType, Long objInr, String cbc, Date enddat) {
+        this.objType = objType;
+        this.objInr = objInr;
+        this.cbc = cbc;
+        this.enddat = enddat;
+    }
+
+    public BizCBB(String objType, Long objInr, String cbc, String cur, BigDecimal amt, String xrfcur, BigDecimal xrfamt, Date begdat, Date enddat) {
+        this.objType = objType;
+        this.objInr = objInr;
+        this.cbc = cbc;
+        this.cur = cur;
+        this.amt = amt;
+        this.xrfcur = xrfcur;
+        this.xrfamt = xrfamt;
+        this.begdat = begdat;
+        this.enddat = enddat;
+    }
+
+    public String getObjType() {
 		return objType;
 	}
 
@@ -216,8 +239,7 @@ public class BizCBB extends BaseModel implements Serializable {
 		this.xcoamt = xcoamt;
 	}
 
-    public BizCBB() {
-    }
+
 
     @Override
 	public String toString() {
@@ -238,5 +260,32 @@ public class BizCBB extends BaseModel implements Serializable {
 				.add("xcocur", xcocur)
 				.add("xcoamt", xcoamt)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizCBB)) return false;
+		BizCBB bizCBB = (BizCBB) o;
+		return Objects.equal(getObjType(), bizCBB.getObjType()) &&
+				Objects.equal(getObjInr(), bizCBB.getObjInr()) &&
+				Objects.equal(getCbeInr(), bizCBB.getCbeInr()) &&
+				Objects.equal(getCbc(), bizCBB.getCbc()) &&
+				Objects.equal(getExtid(), bizCBB.getExtid()) &&
+				Objects.equal(getBegdat(), bizCBB.getBegdat()) &&
+				Objects.equal(getEnddat(), bizCBB.getEnddat()) &&
+				Objects.equal(getCur(), bizCBB.getCur()) &&
+				Objects.equal(getAmt(), bizCBB.getAmt()) &&
+				Objects.equal(getXrfcur(), bizCBB.getXrfcur()) &&
+				Objects.equal(getXrfamt(), bizCBB.getXrfamt()) &&
+				Objects.equal(getComcur(), bizCBB.getComcur()) &&
+				Objects.equal(getComamt(), bizCBB.getComamt()) &&
+				Objects.equal(getXcocur(), bizCBB.getXcocur()) &&
+				Objects.equal(getXcoamt(), bizCBB.getXcoamt());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getObjType(), getObjInr(), getCbeInr(), getCbc(), getExtid(), getBegdat(), getEnddat(), getCur(), getAmt(), getXrfcur(), getXrfamt(), getComcur(), getComamt(), getXcocur(), getXcoamt());
 	}
 }

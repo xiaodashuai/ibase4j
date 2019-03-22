@@ -1,13 +1,15 @@
 package org.ibase4j.web;
 
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.baomidou.mybatisplus.toolkit.IdWorker;
 import io.swagger.annotations.ApiOperation;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.ibase4j.core.base.BaseController;
-import org.ibase4j.core.util.PropertiesUtil;
-import org.ibase4j.core.util.StringUtil;
+import org.ibase4j.core.util.*;
 import org.ibase4j.model.BizFile;
+import org.ibase4j.provider.BizCntProvider;
 import org.ibase4j.service.BizFileService;
 import org.ibase4j.vo.FileNameVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,8 @@ public class FileUpLoadController extends BaseController {
     String filePath = PropertiesUtil.getString("uploader.dir");
     @Autowired
     private BizFileService bizFileService;
+    @Reference
+    private BizCntProvider bizCntProvider;
 
     @ApiOperation(value = "文件上传")
     @RequiresPermissions("biz.workflow.read")
@@ -50,9 +54,9 @@ public class FileUpLoadController extends BaseController {
             for (MultipartFile file : files) {
                 logger.debug("=====saveUploadFile=====开始解析文件列表=file="+file.getOriginalFilename());
                 BizFile bizFile = new BizFile();
-                String newFileName = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-//                String realName = URLEncoder.encode(file.getOriginalFilename(),"utf-8");
+                String newFileName = IdWorker.getIdStr();
                 String realName=file.getOriginalFilename();
+                bizFile.setId(Long.parseLong(newFileName));
                 bizFile.setRealName(realName);
                 bizFile.setFileName(newFileName);
                 bizFile.setBizCode(bizCode);
@@ -61,6 +65,8 @@ public class FileUpLoadController extends BaseController {
                 bizFile.setFileType(file.getContentType());
                 bizFile.setFieldName(fieldName);
                 bizFile.setSize_(file.getSize());
+                bizFile.setCreateBy(BizWebUtil.getCurrentUser());
+                bizFile.setUpdateBy(BizWebUtil.getCurrentUser());
                 String ext = realName.substring(realName.lastIndexOf(".") + 1);
                 bizFile.setExt(ext);
                 if(file.getContentType().contains("image")){
@@ -78,7 +84,7 @@ public class FileUpLoadController extends BaseController {
                 logger.debug("======saveUploadFile=====保存文件==bizFile="+bizFile);
                 if(bizFileService.saveFile(bizFile)){
                     logger.debug("======saveUploadFile====生成新文件==bizFile="+newFileName);
-                    String path =filePath +"/";
+                    String path =filePath +"/"+bizCode+"/"+BizWebUtil.getCurrentUser()+"/"+DateUtil.getDateYYYYMMDD()+"/";
                     File f = new File(path);
                     if (!f.exists())
                     {f.mkdirs();}
@@ -99,11 +105,19 @@ public class FileUpLoadController extends BaseController {
                 }
             }
         } catch (Exception e) {
-            if (fos != null) {
-                fos.close();
-            }
-            if (in != null) {
-                in.close();
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (fos != null) {
+                    fos.close();
+                }
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
             }
         }
         return setSuccessModelMap(modelMap);
@@ -120,16 +134,13 @@ public class FileUpLoadController extends BaseController {
         String bizType =  StringUtil.objectToString(params.get("bizType"));
         String product =  StringUtil.objectToString(params.get("product"));
         String fieldName =  StringUtil.objectToString(params.get("fieldName"));
-//        String realName =  URLEncoder.encode(StringUtil.objectToString(params.get("realName")),"utf-8");
         String realName = StringUtil.objectToString(params.get("realName"));
-
         String fileType =  StringUtil.objectToString(params.get("fileType"));
         boolean res = false;
-
         List<BizFile> bizFileList = bizFileService.getFileList(params,false);
         BizFile bizFile = bizFileList == null?null:bizFileList.get(0);
         if(null!=bizFile){
-            File sourcefile = new File(filePath+"/"+bizFile.getFileName());
+            File sourcefile = new File(filePath+"/"+bizCode+"/"+bizFile.getCreateBy()+"/"+DateUtil.formatYYYYMMDD(bizFile.getCreateTime())+"/"+bizFile.getFileName());
             if (sourcefile.exists() && sourcefile.isFile()) {
                 res = sourcefile.delete();
                 if(res){
@@ -147,8 +158,11 @@ public class FileUpLoadController extends BaseController {
     @PostMapping(value = "/getFileMenu")
     @ResponseBody
     public Object getFileMenu(ModelMap modelMap) {
-        //File file = new File("E:/maojin/eximbank-ui/eximbank-club/eximbank-club-ui/lib/generic/web/abc");
-        File file = new File(filePath);
+        String bizCode =  StringUtil.objectToString(modelMap.get("bizCode"));
+        if(null == bizCode || "".equals(bizCode)){
+            throw new RuntimeException("查询的业务号码为空!");
+        }
+        File file = new File(filePath+"/"+bizCode+"/"+BizWebUtil.getCurrentUser()+"/"+DateUtil.getDateYYYYMMDD());
         File[] fileList = file.listFiles();
         List<FileNameVo> fileNamesVo = new ArrayList<>();
         FileNameVo fileNameVo=null;
@@ -182,21 +196,19 @@ public class FileUpLoadController extends BaseController {
             BizFile bizFile = bizFileList == null?null:bizFileList.get(0);
             if(null!=bizFile){
                 if(fileType.contains("image")){
-                    res = "data:image/"+fileType.split("/")[1]+";base64,"+imageToBase64(filePath+"/"+bizFile.getFileName());
+                    res = "data:image/"+fileType.split("/")[1]+";base64,"+imageToBase64(filePath+"/"+bizCode+"/"+bizFile.getCreateBy()+"/"+DateUtil.formatYYYYMMDD(bizFile.getCreateTime())+"/"+bizFile.getFileName());
                 }else{
                     //生成临时文件提供预览（解决文件名问题）
-                    File sourcefile = new File(filePath+"/"+bizFile.getFileName());
+                    File sourcefile = new File(filePath+"/"+bizCode+"/"+bizFile.getCreateBy()+"/"+DateUtil.formatYYYYMMDD(bizFile.getCreateTime())+"/"+bizFile.getFileName());
                     String targetDirPath = filePath+"/temp/"+bizType+"/"+bizCode+"/"+fieldName;
                     File targetDir = new File(targetDirPath);
                     if (!targetDir.exists())
                     {targetDir.mkdirs();}
                     File targetFile = new File(targetDirPath+"/"+realName);
-                    try {
-                        copyFile(sourcefile,targetFile);
-                        res = "temp/"+bizType+"/"+bizCode+"/"+fieldName+"/"+realName;
-                    } catch (IOException e) {
+                    if(!DataUtil.copyFile(sourcefile,targetFile)){
                         throw new RuntimeException("复制文件失败，无法预览!");
                     }
+                    res = "temp/"+bizType+"/"+bizCode+"/"+fieldName+"/"+realName;
                 }
             }else{
                 throw new RuntimeException("获取预览失败：未查询到已上传的附件!");
@@ -220,36 +232,17 @@ public class FileUpLoadController extends BaseController {
             in.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+            }
         }
         return new String(Base64.encodeBase64(data));
-    }
-
-    public void copyFile(File sourcefile,File targetFile) throws IOException{
-
-        //新建文件输入流并对它进行缓冲
-        FileInputStream input=new FileInputStream(sourcefile);
-        BufferedInputStream inbuff=new BufferedInputStream(input);
-
-        //新建文件输出流并对它进行缓冲
-        FileOutputStream out=new FileOutputStream(targetFile);
-        BufferedOutputStream outbuff=new BufferedOutputStream(out);
-
-        //缓冲数组
-        byte[] b=new byte[1024*5];
-        int len=0;
-        while((len=inbuff.read(b))!=-1){
-            outbuff.write(b, 0, len);
-        }
-
-        //刷新此缓冲的输出流
-        outbuff.flush();
-
-        //关闭流
-        inbuff.close();
-        outbuff.close();
-        out.close();
-        input.close();
-
     }
 
     @ApiOperation(value = "附件回显")

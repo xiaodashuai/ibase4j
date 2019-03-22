@@ -37,6 +37,11 @@ public class BizGuaranteeResultProviderImpl extends BaseProviderImpl<BizGuarante
     }
 
     @Override
+    public List getGuaranteeRelationInfoList(Map<String, Object> params) {
+        return bizGuaranteeResultMapper.getGuaranteeRelationInfoList(params);
+    }
+
+    @Override
 	public int deleteByGrantCode(String grantCode) {
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put("grantCode", grantCode);

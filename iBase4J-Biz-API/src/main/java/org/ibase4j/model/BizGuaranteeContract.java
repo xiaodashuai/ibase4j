@@ -6,6 +6,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 import org.ibase4j.core.util.DateUtil;
 
@@ -328,5 +329,37 @@ public class BizGuaranteeContract extends BaseModel implements Serializable {
 				.add("agencies", agencies)
 				.add("bizBetInformationList", bizBetInformationList)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizGuaranteeContract)) return false;
+		BizGuaranteeContract that = (BizGuaranteeContract) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getGrantCode(), that.getGrantCode()) &&
+				Objects.equal(getName(), that.getName()) &&
+				Objects.equal(getGuarNo(), that.getGuarNo()) &&
+				Objects.equal(getGuarManualNo(), that.getGuarManualNo()) &&
+				Objects.equal(getGuarCustNo(), that.getGuarCustNo()) &&
+				Objects.equal(getGuarCustName(), that.getGuarCustName()) &&
+				Objects.equal(getGuarAmount(), that.getGuarAmount()) &&
+				Objects.equal(getCurrency(), that.getCurrency()) &&
+				Objects.equal(getStartDate(), that.getStartDate()) &&
+				Objects.equal(getDueDate(), that.getDueDate()) &&
+				Objects.equal(getTerm(), that.getTerm()) &&
+				Objects.equal(getTermUnit(), that.getTermUnit()) &&
+				Objects.equal(getWarrandice(), that.getWarrandice()) &&
+				Objects.equal(getGuarContType(), that.getGuarContType()) &&
+				Objects.equal(getGuarContState(), that.getGuarContState()) &&
+				Objects.equal(getGuarMaxAmt(), that.getGuarMaxAmt()) &&
+				Objects.equal(getAgent(), that.getAgent()) &&
+				Objects.equal(getAgencies(), that.getAgencies()) &&
+				Objects.equal(getBizBetInformationList(), that.getBizBetInformationList());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getGrantCode(), getName(), getGuarNo(), getGuarManualNo(), getGuarCustNo(), getGuarCustName(), getGuarAmount(), getCurrency(), getStartDate(), getDueDate(), getTerm(), getTermUnit(), getWarrandice(), getGuarContType(), getGuarContState(), getGuarMaxAmt(), getAgent(), getAgencies(), getBizBetInformationList());
 	}
 }

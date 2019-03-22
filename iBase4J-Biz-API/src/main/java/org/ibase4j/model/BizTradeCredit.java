@@ -3,6 +3,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -278,5 +279,35 @@ public class BizTradeCredit extends BaseModel implements Serializable {
 				.add("capitalSourceOth", capitalSourceOth)
 				.add("capitalSource", capitalSource)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizTradeCredit)) return false;
+		BizTradeCredit that = (BizTradeCredit) o;
+		return Objects.equal(getDebtCode(), that.getDebtCode()) &&
+				Objects.equal(getBusinessTypes(), that.getBusinessTypes()) &&
+				Objects.equal(getCusromerNo(), that.getCusromerNo()) &&
+				Objects.equal(getOccupationType(), that.getOccupationType()) &&
+				Objects.equal(getTakeUpWay(), that.getTakeUpWay()) &&
+				Objects.equal(getValueDate(), that.getValueDate()) &&
+				Objects.equal(getDueDate(), that.getDueDate()) &&
+				Objects.equal(getDiscountRate(), that.getDiscountRate()) &&
+				Objects.equal(getApplyQuotaCurrency(), that.getApplyQuotaCurrency()) &&
+				Objects.equal(getCreditApplication(), that.getCreditApplication()) &&
+				Objects.equal(getTotalAmountCurrency(), that.getTotalAmountCurrency()) &&
+				Objects.equal(getTotalAmount(), that.getTotalAmount()) &&
+				Objects.equal(getTollCollectionManner(), that.getTollCollectionManner()) &&
+				Objects.equal(getTotalPrice(), that.getTotalPrice()) &&
+				Objects.equal(getResponsiblePerson(), that.getResponsiblePerson()) &&
+				Objects.equal(getReviewOfficer(), that.getReviewOfficer()) &&
+				Objects.equal(getCapitalSourceOth(), that.getCapitalSourceOth()) &&
+				Objects.equal(getCapitalSource(), that.getCapitalSource());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(getDebtCode(), getBusinessTypes(), getCusromerNo(), getOccupationType(), getTakeUpWay(), getValueDate(), getDueDate(), getDiscountRate(), getApplyQuotaCurrency(), getCreditApplication(), getTotalAmountCurrency(), getTotalAmount(), getTollCollectionManner(), getTotalPrice(), getResponsiblePerson(), getReviewOfficer(), getCapitalSourceOth(), getCapitalSource());
 	}
 }

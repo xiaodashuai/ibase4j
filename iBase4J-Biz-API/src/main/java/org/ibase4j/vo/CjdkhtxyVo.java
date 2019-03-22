@@ -1,6 +1,7 @@
 package org.ibase4j.vo;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import java.io.Serializable;
 
@@ -43,5 +44,20 @@ public class CjdkhtxyVo implements Serializable {
                 .add("transok", transok)
                 .add("errNo", errNo)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CjdkhtxyVo)) return false;
+        CjdkhtxyVo that = (CjdkhtxyVo) o;
+        return Objects.equal(getMediumid(), that.getMediumid()) &&
+                Objects.equal(getTransok(), that.getTransok()) &&
+                Objects.equal(getErrNo(), that.getErrNo());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getMediumid(), getTransok(), getErrNo());
     }
 }

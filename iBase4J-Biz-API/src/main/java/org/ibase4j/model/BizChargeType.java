@@ -6,6 +6,7 @@ package org.ibase4j.model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.ibase4j.core.base.BaseModel;
 
 import java.io.Serializable;
@@ -61,49 +62,18 @@ public class BizChargeType extends BaseModel implements Serializable {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((chargeCode == null) ? 0 : chargeCode.hashCode());
-		result = prime * result + ((chargeName == null) ? 0 : chargeName.hashCode());
-		result = prime * result + ((productTypesCode == null) ? 0 : productTypesCode.hashCode());
-		return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof BizChargeType)) return false;
+		BizChargeType that = (BizChargeType) o;
+		return Objects.equal(getProductTypesCode(), that.getProductTypesCode()) &&
+				Objects.equal(getChargeCode(), that.getChargeCode()) &&
+				Objects.equal(getChargeName(), that.getChargeName());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj){
-			return true;
-		}
-		if (obj == null){
-			return false;
-		}
-		if (getClass() != obj.getClass()){
-			return false;
-		}
-		BizChargeType other = (BizChargeType) obj;
-		if (chargeCode == null) {
-			if (other.chargeCode != null){
-				return false;
-			}
-		} else if (!chargeCode.equals(other.chargeCode)){
-			return false;
-		}
-		if (chargeName == null) {
-			if (other.chargeName != null){
-				return false;
-			}
-		} else if (!chargeName.equals(other.chargeName)){
-			return false;
-		}
-		if (productTypesCode == null) {
-			if (other.productTypesCode != null){
-				return false;
-			}
-		} else if (!productTypesCode.equals(other.productTypesCode)){
-			return false;
-		}
-		return true;
+	public int hashCode() {
+		return Objects.hashCode(getProductTypesCode(), getChargeCode(), getChargeName());
 	}
 
 	public BizChargeType() {
