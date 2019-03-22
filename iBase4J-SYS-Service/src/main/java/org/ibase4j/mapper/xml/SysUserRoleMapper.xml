@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.SysUserRoleMapper">
+
+	<select id="queryRoleIdsByUserId" resultType="java.lang.Long">
+		select distinct
+		role_id from sys_user_role where user_id=#{userId}
+	</select>
+	
+	<select id="queryRoleCodesByUserId" resultType="java.lang.String">
+		select distinct b.CODE_ from sys_user_role a INNER JOIN SYS_ROLE b 
+		on a.ROLE_ID = b.ID_ where user_id=#{userId}
+	</select>
+
+	<delete id="deleteByUser" parameterType="java.lang.Long">
+		delete from
+		sys_user_role where user_id=#{userId}
+	</delete>
+	<select id="queryRoleIds" resultMap="SysUserRole">
+		select distinct role_id,user_id from sys_user_role
+		<where>
+			<if test="cm.userId != null and cm.userId != ''">
+				user_id=#{cm.userId}
+			</if>
+		</where>
+	</select>
+
+	<resultMap id="SysUserRole" type="org.ibase4j.model.SysUserRole"
+		autoMapping="true">
+		<id column="role_id" property="roleId" javaType="Long" jdbcType="BIGINT" />
+		<id column="user_id" property="userId" javaType="Long" jdbcType="BIGINT" />
+	</resultMap>
+</mapper>

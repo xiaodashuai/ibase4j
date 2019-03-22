@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizRepaymentLoanPlanMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_REPAYMENT_LOAN_PLAN
+		<where>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and GRANT_CODE = #{cm.grantCode}
+			</if>
+			<if test="cm.interestDate != null and cm.interestDate != ''">
+				and INTEREST_DATE = #{cm.interestDate}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (remark_ like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+
+	<resultMap id="RepaymentLoanDebtsMap" type="java.util.HashMap" >
+		<result column="DEBT_CODE" property="debtCode" jdbcType="VARCHAR"/>
+		<result column="GRANT_CODE" property="grantCode" jdbcType="VARCHAR" />
+		<result column="INTEREST_DATE" property="interestDate" jdbcType="DATE" />
+		<result column="BUSINESS_TYPES" property="businessTypes" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getDebtInfoForRepaymentLoan" resultMap="RepaymentLoanDebtsMap">
+		SELECT INTEREST_DATE FROM BIZ_REPAYMENT_LOAN_PLAN
+		<where>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and GRANT_CODE = #{cm.grantCode}
+			</if>
+			<if test="cm.endDate != null and cm.endDate != ''">
+				and INTEREST_DATE &gt;=  TO_DATE(#{cm.endDate}, 'YYYY-MM-DD HH24:MI:SS')
+			</if>
+			<if test="cm.enable != null and cm.enable != ''">
+				and ENABLE_ =  #{cm.enable}
+			</if>
+		</where>
+		ORDER BY INTEREST_DATE
+	</select>
+		
+</mapper>

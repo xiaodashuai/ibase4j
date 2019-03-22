@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizInterfaceResultMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_INTERFACE_RESULT
+		<where>
+			<if test="cm.tradeCode != null and cm.tradeCode != ''">
+				and TRADE_CODE = #{cm.tradeCode}
+			</if>
+			<if test="cm.tradeCodeVerNum != null and cm.tradeCodeVerNum != ''">
+				and TRADE_CODEVERNUM = #{cm.tradeCodeVerNum}
+			</if>
+			<if test="cm.interfaceName != null and cm.interfaceName != ''">
+				and INTERFACE_NAME = #{cm.interfaceName}
+			</if>
+		</where>
+	</select>
+
+	<resultMap id="InterfaceResponseMap" type="java.util.HashMap" >
+		<result column="ID_" property="objInr" jdbcType="VARCHAR" />
+		<result column="RESPONSE_STATUS" property="responseStatus" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<select id="getInterfaceResponseStatus" resultMap="InterfaceResponseMap">
+		SELECT ID_ , RESPONSE_STATUS FROM BIZ_INTERFACE_RESULT
+		<where>
+			<if test="cm.tradeCode != null and cm.tradeCode != ''">
+				and TRADE_CODE = #{cm.tradeCode}
+			</if>
+			<if test="cm.tradeCodeVerNum != null and cm.tradeCodeVerNum != ''">
+				and TRADE_CODEVERNUM = #{cm.tradeCodeVerNum}
+			</if>
+			<if test="cm.interfaceName != null and cm.interfaceName != ''">
+				and INTERFACE_NAME = #{cm.interfaceName}
+			</if>
+		</where>
+	</select>
+
+
+</mapper>

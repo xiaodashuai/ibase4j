@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizProductTypeMapper">
+	<select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_PRODUCT_TYPES
+		<where>
+			<if test="cm.enable != null and cm.enable != ''">
+				and enable_ = #{cm.enable}
+			</if>
+			<if test="cm.name != null and cm.name != ''">
+				and NAME_ = #{cm.name}
+			</if>
+			<if test="cm.code != null and cm.code != ''">
+				and CODE_ = #{cm.code}
+			</if>
+			<if test="cm.parentCode != null and cm.parentCode != ''">
+				and PARENT_CODE = #{cm.parentCode}
+			</if>
+			<if test="cm.leaf != null and cm.leaf != ''">
+				and LEAF_ = #{cm.leaf}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (NAME_ like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+
+	<select id="getProductTypeIdByDeptId" resultType="java.lang.String">
+		select distinct
+		product_types_code from BIZ_PRODUCT_TYPES_org where
+		dept_id=#{deptId}
+	</select>
+	<resultMap id="productMap" type="org.ibase4j.model.BizProductTypes"
+		autoMapping="true">
+		<id column="ID_" property="id" />
+		<result column="NAME_" property="name" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="CODE_" property="code" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="PARENT_CODE" property="parentCode" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="LEAF_" property="leaf" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="ENABLE_" property="enable" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="IS_CHILD" property="isChild" javaType="Integer"
+			jdbcType="INTEGER" />
+	</resultMap>
+	<select id="selectProductType" resultMap="productMap">
+		select id_ , name_ ,
+		code_
+		from
+		BIZ_PRODUCT_TYPES
+		where
+		enable_ = #{product.enable ,
+		jdbcType=BIGINT}
+		and
+		parent_code != #{product.parentCode ,
+		jdbcType=VARCHAR}
+	</select>
+	<select id="queryByCode" resultMap="productMap">
+		select id_ , name_ , code_ , parent_code ,  leaf_ , enable_ , is_child
+		from
+		BIZ_PRODUCT_TYPES
+		where
+		code_ = #{code , jdbcType=VARCHAR}
+	</select>
+
+	<resultMap id="noticeTitleMap" type="org.ibase4j.model.BizProductTypes"
+		autoMapping="true">
+		<id column="ID_" property="id" />
+		<result column="name_" property="name" javaType="String"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="queryByNoticeTitle" resultMap="noticeTitleMap">
+		select id_ , name_
+		from
+		BIZ_PRODUCT_TYPES
+		where
+		name_ = #{account , jdbcType=VARCHAR}
+	</select>
+	<select id="queryChildProduct" resultMap="productMap">
+		select id_ , name_ , code_ , parent_code ,  leaf_ , enable_ , is_child
+		from
+		BIZ_PRODUCT_TYPES
+		where
+		is_child = 0
+		and
+		enable_ = 1
+	</select>
+	<select id="queryByCode" resultMap="productMap">
+		select id_ , name_ , code_ , parent_code ,  leaf_ , enable_ , is_child
+		from
+		BIZ_PRODUCT_TYPES
+		where
+		code_ = #{code}
+	</select>
+	<select id="queryByParentCode" resultMap="productMap">
+		select id_ , name_ , code_ , parent_code ,  leaf_ , enable_ , is_child
+		from
+		BIZ_PRODUCT_TYPES
+		where
+		code_ = #{parentCode}
+	</select>
+
+</mapper>

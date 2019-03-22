@@ -1,0 +1,37 @@
+<ORGANIZATION>
+    <USER TABLE_NAME="SYS_USER" IS_ENABLE="true">
+        <ID COLNAME="id_"/>
+        <LOGONNAME COLNAME="account_"/>
+        <PASSWORD COLNAME="password_"/>
+        <USERNAME COLNAME="user_name"/>
+        <EMAILNAME COLNAME="email_"/>
+        <DESC COLNAME=""/>
+        <ADDRESS COLNAME=""/>
+        <MOBILENUMBER COLNAME="phone_"/>
+        <HOMENUMBER COLNAME=""/>
+        <OFFICENUMBER COLNAME=""/>
+        <LEVEL COLNAME=""/>
+        <ISABSENT COLNAME=""/>
+    </USER>
+    <ROLE TABLE_NAME="SYS_V_ROLE"  IS_ENABLE="true" ISTREE="true">
+        <ID COLNAME="id_"/>
+        <NAME COLNAME="role_name"/>
+        <DESC COLNAME=""/>
+        <TYPEVALUE COLNAME="IS_ROLE_TYPE" DEFAULTVALUE="1" Type="Number"/>
+        <PARENTID COLNAME="PARENT_ID" DEFAULTVALUE="rolemgr"/>
+    </ROLE>
+    <DEP TABLE_NAME="SYS_DEPT"  IS_ENABLE="true" >
+        <ID COLNAME="id_"/>
+        <NAME COLNAME="dept_name"/>
+        <PARENTID COLNAME="PARENT_CODE" DEFAULTVALUE="0"/>
+    </DEP>
+    <USERROLE TABLE_NAME="SYS_V_USER_ROLE"  IS_ENABLE="true">
+        <USERID COLNAME="user_id"/>
+        <ROLEID COLNAME="role_id"/>
+        <LIMITDEPID COLNAME="LIMIT_DEPID" DEFAULTVALUE="mf_root"/>
+    </USERROLE>
+    <USERDEP TABLE_NAME="BIZ_V_USER_DEPT_PARENTCODE"  IS_ENABLE="true">
+        <USERID COLNAME="ID_"/>
+        <DEPID COLNAME="PARENT_CODE"/>
+    </USERDEP>
+</ORGANIZATION>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizCustomerMapper">
+	<select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_CUSTOMER
+		<where>
+			<if test="cm.enable != null and cm.enable != ''">
+				and enable_ = #{cm.enable}
+			</if>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.custNameCN != null and cm.custNameCN != ''">
+				and (CUST_NAME_CN like '%'||#{cm.custNameCN}||'%')
+			</if>
+			<if test="cm.custNameEN != null and cm.custNameEN != ''">
+				and (CUST_NAME_EN like '%'||#{cm.custNameEN}||'%')
+			</if>
+			<if test="cm.custNo != null and cm.custNo != ''">
+				and (CUST_NO like '%'||#{cm.custNo}||'%')
+			</if>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.custNo != null and cm.custNo != ''">
+				and CUST_NO = #{cm.custNo}
+			</if>
+		</where>
+	</select>
+
+	<select id="getBizCustomerList" resultMap="custmoerMap">
+		select 
+			a.*
+		from BIZ_CUSTOMER a 
+		inner join 
+		BIZ_PTS b 
+		on a.ID_ = b.OBJINR
+		<where>
+			<if test="1==1">
+				and b.ROL = 'LETS'
+			</if>
+			<if test="cm.enable != null and cm.enable != ''">
+				and a.enable_ = #{cm.enable}
+			</if>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and a.DEBT_CODE = #{cm.debtCode}
+			</if>
+		</where>
+	</select>
+	
+	<resultMap id="custmoerMap" type="org.ibase4j.model.BizCustomer"
+		autoMapping="true">
+		<id column="ID_" property="id" />
+		<result column="CUST_NO" property="custNo" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="DEBT_CODE" property="debtCode" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="ORGANIZATION_CODE" property="organizationCode"/>
+			
+		<result column="CUST_NAME_CN" property="custNameCN" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="CUST_NAME_EN" property="custNameEN" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="CUST_ADDRESS_CN" property="custAddressCN"
+			javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_ADDRESS_EN" property="custAddressEN"
+			javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_BUSINESS_UNIT" property="custBusinessUnit"
+			javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_REG_TYPE" property="custRegistrastionType"
+			javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_RCREDIT_TYPE" property="custRatingCreditType"
+			javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_SCALE" property="custScale" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="GROUP_NO" property="groupNumber" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="GROUP_NAME" property="groupName" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="MAIN_BUSINESS" property="mainBusiness"
+			javaType="String" jdbcType="VARCHAR" />
+		<result column="CUST_COUNTRY" property="custCountry" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="CREDIT_RATING" property="creditRating" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="RATING_TIME" property="ratiTime"/>
+		<result column="CUST_MANAGER" property="custManager" javaType="String"
+			jdbcType="VARCHAR" />	
+	</resultMap>
+	
+	<select id="queryByCustNo" resultMap="custmoerMap">
+		select 
+			ID_ , 
+			CUST_NO , 
+			CUST_NAME_CN , 
+			CUST_NAME_EN , 
+			CUST_ID_TYPE ,
+			CUST_ADDRESS_CN , 
+			CUST_BUSINESS_UNIT , 
+			CUST_REGISTRASTION_TYPE ,
+			CUST_RATING_CREDIT_TYPE , 
+			COUNTRY_RISK_RATING , 
+			CUST_COUNTRY ,
+			CUST_SCALE , 
+			GROUP_NUMBER , 
+			GROUP_NAME , 
+			CUST_MANAGER ,
+			MAIN_BUSINESS
+		from
+			BIZ_CUSTOMER
+		WHERE
+			CUST_NO = #{custNo , jdbcType=VARCHAR}
+	</select>
+	
+	
+
+	
+</mapper>

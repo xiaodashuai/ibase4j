@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizCustLimitMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from Biz_Cust_Limit
+		<where>
+			<if test="cm.objType != null and cm.objType != ''">
+				and OBJTYP = #{cm.objType}
+			</if>
+			<if test="cm.objInr != null and cm.objInr != ''">
+				and OBJINR = #{cm.objInr}
+			</if>
+			<if test="cm.custNo != null and cm.custNo != ''">
+				and CUST_NO = #{cm.custNo}
+			</if>
+			<if test="cm.amountType != null and cm.amountType != ''">
+				and AMOUNT_TYPE = #{cm.amountType}
+			</if>
+
+		</where>
+	</select>
+	
+	<resultMap id="BizCustLimitMap" type="java.util.HashMap" >
+		<result column="CUST_NO" property="custNo" jdbcType="VARCHAR" />
+		<result column="PTYINR" property="ptyinr" jdbcType="VARCHAR" />
+		<result column="CUST_NAME_CN" property="custNameCN" jdbcType="VARCHAR" />
+		<result column="AMOUNT_TYPE" property="amountType" jdbcType="VARCHAR" />
+		<result column="CREDIT_NO" property="creditNo" jdbcType="VARCHAR" />
+		<result column="CREDIT_LINE_NAME" property="creditLineName" jdbcType="VARCHAR" />
+		<result column="CUR" property="cur" jdbcType="VARCHAR" />
+		<result column="AMT" property="amt" jdbcType="DOUBLE" />
+	</resultMap>
+
+	<select id="getCustLimitList" resultMap="BizCustLimitMap">
+		SELECT
+		A.CUST_NO,A.PTYINR, A.CUST_NAME_CN,A.AMOUNT_TYPE,A.CREDIT_NO,A.CREDIT_LINE_NAME,A.CUR,A.AMT
+		FROM
+		BIZ_CUST_LIMIT A
+		<where>
+			<if test="cm.objInr != null and cm.objInr != ''">
+				and A.OBJINR = #{cm.objInr}
+			</if>
+			<if test="cm.objtyp != null and cm.objtyp != ''">
+				and A.OBJTYP = #{cm.objtyp}
+			</if>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and A.GRANTCODE = #{cm.grantCode}
+			</if>
+
+		</where>
+	</select>
+</mapper>

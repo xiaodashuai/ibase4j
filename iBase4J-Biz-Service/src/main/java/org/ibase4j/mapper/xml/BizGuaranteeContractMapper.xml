@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizGuaranteeContractMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_GUARANTEE_CONTRACT
+		<where>
+			<if test="cm.enable != null and cm.enable != ''">
+				and enable_ = #{cm.enable}
+			</if>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and GRANT_CODE = #{cm.grantCode}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (remark_ like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+		
+</mapper>

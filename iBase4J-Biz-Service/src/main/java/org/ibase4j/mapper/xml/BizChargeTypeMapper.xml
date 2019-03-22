@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizChargeTypeMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_CHARGE_TYPE
+		<where>
+			<if test="cm.pbId != null and cm.pbId != ''">
+				and PRODUCT_BUSINESS_ID = #{cm.pbId}
+			</if>
+			<if test="cm.chargeCode != null and cm.chargeCode != ''">
+				and CHARGE_CODE = #{cm.chargeCode}
+			</if>
+			<if test="cm.productTypesCode != null and cm.productTypesCode != ''">
+				and PRODUCT_TYPES_CODE = #{cm.productTypesCode}
+			</if>
+			
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (CHARGE_NAME like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+		
+</mapper>

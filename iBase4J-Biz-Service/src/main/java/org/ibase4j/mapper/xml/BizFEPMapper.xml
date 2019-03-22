@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizFEPMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_FEP
+		<where>
+			<if test="cm.objType != null and cm.objType != ''">
+				and OBJTYP = #{cm.objType}
+			</if>
+			<if test="cm.objInr != null and cm.objInr != ''">
+				and OBJINR = #{cm.objInr}
+			</if>
+			<if test="cm.rateType != null and cm.rateType != ''">
+				and RATE_TYPE = #{cm.rateType}
+			</if>
+			<if test="cm.feecod != null and cm.feecod != ''">
+				and FEECOD = #{cm.feecod}
+			</if>
+			
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (RATE_VALUE like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+	
+	<resultMap id="BizFEPMap" type="java.util.HashMap" >
+		<result column="RATE_TYPE" property="rateType" jdbcType="VARCHAR" />
+		<result column="RATE_VALUE" property="rateValue" jdbcType="DOUBLE" />
+		<result column="CHARGE_NAME" property="chargeName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getBizFEPByINR" resultMap="BizFEPMap">
+		SELECT
+		A.RATE_TYPE,A.RATE_VALUE,B.CHARGE_NAME
+		FROM
+		BIZ_FEP A
+		INNER JOIN BIZ_CHARGE_TYPE B ON A.RATE_TYPE = B.CHARGE_CODE
+		<where>
+			<if test="cm.objInr != null and cm.objInr != ''">
+				and A.OBJINR = #{cm.objInr}
+			</if>
+			<if test="cm.objtype != null and cm.objtype != ''">
+				and A.OBJTYP = #{cm.objtype}
+			</if>
+			<if test="cm.businessTypes != null and cm.businessTypes != ''">
+				and B.PRODUCT_TYPES_CODE = #{cm.businessTypes}
+			</if>
+		</where>
+	</select>
+</mapper>

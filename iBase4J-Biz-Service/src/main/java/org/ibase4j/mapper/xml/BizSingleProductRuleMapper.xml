@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizSingleProductRuleMapper">
+	<select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_SIGLE_PRODUCT_RULE
+		<where>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and DEBT_CODE = #{cm.debtCode}
+			</if>
+		</where>
+	</select>
+
+
+	<resultMap id="pVo" type="org.ibase4j.vo.ProductVo" autoMapping="true">
+		<id column="OBJ_TYPE" property="objType" javaType="String" jdbcType="VARCHAR" />
+		<id column="BUSINESS_TYPE" property="businessType" javaType="String" jdbcType="VARCHAR" />
+		<id column="DEBT_CODE" property="debtCode" javaType="String" jdbcType="VARCHAR" />
+		<id column="PROPER_INFO" property="properInfo" javaType="Long" jdbcType="BIGINT" />
+		<id column="NAME_" property="businessName" javaType="String" jdbcType="VARCHAR" />
+		<id column="USED_NUM" property="usedNum" javaType="int" jdbcType="INTEGER" />
+		<id column="DEAL_NUM" property="totalNum" javaType="int" jdbcType="INTEGER" />
+		<id column="NUM_LIMIT" property="numLimit" javaType="int" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="getProductPairByDebtCode" resultMap="pVo">
+		SELECT
+			a.OBJ_TYPE,
+			a.BUSINESS_TYPE,
+			a.NUM_LIMIT,
+			a.DEAL_NUM,
+			a.DEBT_CODE,
+			a.PROPER_INFO,
+			b.NAME_,
+			(SELECT COUNT(1) FROM BIZ_DEBT_GRANT c WHERE c.PROPER_INFO=a.PROPER_INFO) as USED_NUM
+		FROM
+			BIZ_SIGLE_PRODUCT_RULE a
+		LEFT JOIN
+		    BIZ_PRODUCT_TYPES b
+		ON 
+			a.BUSINESS_TYPE = b.CODE_
+		WHERE
+			a.DEBT_CODE = #{debtCode , jdbcType=VARCHAR}
+	</select>
+
+	<select id="getProductPairBySingleProductRuleId" resultMap="pVo">
+		SELECT
+			a.OBJ_TYPE,a.BUSINESS_TYPE,a.DEBT_CODE,a.PROPER_INFO,b.NAME_
+		FROM
+			BIZ_SIGLE_PRODUCT_RULE a
+		LEFT JOIN
+		    BIZ_PRODUCT_TYPES b
+		ON 
+			a.BUSINESS_TYPE = b.CODE_
+		WHERE
+			a.ID_ = #{sprId}
+	</select>
+	
+</mapper>

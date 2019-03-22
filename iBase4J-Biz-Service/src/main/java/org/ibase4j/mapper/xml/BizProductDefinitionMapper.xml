@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizProductDefinitionMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_PRODUCT_DEFINITION
+	  <where>
+		  <if test="cm.enable != null and cm.enable != ''">
+			  and enable_ = #{cm.enable}
+		  </if>
+	  </where>
+	</select>
+
+	<select id="selectProductSeqnum" resultType="java.lang.String">
+		select product_seqnum from BIZ_PRODUCT_DEFINITION
+		<where>
+			<if test="cm.enable != null and cm.enable != ''">
+				and enable_ = #{cm.enable}
+			</if>
+			<if test="cm.productType != null and cm.productType != ''">
+				and product_type = #{cm.productType}
+			</if>
+			<if test="cm.currencyChar != null and cm.currencyChar != ''">
+				and currency_char = #{cm.currencyChar}
+			</if>
+			<if test="cm.currencyNum != null and cm.currencyNum != ''">
+				and currency_num = #{cm.currencyNum}
+			</if>
+		</where>
+	</select>
+</mapper>

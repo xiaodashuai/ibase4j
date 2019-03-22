@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.SysDicMapper">
+	<select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from sys_dic
+		<where>
+			<if test="cm.type != null and cm.type != ''">
+				and type_= #{cm.type}
+			</if>
+			<if test="cm.code != null and cm.code != ''">
+				and code_=#{cm.code}
+			</if>
+			<if test="cm.tb != null and cm.tb != ''">
+				and (code_text like '%'||#{cm.tb}||'%' OR code_ like
+				'%'||#{cm.tb}||'%')
+			</if>
+			<if test="cm.enable != null and cm.enable != ''">
+				and enable_ = #{cm.enable}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (code_text like '%'||#{cm.keyword}||'%' OR code_ like
+				'%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+	
+
+	<resultMap id="dicCodeMap" type="org.ibase4j.model.SysDic"
+		autoMapping="true">
+		<id column="ID_" property="id" />
+		<result column="type_" property="type" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="code_" property="code" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="code_text" property="codeText" javaType="String"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="selectCodeList" parameterType="Map" resultMap="dicCodeMap">
+		select * from sys_dic where type_=#{type, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="queryByCode" resultMap="dicCodeMap">
+		select id_ , type_
+		from
+		sys_dic
+		where
+		type_ = #{account , jdbcType=VARCHAR}
+	</select>
+	
+	<resultMap id="dicCodeTextMap" type="org.ibase4j.model.SysDic"
+		autoMapping="true">
+		<id column="ID_" property="id" />
+		<result column="code_text" property="codeText" javaType="String"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="queryByCodeText" resultMap="dicCodeTextMap">
+		select id_ , code_text
+		from
+		sys_dic
+		where
+		name_ = #{account , jdbcType=VARCHAR}
+	</select>
+</mapper>

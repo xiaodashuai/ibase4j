@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.SysMenuMapper">
+	<select id="selectIdPage" parameterType="java.util.Map"
+		resultType="java.lang.Long">
+		select id_ from sys_menu
+		<where>
+			<if test="cm.enable != null and cm.enable != ''">
+				and enable_ = #{cm.enable}
+			</if>
+			<if test="cm.parentId != null">
+				and parent_id = #{cm.parentId}
+			</if>
+			<if test="cm.isShow != null">
+				and is_show = #{cm.isShow}
+			</if>
+			<if test="cm.powerType != null">
+				and power_type = #{cm.powerType}
+			</if>
+			
+			<if test="cm.keyword != null">
+				and (menu_name like '%'||#{cm.keyword}||'%' or request_
+				like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+
+	</select>
+	<select id="getPermissions" resultType="java.util.Map">
+		select CONCAT(m.id_,
+		code_) as value, CONCAT(menu_name, code_text) as text
+		from sys_menu m
+		join sys_dic_index di on di.key_='CRUD'
+		join sys_dic d on
+		d.index_id=di.id_
+		order by m.id_
+	</select>
+	<resultMap id="menuMap" type="org.ibase4j.model.SysMenu"
+		autoMapping="true">
+		<id column="ID_" property="id" />
+		<result column="menu_name" property="menuName" javaType="String"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="queryByMenuName" resultMap="menuMap">
+		select id_ , menu_name
+		from
+		sys_menu
+		where
+		menu_name = #{account , jdbcType=VARCHAR}
+	</select>
+	<resultMap id="menuListMap" type="org.ibase4j.model.SysMenu"
+		autoMapping="true">
+		<id column="ID_" property="id" />
+		<result column="enable_" property="enable" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="power_type" property="powerType" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="MENU_NAME" property="menuName" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="MENU_TYPE" property="menuType" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="ICONCLS_" property="iconcls" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="permission_short" property="permissionShort"
+			javaType="String" jdbcType="VARCHAR" />
+		<result column="parent_id" property="parentId" javaType="Long"
+			jdbcType="BIGINT" />
+		<result column="request_" property="request" javaType="String"
+			jdbcType="VARCHAR" />
+		<result column="expand_" property="expand" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="sort_no" property="sortNo" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="is_show" property="isShow" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="LEAF_" property="leaf" javaType="Integer"
+			jdbcType="INTEGER" />
+		<result column="permission_" property="permission" javaType="String"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="queryMenuList" resultMap="menuListMap">
+		select id_ , power_type , 
+		enable_ , MENU_NAME , MENU_TYPE , ICONCLS_ ,
+		permission_short ,
+		parent_id , request_ , expand_ , sort_no , is_show , LEAF_ ,
+		permission_
+		from
+		sys_menu
+		where
+		enable_ = #{enable , jdbcType=INTEGER}
+		and
+		power_type = #{powerType , jdbcType= VARCHAR}
+	</select>
+	
+	<select id="queryParents" resultMap="menuListMap">
+		select id_ , power_type , 
+		enable_ , MENU_NAME , MENU_TYPE , ICONCLS_ ,
+		permission_short ,
+		parent_id , request_ , expand_ , sort_no , is_show , LEAF_ ,
+		permission_
+		from
+		sys_menu
+		where
+		id_ = #{parentId , jdbcType=BIGINT}
+		and 
+		parent_id = 0
+	</select>
+	<select id="queryByParentId" resultMap="menuListMap">
+		select id_ , power_type , 
+		enable_ , MENU_NAME , MENU_TYPE , ICONCLS_ ,
+		permission_short ,
+		parent_id , request_ , expand_ , sort_no , is_show , LEAF_ ,
+		permission_
+		from
+		sys_menu
+		where
+		parent_id = #{parentId , jdbcType=BIGINT}
+	</select>
+
+</mapper>

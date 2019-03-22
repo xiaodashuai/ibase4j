@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizCountryRiskRatingMapper">
+
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from SYS_COUNTRY_RISK_RATING
+		<where>
+			<if test="cm.enable != null and cm.enable != ''">
+				and enable_ = #{cm.enable}
+			</if>
+			<if test="cm.code != null and cm.code != ''">
+				and CODE_  = #{cm.code}
+			</if>
+			<if test="cm.nameCN != null and cm.nameCN != ''">
+				and NAME_CN = #{cm.nameCN}
+			</if>
+			<if test="cm.nameEN != null and cm.nameEN != ''">
+			and (NAME_EN = #{cm.nameEN}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (CODE_ like '%'||#{cm.keyword}||'%' or NAME_CN like '%'||#{cm.keyword}||'%' or NAME_EN like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+</mapper>

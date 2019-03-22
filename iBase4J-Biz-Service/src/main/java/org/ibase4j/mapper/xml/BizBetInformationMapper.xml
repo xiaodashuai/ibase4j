@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizBetInformationMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_CONTRACT_COLLATERAL
+		<where>
+			<if test="cm.enable != null and cm.enable != ''">
+				and enable_ = #{cm.enable}
+			</if>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.guaranteeNo != null and cm.guaranteeNo != ''">
+				and GUAR_NO =#{cm.guaranteeNo}
+			</if>
+			<if test="cm.guarNo != null and cm.guarNo != ''">
+				and (GUAR_NO like '%'||#{cm.guarNo}||'%')
+			</if>
+			<if test="cm.pledNo != null and cm.pledNo != ''">
+				and (PLED_NO like '%'||#{cm.pledNo}||'%')
+			</if>
+			<if test="cm.productInformation != null and cm.productInformation != ''">
+			and (PRODUCT_INFORMATION like '%'||#{cm.productInformation}||'%')
+			</if>
+			<if test="cm.GUAR_MART_TYPE != null and cm.GUAR_MART_TYPE != ''">
+				and guarmartType = #{cm.GUAR_MART_TYPE}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (enable_ like '%'||#{cm.keyword}||'%' )
+			</if>
+		</where>
+	</select>
+</mapper>

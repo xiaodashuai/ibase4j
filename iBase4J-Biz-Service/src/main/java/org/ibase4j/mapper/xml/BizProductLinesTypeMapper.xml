@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizProductLinesTypeMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_PRODUCT_LINESTYPE
+		<where>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.businessType != null and cm.businessType != ''">
+				and BUSINESS_TYPE = #{cm.businessType}
+			</if>
+			<if test="cm.custNo != null and cm.custNo != ''">
+				and CUST_NO = #{cm.custNo}
+			</if>
+			<if test="cm.creditLinesId != null and cm.creditLinesId != ''">
+				and BIZ_CREDIT_LINES_ID = #{cm.creditLinesId}
+			</if>
+			<if test="cm.creditRatio != null and cm.creditRatio != ''">
+				and CREDIT_RATIO = #{cm.creditRatio}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (DEBT_CODE like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+		
+</mapper>

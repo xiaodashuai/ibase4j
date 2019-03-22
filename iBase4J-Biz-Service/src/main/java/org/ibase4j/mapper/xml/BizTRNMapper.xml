@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizTRNMapper">
+
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_TRN
+		<where>
+			<if test="cm.inidattim != null and cm.inidattim != ''">
+				and INIDATTIM = #{cm.inidattim}
+			</if>
+			<if test="cm.objtype != null and cm.objtype != ''">
+				and OBJTYP = #{cm.objtype}
+			</if>
+			<if test="cm.objInr != null and cm.objInr != ''">
+				and OBJINR = #{cm.objInr}
+			</if>
+			<if test="cm.inifrm != null and cm.inifrm != ''">
+				and INIFRM = #{cm.inifrm}
+			</if>
+			<if test="cm.iniusr != null and cm.iniusr != ''">
+				and INIUSR = #{cm.iniusr}
+			</if>
+			<if test="cm.ownref != null and cm.ownref != ''">
+				and OWNREF = #{cm.ownref}
+			</if>
+			<if test="cm.bchkeyinr != null and cm.bchkeyinr != ''">
+				and BCHKEYINR = #{cm.bchkeyinr}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (ININAM like #{cm.keyword}||'%' OR OWNREF like #{cm.keyword}||'%' OR INIFRM like #{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+		
+		
+	<!-- 多表连查结果集分页的实例 -->
+	<select id="selectResultPage" resultType="java.util.Map">
+		SELECT 
+			a.BCHKEYINR,
+			a.INIFRM,
+			a.OBJINR,
+			a.ININAM,
+			a.INIDATTIM,
+			a.RELRES,
+			b.NAME_ as businessTypeName 
+		FROM BIZ_TRN a left join BIZ_PRODUCT_TYPES b 
+		ON a.BUSINESS_TYPES=b.CODE_
+		<where>
+			<if test="cm.objtype != null and cm.objtype != ''">
+				AND a.OBJTYP = #{cm.objtype}
+			</if>
+			<if test="cm.bchkeyinr != null and cm.bchkeyinr != ''">
+				AND a.BCHKEYINR = #{cm.bchkeyinr}
+			</if>
+			<if test="cm.enable != null and cm.enable != ''">
+				AND a.ENABLE_ = #{cm.enable}
+			</if>
+		</where>
+		ORDER BY a.INIDATTIM DESC
+	</select>
+	
+</mapper>

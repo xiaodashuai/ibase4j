@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizFECMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_FEC
+		<where>
+			<if test="cm.objType != null and cm.objType != ''">
+				and OBJTYP = #{cm.objType}
+			</if>
+			<if test="cm.objInr != null and cm.objInr != ''">
+				and OBJINR = #{cm.objInr}
+			</if>
+			<if test="cm.currency != null and cm.currency != ''">
+				and CURRENCY = #{cm.currency}
+			</if>
+			<if test="cm.paymentMode != null and cm.paymentMode != ''">
+				and PAYMENT_MODE = #{cm.paymentMode}
+			</if>
+			
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (RULES like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+	<resultMap id="BizFECMap" type="java.util.HashMap" >
+		<result column="CURRENCY" property="currency" jdbcType="VARCHAR" />
+		<result column="CODE_NAME" property="currencyString" jdbcType="VARCHAR" />
+		<result column="PAYMENT_AMT" property="paymentAmt" jdbcType="BIGINT" />
+		<result column="TYPE" property="rateType" jdbcType="INTEGER" />
+		<result column="RATE_TYPE_STRING" property="rateTypeString" jdbcType="VARCHAR" />
+		<result column="RATE_VAL" property="rateVal" jdbcType="DOUBLE" />
+		<result column="IR_BK" property="irBk" jdbcType="VARCHAR" />
+		<result column="TERM" property="term" jdbcType="INTEGER" />
+		<result column="FLOAT_DIRECTION" property="floatDirection" jdbcType="VARCHAR" />
+		<result column="FLOAT_DIRECTION_STRING" property="floatDirectionString" jdbcType="VARCHAR" />
+		<result column="FLOAT_MODE" property="floatMode" jdbcType="VARCHAR" />
+		<result column="FLOAT_MODE_STRING" property="floatModeString" jdbcType="VARCHAR" />
+		<result column="FLOATING_RATE" property="floatingRate" jdbcType="DOUBLE" />
+		<result column="VAR_CYCLE" property="varCycle" jdbcType="BIGINT" />
+		<result column="CHG_CYCLE_UNIT" property="chgCycleUnit" jdbcType="INTEGER" />
+		<result column="CHG_CYCLE_UNIT_STRING" property="chgCycleUnitString" jdbcType="VARCHAR" />
+		<result column="OVERDUE_RATE_CALC_MODE" property="overdueRateCalcMode" jdbcType="VARCHAR" />
+		<result column="OVERDUE_RATE_CALC_MODE_STRING" property="overdueRateCalcModeString" jdbcType="VARCHAR" />
+		<result column="OVERDUE_INCR_RATIO" property="overdueIncrRatio" jdbcType="DOUBLE" />
+		<result column="NAME_" property="irBkString" jdbcType="VARCHAR" />
+		<result column="PAYMENT_MODE" property="paymentMode" jdbcType="VARCHAR" />
+		<result column="CONVERTED_PRICE" property="convertedPrice" jdbcType="DOUBLE" />
+		<result column="IR_SIGN" property="irSign" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="getBizFECByINR" resultMap="BizFECMap">
+		SELECT
+		A .CURRENCY,
+		B.CODE_NAME,
+		A .PAYMENT_AMT,
+		CASE PAYMENT_MODE
+		WHEN '1' THEN
+		'受托支付'
+		WHEN '2' THEN
+		'自主支付'
+		END PAYMENT_MODE,
+		A . TYPE,
+		CASE A . TYPE
+		WHEN 1 THEN
+		'固定利率'
+		WHEN 2 THEN
+		'浮动利率'
+		END RATE_TYPE_STRING,
+		A .RATE_VAL,
+		A .IR_BK,
+		A .IR_SIGN,
+		A .TERM,
+		A .FLOAT_DIRECTION,
+		A .CONVERTED_PRICE,
+		CASE A .FLOAT_DIRECTION
+		WHEN '1' THEN
+		'上浮'
+		WHEN '2' THEN
+		'下浮'
+		WHEN '3' THEN
+		'不浮动'
+		END FLOAT_DIRECTION_STRING,
+		A .FLOAT_MODE,
+		CASE A .FLOAT_MODE
+		WHEN '3' THEN
+		'百分比'
+		WHEN '2' THEN
+		'加点'
+		WHEN '1' THEN
+		'不浮动'
+		END FLOAT_MODE_STRING,
+		A .FLOATING_RATE,
+		A .VAR_CYCLE,
+		A .CHG_CYCLE_UNIT,
+		CASE A .CHG_CYCLE_UNIT
+		WHEN 3 THEN
+		'年'
+		WHEN 2 THEN
+		'月'
+		WHEN 1 THEN
+		'日'
+		END CHG_CYCLE_UNIT_STRING,
+		A .OVERDUE_RATE_CALC_MODE,
+		CASE A .OVERDUE_RATE_CALC_MODE
+		WHEN '3' THEN
+		'百分比'
+		WHEN '2' THEN
+		'加点'
+		END OVERDUE_RATE_CALC_MODE_STRING,
+		A .OVERDUE_INCR_RATIO
+		FROM
+		BIZ_FEC A
+		INNER JOIN SYS_CURRENCY B ON A .CURRENCY = B.MON_CODE
+		<where>
+			<if test="cm.objInr != null and cm.objInr != ''">
+				and A .OBJINR = #{cm.objInr}
+			</if>
+		</where>
+	</select>
+
+	<select id="getIrBkStringByCode" resultType="java.lang.String">
+		SELECT NAME_  FROM BIZ_GUARANTEE_TYPE C
+		<where>
+
+			<if test="cm.irBk != null and cm.irBk != ''">
+				AND SRV1 = #{cm.irBk}
+			</if>
+			<if test="cm.term != null and cm.term != ''">
+				AND SRV2 = #{cm.term}
+			</if>
+		</where>
+	</select>
+
+</mapper>

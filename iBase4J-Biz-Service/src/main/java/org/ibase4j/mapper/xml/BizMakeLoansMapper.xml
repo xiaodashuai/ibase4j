@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizMakeLoansMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_MAKE_LOANS
+		<where>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and GRANT_CODE = #{cm.grantCode}
+			</if>
+			<if test="cm.businessTypes != null and cm.businessTypes != ''">
+				and BUSINESS_TYPES = #{cm.businessTypes}
+			</if>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.issNo != null and cm.issNo != ''">
+				and ISS_NO = #{cm.issNo}
+			</if>
+			<if test="cm.custNo != null and cm.custNo != ''">
+				and CUST_NO = #{cm.custNo}
+			</if>
+			<if test="cm.frsNo != null and cm.frsNo != ''">
+				and FRS_NO = #{cm.frsNo}
+			</if>
+			<if test="cm.custName != null and cm.custName != ''">
+				and CUST_NAME = #{cm.custName}
+			</if>
+			<if test="cm.amount != null and cm.amount != ''">
+				and AMOUNT = #{cm.amount}
+			</if>
+			<if test="cm.interestRate != null and cm.interestRate != ''">
+				and INTEREST_RATE = #{cm.interestRate}
+			</if>
+			<if test="cm.rate != null and cm.rate != ''">
+				and RATE = #{cm.rate}
+			</if>
+			<if test="cm.dateOfLoan != null and cm.dateOfLoan != ''">
+				and DATE_OF_LOAN = #{cm.dateOfLoan}
+			</if>
+			<if test="cm.valueDate != null and cm.valueDate != ''">
+				and VALUE_DATE = #{cm.valueDate}
+			</if>
+			<if test="cm.dueDate != null and cm.dueDate != ''">
+				and DUE_DATE = #{cm.dueDate}
+			</if>
+			<if test="cm.gracePeriod != null and cm.gracePeriod != ''">
+				and GRACE_PERIOD = #{cm.gracePeriod}
+			</if>
+			<if test="cm.toierancePeriod != null and cm.toierancePeriod != ''">
+				and TOIERANCE_PERIOD = #{cm.toierancePeriod}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (remark_ like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+
+	<resultMap id="MakeLoansDebtsMap" type="java.util.HashMap" >
+		<result column="ID_" property="objInr" jdbcType="VARCHAR" />
+		<result column="DEBT_CODE" property="debtCode" jdbcType="VARCHAR" />
+		<result column="DEPT_NAME" property="deptName" jdbcType="VARCHAR" />
+		<result column="GRANT_CODE" property="grantCode" jdbcType="VARCHAR" />
+		<result column="BANKTELL_NAME" property="banktellName" jdbcType="VARCHAR" />
+		<result column="PROJECT_NAME" property="projectName" jdbcType="VARCHAR" />
+		<result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR" />
+		<result column="BIZ_RENTAL_FACTORING_CODE" property="bizRentalFactoringCode" jdbcType="VARCHAR" />
+		<result column="PROPOSER_NUM" property="proposerNum" jdbcType="VARCHAR" />
+		<result column="PROPOSER" property="proposer" jdbcType="VARCHAR" />
+		<result column="CURRENCY" property="currency" jdbcType="VARCHAR" />
+		<result column="PAYMENT_AMT" property="paymentAmt" jdbcType="DOUBLE" />
+		<result column="AMT" property="amt" jdbcType="DOUBLE" />
+		<result column="AMTBALANCE" property="amtBalance" jdbcType="DOUBLE" />
+		<result column="MAIN_BUSINESS" property="mainBusiness" jdbcType="VARCHAR" />
+		<result column="CUST_SCALE" property="custScale" jdbcType="VARCHAR" />
+		<result column="ORGANIZATION_CODE" property="organizationCode" jdbcType="BIGINT" />
+		<result column="CREDIT_RATING" property="creditRating" jdbcType="VARCHAR" />
+		<result column="FINANCE_PLATFORM" property="financePlatform" jdbcType="VARCHAR" />
+		<result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+		<result column="INNOVATIVE_BUSINESS_TYPE" property="innovativeBusinessType" jdbcType="VARCHAR" />
+		<result column="BACKGROUND_NATIONALITY" property="backgroundNationality" jdbcType="VARCHAR" />
+		<result column="LOAN_DOMAIN" property="loanDomain" jdbcType="VARCHAR" />
+		<result column="IMPOERT_EXPORT_GOODS_SERVICE" property="impoertExportGoodsService" jdbcType="VARCHAR" />
+		<result column="TYOES_INDUSTRIAL" property="tyoesIndustrial" jdbcType="VARCHAR" />
+		<result column="BUSINESS_CONTRACT_CODE" property="businessContractCode" jdbcType="VARCHAR" />
+		<result column="BUSINESS_CONTRACT_DATE" property="businessContractDate" jdbcType="DATE" />
+		<result column="BUSINESS_CONTRACT_AMOUNT" property="businessContractAmount" jdbcType="DOUBLE" />
+		<result column="LOAN_CKASSIFICATION" property="loanCkassification" jdbcType="VARCHAR" />
+		<result column="INDUSTRIAL_TRANSFORMATION" property="industrialTransformation" jdbcType="VARCHAR" />
+		<result column="CURTURAL_PRODUCT" property="curturalProduct" jdbcType="VARCHAR" />
+		<result column="ALLEVIATION_LOAN" property="alleviationLoan" jdbcType="VARCHAR" />
+		<result column="TRADE_INTEREST_RATE" property="tradeRnterestRate" jdbcType="INTEGER" />
+		<result column="INDUSTRY_INVESTMENT" property="industryInvestment" jdbcType="VARCHAR" />
+		<result column="COMPARE" property="compare" jdbcType="VARCHAR" />
+		<result column="IS_SYNDICATED" property="isSyndicated" jdbcType="VARCHAR" />
+		<result column="IS_SYNDICATED_AGENCY" property="isSyndicatedAgency" jdbcType="VARCHAR" />
+		<result column="SYNDICATED_STATUS" property="syndicatedStatus" jdbcType="VARCHAR" />
+		<result column="IS_421" property="is421" jdbcType="VARCHAR" />
+		<result column="GRANT_STATUS" property="grantStatus" jdbcType="INTEGER" />
+		<result column="GRANT_STATUS_STRING" property="grantStatusString" jdbcType="VARCHAR" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="DATE"/>
+		<result column="BUSINESS_TYPES" property="businessTypes" jdbcType="VARCHAR"/>
+		<result column="NAME_" property="productName" jdbcType="VARCHAR" />
+		<result column="USER_NAME" property="bankTellName" jdbcType="VARCHAR" />
+		<result column="CREDIT_RATIO" property="creditRatio" jdbcType="DOUBLE" />
+		<result column="CREDIT_LINE_NAME" property="creditLineName" jdbcType="VARCHAR" />
+		<result column="CUST_NAME_CN" property="custNameCn" jdbcType="VARCHAR" />
+		<result column="DEPT_CODE" property="deptCode" jdbcType="VARCHAR" />
+		<result column="CUR" property="cur" jdbcType="VARCHAR" />
+		<result column="SCOPE_BUSIN_PERIOD" property="scopeBusinPeriod" jdbcType="INTEGER" />
+		<result column="GRACE_PERIOD" property="gracePeriod" jdbcType="INTEGER" />
+		<result column="TOIERANCE_PERIOD" property="toierancePeriod" jdbcType="INTEGER" />
+		<result column="BANK_TELL_ID" property="bankTellId" jdbcType="BIGINT" />
+		<result column="BUSINCODE" property="busincode" jdbcType="VARCHAR" />
+		<result column="CBTSTRING" property="cbtString" jdbcType="VARCHAR" />
+		<result column="GRANTID" property="grantId" jdbcType="VARCHAR" />
+		<result column="DATE_OF_LOAN" property="dateOfLoan" jdbcType="DATE"/>
+		<result column="VALUE_DATE" property="valueDate" jdbcType="DATE"/>
+		<result column="DUE_DATE" property="dueDate" jdbcType="DATE"/>
+        <result column="BUSINESS_TYPE_NAME" property="businessTypeString" jdbcType="VARCHAR" />
+        <result column="CODE_TEXT" property="codeText" jdbcType="VARCHAR" />
+		<result column="IDENT_NUMBER" property="identNumber" jdbcType="VARCHAR" />
+        <result column="EMERGING_INDUSTRY_CLASSIFY" property="emergingIndustryClassify" jdbcType="VARCHAR" />
+        <result column="TRADE_FINANCE_BUSINESS" property="tradeFinanceBusiness" jdbcType="VARCHAR" />
+		<result column="GUARANTEE_TYPE_TOTAL" property="guaranteeTypeTotal" jdbcType="VARCHAR" />
+        <result column="POLICY_ATTRIBUTRE_CLASSIFY" property="policyAttributreClassify" jdbcType="VARCHAR" />
+		<result column="BUSINESS_NAME" property="businessName" jdbcType="VARCHAR" />
+		<result column="GRANT_AMT" property="grantAmt" jdbcType="VARCHAR" />
+		<result column="CODE_NAME" property="codeName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getGrantStandingBookList" resultMap="MakeLoansDebtsMap">
+		SELECT
+		TO_CHAR (A.ID_) ID_,
+		TO_CHAR (C.ID_) GRANTID,
+		A .GRANT_CODE,
+		A.DEBT_CODE,
+		A .PROPOSER,
+		A .PRODUCT_NAME,
+		B.DEPT_NAME,
+		D.IDENT_NUMBER,
+		E .AMT
+		FROM
+		BIZ_MAKE_LOANS A
+		INNER JOIN SYS_DEPT B ON A .INSTITUTION_CODE = B.CODE_
+		INNER JOIN BIZ_DEBT_GRANT C ON C.GRANT_CODE = A .GRANT_CODE
+		INNER JOIN BIZ_DEBT_MAIN D ON D.DEBT_CODE = A.DEBT_CODE
+		INNER JOIN BIZ_CBB E ON A .ID_ = E .OBJINR
+		<where>
+			<if test="cm.deptCode != null and cm.deptCode != ''">
+				and A.INSTITUTION_CODE = #{cm.deptCode}
+			</if>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and A.GRANT_CODE like '%'||#{cm.grantCode}||'%'
+			</if>
+			<if test="cm.endDate != null and cm.endDate != ''">
+				AND A.DATE_OF_LOAN &lt;= TO_DATE(#{cm.endDate},'YYYY-MM-DD HH24:MI:SS')
+				and E.BEGDAT &lt;=  TO_DATE(#{cm.endDate}, 'YYYY-MM-DD HH24:MI:SS')
+				and TO_DATE(#{cm.endDate}, 'YYYY-MM-DD HH24:MI:SS') &lt; E.ENDDAT
+			</if>
+			<if test="cm.beginDate != null and cm.beginDate != ''">
+				AND A.DATE_OF_LOAN &gt;= TO_DATE(#{cm.beginDate},'YYYY-MM-DD HH24:MI:SS')
+			</if>
+			<if test="cm.proposer != null and cm.proposer != ''">
+				and A.PROPOSER like '%'||#{cm.proposer}||'%'
+			</if>
+			<if test="cm.enable != null and cm.enable != ''">
+				and A.ENABLE_ = #{cm.enable}
+			</if>
+		</where>
+	</select>
+
+	<select id="getDiscardMakeLoansInfo" resultMap="MakeLoansDebtsMap">
+		SELECT
+			a.ID_,
+			a.DEBT_CODE,
+			a.GRANT_CODE,
+			a.PROPOSER,
+			a.BUSINESS_NAME,
+			a.SCOPE_BUSIN_PERIOD,
+			a.CURRENCY,
+			a.GRANT_AMT,
+			b.CODE_NAME
+			FROM
+			BIZ_DEBT_GRANT a INNER JOIN SYS_CURRENCY  b  ON   a.CURRENCY = b.MON_CODE
+		<where>
+			<if test="grantCode != null and grantCode != ''">
+				and GRANT_CODE = #{grantCode}
+			</if>
+		</where>
+	</select>
+
+	<select id="getCurrencyNo" resultType="java.lang.String">
+		SELECT MON_NO FROM SYS_CURRENCY
+		<where>
+			<if test="cm.currency != null and cm.currency != ''">
+				and MON_CODE = #{cm.currency}
+			</if>
+		</where>
+	</select>
+
+	<select id="getGrantAMTDetailForStandingBook" resultMap="MakeLoansDebtsMap">
+		SELECT
+			TO_CHAR (C.ID_) ID_,
+			D.IDENT_NUMBER,
+			A .DATE_OF_LOAN,
+			CASE F.CBT
+				WHEN 'LOANOUT' THEN
+				'本金发生额'
+				WHEN 'LOANIN' THEN
+				'本金发生额'
+				WHEN 'OVEDUIN' THEN
+				'逾期本金发生额'
+				WHEN 'OVEDUOUT' THEN
+				'逾期本金发生额'
+				WHEN 'PRITEIN' THEN
+				'利息发生额'
+				WHEN 'PRITEOUT' THEN
+				'利息发生额'
+				WHEN 'INATEIN' THEN
+				'表内欠息发生额'
+				WHEN 'INATEOUT' THEN
+				'表内欠息发生额'
+				WHEN 'OUATEIN' THEN
+				'表外欠息发生额'
+				WHEN 'OUATEOUT' THEN
+				'表外欠息发生额'
+				WHEN 'COTEAIN' THEN
+				'费用发生额'
+				WHEN 'COTEAOUT' THEN
+				'费用发生额'
+			END CBTSTRING,
+			F.AMT， E .AMT AMTBALANCE,
+			A .DEBT_CODE,
+			A .GRANT_CODE,
+			D.IDENT_NUMBER,
+			B.DEPT_NAME， A .PROJECT_NAME,
+			A .PRODUCT_NAME， A .PROPOSER
+		FROM
+		BIZ_MAKE_LOANS A
+		INNER JOIN SYS_DEPT B ON A .INSTITUTION_CODE = B.ID_
+		INNER JOIN BIZ_DEBT_GRANT C ON A.DEBT_CODE = C.DEBT_CODE AND A.GRANT_CODE = C.GRANT_CODE
+		INNER JOIN BIZ_DEBT_MAIN D ON A.DEBT_CODE = D.DEBT_CODE
+		INNER JOIN BIZ_CBB E ON A .ID_ = E .OBJINR
+		AND E .CBC = 'LOANSUM'
+		INNER JOIN BIZ_CBE F ON A .ID_ = F.OBJINR
+		AND E .CBEINR = F.ID_
+		<where>
+			F.DAT BETWEEN E .BEGDAT AND E .ENDDAT
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and A.DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and A.GRANT_CODE = #{cm.grantCode}
+			</if>
+			<if test="cm.enable != null and cm.enable != ''">
+				and A.ENABLE_ = #{cm.enable}
+			</if>
+		</where>
+	</select>
+
+	<select id="getStatisticInfoList" resultMap="MakeLoansDebtsMap">
+		SELECT
+		TO_CHAR (A .ID_) ID_,
+		TO_CHAR (C.ID_) GRANTID,
+		A .DEBT_CODE,
+		A .GRANT_CODE,
+		B.DEPT_NAME,
+		A .BANKTELL_NAME,
+		A .PROJECT_NAME,
+		A .PRODUCT_NAME,
+		A .VALUE_DATE,
+		A .DUE_DATE,
+		F.BIZ_RENTAL_FACTORING_CODE,
+		G .MAIN_BUSINESS,
+		G .CREDIT_RATING,
+		A .PROPOSER_NUM,
+		A .PROPOSER,
+		D .IDENT_NUMBER,
+		E .AMT AMTBALANCE,
+		G .CUST_SCALE,
+		G .ORGANIZATION_CODE,
+		CASE F.FINANCE_PLATFORM
+		WHEN '0' THEN
+		'否'
+		WHEN '1' THEN
+		'是'
+		END FINANCE_PLATFORM,
+		J.NAME_ BUSINESS_TYPE_NAME,
+		K .NAME_ INNOVATIVE_BUSINESS_TYPE,
+		L.CODE_TEXT BACKGROUND_NATIONALITY,
+		M .NAME_ LOAN_DOMAIN,
+		N.NAME_ IMPOERT_EXPORT_GOODS_SERVICE,
+		CASE I.TYOES_INDUSTRIAL
+		WHEN '0' THEN
+		'鼓励'
+		WHEN '1' THEN
+		'限制'
+		WHEN '2' THEN
+		'淘汰'
+		WHEN '3' THEN
+		'无'
+		END TYOES_INDUSTRIAL,
+		I.BUSINESS_CONTRACT_CODE,
+		I.BUSINESS_CONTRACT_DATE,
+		I.BUSINESS_CONTRACT_AMOUNT,
+		O.NAME_ LOAN_CKASSIFICATION,
+		CASE I.INDUSTRIAL_TRANSFORMATION
+		WHEN 1 THEN
+		'是'
+		WHEN 2 THEN
+		'否'
+		END INDUSTRIAL_TRANSFORMATION,
+		CASE I.CURTURAL_PRODUCT
+		WHEN 1 THEN
+		'是'
+		WHEN 2 THEN
+		'否'
+		END CURTURAL_PRODUCT,
+		CASE I.ALLEVIATION_LOAN
+		WHEN 1 THEN
+		'是'
+		WHEN 2 THEN
+		'否'
+		END ALLEVIATION_LOAN,
+		CASE I.TRADE_FINANCE_BUSINESS
+		WHEN 1 THEN
+		'政策性贷款项下贸金业务'
+		WHEN 2 THEN
+		'与政策性贷款支持方向相同的贸金业务'
+		WHEN 3 THEN
+		'非政策性业务'
+		END TRADE_FINANCE_BUSINESS,
+		CASE I.POLICY_ATTRIBUTRE_CLASSIFY
+		WHEN '1' THEN
+		'一带一路'
+		WHEN '2' THEN
+		'国际产能和装备制造合作'
+		WHEN '3' THEN
+		'重大装备出口和高新技术出口'
+		WHEN '4' THEN
+		'对外承包工程和境外投资'
+		WHEN '5' THEN
+		'能源、资源类'
+		END POLICY_ATTRIBUTRE_CLASSIFY,
+		P .NAME_ INDUSTRY_INVESTMENT,
+		Q.NAME_ COMPARE,
+		CASE I.IS_SYNDICATED
+		WHEN 1 THEN
+		'是'
+		WHEN 2 THEN
+		'否'
+		END IS_SYNDICATED,
+		CASE I.IS_SYNDICATED_AGENCY
+		WHEN 1 THEN
+		'是'
+		WHEN 2 THEN
+		'否'
+		END IS_SYNDICATED_AGENCY,
+		CASE I.SYNDICATED_STATUS
+		WHEN 1 THEN
+		'牵头行'
+		WHEN 2 THEN
+		'参与行'
+		END SYNDICATED_STATUS,
+		CASE I.IS_421
+		WHEN 1 THEN
+		'是'
+		WHEN 2 THEN
+		'否'
+		END IS_421,
+		W.NAME_ EMERGING_INDUSTRY_CLASSIFY
+		FROM
+		BIZ_MAKE_LOANS A
+		LEFT JOIN SYS_DEPT B ON A .INSTITUTION_CODE = B.CODE_
+		LEFT JOIN BIZ_DEBT_GRANT C ON C.GRANT_CODE = A .GRANT_CODE
+		LEFT JOIN BIZ_DEBT_MAIN D ON A .DEBT_CODE = D .DEBT_CODE
+		LEFT JOIN BIZ_CBB E ON A .ID_ = E .OBJINR AND E.CBC = 'LOANSUM'
+		LEFT JOIN BIZ_RENTAL_FACTORING F ON F.DEBT_CODE = A .DEBT_CODE
+		AND F.GRANT_CODE = A .GRANT_CODE
+		LEFT JOIN BIZ_CUSTOMER G ON G .CUST_NO = A .PROPOSER_NUM
+		AND G .DEBT_CODE = A .DEBT_CODE
+		LEFT JOIN BIZ_INTEREST_RATE I ON I.DEBT_CODE = A .DEBT_CODE
+		AND I.GRANT_CODE = A .GRANT_CODE
+		LEFT JOIN BIZ_GUARANTEE_TYPE J ON I.BUSINESS_TYPE = J.CODE_
+		AND J.TYPE_ = '012'
+		LEFT JOIN BIZ_GUARANTEE_TYPE K ON I.INNOVATIVE_BUSINESS_TYPE = K .CODE_
+		AND K .TYPE_ = '011'
+		LEFT JOIN SYS_DIC L ON L.CODE_ = I.BACKGROUND_NATIONALITY
+		AND L.TYPE_ = 'countryBack'
+		LEFT JOIN BIZ_GUARANTEE_TYPE M ON I.LOAN_DOMAIN = M .CODE_
+		AND M .TYPE_ = '008'
+		LEFT JOIN BIZ_GUARANTEE_TYPE N ON I.IMPOERT_EXPORT_GOODS_SERVICE = N.CODE_
+		AND N.TYPE_ = '010'
+		LEFT JOIN BIZ_GUARANTEE_TYPE O ON I.LOAN_CKASSIFICATION = O.CODE_
+		AND O.TYPE_ = '009'
+		LEFT JOIN BIZ_GUARANTEE_TYPE P ON I.INDUSTRY_INVESTMENT = P .CODE_
+		AND P .TYPE_ = '005'
+		LEFT JOIN BIZ_GUARANTEE_TYPE Q ON I.COMPARE = Q.CODE_
+		AND Q.TYPE_ = '014'
+		LEFT JOIN BIZ_GUARANTEE_TYPE W ON I.EMERGING_INDUSTRY_CLASSIFY = W.CODE_
+		AND W.TYPE_ = '006'
+		<where>
+			<if test="cm.deptCode != null and cm.deptCode != ''">
+				AND A.INSTITUTION_CODE = #{cm.deptCode}
+			</if>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				AND A.GRANT_CODE like '%'||#{cm.grantCode}||'%'
+			</if>
+			<if test="cm.endDate != null and cm.endDate != ''">
+				AND A.DATE_OF_LOAN &lt;= TO_DATE(#{cm.endDate},'YYYY-MM-DD HH24:MI:SS')
+				AND E.BEGDAT &lt;=  TO_DATE(#{cm.endDate}, 'YYYY-MM-DD HH24:MI:SS')
+				AND TO_DATE(#{cm.endDate}, 'YYYY-MM-DD HH24:MI:SS') &lt; E.ENDDAT
+			</if>
+			<if test="cm.beginDate != null and cm.beginDate != ''">
+				AND A.DATE_OF_LOAN &gt;= TO_DATE(#{cm.beginDate},'YYYY-MM-DD HH24:MI:SS')
+			</if>
+			<if test="cm.proposer != null and cm.proposer != ''">
+				AND A.PROPOSER like '%'||#{cm.proposer}||'%'
+			</if>
+			<if test="cm.enable != null and cm.enable != ''">
+				AND A.ENABLE_ = #{cm.enable}
+			</if>
+		</where>
+	</select>
+</mapper>

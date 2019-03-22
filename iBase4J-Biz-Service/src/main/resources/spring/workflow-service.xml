@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+
+    <bean id="matrixContextHolder"
+          class="com.matrix.extention.SpringContextHolder"/>
+    <bean id="matrixService" class="com.matrix.engine.service.ServiceManagerBean"
+		scope="prototype"/>
+	<bean id="matrixSubstitute" class="com.matrix.engine.proxy.MFSubstituteServiceProxy" 
+		scope="prototype"/>
+	<bean id="matrixTemplate" class="com.matrix.engine.proxy.MFTemplateServiceProxy" 
+		scope="prototype"/>	
+	<bean id="matrixCalendar" class="com.matrix.engine.proxy.BusinessCalendarProxy" 
+		scope="prototype"/>	
+	<bean id="matrixIdentity" class="com.matrix.engine.proxy.MFIndentityServiceProxy" 
+		scope="prototype"/>	
+	<bean id="matrixScheduler" class="com.matrix.engine.proxy.MFSchedulerServiceProxy" 
+		scope="prototype"/>	
+	<bean id="matrixHistory" class="com.matrix.engine.proxy.MFInstanceHistoryServiceProxy" 
+		scope="prototype"/>	
+	<bean id="matrixAssistant" class="com.matrix.engine.proxy.MFInstanceAssistantServiceProxy" 
+		scope="prototype"/>	
+	<bean id="matrixEvent" class="com.matrix.engine.service.event.db.JobStoreCMT" 
+		scope="prototype"/>	
+	<bean id="matrixJobExecutor" class="com.matrix.engine.service.event.MFJobExecutorImpl" 
+		scope="prototype"/>	
+	
+</beans>

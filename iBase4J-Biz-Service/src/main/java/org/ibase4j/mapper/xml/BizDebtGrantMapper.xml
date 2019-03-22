@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizDebtGrantMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_DEBT_GRANT
+		<where>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and GRANT_CODE = #{cm.grantCode}
+			</if>
+			<if test="cm.businessTypes != null and cm.businessTypes != ''">
+				and BUSINESS_TYPES = #{cm.businessTypes}
+			</if>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.properInfo != null and cm.properInfo != ''">
+				and PROPER_INFO = #{cm.properInfo}
+			</if>
+			<if test="cm.custNo != null and cm.custNo != ''">
+				and CUST_NO = #{cm.custNo}
+			</if>
+			<if test="cm.repaymentMode != null and cm.repaymentMode != ''">
+				and REPAYMENT_MODE = #{cm.repaymentMode}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (remark_ like '%'||#{cm.keyword}||'%')
+			</if>
+			<if test="cm.grantStatus != null and cm.grantStatus != ''">
+				and GRANT_STATUS = #{cm.grantStatus}
+			</if>
+			<if test="cm.enable != null and cm.enable != ''">
+				and ENABLE_ = #{cm.enable}
+			</if>
+			<if test="cm.createBy != null and cm.createBy != ''">
+				and CREATE_BY = #{cm.createBy}
+			</if>
+			<if test="cm.deptCode != null and cm.deptCode != ''">
+				and INSTITUTION_CODE = #{cm.deptCode}
+			</if>
+            <if test="cm.keyword != null and cm.keyword != ''">
+                and (GRANT_CODE like '%'||#{cm.keyword}||'%')
+            </if>
+			<if test="cm.schemeNum != null and cm.schemeNum != ''">
+				and (GRANT_CODE like '%'||#{cm.schemeNum}||'%')
+			</if>
+			<if test="cm.businessName != null and cm.businessName != ''">
+				and (BUSINESS_NAME like '%'||#{cm.businessName}||'%')
+			</if>
+			<if test="cm.applicant != null and cm.applicant != ''">
+				and (PROPOSER like '%'||#{cm.applicant}||'%')
+			</if>
+			<if test="cm.stateTime != null and cm.stateTime != ''">
+				and (CREATE_TIME &gt;= TO_DATE(#{cm.stateTime}||'00:00:00', 'yyyy-mm-dd hh24:mi:ss'))
+			</if>
+			<if test="cm.endTime != null and cm.endTime != ''">
+				and (CREATE_TIME &lt;= TO_DATE(#{cm.endTime}||'23:59:59', 'yyyy-mm-dd hh24:mi:ss'))
+			</if>
+			<if test="cm.historyState != null and cm.historyState != ''">
+				and HISTORY_STATE is not null
+			</if>
+			<if test="cm.historyStatus != null and cm.historyStatus != ''">
+				and HISTORY_STATE = #{cm.historyStatus}
+			</if>
+			<if test="cm.notStatus!=null and cm.notStatus!=''">
+				and GRANT_STATUS not in (9,11,12)
+			</if>
+		</where>
+	</select>
+
+	<resultMap id="MakeLoansDebtsMap" type="java.util.HashMap" >
+		<result column="ID_" property="objInr" jdbcType="VARCHAR" />
+		<result column="DEBT_CODE" property="debtCode" jdbcType="VARCHAR" />
+		<result column="GRANT_CODE" property="grantCode" jdbcType="VARCHAR" />
+		<result column="GRANT_STATUS" property="grantStatus" jdbcType="INTEGER" />
+		<result column="GRANT_STATUS_STRING" property="grantStatusString" jdbcType="VARCHAR" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="DATE"/>
+		<result column="PASS_DATE" property="passDate" jdbcType="DATE"/>
+		<result column="BUSINESS_TYPES" property="businessTypes" jdbcType="VARCHAR"/>
+		<result column="NAME_" property="productName" jdbcType="VARCHAR" />
+		<result column="PROJECT_NAME" property="projectName" jdbcType="VARCHAR" />
+		<result column="USER_NAME" property="bankTellName" jdbcType="VARCHAR" />
+		<result column="DEPT_NAME" property="deptName" jdbcType="VARCHAR" />
+		<result column="CREDIT_RATIO" property="creditRatio" jdbcType="DOUBLE" />
+		<result column="CREDIT_LINE_NAME" property="creditLineName" jdbcType="VARCHAR" />
+		<result column="CUST_NAME_CN" property="custNameCn" jdbcType="VARCHAR" />
+		<result column="PROPOSER" property="proposer" jdbcType="VARCHAR" />
+		<result column="DEPT_CODE" property="deptCode" jdbcType="VARCHAR" />
+		<result column="PROPOSER_NUM" property="proposerNum" jdbcType="VARCHAR" />
+		<result column="SCOPE_BUSIN_PERIOD" property="scopeBusinPeriod" jdbcType="INTEGER" />
+		<result column="GRACE_PERIOD" property="gracePeriod" jdbcType="INTEGER" />
+		<result column="TOIERANCE_PERIOD" property="toierancePeriod" jdbcType="INTEGER" />
+		<result column="BANK_TELL_ID" property="bankTellId" jdbcType="BIGINT" />
+		<result column="PAYMENT_AMT" property="paymentAmt" jdbcType="DOUBLE" />
+		<result column="AMT" property="amt" jdbcType="DOUBLE" />
+		<result column="IOU_CODE" property="iouCode" jdbcType="VARCHAR" />
+		<result column="IDENT_NUMBER" property="identNumber" jdbcType="VARCHAR" />
+		<result column="CUST_NO" property="custNo" jdbcType="VARCHAR" />
+		<result column="CREDIT_NO" property="creditNo" jdbcType="VARCHAR" />
+		<result column="AMOUNT_TYPE" property="amountType" jdbcType="VARCHAR" />
+		<result column="SEND_DATE" property="sendDate" jdbcType="DATE"/>
+		<result column="END_DATE" property="endDate" jdbcType="DATE"/>
+
+	</resultMap>
+
+	<select id="getMakeLoansDebts" resultMap="MakeLoansDebtsMap">
+		SELECT
+			TO_CHAR (A .ID_) ID_,
+			A .DEBT_CODE,
+			A .GRANT_CODE,
+			A .BUSINESS_TYPES,
+			A .GRANT_STATUS,
+			A.PASS_DATE,
+			CASE A .GRANT_STATUS
+				WHEN 1 THEN
+				'已变更'
+				WHEN 3 THEN
+				'已批未放'
+				WHEN 4 THEN
+				'发放中'
+				WHEN 5 THEN
+				'已发放'
+				WHEN 11 THEN
+				'冻结'
+			END GRANT_STATUS_STRING,
+			A .SCOPE_BUSIN_PERIOD,
+			B.PROPOSER,
+			C.NAME_
+		FROM
+		BIZ_DEBT_GRANT A
+		INNER JOIN BIZ_DEBT_MAIN B ON A .DEBT_CODE = B.DEBT_CODE
+		INNER JOIN BIZ_PRODUCT_TYPES C ON A .BUSINESS_TYPES = C.CODE_
+		<where>
+			A .GRANT_STATUS IN (1,3,4,5,11)
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and (A.GRANT_CODE like '%'||#{cm.grantCode}||'%')
+			</if>
+			<if test="cm.proposer != null and cm.proposer != ''">
+				and (B.PROPOSER like '%'||#{cm.proposer}||'%')
+			</if>
+			<if test="cm.productName != null and cm.productName != ''">
+				and (C.NAME_ like '%'||#{cm.productName}||'%')
+			</if>
+			<if test="cm.beginDate != null and cm.beginDate != ''">
+        			and A.PASS_DATE &gt;=  TO_DATE(#{cm.beginDate}, 'yyyy-mm-dd')
+			</if>
+			<if test="cm.endDate != null and cm.endDate != ''">
+            		and A.PASS_DATE &lt;= TO_DATE(#{cm.endDate}, 'yyyy-mm-dd')
+			</if>
+			<if test="cm.institutionCode != null and cm.institutionCode != ''">
+				and A.INSTITUTION_CODE = #{cm.institutionCode}
+			</if>
+		</where>
+	</select>
+
+	<select id="getDebtInfoForMakeLoan" resultMap="MakeLoansDebtsMap">
+		SELECT
+		TO_CHAR(A.ID_) ID_ ,
+		A .DEBT_CODE,
+		A .GRANT_CODE,
+		A.SEND_DATE,
+		A.END_DATE,
+		A.BUSINESS_TYPES,
+		A.SCOPE_BUSIN_PERIOD,
+		A.GRACE_PERIOD,
+		A.TOIERANCE_PERIOD,
+		A.IOU_CODE,
+		B.IDENT_NUMBER,
+		B.PROJECT_NAME,
+		B.PROPOSER,
+		B.PROPOSER_NUM,
+		B.BANK_TELL_ID,
+		C.USER_NAME,
+		C.DEPT_CODE,
+		D .DEPT_NAME,
+		E .NAME_
+		FROM
+		BIZ_DEBT_GRANT A
+		INNER JOIN BIZ_DEBT_MAIN B ON A .DEBT_CODE = B.DEBT_CODE
+		INNER JOIN SYS_USER C ON B.BANK_TELL_ID = C.id_
+		INNER JOIN SYS_DEPT D ON C.DEPT_CODE = D .ID_
+		INNER JOIN BIZ_PRODUCT_TYPES E ON A .BUSINESS_TYPES = E .CODE_
+		<where>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and A.GRANT_CODE = #{cm.grantCode}
+			</if>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and A.DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.businessTypes != null and cm.businessTypes != ''">
+				and A.BUSINESS_TYPES = #{cm.businessTypes}
+			</if>
+		</where>
+	</select>
+
+	<select id="getProductCustomerInfo" resultMap="MakeLoansDebtsMap">
+		SELECT
+		A .CUST_NAME_CN,
+		C.CREDIT_RATIO,
+		A .CUST_NO,
+		D .CREDIT_NO,
+		D .AMOUNT_TYPE,
+		D .CREDIT_LINE_NAME
+		FROM
+		BIZ_CUSTOMER A
+		INNER JOIN BIZ_PTS B ON A .DEBT_CODE = B.DEBT_CODE
+		AND B.ROL = 'LETS'
+		AND A .ID_ = B.PTYINR
+		INNER JOIN BIZ_PRODUCT_LINESTYPE C ON A .DEBT_CODE = C.DEBT_CODE
+		AND C.CUST_NO = A .CUST_NO
+		INNER JOIN BIZ_CREDIT_LINES D ON D .DEBT_CODE = A .DEBT_CODE
+		AND D .OBJTYP = 'BIZ_DEBT_MAIN'
+		AND D .AMOUNT_TYPE = C.BIZ_CREDIT_LINES_ID
+		AND D.CUST_NO = C.CUST_NO
+		<where>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and A.DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.businessTypes != null and cm.businessTypes != ''">
+				and C.BUSINESS_TYPE = #{cm.businessTypes}
+			</if>
+		</where>
+	</select>
+
+	<select id="getDebtStandingBookList" resultMap="MakeLoansDebtsMap">
+		SELECT
+			TO_CHAR (A .ID_) ID_,
+			A .DEBT_CODE,
+			A .PROJECT_NAME,
+			A .BANK_TELL_ID,
+			C.USER_NAME,
+			C.DEPT_CODE,
+			D .DEPT_NAME
+			FROM
+			BIZ_DEBT_MAIN A
+		INNER JOIN SYS_USER C ON A .BANK_TELL_ID = C.id_
+		INNER JOIN SYS_DEPT D ON C.DEPT_CODE = D .ID_
+		<where>
+			<if test="cm.solutionState != null and cm.solutionState != ''">
+				and A.SOLUTION_STATE = #{cm.solutionState}
+			</if>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and (A.DEBT_CODE like '%'||#{cm.debtCode}||'%')
+			</if>
+		</where>
+	</select>
+	
+	<select id="getTempList" resultType="java.util.Map">
+		SELECT 
+			TO_CHAR(b.ID_) as TEMP_ID,
+		   	a.CURRENCY,
+		   	a.GRANT_AMT,
+		   	a.SCOPE_BUSIN_PERIOD,
+		   	a.PROPOSER,
+		   	c.NAME_ as BNS_TYPE_NAME,
+		   	b.BIZ_CODE
+		FROM 
+			BIZ_DEBT_GRANT a 
+		INNER JOIN 
+			BIZ_TMPSAVE b 
+		ON  a.GRANT_CODE = b.BIZ_CODE
+		LEFT JOIN 
+			BIZ_PRODUCT_TYPES c 
+		ON a.BUSINESS_TYPES = c.CODE_
+		<where>
+			<if test="cm.taskid != null and cm.taskid != ''">
+				and b.TASK_ID = #{cm.taskid}
+			</if>
+			<if test="cm.rolid != null and cm.rolid != ''">
+				and b.ROL_ID = #{cm.rolid}
+			</if>
+			<if test="cm.userid != null and cm.userid != ''">
+				and b.USER_ID = #{cm.userid}
+			</if>
+		</where>
+		ORDER BY b.CREATE_TIME DESC
+	</select>
+
+
+
+	<select id="getAreaNumberByUserId" resultType="java.lang.String">
+		SELECT
+		CASE
+		WHEN SUBSTR(B.PARENT_CODE, 0,1)='1' THEN '1360'
+		WHEN B.PARENT_CODE='2201000' THEN '3010'
+		ELSE
+		SUBSTR(B.PARENT_CODE,0,4)
+		END PARENT_CODE
+		FROM
+		SYS_USER A
+		INNER JOIN SYS_DEPT B ON A .DEPT_CODE = B.CODE_
+		<where>
+			1=1
+			<if test="cm.userId != null and cm.userId != ''">
+				and A.ID_ = #{cm.userId}
+			</if>
+		</where>
+	</select>
+
+
+</mapper>

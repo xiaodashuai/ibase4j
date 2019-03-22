@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizEmailMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from sys_email
+		<where>
+			<if test="cm.emailName != null and cm.emailName != ''">
+				and EMAIL_NAME = #{cm.emailName}
+			</if>
+			<if test="cm.sender != null and cm.sender != ''">
+				and SENDER_ = #{cm.sender}
+			</if>
+			<if test="cm.emaiTitle != null and cm.emaiTitle != ''">
+				and EMAIL_TITLE = #{cm.emaiTitle}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (SENDER_ like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+		
+</mapper>

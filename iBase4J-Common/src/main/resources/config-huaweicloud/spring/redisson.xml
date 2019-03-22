@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:redisson="http://redisson.org/schema/redisson"
+	   xmlns="http://www.springframework.org/schema/beans" xmlns:cache="http://www.springframework.org/schema/cache"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://redisson.org/schema/redisson
+       http://redisson.org/schema/redisson/redisson-1.2.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+    <redisson:client id="redissonClient">
+    	<redisson:single-server address="redis://${redis.host}:${redis.port}" password="${redis.password}" connection-pool-size="60" />
+    </redisson:client>
+	<bean id="redissonHelper" class="org.ibase4j.core.support.cache.RedissonHelper"
+		p:redisson-client-ref="redissonClient" />
+	<bean id="redissonCacheManager"
+		  class="org.redisson.spring.cache.RedissonSpringCacheManager">
+		<constructor-arg ref="redissonClient"/>
+		<property name="config">
+			<map>
+				<entry key="iBase4J:M:*">
+					<bean class="org.redisson.spring.cache.CacheConfig">
+						<property name="TTL" value="1800000" /> <!-- 30 minutes -->
+						<property name="maxIdleTime" value="900000" /> <!-- 15 minutes -->
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<cache:annotation-driven cache-manager="redissonCacheManager"/>
+
+</beans>

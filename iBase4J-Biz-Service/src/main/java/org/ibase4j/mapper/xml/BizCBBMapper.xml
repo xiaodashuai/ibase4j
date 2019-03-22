@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizCBBMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_CBB
+		<where>
+			<if test="cm.objType != null and cm.objType != ''">
+				and OBJTYP = #{cm.objType}
+			</if>
+			<if test="cm.objInr != null and cm.objInr != ''">
+				and OBJINR = #{cm.objInr}
+			</if>
+			<if test="cm.cbeInr != null and cm.cbeInr != ''">
+				and CBEINR = #{cm.cbeInr}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (CBC like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+	<select id="getCBBbyCBCType" resultType="java.lang.String">
+		SELECT
+			NVL(MAX(AMT),0) AMT
+		FROM
+		BIZ_CBB A
+		<where>
+			<if test="cm.objInr != null and cm.objInr != ''">
+				and A.OBJINR = #{cm.objInr}
+			</if>
+			<if test="cm.cbc != null and cm.cbc != ''">
+				and A.CBC = #{cm.cbc}
+			</if>
+			<if test="cm.endDate != null and cm.endDate != ''">
+				and TO_DATE(#{cm.endDate}, 'YYYY-MM-DD HH24:MI:SS') BETWEEN A.BEGDAT AND A.ENDDAT
+			</if>
+			<if test="cm.enable != null and cm.enable != ''">
+				and A.ENABLE_ = #{cm.enable}
+			</if>
+		</where>
+	</select>
+
+</mapper>

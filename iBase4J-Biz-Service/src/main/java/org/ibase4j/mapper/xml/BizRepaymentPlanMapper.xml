@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizRepaymentPlanMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_REPAYMENT_PLAN
+		<where>
+			<if test="cm.planId != null and cm.planId != ''">
+				and PLAN_ID = #{cm.planId}
+			</if>
+			<if test="cm.payDate != null and cm.payDate != ''">
+				and PAY_DATE = #{cm.payDate}
+			</if>
+			<if test="cm.payCny != null and cm.payCny != ''">
+				and PAY_CNY = #{cm.payCny}
+			</if>
+			<if test="cm.debtCode != null and cm.debtCode != ''">
+				and DEBT_CODE = #{cm.debtCode}
+			</if>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and GRANT_CODE = #{cm.grantCode}
+			</if>
+			<if test="cm.principalAmt != null and cm.principalAmt != ''">
+				and PRINCIPAL_AMT = #{cm.principalAmt}
+			</if>
+			<if test="cm.interestAmt != null and cm.interestAmt != ''">
+				and INTEREST_AMT = #{cm.interestAmt}
+			</if>
+			<if test="cm.repaymentName != null and cm.repaymentName != ''">
+				and REPAYMENT_NAME = #{cm.repaymentName}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (remark_ like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+	<resultMap id="RepaymentDebtsMap" type="java.util.HashMap" >
+		<result column="FIRST_REPAY_DAY" property="firstRepayDay" jdbcType="DATE" />
+		<result column="LAST_REPAYMENT_DAY" property="lastRepaymentDay" jdbcType="DATE"/>
+		<result column="REPAYMENT_COST_MODE" property="repaymentCostMode" jdbcType="VARCHAR" />
+		<result column="REPAYMENT_COST_MODE_STRING" property="repaymentCostModeString" jdbcType="VARCHAR" />
+		<result column="FIRST_DAY" property="firstDay" jdbcType="DATE" />
+		<result column="CACL_WAY" property="caclWay" jdbcType="VARCHAR" />
+		<result column="CACL_WAY_STRING" property="caclWayString" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getDebtInfoForRepayment" resultMap="RepaymentDebtsMap">
+		SELECT
+			FIRST_REPAY_DAY,
+			LAST_REPAYMENT_DAY,
+			REPAYMENT_COST_MODE,
+			CASE REPAYMENT_COST_MODE
+				WHEN 1 THEN
+				'月'
+				WHEN 3 THEN
+				'季'
+				WHEN 6 THEN
+				'半年'
+				WHEN 12 THEN
+				'年'
+			END REPAYMENT_COST_MODE_STRING,
+			FIRST_DAY,
+			CACL_WAY,
+			CASE CACL_WAY
+				WHEN 1 THEN
+				'月'
+				WHEN 3 THEN
+				'季'
+				WHEN 6 THEN
+				'半年'
+				WHEN 12 THEN
+				'年'
+			END CACL_WAY_STRING
+		FROM
+		BIZ_REPAYMENT_PLAN
+		<where>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and GRANT_CODE = #{cm.grantCode}
+			</if>
+		</where>
+	</select>
+
+
+
+
+
+
+
+</mapper>

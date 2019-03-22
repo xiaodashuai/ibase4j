@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizCntMapper">
+    <select id="findByName" parameterType="String" resultMap="BizCntMap">
+        select * from biz_cnt where name_ = #{id}
+    </select>
+    <resultMap id="BizCntMap" type="org.ibase4j.model.BizCnt"
+               autoMapping="true">
+        <id column="ID_" property="id" />
+        <result column="NAME_" property="name" javaType="String" jdbcType="VARCHAR" />
+        <result column="VAL_" property="val" javaType="Integer" jdbcType="INTEGER" />
+        <result column="STEP_" property="step" javaType="Integer" jdbcType="INTEGER" />
+    </resultMap>
+</mapper>

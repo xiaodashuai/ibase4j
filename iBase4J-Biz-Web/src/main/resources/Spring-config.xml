@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-4.0.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	<!-- 引入属性配置文件 --> 
+	<bean class="org.ibase4j.core.util.PropertiesUtil">
+		<property name="locations">
+			<list>
+				<value>${system.config.path}</value>
+			</list>
+		</property>
+		<property name="properties">
+			<props>
+				<prop key="rpc.registry.name">${project.artifactId}</prop>
+				<prop key="rpc.protocol.port">1${server.port}</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- 扫描注解 -->
+	<context:component-scan base-package="org.ibase4j">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation" expression="org.springframework.cache.annotation.EnableCaching" />
+	</context:component-scan>
+
+
+		<!-- 拦截器使用对象,使用Spring注入 -->
+	<dubbo:reference id="sysUserProvider"
+					 interface="org.ibase4j.provider.ISysUserProvider" check="false"/>
+	<dubbo:reference id="sysDeptProvider"
+					 interface="org.ibase4j.provider.ISysDeptProvider" check="false"/>
+	<dubbo:reference id="bizSessionProvider"
+					 interface="org.ibase4j.provider.IBizSessionProvider" check="false" />
+	<dubbo:reference id="sysAuthorizeProvider"
+					 interface="org.ibase4j.provider.ISysAuthorizeProvider" check="false" />
+	<dubbo:reference id="wFLogsProvider"
+			         interface="org.ibase4j.provider.WFLogsProvider" check="false" />
+	<!-- 引入SPRING配置文件 -->
+	<import resource="spring/dubbo.xml"/>
+	<import resource="spring/redis.xml"/>
+	<import resource="spring/shiro.xml"/>
+	
+</beans>

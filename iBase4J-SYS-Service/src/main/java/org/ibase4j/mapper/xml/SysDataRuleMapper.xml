@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.SysDataRuleMapper">
+  	<select id="selectIdPage" parameterType="java.util.Map" resultType="java.lang.Long">
+		select id_ from sys_datarule
+		<where>
+			<if test="cm.keyword != null">
+				and code_ like CONCAT('%',CONCAT(#{cm.keyword},'%'))
+			</if>
+		</where>
+	</select>
+	<resultMap	id="dataRuleMap" type="org.ibase4j.model.SysDataRule" autoMapping="true">
+	<id column = "ID_" property = "id"/>
+	<result column = "CODE_" property = "code" javaType = "int" jdbcType = "INTEGER"/>
+	</resultMap>
+	<select id = "queryByCode" resultMap="dataRuleMap">
+		select id_ , CODE_ 
+		from 
+		SYS_DATARULE
+		where 
+		CODE_ = #{account , jdbcType=VARCHAR}
+	</select>
+</mapper>

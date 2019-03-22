@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizGuaranteeResultMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_GUARANTEE_RESULT
+		<where>
+			<if test="cm.guaranType != null and cm.guaranType != ''">
+				and GUARAN_TYPE = #{cm.guaranType}
+			</if>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and GRANT_CODE = #{cm.grantCode}
+			</if>
+			<if test="cm.schemeNo != null and cm.schemeNo != ''">
+				and SCHEME_NO = #{cm.schemeNo}
+			</if>
+			<if test="cm.guaranteeContractNo != null and cm.guaranteeContractNo != ''">
+				and GUARANTEE_CONTRACT_NO = #{cm.guaranteeContractNo}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (PLEDGE_NAME like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+	</select>
+
+	<resultMap id="BizGuaranteeResultMap" type="java.util.HashMap" >
+		<result column="GUARAN_TYPE" property="guaranType" jdbcType="VARCHAR" />
+		<result column="GUARAN_PORT_TYPE" property="guaranPortType" jdbcType="VARCHAR" />
+		<result column="GUARAN_PORT_NAME" property="guaranPortName" jdbcType="VARCHAR" />
+		<result column="CLEAR_RATIO" property="clearRatio" jdbcType="BIGINT" />
+		<result column="CLEAR_RATIO_AMT" property="clearRatioAmt" jdbcType="VARCHAR" />
+		<result column="NOT_CLEAR_AMT" property="notClearAmt" jdbcType="VARCHAR" />
+		<result column="NAME_" property="guaranName" jdbcType="VARCHAR" />
+		<result column="GUARANTEE_TYPE_TOTAL" property="AllGuaranName" jdbcType="VARCHAR" />
+		<result column="GRANT_CODE" property="grantCode" jdbcType="VARCHAR" />
+		<result column="TYPE_POINT" property="typePoint" jdbcType="VARCHAR" />
+		<result column="SRV1" property="srv1" jdbcType="VARCHAR" />
+		<result column="GUARANTOR_CUST_ID" property="guarantorCustId" jdbcType="VARCHAR" />
+		<result column="GUARANTEE_CONTRACT_TYPE" property="guaranteeContractType" jdbcType="VARCHAR" />
+		<result column="WARRANTY_CONTRACT_NUMBER" property="warrantyContractNumber" jdbcType="VARCHAR" />
+		<result column="SRV1" property="srv1" jdbcType="VARCHAR" />
+		<result column="PLEDGE_TYPE" property="pledgeType" jdbcType="VARCHAR" />
+		<result column="GUARANTEE_AMOUNT" property="guaranteeAmount" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getBizGuaranteeResultList" resultMap="BizGuaranteeResultMap">
+		SELECT
+		A .GUARAN_TYPE,
+		A .GUARAN_PORT_TYPE,
+		CASE A .GUARAN_PORT_TYPE
+		WHEN '1' THEN
+		'可明确划分份额'
+		WHEN '2' THEN
+		'不可明确划分份额'
+		END GUARAN_PORT_NAME,
+		A .CLEAR_RATIO,
+		A .CLEAR_RATIO_AMT,
+		A .NOT_CLEAR_AMT,
+		C.NAME_
+		FROM
+		BIZ_GUARANTEE_RESULT A
+		INNER JOIN BIZ_GUARANTEE_INFO B ON A .GUARAN_TYPE = B.ID_
+		INNER JOIN BIZ_GUARANTEE_TYPE C ON B.TYPE_POINT = C.CODE_ AND C.TYPE_ = '004'
+		<where>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and A.GRANT_CODE = #{cm.grantCode}
+			</if>
+		</where>
+	</select>
+
+	<select id="getGuaranteeInfoList" resultMap="BizGuaranteeResultMap">
+		SELECT
+		A .GRANT_CODE,
+		B.TYPE_POINT,
+		C.SRV1,
+		B.GUARANTOR_CUST_ID,
+		B.GUARANTEE_CONTRACT_TYPE,
+		B.WARRANTY_CONTRACT_NUMBER,
+		B.GUARANTEE_AMOUNT,
+		A .PLEDGE_TYPE,
+		A .CLEAR_RATIO_AMT,
+		A .NOT_CLEAR_AMT
+		FROM
+		BIZ_GUARANTEE_RESULT A
+		LEFT JOIN BIZ_GUARANTEE_INFO B ON A .GUARAN_TYPE = B.ID_
+		LEFT JOIN BIZ_GUARANTEE_TYPE C ON A .PLEDGE_TYPE = C.CODE_
+		AND C.TYPE_ = '001'
+		<where>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and A.GRANT_CODE = #{cm.grantCode}
+			</if>
+		</where>
+	</select>
+
+</mapper>

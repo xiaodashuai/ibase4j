@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizInterestRateMapper">
+
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_INTEREST_RATE
+		<where>
+			<if test="cm.enable != null and cm.enable != ''">
+				and enable_ = #{cm.enable}
+			</if>
+			<if test="cm.debtNum != null and cm.debtNum != ''">
+				and DEBT_CODE = #{cm.debtNum}
+			</if>
+			<if test="cm.grantCode != null and cm.grantCode != ''">
+				and GRANT_CODE = #{cm.grantCode}
+			</if>
+			<if test="cm.businessType != null and cm.businessType != ''">
+				and BUSINESS_TYPE = #{cm.businessType}
+			</if>
+		</where>
+	</select>
+</mapper>

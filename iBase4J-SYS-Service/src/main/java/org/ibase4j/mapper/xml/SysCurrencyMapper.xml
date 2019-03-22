@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.SysCurrencyMapper">
+	<select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from SYS_CURRENCY
+		<where>
+			<if test="cm.countryCode != null and cm.countryCode != ''">
+				and COUNTRY_CODE =#{cm.countryCode}
+			</if>
+			<if test="cm.monNo != null and cm.monNo != ''">
+				and MON_NO =#{cm.monNo}
+			</if>
+			<if test="cm.monCode != null and cm.monCode != ''">
+				and MON_CODE =#{cm.monCode}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (MON_CODE like CONCAT('%',#{cm.keyword},'%'))
+			</if>
+		</where>
+	</select>
+</mapper>

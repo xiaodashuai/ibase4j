@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizSessionMapper">
+    <select id="selectIdPage" resultType="java.lang.Long">
+        select id_ from biz_session
+        <where>
+            <if test="cm.enable != null and cm.enable != ''">
+                and enable_= #{cm.enable ,jdbcType=INTEGER }
+            </if>
+            <if test="cm.enable == null or cm.enable == ''">
+                and enable_= 1
+            </if>
+            <if test="cm.sessionState != null and cm.sessionState != ''">
+                and SESSION_STATE= #{cm.sessionState ,jdbcType=INTEGER}
+            </if>
+            <if test="cm.sessionState == null or cm.sessionState == ''">
+
+            </if>
+            <if test="cm.keyword != null">
+                and (account_ like '%'||#{cm.keyword}||'%' or session_id like '%'||#{cm.keyword}||'%' or ip_ like
+                '%'||#{cm.keyword}||'%')
+            </if>
+        </where>
+    </select>
+    <delete id="deleteBySessionId" parameterType="java.lang.String">
+		delete from
+		biz_session where session_id=#{sessionId ,jdbcType=VARCHAR}
+	</delete>
+    <select id="queryBySessionId" resultType="java.lang.Long">
+		select id_ from biz_session where session_id = #{sessionId ,jdbcType=VARCHAR}
+	</select>
+    <select id="querySessionIdByAccount" resultType="java.lang.String">
+		select session_id from biz_session where account_ = #{account ,jdbcType=VARCHAR} and enable_=1
+	</select>
+    <select id="queryIdByAccount" resultType="java.lang.Long">
+		select id_ from biz_session where account_ = #{account ,jdbcType=VARCHAR} and enable_=1
+	</select>
+
+
+    <sql id="Base_Column_List">
+   ID_ AS id, SESSION_ID AS sessionId, ACCOUNT_ AS account, IP_ AS ip, START_TIME AS startTime, ENABLE_ AS enable, REMARK_ AS remark, SESSION_STATE AS sessionState, CREATE_TIME AS createTime, CREATE_BY AS creatBy, UPDATE_TIME AS updateTime, UPDATE_BY AS updateBy
+ 	</sql>
+
+    <select id="queryOneBySessionId" resultType="org.ibase4j.model.BizSession">
+
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        biz_session
+        WHERE
+        session_id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryOneByAccount" resultType="org.ibase4j.model.BizSession">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        biz_session
+        WHERE
+        account_ = #{id,jdbcType=VARCHAR} and enable_=1
+    </select>
+</mapper>

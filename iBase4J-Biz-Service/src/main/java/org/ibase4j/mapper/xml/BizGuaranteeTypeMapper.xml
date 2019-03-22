@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizGuaranteeTypeMapper">
+	<select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_GUARANTEE_TYPE
+		<where>
+			<if test="cm.code != null and cm.code != ''">
+				and CODE_ = #{cm.code}
+			</if>
+			<if test="cm.parentCode != null and cm.parentCode != ''">
+				and PARENT_CODE = #{cm.parentCode}
+			</if>
+			<if test="cm.type != null and cm.type != ''">
+				and TYPE_ = #{cm.type}
+			</if>
+			<if test="cm.srv1 != null and cm.srv1 != ''">
+				and SRV1 = #{cm.srv1}
+			</if>
+			<if test="cm.srv2 != null and cm.srv2 != ''">
+				and SRV2 = #{cm.srv2}
+			</if>
+			<if test="cm.keyword != null and cm.keyword != ''">
+				and (NAME_ like '%'||#{cm.keyword}||'%')
+			</if>
+		</where>
+		ORDER BY CODE_ asc
+	</select>
+	
+	<select id="queryByType" resultMap="vo">
+		select 
+			CODE_,
+			NAME_,
+			PARENT_CODE,
+			CHILDREN,
+			TYPE_
+		from BIZ_GUARANTEE_TYPE
+		where TYPE_ in
+		<foreach item="item" index="index" collection="types" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		and 
+			PARENT_CODE in
+		<foreach item="item" index="index" collection="parentCodes" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		order by 
+			TYPE_ ASC,CODE_ ASC
+	</select>
+	
+	<resultMap type="org.ibase4j.vo.PairVo" id="vo" autoMapping="true">
+		<result column="CODE_" property="code"/>
+		<result column="NAME_" property="name"/>
+		<result column="PARENT_CODE" property="parentCode"/>
+		<result column="CHILDREN" property="children"/>
+		<result column="TYPE_" property="type"/>
+	</resultMap>
+</mapper>

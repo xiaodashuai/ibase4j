@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ibase4j.mapper.BizApprovalAuditValueMapper">
+  <select id="selectIdPage" resultType="java.lang.Long">
+		select id_ from BIZ_APPROVAL_AUDIT_VALUE
+	  <where>
+		  <if test="cm.enable != null and cm.enable != ''">
+			  and enable_ = #{cm.enable}
+		  </if>
+		  <if test="cm.taskId != null and cm.taskId != ''">
+			  and TASK_ID = #{cm.taskId}
+		  </if>
+		  <if test="cm.approvalId != null and cm.approvalId != ''">
+			  and APPROVAL_ID = #{cm.approvalId}
+		  </if>
+	  </where>
+	</select>
+		
+</mapper>
