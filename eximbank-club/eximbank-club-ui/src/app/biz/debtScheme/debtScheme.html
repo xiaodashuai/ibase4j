@@ -1,0 +1,1998 @@
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+<style type="text/css">
+	.content {
+		box-shadow: 0 2px 5px rgba(85, 85, 85, 0.15);
+		margin: auto;
+		/*padding: 2em 3%;*/
+		padding-bottom: 20px;
+		background: #fff;
+		position: relative;
+		border-radius: 3px;
+		border: 1px solid #c0c0c0;
+	}
+	
+	.is-small {
+		padding: 5px;
+		margin-top: 5px;
+	}
+	
+	.mb1 {
+		margin-bottom: 1em;
+	}
+	
+	.mb2 {
+		margin-bottom: 2em;
+	}
+	
+	.mt1 {
+		margin-top: 1em;
+	}
+	
+	.mt2 {
+		margin-top: 2em;
+	}
+	
+	.ml-2 {
+		margin-left: -2em;
+	}
+	
+	.ml2 {
+		margin-left: 2em;
+	}
+	
+	.mt3 {
+		margin-top: 7px;
+	}
+</style>
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>您当前所在位置：</li>
+		<li>
+			<a ui-sref="main">
+				<!--<i class="fa fa-home"></i>-->
+				补 &nbsp; &nbsp;录
+			</a>
+		</li>
+		<li class="active">
+			<a>方案补录</a>
+		</li>
+	</ul>
+</div>
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div class="wrapper canvasNum" style=" border: 1px solid #dddddd;">
+	<!--事前尽职调查步骤-->
+	<ul class="tab-menu" ng-init="tab=1">
+		<li class="active" ng-class='{active:tab==1}' id="debtSummary" ng-click='changeTab(1,1)' num="1">
+			<span>债项概要</span>
+		</li>
+		<img src="lib/images/icon-r.png" alt="">
+		<li ng-class='{active:tab==2}' id="useLtter" ng-click='changeTab(2,1)' num="2">
+			<span>用信主体</span>
+		</li>
+		<img src="lib/images/icon-r.png" alt="">
+		<li ng-class='{active:tab==3}' id="productMix" ng-click='changeTab(3,1)' num="3">
+			<span>产品组合</span>
+		</li>
+		<img src="lib/images/icon-r.png" alt="">
+		<li ng-class='{active:tab==4}' id="risk" ng-click='changeTab(4,1)' num="4">
+			<span>风险分析</span>
+		</li>
+		<img src="lib/images/icon-r.png" alt="">
+		<!--<li class="col-sm-2">
+			<span style="padding: 0px 5px; text-align: center; background-color: #409EFF;border-radius: 15px;color: #fff;">5</span>
+			<a ng-click="tab=5">管理信息</a>
+		</li>-->
+		<li ng-class='{active:tab==5}' id="properInformation" ng-click='changeTab(5,1)' num="5">
+			<span>专有信息</span>
+		</li>
+		<img src="lib/images/icon-r.png" alt="">
+		<li ng-class='{active:tab==6}' id="meetSummary" ng-click='changeTab(6,1)' num="6">
+			<span>会议纪要</span>
+		</li>
+	</ul>
+	<form novalidate="novalidate">
+		<div class="tab-content canvas">
+
+			<!--债项概要-->
+			<div ng-show="tab===1" step="1">
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">债项方案编号:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" ng-model="debtCode | limitTo:13" readonly/>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">是否单笔单批:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control required" ng-change="changeSingle(debtMain.singleBtch)" ng-init="debtMain.singleBtch='1'" ng-model="debtMain.singleBtch" disabled>
+								<!--<option value="">请选择</option>-->
+								<option value="1">是</option>
+								<!--<option value="0">否</option>-->
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">申请人名称:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type='text' class="form-control required" maxlength="150" ng-change="queryProposer(debtMain.proposer)" id="proposer1" ng-model="debtMain.proposer" autocomplete="off" placeholder="请输入客户名称查询" />
+							<div ng-hide="hidden">
+								<select class="form-control" style="width: auto;height: auto;min-width: 200px;" ng-change="onSelectProposer(x)" ng-options="debtCust as debtCust.custNameCN for debtCust in allCustList2 | filter:$viewValue | limitTo:100" ng-model="x" multiple>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">申请人客户号:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="text" id="proposerNum" value="{{debtMain.proposerNum}}" class="form-control required" ng-model="debtMain.proposerNum" maxlength="50" readonly/>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">创建人:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" ng-model="userList.userName" readonly />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">产品类型:</label>
+						</div>
+						<div class="col-sm-6" style="line-height: initial;">
+							<select class="form-control required" ng-options="proRent.code as proRent.name for proRent in rentFactorList" ng-model="proRent.code" ng-change="selelct(proRent.code)">
+								<option value="">请选择</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">方案主币种:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control required " ng-options="x.monCode as x.codeName for x in currencyList" ng-model="debtMain.mpc" ng-change="updateCurrency()">
+								<option value="">请选择</option>
+							</select>
+						</div>
+					</div>
+
+				</div>
+				<div class="row" id="ngshow" ng-show="debtMain.mpc!='JPY'">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;margin-left: 10px;" for="name">方案金额:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="text" class="control-label amt required " style="width: 100%;" ng-change="xmmc()" ng-model="debtMain.solutionAmount" id="solutionAmount">
+						</div>
+					</div>
+				</div>
+				<div class="row" id="ngshow" ng-show="debtMain.mpc=='JPY'">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;margin-left: 10px;" for="name">方案金额:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="text" class="control-label jpyamt required " style="width: 100%;" ng-change="xmmc()" ng-model="debtMain.solutionAmount" id="solutionAmountjpy">
+						</div>
+					</div>
+
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label" style="float: right;">项目名称:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" placeholder="可在提交/暂存信息时自动生成或手动输入" maxlength="500" ng-model="debtMain.projectName" />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">是否是政策性:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control required" ng-change="change10(debtMain.policy)" ng-model="debtMain.policy">
+								<option value="">请选择</option>
+								<option value="1">是</option>
+								<option value="0">否</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<!--showPolicy-->
+				<div id="ngshow" ng-show="debtMain.policy=='1'" class="row mt2">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">政策性属性描述:</label>
+						</div>
+						<div class="col-sm-6">
+							<textarea maxlength="500" class="required form-control" name="note" id="note" style="height: 100px; resize:none;" ng-model="debtMain.policyDescription">{{debtMain.policyDescription}}</textarea>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label" style="float: right;">流程发起时间:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" placeholder="由系统后台自动生成" ng-model="debtMain.processInitiatTime" readonly />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">所属机构:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" ng-model="deptList.deptName" readonly />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">客户经理:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" ng-model="userList.userName" readonly />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">循环规则:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control required" ng-change="change1(debtMain.validityCcycleGauge)" ng-init="debtMain.validityCcycleGauge = '0'" ng-model="debtMain.validityCcycleGauge">
+								<!--<option value="" selected>请选择</option>-->
+								<option value="0">全局循环规则</option>
+								<!--<option value="1">全局+单一效期规则</option>-->
+							</select>
+						</div>
+					</div>
+				</div>
+				<!--全局效期规则-->
+				<div class="row" ng-show='show1'>
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">方案生效日期:</label>
+						</div>
+						<div class="col-sm-6">
+							<!--<div onchange="date1JiaoYan($(this).parent())">-->
+							<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" autocomplete="off" id="pgEffectivDate" class="form-control required" onchange="date1JiaoYan($(this).parent())" ng-model="debtMain.pgEffectivDate" placeholder="本债项方案中的所有产品的效期都要服从方案生效时间">
+							<!--</div>-->
+						</div>
+					</div>
+					<div class="col-sm-12" style="margin-top: 30px;">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">方案失效日期:</label>
+						</div>
+						<div class="col-sm-6">
+							<!--<div  onchange="date2JiaoYan($(this).parent())">-->
+							<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" autocomplete="off" id="pgExpiDate" class="form-control required" onchange="date2JiaoYan($(this).parent())" ng-model="debtMain.pgExpiDate" placeholder="本债项方案中的所有产品的效期都要服从方案失效时间">
+							<!--</div>-->
+						</div>
+					</div>
+					<div class="col-sm-12" style="margin-top: 30px;">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">方案循环标志:</label>
+						</div>
+						<div class="col-sm-6">
+							<select id="parentCode" ng-model="debtMain.ls" ng-init="debtMain.ls='1'" class="form-control required" ng-options="x.code as x.codeText for x in dicList" disabled>
+								<!--<option value="">请选择</option>-->
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-bottom: 5em;">
+					<div class="col-sm-4 col-sm-offset-5">
+						<!--<button ng-click="resetDebtMain()" class="el-button el-button&#45;&#45;primary is-plain">重置</button>-->
+						<button ng-click="submitTemStorage()" click-and-disable="functionThatReturnsPromise()" class="el-button el-button--primary is-plain">暂存</button>
+						<button ng-click="changeTab(2)" class="el-button el-button--primary is-plain">下一步</button>
+					</div>
+				</div>
+
+			</div>
+
+			<!--用信主体-->
+			<div ng-show="tab===2" step="2" style="padding: 10px 30px">
+
+				<div ng-repeat="p in rentFacList track by $index" class="form-horizontal col-sm-12 content">
+
+					<div class="row">
+						<div style=" border-bottom: 1px solid #CCCCCC;height: 40px;background-color: #0a71bb;color: white;">
+							<div class="col-sm-5 panel-heading font-bold">
+								<label class="col-sm-5 control-label mt3">
+	                            产品名称：</label>
+								<div class="col-sm-5">
+									<input disabled type="text" class="form-control" style="background-color: inherit;border: none;color: white;margin-top: -4px;" ng-model="p.name">
+								</div>
+							</div>
+
+							<div class="col-sm-5" style="float: right;">
+								<span style="float: right; margin-top: 4px;background-color: inherit; border: none;" class="btn btn-info w-xs m-l-xl add " ng-click="addCust(p)">+添加客户</span>
+
+							</div>
+						</div>
+					</div>
+
+					<div ng-repeat="rent in p.customersList track by $index" style=" border-bottom: 1px solid #ccc ;padding: 15px 0;">
+
+						<div class="row" style="margin-bottom: 1em;">
+							<div class="col-sm-5">
+								<label class="col-sm-4 control-label need mt3">客户号:</label>
+								<div class="col-sm-6">
+									<input type='text' class="form-control required" ng-change="queryRecordUseLetter(rent.custNo,$index)" id="{{$index}}" ng-model="rent.custNo" maxlength="50" autocomplete="off" placeholder="请输入客户号查询" />
+									<div ng-show="rent.hiddenRecordUseLetter">
+										<select class="form-control" style="width: auto;height: auto;min-width: 200px;" ng-change="onSelect(x,$index)" ng-options="recordUseLetter as recordUseLetter.custNameCN for recordUseLetter in allCustListUseLetter | filter:$viewValue | limitTo:10" ng-model="x" multiple>
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-sm-5">
+								<label class="col-sm-4 control-label need mt3">
+									客户名称
+								</label>
+								<div class="col-sm-6">
+									<input readonly type="text" class="form-control required" ng-model="rent.custNameCN">
+								</div>
+								<div class="col-sm-2" ng-show="rent.custNameCN">
+									<button ng-click="checkCust(rent)" data-toggle="modal" data-target="#myCustUserLetter" class="el-button el-button--success is-plain is-small">详细信息</button>
+								</div>
+							</div>
+
+						</div>
+						<div class="row mt2">
+							<div class="col-sm-5">
+								<label class="col-sm-4 control-label mt3 need">
+                          			  该产品使用的额度类型</label>
+								<div class="col-sm-6">
+									<select class="form-control required" ng-change="slectShouXin(rent.creditLinesId,$index)" ng-options="x.amountType as x.creditLineName for x in rent.creditLinesList" ng-model="rent.creditLinesId">
+										<option value="" selected>请选择</option>
+									</select>
+									<!--<div id="{{$index+'amountType'}}" class="hidden" style="color: #0a71bb;font-size: 14px; margin-top: 2px; margin-left: 4px;">仅占用最高综合授信额度</div>-->
+								</div>
+							</div>
+
+							<div class="col-sm-5">
+								<label class="control-label col-sm-4 mt3 need">
+                            		产品用信比例%</label>
+								<div class="col-sm-6">
+									<input type="text" id="{{$index+'creditRatio'}}" class="form-control checkFloat required" placeholder="请输入0--100的数字" ng-init="rent.creditRatio=100" ng-model="rent.creditRatio">
+								</div>
+								<!--<div class="col-sm-1" style="margin-top: 10px;">
+									<lable class="control-lable">%</lable>
+								</div>-->
+								<div class="col-sm-2">
+									<div ng-click="deletePro(p,$index)" class="col-sm-5" class="form-classifyLevel" style="margin-left: -15px;">
+										<button class="btn el-button el-button--warning is-plain">删除</button>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+				<div class="row" style="margin-bottom: 5em;">
+					<div class="col-sm-6 col-sm-offset-4">
+						<!--onclick="$(debtSummary).click()"-->
+						<button ng-click="selectBefore(tab)" class="el-button el-button--primary is-plain">上一步</button>
+						<!--<button ng-click="resetUseLetter()" class="el-button el-button&#45;&#45;primary is-plain">重置</button>-->
+						<button ng-click="submitTemStorage()" click-and-disable="functionThatReturnsPromise()" class="el-button el-button--primary is-plain">暂存</button>
+						<button ng-click="changeTab(3)" class="el-button el-button--primary is-plain">下一步</button>
+					</div>
+				</div>
+
+				<!--弹框内容--查询客户-->
+				<div class="modal fade" id="myCustUserLetter" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+					<div class="modal-dialog" role="document" style="width: 1100px;">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title" id="myModalLabel">{{title}}</h4>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -20px;"><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body" style="height:75%;overflow-y:auto;">
+
+								<!--查询客户-->
+								<div ng-show="cu == 0" class="w-lg col-sm-4 col-sm-offset-4" style="margin-bottom: 2em;">
+
+									<!--<div class="input-group search-box">
+										<span class="input-group-btn">
+										<input type="text" class="col-sm-offset-3"style="width: 40%;" maxlength="20" ng-model="customerNum" placeholder="请输入查询的客户号">
+		                                <button class="btn btn-default"style="height:36px ;margin-left:-4px;" ng-click="search()"><i class="fa fa-search"></i></button>
+		                            </span>
+									</div>-->
+
+									<!--动态模糊搜索框-->
+									<input type="text" ng-change="proposerJiaoYan(2)" id="proposer2" class="form-control " typeahead-min-length="2" ng-model="custoNum" typeahead="recordUseLetter.custNameCN for recordUseLetter in allCustList| filter:$viewValue | limitTo:8" class="col-sm-offset-3" typeahead-loading="loadingLocations" typeahead-no-results="noResults" typeahead-on-select="onSelect($item)" typeahead-wait-ms="500" placeholder="请输入客户号或者客户名称查询">
+
+									<i ng-show="loadingLocations" class="glyphicon glyphicon-refresh p-a" style="top:35px;"></i>
+
+									<div ng-show="noResults" ng-click="hideNoResults()">
+
+										<i class="glyphicon glyphicon-remove"></i> 暂无数据
+
+									</div>
+
+								</div>
+
+								<form class="form-horizontal col-sm-12" name="user_form">
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class="col-sm-6 control-label mt3">
+                           					 客户号</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custNo">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class="col-sm-6 control-label mt3">
+                            				客户规模</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custScale">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                           					 客户名称（中文）</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custNameCN">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                           					 所属集团编号</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.groupNumber">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                           					 客户名称（英文）</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custNameEN">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                           					 所属集团名称</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.groupName">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                            				客户所在地址（中文）</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custAddressCN">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                            				客户所属行业</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.mainBusiness">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                            				客户所在地址（英文）</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custAddressEN">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                           					 客户所属国别</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custCountry">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                           				 客户属辖经营单位</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custBusinessUnit">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                           				 信用评级</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.creditRating">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                          				  客户登记注册类型</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custRegistrastionType">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                            			评级时间</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.ratiTime|date:'yyyy-MM-dd HH:mm:ss'">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                            			客户评级授信类型</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custRatingCreditType">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                           				 客户经理</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custManager">
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</form>
+
+								<div class="table-responsive" id="scroll-2">
+									<table class="table table-striped b-t b-light" style="width:1000px;">
+										<thead>
+											<tr>
+												<th style="width:100px;">序号</th>
+												<th style="width:150px;">授信号码</th>
+												<th style="width:200px;">授信额度名称</th>
+												<th style="width:200px;">额度总金额</th>
+												<th style="width:210px;">已用金额</th>
+												<th style="width:210px;">可用金额</th>
+												<th style="width:210px;">起始日</th>
+												<th style="width:210px;">到期日</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="ite in recordUseLetter.creditLinesList">
+												<td style="text-align: center;">{{$index+1}}</td>
+												<td class="v-middle">{{ite.creditNo}}</td>
+												<td class="v-middle">{{ite.creditLineName}}</td>
+												<td class="v-middle">{{ite.totalAmount}}</td>
+												<td class="v-middle">{{ite.usedAmount}}</td>
+												<td class="v-middle">{{ite.availableBalance}}</td>
+												<td class="v-middle" style="width:110px;">{{ite.startDate|date:'yyyy-MM-dd HH:mm:ss'}}</td>
+												<td class="v-middle" style="width:110px;">{{ite.maturityDate|date:'yyyy-MM-dd HH:mm:ss'}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
+							</div>
+							<div class="modal-footer">
+								<div ng-show="cu== 0" class="form-classifyLevel">
+									<div class="col-sm-5 col-sm-offset-2">
+										<button type="button" class="el-button el-button--danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+										<button ng-if="recordUseLetter.custNo" type="button" ng-click="submitCustUseLetter()" id="btn_submit" class="el-button el-button--success" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>选择</button>
+										<button ng-if="!recordUseLetter.custNo" type="button" ng-click="submitCustUseLetter()" id="btn_submit" class="el-button el-button--success"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>选择</button>
+									</div>
+								</div>
+								<div ng-show="cu != 0" class="form-classifyLevel">
+									<div class="col-sm-5 col-sm-offset-2">
+										<button type="button" class="el-button el-button--danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>收起</button>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<!--产品组合-->
+			<div ng-show="tab===3" step="3">
+
+				<!--产品名称-->
+				<div class="row" ng-repeat="pro in rentFacList">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">产品名称:</label>
+						</div>
+						<div class="col-sm-6">
+							<input disabled type="text" class="form-control" ng-model="pro.name">
+						</div>
+					</div>
+
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">产品规则:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control" ng-change="change1(debtMain.ruleType)" ng-model="debtMain.ruleType">
+								<!--<option value="" selected>请选择</option>-->
+								<option value="">全局产品规则</option>
+								<!--<option value="1">全局+单一产品规则</option>-->
+							</select>
+						</div>
+					</div>
+
+				</div>
+
+				<fieldset style="margin-left:14px;padding: .35em .625em .75em;margin: 0 2px;border: 1px solid #c0c0c0">
+					<legend style="margin-left:10%;width: 15%;font-size: 18px;font-weight: bold">全局产品规则</legend>
+					<div class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need " style="float: right;margin-left: 10px;" for="remark">可办理笔数限制:</label>
+							</div>
+							<div class="col-sm-6">
+								<select class="form-control required" ng-change="change8(debtMain.ltnopa)" id="ltnopa" ng-init="debtMain.ltnopa = '1'" ng-model="debtMain.ltnopa" disabled>
+									<!--<option value="0">不限制</option>-->
+									<option value="1">限制</option>
+								</select>
+							</div>
+						</div>
+
+					</div>
+					<!--<div id="ngshow" ng-show="show13" class="row mt2">-->
+					<div id="ngshow" class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">可办理笔数(笔):</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="control-label isNumber required" id="change8" ng-model="debtMain.tdwln" ng-init="debtMain.tdwln=1" style="width: 100%;" maxlength="3" disabled>
+							</div>
+						</div>
+
+					</div>
+					<div class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">方案主币种:</label>
+							</div>
+							<div class="col-sm-6">
+								<select class="form-control required " ng-options="x.monCode as x.codeName for x in currencyList" ng-model="debtMain.mpc" ng-change="updateCurrency()">
+									<option value="">请选择</option>
+								</select>
+							</div>
+						</div>
+
+					</div>
+					<div class="row mt2" id="ngshow" ng-show="debtMain.mpc!='JPY'">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="name">方案金额:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="control-label amt required " style="width: 100%;" ng-model="debtMain.solutionAmount" id="solutionAmount">
+							</div>
+						</div>
+					</div>
+					<div class="row mt2" id="ngshow" ng-show="debtMain.mpc=='JPY'">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="name">方案金额:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="control-label jpyamt required " style="width: 100%;" ng-model="debtMain.solutionAmount" id="solutionAmountjpy">
+							</div>
+						</div>
+
+					</div>
+					<div class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">方案辅助币种:</label>
+							</div>
+							<div class="col-sm-6">
+								<select class="form-control required" ng-change="changeCur(debtMain.aCurrrency)" ng-model="debtMain.aCurrrency = '0'" disabled>
+									<option value="">请选择</option>
+									<option value="0">无</option>
+									<option value="1">其他可选币种</option>
+									<option value="2">等值其他币种</option>
+								</select>
+							</div>
+						</div>
+
+					</div>
+					<div id="ngshow" ng-show="showCurrency" class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">其他可选币种:</label>
+							</div>
+							<div class="col-sm-6">
+								<span ng-repeat="cu in currencyProMix">
+									<input type="text" class="col-sm-6" ng-model="cu.monCode" style="margin-bottom: 10px;" readonly>
+								</span>
+								<!--<input disabled type="text" class="form-control required format-validate" ng-show="currencyProMix == ''" style="background-color: inherit;font-size: 16px;border: none;margin-left: 10px;color: #a94442" value="请选择其他可选币种">-->
+								<div ng-if="currencyProMix == '' || currencyProMix == []">
+									<p class="text-danger ">请选择其他可选币种</p>
+								</div>
+							</div>
+							<div class="col-sm-1" style="padding: 0px;">
+								<button ng-click="selectCurrency()" style="margin-top:0.7em;" data-toggle="modal" data-target="#currencyProMix" class="btn btn-info w-xs m-l-xl">+</button>
+								<input type="text" style="display:none;" class="form-control interface" name="dede" />
+							</div>
+						</div>
+
+					</div>
+
+					<div class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="name">方案业务期限范围(天):</label>
+							</div>
+							<div class="col-sm-6">
+								<input class="control-label isNumber required" type="text" style="width: 100%;" ng-model="debtMain.dopo" maxlength="5" placeholder="方案中的业务可办理的业务期限范围">
+							</div>
+						</div>
+					</div>
+					<div class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;">方案综合报价描述:</label>
+							</div>
+							<div class="col-sm-6">
+								<textarea maxlength="500" class="form-control required" rows="6" style="resize: none;" ng-model="debtMain.descriptionProgramQuoqate" placeholder="最多输入500字">{{debtMain.descriptionProgramQuoqate}}</textarea>
+							</div>
+						</div>
+					</div>
+					<div class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">方案费率类型:</label>
+							</div>
+							<div class="col-sm-6">
+								<select class="form-control required" ng-change="change5(debtMain.progRateType)" ng-model="debtMain.progRateType">
+									<option value="" selected>请选择</option>
+									<option value="0">无</option>
+									<option value="1">非优惠费率</option>
+									<option value="2">优惠费率</option>
+								</select>
+							</div>
+						</div>
+
+					</div>
+					<div id="ngshow" ng-show="show8" class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">方案费率形式:</label>
+							</div>
+							<div class="col-sm-6">
+								<select class="form-control required" ng-change="change6(debtMain.schemeRateForm)" ng-model="debtMain.schemeRateForm">
+									<option value="" selected>请选择</option>
+									<option value="0">方案费率</option>
+									<option value="1">方案费率范围</option>
+								</select>
+							</div>
+						</div>
+
+					</div>
+					<div id="ngshow" ng-show="show9" class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">方案费率(%):</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="form-control ckFloat required" id="change6" style="width: 100%;" ng-model="debtMain.packageRate" placeholder="债项方案中的所有业务品种都等于该费率值">
+							</div>
+						</div>
+
+					</div>
+					<div id="ngshow" ng-show="show10" class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">方案费率范围(%):</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="col-sm-5  required compare ckFloat" id="rateRangeMix" value="0.00" ng-change="change17()" ng-model="debtMain.rateRangeMix">
+								<div class="col-sm-2" style=" margin-top: 10px;text-align: center;">——</div>
+								<input type="text" class="col-sm-5  required compare ckFloat" id="rateRangeMax" value="100" ng-change="change17()" ng-model="debtMain.rateRangeMax">
+							</div>
+						</div>
+
+					</div>
+					<div id="ngshow" ng-show="show11" class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">是否需审批:</label>
+							</div>
+							<div class="col-sm-6">
+								<select class="form-control required" ng-change="change7(debtMain.approve)" ng-model="debtMain.approve">
+									<option value="" selected>请选择</option>
+									<option value="1">需要审批</option>
+									<option value="0">不需要审批</option>
+								</select>
+							</div>
+						</div>
+
+					</div>
+					<div id="ngshow" ng-show="show12" class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">审批机构:</label>
+							</div>
+							<div class="col-sm-6">
+								<select class="form-control required" ng-model="debtMain.raaa">
+									<option value="" selected>请选择</option>
+									<option value="0">总行</option>
+									<option value="1">分行</option>
+								</select>
+							</div>
+						</div>
+
+					</div>
+					<!-- <div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">是否存在方案费率折扣:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control required" ng-change="change9(debtMain.whetherRateDiscount)" ng-model="debtMain.whetherRateDiscount">
+								<option value="" selected>请选择</option>
+								<option value="1">是</option>
+								<option value="0">否</option>
+							</select>
+						</div>
+					</div>
+
+				</div> -->
+					<div id="ngshow" ng-show="show14 == 2" class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">方案费率折扣(%):</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="form-control ckFloat required" id="change5" style="width: 100%;" ng-model="debtMain.programRateDiscount" />
+							</div>
+						</div>
+
+					</div>
+					<div id="ngshow" ng-show="show14 == 1" class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">方案费率折扣(%):</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="form-control" style="width: 100%;" ng-model="debtMain.programRateDiscount" value="0" disabled />
+							</div>
+						</div>
+
+					</div>
+					<div class="row mt2 mb1">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;margin-left: 10px;" for="remark">方案利率规则描述:</label>
+							</div>
+							<div class="col-sm-6">
+								<!--<input type="textarea" ng-model="debtMain.descriptionRateRules">-->
+								<textarea maxlength="500" class="form-control required" rows="6" style="resize: none;" ng-model="debtMain.descriptionRateRules" placeholder="最多输入500字">{{debtMain.descriptionRateRules}}</textarea>
+							</div>
+						</div>
+
+					</div>
+				</fieldset>
+				<div class="row mt2">
+					<div class="col-sm-6 col-sm-offset-4">
+						<!--onclick="$(useLtter).click()"-->
+						<button ng-click="selectBefore(tab)" class="el-button el-button--primary is-plain">上一步</button>
+						<!--<button ng-click="resetProductMix()" class="el-button el-button&#45;&#45;primary is-plain">重置</button>-->
+						<button ng-click="submitTemStorage()" click-and-disable="functionThatReturnsPromise()" class="el-button el-button--primary is-plain">暂存</button>
+						<button ng-click="changeTab(4)" class="el-button el-button--primary is-plain">下一步</button>
+					</div>
+				</div>
+
+				<!--弹框内容--查询其他可选币种-->
+				<div class="modal fade" id="currencyProMix" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myProductLabel">
+					<div class="modal-dialog" role="document" style="width: 900px;">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title" id="myProductLabel">其他可选币种</h4>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body" style="height:75%;overflow-y:auto;">
+
+								<!-- 选择币种 -->
+								<div class="table-responsive">
+									<table class="table table-striped b-t b-light text-center">
+										<thead>
+											<tr>
+												<th style="width:100px;">选择 <input type="checkbox" ng-model="allSelect" ng-click="onCheckedCurrency(allSelect)"></th>
+												<th style="width:200px;margin-left: 100px;">货币代码</th>
+												<th style="width:200px;margin-left: 100px;">国家货币名称</th>
+
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="item in lastCurrencyList">
+												<td class="v-middle"><input class="v-middle" type="checkbox" ng-model="item.checked"></td>
+												<td class="v-middle">{{item.monCode}}</td>
+												<td class="v-middle">{{item.codeName}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
+							</div>
+							<div class="modal-footer">
+								<div class="form-classifyLevel">
+									<div class="col-sm-5 col-sm-offset-2">
+										<button type="button" class="el-button el-button--danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+										<button type="button" ng-click="submitCurency()" id="btn_submit" class="el-button el-button--success" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>选择</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<!--风险分析-->
+			<div ng-show="tab===4" step="4">
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">交易背景简述:</label>
+						</div>
+						<div class="col-sm-6">
+							<textarea maxlength="500" class="form-control required" rows="6" style="resize: none;" ng-model="debtMain.businessBackgroundBrief" placeholder="最多输入500字"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">货物/服务情况简述:</label>
+						</div>
+						<div class="col-sm-6">
+							<textarea maxlength="500" class="form-control required" rows="6" style="resize: none;" ng-model="debtMain.goodsSketch" placeholder="最多输入500字"></textarea>
+						</div>
+					</div>
+				</div>
+
+				<div ng-repeat="c in custUserLetter">
+					<div class="row mt1">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;">用信主体名称:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="form-control" ng-model="c.custNameCN" readonly />
+							</div>
+						</div>
+					</div>
+					<div class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label" style="float: right;">评级:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="form-control" ng-model="c.creditRating" readonly />
+							</div>
+						</div>
+					</div>
+					<div class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label" style="float: right;">评级有效期:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="form-control" ng-model="c.ratiTime" readonly />
+							</div>
+						</div>
+					</div>
+					<div class="row mt2">
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label" style="float: right;">用信主体授信方案:</label>
+							</div>
+							<div class="col-sm-6">
+								<button type="button" ng-click="checkCust(c)" data-toggle="modal" data-target="#myCustRisk" class="el-button el-button--success is-plain is-small">详细信息</button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<fieldset style="margin-left:14px;padding: 1em .625em .75em;margin: 0 2px;border: 1px solid #c0c0c0">
+						<legend style="margin-left:10%;width: 15%;font-size: 16px;font-weight: bold">尽调报告</legend>
+						<div class="col-sm-12 mt2">
+							<div class="col-sm-3 mt3">
+								<label class="control-label" style="float: right;">报告名称:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="form-control" ng-model="realFileName" readonly/>
+							</div>
+						</div>
+						<div class="col-sm-12 mt2 mb2">
+							<div class="col-sm-3 mt3">
+								<label class="control-label " style="float: right;">文件上传:</label>
+							</div>
+							<div>
+								<ul>
+									<li>
+										<div class="uploder-container">
+											<div class="cxuploder">
+												<div class="queueList">
+													<div class="placeholder">
+														<div class="filePicker"></div>
+
+													</div>
+												</div>
+												<div class="statusBar" style="display:none;">
+													<div class="btns">
+														<div class="jxfilePicker"></div>
+													</div>
+													<div class="info"></div>
+												</div>
+											</div>
+										</div>
+
+									</li>
+								</ul>
+								<div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+									<div id="innerdiv" style="position:absolute;">
+										<img id="bigimg" style="border:5px solid #fff;" src="" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3 mt3">
+							<label class="control-label need" style="float: right;">担保类型(总):</label>
+						</div>
+						<div class="col-sm-6">
+							<span style="margin-left: 20px;"><input type="checkbox" class="form-control" ng-model="rent1"  disabled />抵押</span>
+							<span style="margin-left: 20px;"><input type="checkbox" class="form-control" ng-model="rent2"  disabled />质押</span>
+							<span style="margin-left: 20px;"><input type="checkbox" class="form-control" ng-model="rent3"  disabled />保证</span>
+							<span style="margin-left: 20px;"><input type="checkbox" class="form-control" ng-model="rent4"  disabled />信用</span>
+							<span style="margin-left: 20px;"><input type="checkbox" class="form-control" ng-model="rent5"  disabled />其他</span>
+						</div>
+					</div>
+				</div>
+				<div class="row" ng-repeat="recordGuarantee in bizGuaranteeInfoList">
+					<fieldset style="margin-left:14px;padding: 1em .625em .75em;margin: 0 2px;border: 1px solid #c0c0c0">
+						<legend style="margin-left:10%;width: 15%;font-size: 16px;font-weight: bold">基础担保类型</legend>
+						<div ng-form="repeatForm">
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="col-sm-3 mt3">
+										<label class="control-label need" style="float: right;">基础担保类型(分):</label>
+									</div>
+									<div class="col-sm-6">
+										<select class="form-control required" name="typePoint" id="{{$index}}" ng-change="selectContract(recordGuarantee.typePoint,$index)" ng-model="recordGuarantee.typePoint" ng-options="guarantee.code as guarantee.name for guarantee in guaranteeInfoList">
+											<option value="">请选择</option>
+										</select>
+									</div>
+									<div class="col-sm-2" ng-show="$index==0">
+										<button class="btn btn-info w-xs m-l-xl " ng-click="addRent()">+新增担保信息</button>
+									</div>
+									<div class="col-sm-1" ng-show="$index != 0">
+										<button class="btn btn-info w-xs m-l-xl " ng-click="deleteRent($index)">-删除</button>
+									</div>
+								</div>
+							</div>
+							<div id="ngshow" ng-show="1==1" class="row mt2">
+								<div class="col-sm-12">
+									<div class="col-sm-3 mt3">
+										<label class="control-label need" style="float: right;">担保合同类型/占用额度类型:</label>
+									</div>
+									<div class="col-sm-6">
+										<select class="form-control required" name="contractType" ng-change="selectTypePoint(recordGuarantee.guaranteeContractType,$index)" ng-model="recordGuarantee.guaranteeContractType" ng-options="contractType.code as contractType.name for contractType in recordGuarantee.contractTypeList">
+											<option value="">请选择</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<!--<div id="ngshow" ng-show="rent5" class="row mt2">
+								<div class="col-sm-12">
+									<div class="col-sm-3 mt3">
+										<label class="control-label need" style="float: right;">担保合同类型/占用额度类型:</label>
+									</div>
+									<div class="col-sm-6">
+										<input type="text" class="form-control required" name="contractType" ng-model="recordGuarantee.guaranteeContractType" />
+									</div>
+								</div>
+							</div>-->
+
+							<!--一般。。展示showSoso-->
+							<div id="ngshow" ng-show="recordGuarantee.guaranteeContractType=='UE01' || recordGuarantee.guaranteeContractType=='UE07' || recordGuarantee.guaranteeContractType=='UE02' || recordGuarantee.guaranteeContractType=='UE03' || recordGuarantee.guaranteeContractType=='UE04' || recordGuarantee.typePoint=='C104' || recordGuarantee.typePoint=='C000'">
+
+								<!--<div id="ngshow" ng-show="recordGuarantee.typePoint!='C000'" class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保合同编号:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" id="{{$index+'contractNumber'}}" maxlength="30" class="form-control required" name="contractNumber" autocomplete="off" ng-model="recordGuarantee.warrantyContractNumber" ng-blur="queryConNum(recordGuarantee.warrantyContractNumber,recordGuarantee.guaranteeContractType,$index)" />
+										</div>
+									</div>
+								</div>-->
+								<!--担保方式为“抵押”、“质押”、“保证”，则为对应担保客户号及名称-->
+								<!--担保方式为“信用”，则默认为第一个用信主体的客户号及名称-->
+								<div class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保人:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type='text' class="form-control required" ng-change="queryrecordGuarantee(recordGuarantee.guarantor,$index)" id="proposer3" ng-model="recordGuarantee.guarantor" autocomplete="off" placeholder="请输入客户名称查询" />
+											<div ng-show="recordGuarantee.hiddenRecordGuarantee">
+												<select class="form-control" style="width: auto;height: auto;min-width: 200px;" ng-change="onSelectGuarantor(x,$index)" ng-options="debtCust as debtCust.custNameCN  for debtCust in allCustListGuarantee | filter:$viewValue | limitTo:10" ng-model="x" multiple>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保人客户编号:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" class="form-control required" name="custNum" ng-model="recordGuarantee.guarantorCustId" readonly />
+										</div>
+									</div>
+								</div>
+								<div id="ngshow" ng-show="recordGuarantee.typePoint=='C101'" class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">被担保人:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type='text' class="form-control required" ng-change="queryrecordWarrantee(recordGuarantee.warrantee,$index)" id="proposer3" ng-model="recordGuarantee.warrantee" autocomplete="off" placeholder="请输入客户名称查询" />
+											<div ng-show="recordGuarantee.hiddenRecordWarrantee">
+												<select class="form-control" style="width: auto;height: auto;min-width: 200px;" ng-change="onSelectWarrantee(x,$index)" ng-options="debtCust as debtCust.custNameCN  for debtCust in allCustListWarrantee | filter:$viewValue | limitTo:10" ng-model="x" multiple>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="ngshow" ng-show="recordGuarantee.typePoint=='C101'" class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">被担保人客户编号:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" class="form-control required" name="custNum" ng-model="recordGuarantee.warranteeCustId" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保币种:</label>
+										</div>
+										<div class="col-sm-6">
+											<select class="form-control required" name="currency" ng-options="x.monCode as x.codeName for x in currencyList" ng-init="recordGuarantee.currencyGuarantee='CNY'" ng-model="recordGuarantee.currencyGuarantee">
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row mt2" id="ngshow" ng-show="recordGuarantee.currencyGuarantee!='JPY'">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保金额:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" class="form-control amt required" name="guaranteeAmount" autocomplete="off" ng-model="recordGuarantee.guaranteeAmount" />
+										</div>
+									</div>
+								</div>
+								<div class="row mt2" id="ngshow" ng-show="recordGuarantee.currencyGuarantee=='JPY'">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保金额:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" class="form-control jpyamt required" name="guaranteeAmount" ng-model="recordGuarantee.guaranteeAmount" />
+										</div>
+									</div>
+								</div>
+
+							</div>
+
+							<!--最高。。展示showHigh-->
+							<div id="ngshow" ng-show="recordGuarantee.guaranteeContractType=='UE05' || recordGuarantee.guaranteeContractType=='UE06' || recordGuarantee.guaranteeContractType=='UE12' || recordGuarantee.guaranteeContractType=='UE13' || recordGuarantee.guaranteeContractType=='UE14' || recordGuarantee.guaranteeContractType=='UE15'">
+
+								<div class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保合同编号:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" name="contractNumber" ng-model="recordGuarantee.warrantyContractNumber" readonly/>
+										</div>
+										<div class="col-sm-2">
+											<button class="btn btn-info w-xs m-l-xl " data-toggle="modal" ng-click="selectContrac($index)" data-target="#myGuarantorCustId">获取</button>
+										</div>
+									</div>
+								</div>
+								<!--担保方式为“抵押”、“质押”、“保证”，则为对应担保客户号及名称-->
+								<!--担保方式为“信用”，则默认为第一个用信主体的客户号及名称-->
+								<div class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保人:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" id="proposer3" class="form-control" ng-model="recordGuarantee.guarantor" readonly>
+										</div>
+									</div>
+								</div>
+								<div class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保人客户编号:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" name="custNum" ng-model="recordGuarantee.guarantorCustId" readonly />
+										</div>
+									</div>
+								</div>
+								<div id="ngshow" ng-show="recordGuarantee.typePoint=='C101'" class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">被担保人:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" id="proposer3" class="form-control" ng-model="recordGuarantee.warrantee" readonly>
+										</div>
+									</div>
+								</div>
+								<div id="ngshow" ng-show="recordGuarantee.typePoint=='C101'" class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">被担保人客户编号:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" name="custNum" ng-model="recordGuarantee.warranteeCustId" readonly />
+										</div>
+									</div>
+								</div>
+								<div ng-show='false' class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保币种:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" name="currency" ng-model="recordGuarantee.currencyGuarantee" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保币种:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" name="currency" ng-model="recordGuarantee.currencyGuaranteeName" readonly />
+										</div>
+									</div>
+								</div>
+								<div class="row mt2">
+									<div class="col-sm-12">
+										<div class="col-sm-3 mt3">
+											<label class="control-label need" style="float: right;">担保金额:</label>
+										</div>
+										<div class="col-sm-6">
+											<input type="text" class="form-control" name="guaranteeAmount" ng-model="recordGuarantee.guaranteeAmount" readonly />
+										</div>
+									</div>
+								</div>
+
+							</div>
+
+							<div class="row mt2">
+								<div class="col-sm-12">
+									<div class="col-sm-3 mt3">
+										<label class="control-label need" style="float: right;">担保适用产品:</label>
+									</div>
+									<div class="col-sm-6 mt3">
+										<span ng-repeat="proRent in rentFacList">
+									<input class="el-form--inline" type="checkbox" name="proRent" checked="checked" disabled/><span>{{proRent.name}}</span>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div id="ngshow" ng-show="recordGuarantee.typePoint=='C102' || recordGuarantee.typePoint=='C103' || recordGuarantee.typePoint=='C101'" class="row mt2">
+								<div class="col-sm-12">
+									<div class="col-sm-3 mt3">
+										<label class="control-label need" style="float: right;">担保方式类型:</label>
+									</div>
+									<div class="col-sm-6">
+										<select class="form-control required" ng-model="recordGuarantee.guarmartType" ng-options=" morta.code as morta.name for morta in recordGuarantee.mortgageList">
+											<option value="">请选择</option>
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<!--押品信息-->
+							<div id="ngshow" ng-show="recordGuarantee.typePoint=='C102' || recordGuarantee.typePoint=='C103'">
+								<div class="row" ng-repeat="betInformation in recordGuarantee.betInformationList">
+									<div class="table-editer-form" style="width: 100%">
+
+										<div class="row mt2">
+											<div class="col-sm-12">
+												<div class="col-sm-3 mt3">
+													<label class="control-label need" style="float: right;">押品编号:</label>
+												</div>
+												<div class="col-sm-6">
+													<input type="text" class="form-control required" ng-model="betInformation.pledNo" readonly/>
+												</div>
+												<div class="col-sm-2" ng-show="$index==0">
+													<button class="btn btn-info w-xs m-l-xl " ng-click="addBet($parent.$index)">+新增押品信息</button>
+												</div>
+												<div class="col-sm-1" ng-show="$index != 0">
+													<button class="btn btn-info w-xs m-l-xl " ng-click="deleteBet($parent.$index,$index)">-删除</button>
+												</div>
+											</div>
+										</div>
+										<div class="row mt2">
+											<div class="col-sm-12">
+												<div class="col-sm-3 mt3">
+													<label class="control-label need" style="float: right;">押品信息描述:</label>
+												</div>
+												<div class="col-sm-6">
+													<!--<input type="text" class="form-control required" ng-model="betInformation.productInformation" />-->
+													<textarea maxlength="500" class="form-control required" name="note" id="note" style="height: 100px;resize:none;" ng-model="betInformation.productInformation" placeholder="最多输入500字"></textarea>
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+
+							<div class="row mt2">
+								<div class="col-sm-12">
+									<div class="col-sm-3 mt3">
+										<label class="control-label need" style="float: right;">备注:</label>
+									</div>
+									<div class="col-sm-6">
+										<textarea maxlength="500" class="form-control required" rows="6" style="resize:none;" ng-model="recordGuarantee.note" placeholder="最多输入500字"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+
+				</div>
+				<div class="row">
+					<div class="col-sm-12 mt2">
+						<div class="col-sm-3 mt3">
+							<label class="control-label" style="float: right;">附件名称:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="text" class="form-control required" ng-model="nclosureName" id="nclosureName" readonly />
+						</div>
+					</div>
+					<div class="col-sm-12 mt2 mb2">
+						<div class="col-sm-3 mt3">
+							<label class="control-label " style="float: right;">附件上传:</label>
+						</div>
+						<div>
+							<ul>
+								<li>
+									<div class="uploder-container">
+										<div class="cxuploder">
+											<div class="queueList">
+												<div class="placeholder">
+													<div class="filePicker"></div>
+												</div>
+											</div>
+											<div class="statusBar" style="display:none;">
+												<div class="btns">
+													<div class="jxfilePicker"></div>
+												</div>
+												<div class="info"></div>
+											</div>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-bottom: 5em;">
+					<div class="col-sm-6 col-sm-offset-4">
+						<!--onclick="$(productMix).click()"-->
+						<button ng-click="selectBefore(tab)" class="el-button el-button--primary is-plain">上一步</button>
+						<!--<button ng-click="resetRisk()" class="el-button el-button&#45;&#45;primary is-plain">重置</button>-->
+						<button ng-click="submitTemStorage()" click-and-disable="functionThatReturnsPromise()" class="el-button el-button--primary is-plain">暂存</button>
+						<button ng-click="changeTab(5)" class="el-button el-button--primary is-plain">下一步</button>
+					</div>
+				</div>
+
+				<!--弹框内容--查询客户-->
+				<div class="modal fade" id="myCustRisk" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+					<div class="modal-dialog" role="document" style="width: 1400px;">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title" id="myModalLabel">{{title}}</h4>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -20px;"><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body" style="height:75%;overflow-y:auto;">
+
+								<!--查询客户-->
+								<div ng-show="cu == 0" class="w-lg">
+
+									<div class="input-group search-box">
+										<input type="text" style="width: 200px" ng-model="customerNum" placeholder="请输入查询的客户号">
+										<span class="input-group-btn">
+                            <button  class="btn btn-default pull-left" ng-click="search()"><i class="fa fa-search"></i></button>
+                        </span>
+									</div>
+
+								</div>
+
+								<form class="form-horizontal col-sm-12" name="user_form">
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class="col-sm-6 control-label mt3">
+                       					 客户号</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custNo">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class="col-sm-6 control-label mt3">
+                        				客户规模</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custScale">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                       					 客户名称（中文）</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custNameCN">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                       					 所属集团编号</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.groupNumber">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                       					 客户名称（英文）</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custNameEN">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                       					 所属集团名称</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.groupName">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                        				客户所在地址（中文）</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custAddressCN">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                        				客户所属行业</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.mainBusiness">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                        				客户所在地址（英文）</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custAddressEN">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                       					 客户所属国别</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custCountry">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                       				 客户属辖经营单位</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custBusinessUnit">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                       				 信用评级</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.creditRating">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                      				  客户登记注册类型</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custRegistrastionType">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                        			评级时间</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.ratiTime|date:'yyyy-MM-dd HH:mm:ss'">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-sm-12" style="margin-bottom: 1em;">
+											<div class="col-sm-6">
+												<label style="width: 200px;" class=" col-sm-6 control-label mt3">
+                        			客户评级授信类型</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custRatingCreditType">
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<label style="width: 180px;" class=" col-sm-6 control-label mt3">
+                       				 客户经理</label>
+												<div class="col-sm-6">
+													<input disabled type="text" class="form-control" ng-model="recordUseLetter.custManager">
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</form>
+
+								<div class="table-responsive">
+									<table class="table table-striped b-t b-light" style="width:1000px;">
+										<thead>
+											<tr>
+												<th style="width:100px;">序号</th>
+												<th style="width:150px;">授信号码</th>
+												<th style="width:200px;">授信额度名称</th>
+												<th style="width:200px;">额度总金额</th>
+												<th style="width:210px;">已用金额</th>
+												<th style="width:210px;">可用金额</th>
+												<th style="width:210px;">起始日</th>
+												<th style="width:210px;">到期日</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="ite in recordUseLetter.creditLinesList">
+												<td style="text-align: center;">{{$index+1}}</td>
+												<td class="v-middle">{{ite.creditNo}}</td>
+												<td class="v-middle">{{ite.creditLineName}}</td>
+												<td class="v-middle">{{ite.totalAmount}}</td>
+												<td class="v-middle">{{ite.usedAmount}}</td>
+												<td class="v-middle">{{ite.availableBalance}}</td>
+												<td class="v-middle" style="width:110px;">{{ite.startDate|date:'yyyy-MM-dd HH:mm:ss'}}</td>
+												<td class="v-middle" style="width:110px;">{{ite.maturityDate|date:'yyyy-MM-dd HH:mm:ss'}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
+							</div>
+							<div class="modal-footer">
+								<div ng-show="cu== 0" class="form-classifyLevel">
+									<div class="col-sm-5 col-sm-offset-2">
+										<button type="button" class="el-button el-button--danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>收起</button>
+										<button type="button" ng-click="submitCustUseLetter()" id="btn_submit" class="el-button el-button--success" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>选择</button>
+									</div>
+								</div>
+								<div ng-show="cu != 0" class="form-classifyLevel">
+									<div class="col-sm-4 col-sm-offset-2">
+										<button type="button" class="el-button el-button--danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>收起</button>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!--弹框内容--担保合同查询-->
+				<div class="modal fade" id="myGuarantorCustId" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+					<div class="modal-dialog" role="document" style="width: 1000px;">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title" id="myModalLabel">查询最高额担保合同</h4>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -10px;"><span aria-hidden="true">&times;</span></button>
+							</div>
+							<div class="modal-body" style="height:75%;overflow-y:auto;">
+
+								<!--查询担保合同-->
+								<div class="w-lg" style="margin-bottom: 8px;">
+
+									<div class="input-group search-box col-sm-5 col-sm-offset-4 ">
+										<!--<input type="text" ng-change="proposerJiaoYan(5)" id="proposer5" class="form-control"  typeahead-min-length="2" ng-model="contckproposer" typeahead="debtCus.custNameCN for debtCus in allCustList| filter:$viewValue | limitTo:8" typeahead-loading="loadingLocations" typeahead-no-results="noResults" typeahead-on-select="onSelectContackty($item)" typeahead-wait-ms="500" placeholder="请输入客户名称或者客户号查询">-->
+										<input type='text' class="form-control" ng-blur="proposerJiaoYan(5)" ng-change="queryrecordContackty(contckproposer)" id="proposer5" ng-model="contckproposer" autocomplete="off" placeholder="请输入客户编号查询" />
+										<div ng-show="hiddenRecordContackty">
+											<select class="form-control" style="width: auto;height: auto;min-width: 200px;" ng-change="onSelectContackty(x)" ng-options="debtCust as debtCust.custNameCN  for debtCust in allCustListContackty | filter:$viewValue | limitTo:10" ng-model="x" multiple>
+											</select>
+										</div>
+									</div>
+								</div>
+
+								<div class="row" id="scroll-2">
+									<div class="col-sm-12" style="height:auto;">
+										<table class="table table-striped b-t b-light" style="width: 2000px;border: #c9c0c0b9 solid 1px">
+											<thead>
+												<tr>
+													<th style="width:130px;">序号</th>
+													<th style="width:130px;">选择</th>
+													<th style="width:650px;">业务申请人客户编号</th>
+													<th style="width:550px;">业务申请人名称</th>
+													<th style="width:1100px;">保证人/抵押人/出质人客户编号</th>
+													<th style="width:1100px;">保证人/抵押人/出质人客户名称</th>
+													<th style="width:400px;">担保合同类型</th>
+													<th style="width:300px;">保证方式</th>
+													<th style="width:430px;">担保合同编号</th>
+													<th style="width:450px;">担保合同签订日期</th>
+													<th style="width:400px;">担保债权币种</th>
+													<th style="width:400px;">担保债权金额</th>
+													<th style="width:400px;">可担保债权余额</th>
+													<th style="width:400px;">担保起始日期</th>
+													<th style="width:400px;">担保到期日期</th>
+													<th style="width:130px;">备注</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr ng-repeat="ite in contacktyList track by $index" style="text-align: center;">
+													<td style="text-align: center;">{{$index+1}}</td>
+													<td class="v-middle"><input type="radio" name="checkedRepeat" ng-model="ite.checked" ng-click="checkedRepeat(ite)"></td>
+													<td class="v-middle">{{ite.custNo}}</td>
+													<td class="v-middle">{{ite.custNameCN}}</td>
+													<td class="v-middle">{{ite.guarantorCustId}}</td>
+													<td class="v-middle">{{ite.guarantor}}</td>
+													<td class="v-middle">{{ite.guaranteeContractName}}</td>
+													<td class="v-middle">{{ite.guaranteeMenthodName}}</td>
+													<td class="v-middle">{{ite.warrantyContractNumber}}</td>
+													<td class="v-middle" style="width:110px;">{{ite.guaranteeContractTime|date:'yyyy-MM-dd HH:mm:ss'}}</td>
+													<td class="v-middle">{{ite.securedCreditCurrencyName}}</td>
+													<td class="v-middle">{{ite.securedCreditClaim}}</td>
+													<td class="v-middle">{{ite.BalanceSecuredClaim}}</td>
+													<td class="v-middle" style="width:110px;">{{ite.guaranteeStartDate|date:'yyyy-MM-dd HH:mm:ss'}}</td>
+													<td class="v-middle" style="width:110px;">{{ite.guaranteeEndDate|date:'yyyy-MM-dd HH:mm:ss'}}</td>
+													<td class="v-middle">{{ite.remarks}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+
+							</div>
+							<div class="modal-footer">
+								<div class="form-classifyLevel">
+									<div class="col-sm-5 col-sm-offset-2">
+										<button type="button" class="el-button el-button--danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+										<button ng-if="contacktyList" type="button" ng-click="submitContack()" id="btn_submit" class="el-button el-button--success" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>选择</button>
+										<button ng-if="!contacktyList" type="button" ng-click="submitContack()" id="btn_submit" class="el-button el-button--success"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>选择</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<!--专有信息-->
+			<div ng-show="tab===5" step="5" style="padding: 10px 30px;">
+
+				<div ng-repeat="pro in rentFacList track by $index" style="margin-left: 19px;">
+
+					<div class="col-sm-12 panel-heading font-bold mb2" style=" border-bottom: 1px solid #CCCCCC;">
+						<label class="col-sm-2 control-label mt3">
+                        	<!---->
+                        	产品名称：
+						</label>
+						<div class="col-sm-7">
+							<input disabled type="text" class="form-control" ng-model="pro.name" style="background-color: inherit;font-size: 16px;border: none;margin-top: -4px;">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 mb1">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;">承租人（债务人）客户编号:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type='text' class="form-control required" ng-change="queryRecordProInform(pro.custNo,$index)" id="proposer4" ng-model="pro.custNo" maxlength="50" autocomplete="off" placeholder="请输入客户号查询" />
+								<div ng-show="pro.hiddenRecordProInform">
+									<select class="form-control" style="width: auto;height: auto;min-width: 200px;" ng-change="onSelectCustName(x,$index)" ng-options="debtCus as debtCus.custNameCN for debtCus in allCustListProInform | filter:$viewValue | limitTo:10" ng-model="x" multiple>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12 mb1">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;">承租人（债务人）客户名称:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="form-control required" ng-model="pro.custName" readonly>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12 mb1">
+							<div class="col-sm-3 mt3">
+								<label class="control-label" style="float: right;">承租人（债务人）客户评级:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="form-control" ng-model="pro.custTating" readonly/>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 mb1">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;">承租人是否地方政府融资平台:</label>
+							</div>
+							<div class="col-sm-6">
+								<select class="form-control required" ng-model="pro.financePlatform">
+									<option value="">请选择</option>
+									<option value="1">是</option>
+									<option value="0">否</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 mb1">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;">行业投向:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="hidden" class="required" ng-model="pro.industryTo" name="industryTo" id="industryTo" />
+								<div id="industryInve" class="mulit_context_menu"></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12 mb1">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;">背景国别:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type='text' class="form-control required" ng-change="getBackground('countryBack',pro.tbon)" ng-model="pro.tbon" autocomplete="off" placeholder="可输入国别码和国别名称精准查询" />
+								<div ng-show="$parent.hinddenBackground">
+									<select style='width:751px;height:200px' ng-change="onSelectBackground(x)" ng-options="x as x.codeText for x in backgroundList" ng-model="x" multiple>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12 mt3 mb1">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;">容忍期(天):</label>
+							</div>
+							<div class="col-sm-6">
+								<input class="control-label  required" type="text" style="width: 100%;" ng-model="pro.tolerancePertod=0" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" style="margin-bottom: 5em;">
+					<div class="col-sm-6 col-sm-offset-4">
+						<!--onclick="$(risk).click()"-->
+						<button ng-click="selectBefore(tab)" class="el-button el-button--primary is-plain">上一步</button>
+						<!--<button ng-click="resetProprietaryInformation()" class="el-button el-button&#45;&#45;primary is-plain">
+				</button>-->
+						<button ng-click="submitTemStorage()" click-and-disable="functionThatReturnsPromise()" class="el-button el-button--primary is-plain">暂存</button>
+						<button ng-click="changeTab(6)" class="el-button el-button--primary is-plain">下一步</button>
+					</div>
+				</div>
+
+			</div>
+
+			<div ng-show="tab===6" step="6" style="padding: 10px 30px">
+
+				<div class="row">
+					<fieldset style="margin-left:14px;padding: 1em .625em .75em;margin: 0 2px;border: 1px solid #c0c0c0">
+						<legend style="margin-left:10%;width: 15%;font-size: 16px;font-weight: bold">会议纪要</legend>
+						<div class="col-sm-12 mt2">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;">会议纪要名称:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" class="form-control" ng-model="meetFileName" readonly/>
+							</div>
+						</div>
+						<div class="col-sm-12 mt2 mb2">
+							<div class="col-sm-3 mt3">
+								<label class="control-label " style="float: right;">上传会议纪要:</label>
+							</div>
+							<div>
+								<ul>
+									<li>
+										<div class="uploder-container">
+											<div class="cxuploder">
+												<div class="queueList">
+													<div class="placeholder">
+														<div class="filePicker"></div>
+
+													</div>
+												</div>
+												<div class="statusBar" style="display:none;">
+													<div class="btns">
+														<div class="jxfilePicker"></div>
+													</div>
+													<div class="info"></div>
+												</div>
+											</div>
+										</div>
+
+									</li>
+								</ul>
+								<div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+									<div id="innerdiv" style="position:absolute;">
+										<img id="bigimg" style="border:5px solid #fff;" src="" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<div class="col-sm-3 mt3">
+								<label class="control-label need" style="float: right;">会议纪要签发日期:</label>
+							</div>
+							<!--//签发日期Date of issue-->
+							<div class="col-sm-6">
+								<!--<div onchange="date1JiaoYan($(this).parent())"> issueDate -->
+								<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" autocomplete="off" class="form-control required" onchange="date1JiaoYan($(this).parent())" id="issue" ng-model="hh" placeholder="会议纪要的签发日期">
+								<!--</div>-->
+							</div>
+						</div>
+					</fieldset>
+				</div>
+
+				<div class="row" style="margin-bottom: 5em;">
+					<div class="col-sm-6 col-sm-offset-4">
+						<!--onclick="$(debtSummary).click()"-->
+						<button ng-click="selectBefore(tab)" class="el-button el-button--primary is-plain">上一步</button>
+						<!--<button ng-click="resetUseLetter()" class="el-button el-button&#45;&#45;primary is-plain">重置</button>-->
+						<button ng-click="submitTemStorage()" click-and-disable="functionThatReturnsPromise()" class="el-button el-button--primary is-plain">暂存</button>
+						<button ng-click="submitDebt()" id="submitDebt" class="el-button el-button--primary is-plain">提交</button>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</form>
+	<!--</div>-->
+
+</div>

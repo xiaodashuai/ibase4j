@@ -1,0 +1,124 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>您当前所在位置：</li>
+		<li>
+			<a ui-sref="main">
+				发放条件
+			</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+	<!-- 数据显示 -->
+
+	<div class="wrapper-data">
+		<div class="panel panel-default">
+			<!-- 头部 -->
+			<div class="panel-heading clearfix">
+				<div class="w-lg">
+					<form ng-submit="search(0)" class="ng-pristine ng-valid" id="grantFm">
+						<div class="input-group search-box row">
+							<div class="row mt3" style="line-height: 30px;height: 45px;">
+								<div class="col-sm-2 mt3">
+									<label class="control-label " style="float: right;">债项方案编号:</label>
+								</div>
+								<div class="col-sm-2">
+									<input type="text" class="form-control" ng-model="param.keyword" placeholder="债项方案编号" style="width:150px;">
+								</div>
+								<div class="col-sm-2 mt3">
+									<label class="control-label " style="float: right;">项目名称:</label>
+								</div>
+								<div class="col-sm-2">
+									<input type="text" class="form-control" ng-model="param.projectNam" placeholder="项目名称" style="width:150px;">
+								</div>
+								<div class="col-sm-2 mt3">
+									<label class="control-label " style="float: right;">申请人名称:</label>
+								</div>
+								<div class="col-sm-2">
+									<input type="text" class="form-control" ng-model="param.applicant" placeholder="申请人名称" style="width:150px;">
+								</div>
+							</div>
+							<div class="row mt3">
+								<div class="col-sm-2 mt3">
+									<label class="control-label " style="float: right;">开始时间:</label>
+								</div>
+								<div class="col-sm-2">
+									<input type="text" class="form-control date" onchange="" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" ng-model="param.startDate" placeholder="开始时间" style="width:150px;">
+								</div>
+								<div class="col-sm-2 mt3">
+									<label class="control-label " style="float: right;">结束时间:</label>
+								</div>
+								<div class="col-sm-2">
+									<input type="text" class="form-control date" onchange="" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" ng-model="param.endDate" placeholder="结束时间" style="width:150px;">
+								</div>
+								<div class="col-sm-2" style="width:80px;">
+									<button type="submit" class="el-button el-button--primary" style="width:70px;margin-left:20px;">查询</button>
+								</div>
+								<div class="col-sm-2" style="width:80px;">
+									<button type="button" class="el-button el-button--primary" ng-click="clearSearch('grantFm')" style="width:70px;margin-left:20px;">清空</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- 担保信息录入 -->
+			<div ng-include="'src/app/biz/grant/product_list.html'"></div>
+			<input style="display: none;" type="button" id="openProductWin" data-toggle="modal" data-target="#grantProduct"/>
+			<!-- 数据表格 -->
+			<div class="table-responsive" id="scroll-2">
+				<table class="table table-striped b-t b-light" style="width: 100%;">
+					<thead>
+						<tr>
+							<th style="width:60px;">序号</th>
+							<th style="width:150px;">债项方案编号</th>
+							<th style="width:*px;min-width:200px;">项目名称</th>
+							<th style="width:150px;">申请人名称</th>
+							<th style="width:110px;">方案主币种</th>
+							<th style="width:150px;">方案金额</th>
+							<th style="width:120px;">方案提交时间</th>
+							<th width="80px;" style="text-align: center;">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in pageInfo.data">
+							<td style="text-align: center;">{{(pageInfo.current-1)*pageInfo.size+$index+1}}</td>
+							<td class="v-middle">{{item.debtCode}}</td>
+							<td class="v-middle">{{item.projectName}}</td>
+							<td class="v-middle">{{item.proposer}}</td>
+							<td class="v-middle">{{item.mpc}}</td>
+							<td class="v-middle">{{item.solutionAmountStr}}</td>
+							<td class="v-middle">{{item.createTime | date:'yyyy-MM-dd'}}</td>
+							<td>
+								<li><a ng-click="openPop('A','',item.debtCode,'')">查看详情</a></li>
+								<li><a ng-click="openWindow(item.debtCode,$index)" data-toggle="modal" data-target="#fileModal">查看附件</a></li>
+								<li><a ng-click="openList('openProductWin',item)">发放条件</a></li>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- /.table-responsive -->
+
+			<!-- 底部分页 -->
+			<span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+			<!-- 担保信息录入 -->
+			<div ng-include="'src/app/biz/grant/view_file.html'"></div>
+		</div>
+		<!-- /.panel -->
+	</div>
+	<!-- /.wrapper-data -->
+
+</div>
+<!-- /.wrapper-md -->

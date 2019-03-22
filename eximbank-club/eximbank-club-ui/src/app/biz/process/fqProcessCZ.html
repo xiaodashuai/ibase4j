@@ -1,0 +1,174 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li><a ui-sref="main.biz.workflow.todo">我的待办</a></li>
+        <li><a ui-sref="">发放条件</a></li>
+        <li><a ui-sref="">废弃</a></li>
+    </ul>
+</div>
+<!--业务处长审批-->
+<!-- 内容区域 -->
+<div class="wrapper-md content canvasNum">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">业务处长审批
+
+        </div>
+        <!--表单-->
+            <div class="panel-body" >
+                <form class="form-middle"  name="middle_form">
+                    <div class="canvas">
+                    <div class="col-sm-8 col-sm-offset-2" style="margin-top:20px;" align="center" >
+                        <button type="button"  class="btn btn-info w-xs m-l-xl" ng-click="openPopGrant()">快照查看</button>
+                        <button type="button" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled" ng-click="openE($state.params.grantCode,$index)" data-toggle="modal" data-target="#myCustUserLetter" style="margin-left: 100px">附件查看</button>
+                    </div>
+                        <div class="row" >
+                            <div class="col-sm-12" style="margin-top:20px;" >
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;">废弃理由：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <textarea maxlength="200" type="text" rows="6" class="form-control required" style="resize: none" id="fqly"  ng-model="grantInfo.remark"  readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" >
+                            <div class="col-sm-12" style="margin-top:20px;" >
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;">发放条件编号：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="ffshbh" ng-model="grantInfo.grantCode"  readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" >
+                            <div class="col-sm-12" style="margin-top:20px;" >
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;">申请人名称：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="sqrmc" ng-model="grantInfo.proposer"  readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" >
+                            <div class="col-sm-12" style="margin-top:20px;" >
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;">业务品种：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="ywpz" ng-model="grantInfo.businessName"  readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" >
+                            <div class="col-sm-12" style="margin-top:20px;" >
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;">业务期限：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="ywqx" ng-model="grantInfo.scopeBusinPeriod"  readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" >
+                            <div class="col-sm-12" style="margin-top:20px;" >
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;">币种：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="bz" ng-model="grantInfo.mpcName"  readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" >
+                            <div class="col-sm-12" style="margin-top:20px;" >
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;">发放金额：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="ffje" ng-model="grantInfo.grantAmt  | number:2"  readonly />
+                                </div>
+                            </div>
+                        </div>
+                    <div class="row" style="margin-top:20px;" >
+                        <div class="col-sm-12"  >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>审核结果：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <select  ng-model="comment" class="form-control" required="required" ng-options="x.name for x in transitions" ng-change="changeSelected()" id="selectedId">
+                                    <!--<option value="" selected>&#45;&#45;请选择&#45;&#45;</option>-->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="comment.name=='驳回'" class="form-liaisonleader">
+                        <div class="row">
+                            <div class="col-sm-12" style="margin-top:20px">
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>驳回意见：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <textarea maxlength="85" type="text" rows="6" class="form-control required" style="resize: none" ng-model="record.grantOpinion"  ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="row" style="margin-left: 20px">
+                            <div class="col-sm-12" style="margin-top: 30px;" >
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm"></span></label>
+                                </div>
+                                <div class="col-sm-6" style="color: red;font-size: 15px;">
+                                    <input class="el-radio required" type="checkbox" id="verification" ng-model="record.verification" ng-click="changeCheck()" >
+                                    已对审批信息和全部附件进行审核，并检查每个审核要素，确认该业务符合我行管理规定及外部监管要求.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-liaison">
+                            <div class="col-sm-8 col-sm-offset-2" style="margin-top:20px;" align="center">
+                                <button type="button" id="" ng-click="goBack()" class="btn btn-default w-xs">返回</button>
+                                <button disabled type="submit" id="refer" class="btn btn-info w-xs m-l-xl"  ng-click="submit()" style="margin-left: 50px">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive" style="overflow: inherit; border-top: #666666 1px solid;margin-top:100px;" >
+                        <div style="height: 30px;border: #666666 1px solid;">
+                            <label style="margin-bottom: -5px;" class="col-lg-4 col-sm-3 control-label"><span class="text-danger wrapper-sm"></span>历史意见信息</label>
+                        </div>
+                        <table class="table table-striped b-t b-light text-center" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <th class="table-striped-td" width="80px">序号</th>
+                                <th class="table-striped-td" width="*00px;">岗位</th>
+                                <th class="table-striped-td" width="100px;">姓名</th>
+                                <th class="table-striped-td" width="100px;">操作</th>
+                                <th class="table-striped-td" width="200px;">时间</th>
+                                <!--<th class="table-striped-td" width="200px;">备注</th>-->
+                                <th class="table-striped-td" width="100px;">操作详情</th>
+                            </tr>
+                            <tr ng-repeat="item in voList">
+                                <th class="table-striped-td" ng-bind="$index+1">1</th>
+                                <th class="table-striped-td">{{item.roleName}}</th>
+                                <th class="table-striped-td">{{item.userName}}</th>
+                                <th class="table-striped-td">{{item.commentInfo}}</th>
+                                <th class="table-striped-td">{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</th>
+                                <!--<th class="table-striped-td">{{item.remark}}</th>-->
+                                <th class="table-striped-td">
+                                    <button type="button" class="btn btn-info w-xs m-l-xl" ng-show="{{item.remark!=1}}" ng-disabled="isDisabled" ng-click="openPopDebtApproval(item.taskId)" style="">查看</button>
+                                    <button type="button" class="btn btn-info w-xs m-l-xl" ng-show="{{item.remark==1}}" ng-disabled="isDisabled" ng-click="openPopGrant()" style="">查看</button>
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+                    <div ng-include="'src/app/biz/process/view_grant.html'"></div>
+                </form>
+            </div>
+    </div>
+</div>

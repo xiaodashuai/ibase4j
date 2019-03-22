@@ -1,0 +1,137 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>您当前所在位置：</li>
+		<li>
+			<a ui-sref="main">
+				历史数据迁移
+			</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+	<!-- 数据显示 -->
+
+	<div class="wrapper-data">
+		<div class="panel panel-default">
+			<!-- 头部 -->
+			<div class="panel-heading clearfix">
+				<div class="w-lg">
+					<form ng-submit="search()" class="ng-pristine ng-valid" id="tempFm">
+						<div class="input-group search-box">
+							<div class="row mt3" style="line-height: 30px;height: 45px;">
+								<div class="col-sm-2" style="width:100px;">
+									<label class="control-label " style="float: right;">业务编号:</label>
+								</div>
+								<div class="col-sm-2" style="width:150px;">
+									<input type="text" class="form-control" ng-model="param.schemeNum" placeholder="发放条件编号" style="width:150px;">
+								</div>
+								<div class="col-sm-2" style="width:100px;">
+									<label class="control-label " style="float: right;">产品名称:</label>
+								</div>
+								<div class="col-sm-2" style="width:150px;">
+									<input type="text" class="form-control " ng-model="param.projectNam" placeholder="产品名称" style="width:150px;">
+								</div>
+								<div class="col-sm-2" style="width:100px;">
+									<label class="control-label " style="float: right;">所属机构:</label>
+								</div>
+								<div class="col-sm-2" style="width:*px;">
+									<select class="form-control" id="deptCode" style="width:260px;"></select>
+								</div>
+							</div>
+							<div class="row mt3">
+								<div class="col-sm-2" style="width:100px;">
+									<label class="control-label " style="float: right;">暂存时间:</label>
+								</div>
+								<div class="col-sm-2" style="width:*px;min-width:300px;">
+									<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" onchange="" class="form-control date" style="width:120px;" ng-model="param.stateTime">
+									至&nbsp;<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" onchange="" class="form-control date" style="width:120px;" ng-model="param.endTime">
+								</div>
+								<div class="col-sm-2" style="width:110px;">
+									<label class="control-label " style="float: right;">申请人名称:</label>
+								</div>
+								<div class="col-sm-2" style="width:150px;">
+									<input type="text" class="form-control " ng-model="param.remark_" placeholder="申请人名称" style="width:150px;">
+								</div>
+								<div class="col-sm-2" style="width:80px;">
+									<button type="submit" class="el-button el-button--primary" style="width:70px;margin-left:5px;">查询</button>
+								</div>
+								<div class="col-sm-2" style="width:80px;">
+									<button type="button" class="el-button el-button--primary" ng-click="clearSearch('tempFm')" style="width:70px;">清空</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<!-- 数据表格 -->
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light">
+					<colgroup>
+						<col width="50px"/>
+						<col width="120px"/>
+						<col width="115px"/>
+						<col width="*px;" style="text-align: center;min-width:150px;"/>
+						<col width="100px"/>
+						<col width="70px"/>
+						<col width="85px"/>
+						<col width="90px"/>
+						<col width="130px"/>
+						<col width="100px"/>
+						<col width="65px"/>
+					</colgroup>
+					<thead>
+					<tr>
+						<th>序号</th>
+						<th>发放条件编号</th>
+						<th>申请人名称</th>
+						<th>产品名称</th>
+						<th>金额</th>
+						<th>币种</th>
+						<th>业务期限</th>
+						<th>所属机构</th>
+						<th>操作人员</th>
+						<th>暂存时间</th>
+						<th style="text-align: center;">操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="item in pageInfo.data">
+						<td style="text-align: center;">{{$index+1}}</td>
+						<td class="v-middle"><div style="width:120px;word-break:normal;word-wrap: break-word; ">{{item.bizcode}}</div></td>
+						<td class="v-middle">{{item.remark}}</td>
+						<td class="v-middle">{{item.obj.businessName}}</td>
+						<td class="v-middle">{{subFirst(item.obj.paymentAmtList)|number:2}}</td>
+						<td class="v-middle">{{cvtCurrency(item.obj.currencyList | limitTo:3)}}</td>
+						<td class="v-middle">{{item.obj.scopeBusinPeriod}}</td>
+						<td class="v-middle">{{item.deptCode}}</td>
+						<td class="v-middle">{{item.userName}}</td>
+						<td class="v-middle">{{item.createTime | date:'yyyy-MM-dd'}}</td>
+						<td>
+							<li><a ng-click="edit(item)">编辑</a></li>
+							<li><a ng-click="deleteItem(item)">删除</a></li>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- /.table-responsive -->
+			<span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+		</div>
+		<!-- /.panel -->
+	</div>
+	<!-- /.wrapper-data -->
+
+</div>
+<!-- /.wrapper-md -->

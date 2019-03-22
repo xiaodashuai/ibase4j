@@ -1,0 +1,254 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>
+			<a ui-sref="main"><i class="fa fa-home"></i>首页</a>
+		</li>
+		<li>
+			<a ui-sref="main.sys.counter.list">柜员管理</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i>数据加载中...</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+	<div class="panel panel-default">
+		<!-- 头部 -->
+		<div class="panel-heading font-bold" >
+			<span id="title">{{title}}</span>
+			<a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.sys.counter.list"><i class="text-md fa fa-mail-reply text-muted" title="返回"></i></a>
+		</div>
+		<!--表单-->
+		<div class="panel-body">
+			<!--<div class="row" >
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>登录名：</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="hidden" id="biaoji" value="{{record.id}}" ng-model="record.id">
+						<input type="text" class="form-control " onblur="accountJiaoYan(this.value)" name="account" id="account" ng-readonly="record.id != null" placeholder="请输入您的登录名..." ng-model="record.account">
+						<span id="accountTest" style="color : red;"></span>
+						<span class="help-block m-b-none">登录名唯一且不可修改。数字以及字母均可，不得超过18个字符，不可用任何特殊字符。</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="line line-dashed b-b line-lg pull-in"></div>-->
+			<!--柜员级别-->
+			<div class="row" >
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;">
+							<span class="text-danger wrapper-sm">*</span>级别</label>
+					</div>
+					<div class="col-sm-6">
+						<select class="form-control"   style="width:120px;" name="userLevel" ng-model="record.userLevel"
+								id="userLevel" onblur="userLevelJiaoYan()">
+							<option value="" >请选择</option>
+							<option value="1">一级</option>
+							<option value="2">二级</option>
+						</select>
+						<span style="color: red;" id="userLevelTest"></span>
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="row" >
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;">柜员姓名：</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="hidden" id="biaoji" value="{{record.id}}" ng-model="record.id">
+						<input type="text" class="form-control" onblur="userNameJiaoYan()" name="userName" id="userName" placeholder="请输入您的真实姓名..." ng-model="record.userName">
+						<span id="userNameTest" style="color: red;"></span>
+						<span class="help-block m-b-none"></span>
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<!--柜员编号-->
+			<div class="row" >
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>员工编号：</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" onblur="staffNoJiaoYan(this.value)" name="staffNo" id="staffNo" ng-readonly="record.id != null" placeholder="请输入柜员编号..." ng-model="record.staffNo">
+						<span id="staffNoTest" style="color: red;"></span>
+						<span class="help-block m-b-none"></span>
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<!--电话号码-->
+			<div class="row" >
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>电话号码：</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" onblur="telephoneJiaoYan()" style="width:300px;" name="telephone" id="telephone" placeholder="请输入您的电话号码..." ng-model="record.telephone">
+						<span style="color: red;" id="telephoneTest"></span>
+						<span class="help-block m-b-none">电话号码为标准座机号码</span>
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<!--手机号码-->
+			<div class="row" >
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>手机号码：</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" onblur="phoneJiaoYan()" style="width:300px;" name="phone" id="phone" placeholder="请输入您的手机号码..." ng-model="record.phone">
+						<span style="color: red;" id="phoneTest"></span>
+						<span class="help-block m-b-none">手机号码为标准11位数字</span>
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<!--email-->
+			<div class="row" >
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm"></span>E-mail：</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" onblur="emailJiaoYan()" name="email" id="email" placeholder="请输入您的E-mail地址..." ng-model="record.email">
+						<span style="color: red;" id="emailTest"></span>
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+		<!--	<div class="row" >
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;">性别：</label>
+					</div>
+					<div class="col-sm-6">
+						</br>
+						<input type="radio" name="sex" ng-checked="true" value="1" ng-model="record.sex">男
+						<input type="radio" name="sex" value="2" ng-model="record.sex">女
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>-->
+			<div class="row" >
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>所属机构：</label>
+					</div>
+					<div class="col-sm-6" id="deptTree" onclick="departmentJiaoYan()">
+						<input type="hidden" id="deptId" ng-model="record.deptCode" value="{{record.deptCode}}" />
+						<input type="text" class="form-control" readonly="readonly" style="color:#000" id="department" ng-model="record.deptName" onclick="showMenu()" />
+						<span style="color: red;" id="departmentTest"></span>
+						<ul id="tree" tree class="ztree" style="display: none;"></ul>
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<!-- 柜员类型 -->
+			<div class="form-group">
+				<div class="col-sm-6">
+					<input type="hidden" name="roleType" value="1" ng-model="record.userType">
+				</div>
+			</div>
+			<!-- 设置岗位 -->
+			<div class="row" >
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>设置岗位：</label>
+					</div>
+					<div class="col-sm-6" >
+						<div class="col-lg-4 col-xs-12" style="padding: 0px 0px 0px 0px;">
+							<div class="box-content" style="width:480px;height:300px;overflow:auto;">
+								<h4 class="box-title">可选岗位</h4>
+								<ul class="list-inline" ng-repeat="item in roleList">
+									<li>
+										<div class="checkbox inverse">
+											<input type="checkbox" name="roles" id="checkbox-{{$index}}" ng-model="item.checked" value="{{item.roleId}}" ng-click="addChecked(item.checked,item.roleId)" ng-checked="clearTest(item.checked)" />
+											<label for="checkbox-{{$index}}" onmouseout="checkedRole()">{{item.roleName}}</label>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<input type="hidden" id="ck_role_count" value="0" />
+					<div class="col-sm-6" style="color : red;width:100%;text-align: center;" id="checkedRoleTest"></div>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="row" ng-hide="record.id==null">
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;">重置密码：</label>
+					</div>
+					<div class="col-sm-6" ng-init="record.openpwd = 1">
+						<input value="1" type="radio" name="resetPwd" ng-model="record.openpwd"  onchange="resetPassword(1)" /> 是
+						<input value="0" type="radio" name="resetPwd" ng-checked="true" onchange="resetPassword(0)" /> 否
+						<span class="help-block m-b-none"></span>
+					</div>
+				</div>
+			</div>
+			<div class="row mypassword">
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>密码：</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="password" class="form-control"  onblur="passwordJiaoYan()" name="password" id="password" placeholder="请输入密码..." ng-model="record.password">
+						<span style="color: red;" id="passwordTest"></span>
+					</div>
+				</div>
+			</div>
+
+			<!--确认密码-->
+			<div class="row mypassword">
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>确认密码：</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="password" class="form-control" onblur="confirmPasswordJiaoYan()" name="confirmPassword" id="confirmPassword" placeholder="请确认您的密码..." ng-model="record.confirmPassword">
+						<span style="color: red;" id="confirmPasswordTest"></span>
+						<span class="help-block m-b-none"></span>
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<!--是否禁止-->
+			<div class="row" >
+				<div class="col-sm-12" style="margin-top:20px;" >
+					<div class="col-sm-3">
+						<label class="control-label" style="float: right;margin-top: 10px;">
+							<span class="text-danger wrapper-sm">*</span>状态</label>
+					</div>
+					<div class="col-sm-6" >
+						<input type="radio" ng-checked="true" name="enable" value="1" ng-model="record.enable">正常
+						<br />
+						<br />
+						<input type="radio" name="enable" value="0" ng-model="record.enable">注销
+					</div>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-liaison">
+				<div class="col-sm-8 col-sm-offset-2" style="margin-top:20px;" align="center">
+					<input type="'submit'" id="submitBtn" ng-click="submit()" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled" value="保存" />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

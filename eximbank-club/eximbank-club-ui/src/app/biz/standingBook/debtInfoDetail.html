@@ -1,0 +1,261 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li>
+            <a ui-sref="main">
+                <i class="fa fa-home"></i> 首页</a>
+        </li>
+        <li>
+            <a ui-sref="main.biz.standingBook.debt">方案信息台账</a>
+        </li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">方案信息明细
+
+        </div>
+        <!--表单-->
+        <div class="panel-body">
+            <form class="form-middle" name="middle_form">
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <!-- 债项方案编号 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">债项方案编号:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="debtCode"
+                                   ng-model="dataMap.debtCode" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 是否单笔单批 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">是否单笔单批:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="grantCode"
+                                   ng-model="dataMap.singleBatch" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 项目名称 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">项目名称:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="productName"
+                                   ng-model="dataMap.projectName" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 申请人 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">申请人:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="proposer"
+                                   ng-model="dataMap.proposer" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 申请人客户号 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">申请人客户号:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="proposerNum"
+                                   ng-model="dataMap.proposerNum" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 所属机构 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">所属机构:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="deptName"
+                                   ng-model="dataMap.deptName" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 信贷员/客户经理 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">信贷员/客户经理:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="bankTellName"
+                                   ng-model="dataMap.bankTellName" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 产品类型 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">产品类型:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="scopeBusinPeriod"
+                                   ng-model="dataMap.PRODUCENAMEALL" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 方案生效日期 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">方案生效日期:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="gracePeriod"
+                                   value="{{dataMap.pgEffectiveDate|date:'yyyy-MM-dd'}}" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 方案失效日期 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">方案失效日期:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="pgExpiDate"
+                                    value="{{dataMap.pgExpiDate|date:'yyyy-MM-dd'}}" readonly/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 方案状态 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">方案状态:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="custNameCn"
+                                   ng-model="dataMap.solutionState" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 方案审核状态 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">方案审核状态:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="creditLineName"
+                                   ng-model="dataMap.creditLineName" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 方案主币种 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">方案主币种:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="creditRatio"
+                                   ng-model="dataMap.codeName" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 方案金额 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">方案金额:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="AllGuaranName"
+                                   ng-model="dataMap.solutionAmt" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 债项方案已批未放金额 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">债项方案已批未放金额:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="guaranType"
+                                   ng-model="dataMap.approvedUnusedAmt" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 债项方案可使用金额 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">债项方案可使用金额:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="guaranPortType"
+                                   ng-model="dataMap.guaranPortName" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 可办理笔数 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">可办理笔数:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="clearRatio"
+                                   ng-model="dataMap.tdwln" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!-- 是否是政策性 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">是否是政策性:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" id="clearRatioAmt"
+                                   ng-model="dataMap.policyString" readonly/>
+                        </div>
+                    </div>
+                </div>
+
+                <br/><br/>
+                <!--btn-->
+                <div class="form-liaison">
+                    <div class="col-sm-6 col-sm-offset-5">
+                        <button type="button" onclick="javascript:history.back(-1);" class="btn btn-default w-xs">返回</button>
+                    </div>
+                </div>
+
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

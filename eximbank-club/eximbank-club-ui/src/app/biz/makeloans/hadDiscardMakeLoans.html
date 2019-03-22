@@ -1,0 +1,121 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li><a ui-sref="main.biz.workflow.todo">我的待办</a></li>
+        <li><a ui-sref="">发放审核</a></li>
+        <li><a ui-sref="">废弃</a></li>
+    </ul>
+</div>
+<!--业务经办审批-->
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">业务经办审批
+
+        </div>
+        <!--表单-->
+        <div class="panel-body">
+            <form class="form-middle" name="middle_form">
+                <div class="col-sm-8 col-sm-offset-2" style="margin-top:20px;" align="center">
+                    <button type="button" class="btn btn-info w-xs m-l-xl" ng-click="openPop('B','',grantInfo.grantCode,'')">快照查看</button>
+                    <button type="button" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled"
+                            ng-click="openWindow(grantInfo.grantCode)" data-toggle="modal" data-target="#fileModal"  style="margin-left: 100px">附件查看
+                    </button>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-3">
+                            <label class="control-label" style="float: right;margin-top: 10px;">废弃理由：</label>
+                        </div>
+                        <div class="col-sm-6">
+							<textarea maxlength="200" type="text" rows="6" class="form-control required"
+                                      style="resize: none" id="fqly" ng-model="record.commentInfo" ng-init="record.commentInfo = '由于核心系统取消借据许可证，该笔发放审核须做废弃'" readonly>
+							</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-3">
+                            <label class="control-label" style="float: right;margin-top: 10px;">发放审核编号：</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="ffshbh" ng-model="grantInfo.grantCode"
+                                   readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-3">
+                            <label class="control-label" style="float: right;margin-top: 10px;">申请人名称：</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="sqrmc" ng-model="grantInfo.proposer" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-3">
+                            <label class="control-label" style="float: right;margin-top: 10px;">业务品种：</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="ywpz" ng-model="grantInfo.businessName"
+                                   readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-3">
+                            <label class="control-label" style="float: right;margin-top: 10px;">业务期限：</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="ywqx" ng-model="grantInfo.scopeBusinPeriod"
+                                   readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-3">
+                            <label class="control-label" style="float: right;margin-top: 10px;">币种：</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="bz" ng-model="grantInfo.codeName" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-3">
+                            <label class="control-label" style="float: right;margin-top: 10px;">发放金额：</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="ffje" ng-model="grantInfo.grantAmt  | number:2"
+                                   readonly/>
+                        </div>
+                    </div>
+                </div>
+                <!--btn-->
+                <div class="form-liaison">
+                    <div class="col-sm-8 col-sm-offset-2" style="margin-top:20px;" align="center">
+                        <button type="button" onclick="javascript:history.back(-1);" class="btn btn-default w-xs">返回
+                        </button>
+                    </div>
+                </div>
+
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div ng-include="'src/app/biz/grant/view_file.html'"></div>
+            </form>
+
+        </div>
+    </div>
+</div>

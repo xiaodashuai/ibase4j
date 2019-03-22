@@ -1,0 +1,448 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li><a ui-sref="main.post.classifyLevel.list">分类级别</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">风险处室经办
+
+        </div>
+        <!--表单-->
+            <div class="panel-body">
+                <form class="form-middle"  name="middle_form">
+
+                    <div class="form-middle">
+                        &nbsp;&nbsp;
+                        <a ui-sref="" class="btn2 btn-info pull-left" style="background-color: #19a9d5;height:35px; width:120px">
+                            <i class="icon-social-dropbox m-r-sm text-md"></i>交易快照</a>
+                        &nbsp;&nbsp;
+                        <a ui-sref="" class="btn2 btn-info pull-left col-sm-offset-1" style="background-color: #19a9d5;height:35px; width:120px">
+                            <i class="icon-screen-tablet m-r-sm text-md"></i>附件查看</a>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+
+                    <div class="tab-content" style="padding:0px;border:none">
+                        <!--有追索权租金保理-->
+                        <div class="{{initProductId==1?'tab-pane active':'tab-pane'}}" id="1" >
+                            <div>
+                                <label class="col-lg-1 col-sm-3 control-label">
+                                    <span class="text-danger wrapper-sm">*</span>方案概要：</label>
+                            </div>
+                            <div class="col-sm-4 col-lg-11">
+                                <div class="form-group tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        产品名称:</label>
+                                    <div class="col-sm-4 col-lg-6">
+                                        <label class="col-lg-6 col-sm-3 control-label">有追索权租金保理</label>
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        债项方案总金额</label>
+                                    <div class="col-sm-4 col-lg-6">
+                                        <input disabled type="text" name="jsazje01" ng-model="record.jsazje01">
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        汇总期限</label>
+                                    <div class="col-sm-4 col-lg-6">
+                                        <input disabled type="date" name="jsahzqx01" ng-model="record.jsahzqx01" style="width: 192px">
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        汇总费率</label>
+                                    <div class="col-sm-4 col-lg-6">
+                                        <input disabled type="number" name="jsahzfl01" ng-model="record.jsahzfl01">
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        汇总利率</label>
+                                    <div class="col-sm-4 col-lg-6">
+                                        <input disabled type="number" name="jsahzll01" ng-model="record.jsahzll01">
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-dept tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        政策性分类</label>
+                                    <div class="col-sm-6">
+                                        <select disabled class="form-control" style="width:192px;" ng-model="record.jsazzxfl01">
+                                            <option value="1">政策性分类信息</option>
+                                            <option value="2" ng-selected="true">政策性分类描述信息</option>
+                                        </select>
+                                        <span class="help-block m-b-none"></span>
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+
+
+                            </div>
+                            <div class="line line-dashed b-b line-lg pull-in"></div>
+
+                            <div>
+                                <label class="col-lg-1 col-sm-3 control-label">
+                                    <span class="text-danger wrapper-sm">*</span>审核要素：</label>
+                            </div>
+                            <div class="col-sm-4 col-lg-11">
+                                <div class="form-group">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>是否足额占用客户授信</label>
+                                    <div class="col-sm-4 col-lg-6">
+
+                                        <input type="radio"  name="zjaff01" value="1" ng-model="record.zjaff01">是
+                                        <input type="radio"  name="zjaff01" value="2" ng-model="record.zjaff01" style="margin-left: 50px">否
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>是否足额占用行业风险限额</label>
+                                    <div class="col-sm-4 col-lg-6">
+
+                                        <input type="radio"  name="zjaff02" value="1" ng-model="record.zjaff02">是
+                                        <input type="radio"  name="zjaff02" value="2" ng-model="record.zjaff02" style="margin-left: 50px">否
+                                        <input type="radio"  name="zjaff02" value="3" ng-model="record.zjaff02" style="margin-left: 50px">不涉及
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>是否足额占用国别风险限额</label>
+                                    <div class="col-sm-4 col-lg-6">
+
+                                        <input type="radio"  name="zjaff03" value="1" ng-model="record.zjaff03">是
+                                        <input type="radio"  name="zjaff03" value="2" ng-model="record.zjaff03" style="margin-left: 50px">否
+                                        <input type="radio"  name="zjaff03" value="3" ng-model="record.zjaff03" style="margin-left: 50px">不涉及
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                                    <div class="col-sm-4 col-lg-6">
+
+                                        <input type="radio"  name="zjaff04" value="1" ng-model="record.zjaff04">是
+                                        <input type="radio"  name="zjaff04" value="2" ng-model="record.zjaff04" style="margin-left: 50px">否
+                                        <input type="radio"  name="zjaff04" value="3" ng-model="record.zjaff04" style="margin-left: 50px">免担保
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                                    <div class="col-sm-4 col-lg-6">
+
+                                        <input type="radio"  name="zjaff05" value="1" ng-model="record.zjaff05">是
+                                        <input type="radio"  name="zjaff05" value="2" ng-model="record.zjaff05" style="margin-left: 50px">否
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-classifyLevel">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        <span class="text-danger wrapper-sm">*</span>其他</label>
+                                    <div class="col-sm-6 col-lg-6">
+                                        <input type="text" class="form-control" name="zjaff06" id="zjaff06" ng-model="record.zjaff06">
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-dept">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>经办审核结论</label>
+                                    <div class="col-sm-6 col-lg-6">
+                                        <select class="form-control" style="width:192px;" ng-model="record.zjaff07">
+                                            <option value="" selected>请选择</option>
+                                            <option value="0">同意</option>
+                                            <option value="1">不同意</option>
+                                        </select>
+                                        <span class="help-block m-b-none"></span>
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                            </div>
+                            <div class="line line-dashed b-b line-lg pull-in"></div>
+                        </div>
+
+                        <!--无追索权租金保理-->
+                        <div class="{{initProductId==2?'tab-pane active':'tab-pane'}}" id="2" >
+                            <div>
+                                <label class="col-lg-1 col-sm-3 control-label">
+                                    <span class="text-danger wrapper-sm">*</span>方案概要：</label>
+                            </div>
+                            <div class="col-sm-4 col-lg-11">
+                                <div class="form-group tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        产品名称:</label>
+                                    <div class="col-sm-4 col-lg-6">
+                                        <label class="col-lg-6 col-sm-3 control-label">无追索权租金保理</label>
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        债项方案总金额</label>
+                                    <div class="col-sm-4 col-lg-6">
+                                        <input disabled type="text" name="jsazje02" ng-model="record.jsazje02">
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        汇总期限</label>
+                                    <div class="col-sm-4 col-lg-6">
+                                        <input disabled type="date" name="jsahzqx02" ng-model="record.jsahzqx02" style="width: 192px">
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        汇总费率</label>
+                                    <div class="col-sm-4 col-lg-6">
+                                        <input disabled type="number" name="jsahzfl02" ng-model="record.jsahzfl02">
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        汇总利率</label>
+                                    <div class="col-sm-4 col-lg-6">
+                                        <input disabled type="number" name="jsahzll02" ng-model="record.jsahzll02">
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-dept tab-pane active">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        政策性分类</label>
+                                    <div class="col-sm-6">
+                                        <select disabled class="form-control" style="width:192px;" ng-model="record.jsazzxfl02">
+                                            <option value="1">政策性分类信息</option>
+                                            <option value="2" ng-selected="true">政策性分类描述信息</option>
+                                        </select>
+                                        <span class="help-block m-b-none"></span>
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+
+
+                            </div>
+                            <div class="line line-dashed b-b line-lg pull-in"></div>
+
+                            <div>
+                                <label class="col-lg-1 col-sm-3 control-label">
+                                    <span class="text-danger wrapper-sm">*</span>审核要素：</label>
+                            </div>
+                            <div class="col-sm-4 col-lg-11">
+                                <div class="form-group">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>是否足额占用客户授信</label>
+                                    <div class="col-sm-4 col-lg-6">
+
+                                        <input type="radio"  name="zjaffb01" value="1" ng-model="record.zjaffb01">是
+                                        <input type="radio"  name="zjaffb01" value="2" ng-model="record.zjaffb01" style="margin-left: 50px">否
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>是否足额占用行业风险限额</label>
+                                    <div class="col-sm-4 col-lg-6">
+
+                                        <input type="radio"  name="zjaffb02" value="1" ng-model="record.zjaffb02">是
+                                        <input type="radio"  name="zjaffb02" value="2" ng-model="record.zjaffb02" style="margin-left: 50px">否
+                                        <input type="radio"  name="zjaffb02" value="3" ng-model="record.zjaffb02" style="margin-left: 50px">不涉及
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>是否足额占用国别风险限额</label>
+                                    <div class="col-sm-4 col-lg-6">
+
+                                        <input type="radio"  name="zjaffb03" value="1" ng-model="record.zjaffb03">是
+                                        <input type="radio"  name="zjaffb03" value="2" ng-model="record.zjaffb03" style="margin-left: 50px">否
+                                        <input type="radio"  name="zjaffb03" value="3" ng-model="record.zjaffb03" style="margin-left: 50px">不涉及
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                                    <div class="col-sm-4 col-lg-6">
+
+                                        <input type="radio"  name="zjaffb04" value="1" ng-model="record.zjaffb04">是
+                                        <input type="radio"  name="zjaffb04" value="2" ng-model="record.zjaffb04" style="margin-left: 50px">否
+                                        <input type="radio"  name="zjaffb04" value="3" ng-model="record.zjaffb04" style="margin-left: 50px">免担保
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-group">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                                    <div class="col-sm-4 col-lg-6">
+
+                                        <input type="radio"  name="zjaffb05" value="1" ng-model="record.zjaffb05">是
+                                        <input type="radio"  name="zjaffb05" value="2" ng-model="record.zjaffb05" style="margin-left: 50px">否
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-classifyLevel">
+                                    <label class="col-lg-6 col-sm-3 control-label">
+                                        <span class="text-danger wrapper-sm">*</span>其他</label>
+                                    <div class="col-sm-6 col-lg-6">
+                                        <input type="text" class="form-control" name="zjaffb06" id="zjaffb06" ng-model="record.zjaffb06">
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                                <div class="form-dept">
+                                    <label class="col-lg-6 col-sm-3 control-label" >
+                                        <span class="text-danger wrapper-sm">*</span>经办审核结论</label>
+                                    <div class="col-sm-6 col-lg-6">
+                                        <select class="form-control" style="width:192px;" ng-model="record.zjaffb07">
+                                            <option value="" selected>请选择</option>
+                                            <option value="0">同意</option>
+                                            <option value="1">不同意</option>
+                                        </select>
+                                        <span class="help-block m-b-none"></span>
+                                    </div>
+                                </div>
+                                <div class="line line-dashed b-b line-lg pull-in"></div>
+                            </div>
+                            <div class="line line-dashed b-b line-lg pull-in"></div>
+                        </div>
+
+
+                    </div>
+
+                    <div>
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-11">
+
+                        <div style="display:none"; id="lastTab">
+                        <div class="tab-pane active">
+                            <label class="col-lg-6 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>经办审核意见：</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="scheme" id="scheme" style="height: 200px" ng-model="taskRecord.scheme"></textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-liaisonleader">
+                            <label class="col-lg-6 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>债项发放结论：</label>
+                            <div class="col-sm-6">
+                                <div class="selects">
+                                    <select ng-model="comment" required="required" class="selects" style="width:192px;" ng-options="x.name for x in transitions" >
+                                        <option value="">--请选择--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <span class="help-block m-b-none"></span>
+
+                        </div>
+                        <div ng-show="record.comment=='2'" class="line line-dashed b-b line-lg pull-in"></div>
+
+
+                        <div ng-show="record.comment=='2'" class="form-liaisonleader">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>债项发放意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="result" id="result" style="height: 200px" ng-model="record.result">{{record.result}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+
+
+                    </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-sm-offset-2">
+                        <button type="button" onclick="javascript:history.back(-1);" class="btn btn-default w-xs">返回</button>
+                        <button type="submit" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled" ng-click="submit()" style="margin-left: 50px">提交</button>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                </form>
+
+                <ul id="myTab" class="nav nav-tabs">
+                    <li  ng-repeat="x in products" class="{{$index==0?'active':''}}" >
+                        <a data-toggle="tab" id="cli" data-target="#{{x.productId}}" onClick="showTab(this)" da="{{$last}}">{{$index + 1}}</a>
+                    </li>
+                </ul>
+
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="table-responsive" style="overflow: inherit; border-top: #666666 1px solid;">
+                    <div style="height: 30px;border: #666666 1px solid;">
+                        <label style="margin-bottom: -5px;" class="col-lg-4 col-sm-3 control-label"><span class="text-danger wrapper-sm"></span>历史意见信息</label>
+                    </div>
+                    <table class="table table-striped b-t b-light text-center" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <th class="table-striped-td" width="80px">序号</th>
+                            <th class="table-striped-td" width="*00px;">岗位</th>
+                            <th class="table-striped-td" width="100px;">姓名</th>
+                            <th class="table-striped-td" width="100px;">操作</th>
+                            <th class="table-striped-td" width="200px;">时间</th>
+                             <!--<th class="table-striped-td" width="200px;">备注</th>-->
+                            <th class="table-striped-td" width="100px;">操作详情</th>
+                        </tr>
+                        <tr ng-repeat="item in voList">
+                            <td class="table-striped-td" ng-bind="$index+1">1</td>
+                            <td class="table-striped-td">{{item.roleName}}</td>
+                            <td class="table-striped-td">{{item.userName}}</td>
+                            <td class="table-striped-td">{{item.commentInfo}}</td>
+                            <td class="table-striped-td">{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                             <!--<td class="table-striped-td">{{item.remark}}</td>-->
+                            </td>
+                            <td class="table-striped-td">
+                                <a ui-sref="{{item.taskId}}"
+                                   class="btn btn-sm btn-default"> <i
+                                        class="fa fa-edit m-r-xs text-sm"></i>查看
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+
+            </div>
+    </div>
+</div>
+<script>
+    function showTab(i){
+        var title_ = $(i).attr("da");
+        if(title_=="true"){
+            document.getElementById("lastTab").style.display="block";
+        }else{
+            document.getElementById("lastTab").style.display="none";
+        }
+    }
+    setTimeout(function() {
+// IE
+        if(document.all) {
+            document.getElementById("cli").click();
+        }
+// 其它浏览器
+        else {
+            var e = document.createEvent("MouseEvents");
+            e.initEvent("click", true, true);
+            document.getElementById("cli").dispatchEvent(e);
+        }
+    }, 200);
+</script>

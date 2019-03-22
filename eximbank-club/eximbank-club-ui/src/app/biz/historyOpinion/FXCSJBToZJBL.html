@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>alert</title>
+</head>
+
+<body>
+
+
+    <div class="modal-body" ng-click="open()">
+        <ul style="width:600px;height:400px">
+            <div class="row">
+                <div class="col-sm-12" >
+                    <div class="col-sm-4">
+                        <label class="control-label" style="text-align: left;float: right;line-height: 35px;"><span class="text-danger wrapper-sm">*</span>是否足额占用客户授信：</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <input class="el-radio " type="radio" value="1" name="zjaff01" ng-model="record.zjaff01" checked="checked" disabled> 是
+                        <input class="el-radio " type="radio" value="2" name="zjaff01" ng-model="record.zjaff01" disabled>否
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12" >
+                    <div class="col-sm-4">
+                        <label class="control-label" style="text-align: left;float: right;line-height: 35px;"><span class="text-danger wrapper-sm">*</span>是否足额占用行业风险限额：</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <input class="el-radio " type="radio" value="1" name="zjaff02" ng-model="record.zjaff02" checked="checked" disabled> 是
+                        <input class="el-radio " type="radio" value="2" name="zjaff02" ng-model="record.zjaff02" disabled>否
+                        <input class="el-radio " type="radio" value="3" name="zjaff02" ng-model="record.zjaff02" disabled>不涉及
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12" >
+                    <div class="col-sm-4">
+                        <label class="control-label" style="text-align: left;float: right;line-height: 35px;"><span class="text-danger wrapper-sm">*</span>是否足额占用国别风险限额：</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <input class="el-radio " type="radio" value="1" name="zjaff03" ng-model="record.zjaff03" checked="checked" disabled> 是
+                        <input class="el-radio " type="radio" value="2" name="zjaff03" ng-model="record.zjaff03" disabled>否
+                        <input class="el-radio " type="radio" value="3" name="zjaff03" ng-model="record.zjaff03" disabled>不涉及
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12" >
+                    <div class="col-sm-4">
+                        <label class="control-label" style="text-align: left;float: right;line-height: 35px;"><span class="text-danger wrapper-sm">*</span>是否落实担保措施：</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <input class="el-radio " type="radio" value="1" name="zjaff04" ng-model="record.zjaff04" checked="checked" disabled> 是
+                        <input class="el-radio " type="radio" value="2" name="zjaff04" ng-model="record.zjaff04" disabled>否
+                        <input class="el-radio " type="radio" value="3" name="zjaff04" ng-model="record.zjaff04" disabled>免担保
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12" >
+                    <div class="col-sm-4">
+                        <label class="control-label" style="text-align: left;float: right;line-height: 35px;"><span class="text-danger wrapper-sm">*</span>是否落实其他审批要求：</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <input class="el-radio " type="radio" value="1" name="zjaff05" ng-model="record.zjaff05" checked="checked" disabled> 是
+                        <input class="el-radio " type="radio" value="2" name="zjaff05" ng-model="record.zjaff05" disabled>否
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="col-sm-4">
+                        <label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>其他：</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <textarea type="text" rows="6" class="form-control" style="resize: none" id="zjaff06" ng-model="record.zjaff06" readonly ></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row" >
+                <div class="col-sm-12" >
+                    <div class="col-sm-4">
+                        <label class="control-label" style="float: right;margin-top: 10px;">经办审核结论：</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <select  ng-model="record.zjaff07"  class="form-control required" disabled>
+                            <option value="" selected>请选择</option>
+                            <option value="0">同意</option>
+                            <option value="1">不同意</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </ul>
+
+        <div class="modal-footer">
+            <button class="el-button el-button--danger is-plain " ng-click="cancel()">退出</button>
+        </div>
+
+
+    </div>
+</body>
+</html>

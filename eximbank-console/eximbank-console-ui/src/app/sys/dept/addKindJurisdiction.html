@@ -1,0 +1,71 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-href="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+ <!-- 头部 -->
+        <div class="panel-heading font-bold">{{title}}
+        <a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.sys.dept.list"><i class="text-md fa fa-mail-reply text-muted" title="关闭"></i></a>
+        </div>
+
+    <!-- 数据显示 -->
+    <div class="wrapper-data">
+        <div class="panel panel-default">
+            <!-- 头部 -->
+            <div class="panel-heading clearfix">
+	                <a class="btn btn-info pull-right" ng-disabled="isDisabled" ng-click="submitForm()">
+	                    <i class="icon-user-follow m-r-sm text-md"></i>保存</a>
+                        </div>
+		<!-- 数据表格 -->
+            <div class="table-responsive">
+            <!--表单-->
+		<div class="panel-body">
+			<form class="form-horizontal" name="dataRule_form">
+			<input ng-model="groupId" type="hidden"/>
+                <table class="table table-striped b-t b-light text-center">
+                    <thead>
+                    <tr>
+                      
+                       <th style="width:100px;"><label class="i-checks m-b-none">  
+                       <input type="checkbox" ng-model="selectAll" ng-click="all()"><i></i>  
+                       </label>全选</th>  
+                        <th>产品种类名称</th>
+                        <th>子类产品种类名称</th>
+                        <th>描述</th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in list">
+                     <td class="v-middle"> <!--  ng-checked="item.checked=='true'" -->
+                          <label class="i-checks m-b-none">  
+                                <input  type="checkbox"  ng-model="item.checked"  ng-click="selectOne(item.checked,item.code)"><i></i>  
+                           </label> </td>
+                        <td class="v-middle">{{item.name}}</td>
+                        <td class="v-middle" >
+                        <span ng-repeat="btn in item.sonList">
+                       		<input type="checkbox" ng-model="btn.checked"  ng-click="selectButton(btn.checked,btn.code)" >{{btn.name}}
+                        </span>
+                        </td>
+                        <td class="v-middle">{{item.remark}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+   		 </form>
+                </div>
+       </div><!-- /.wrapper-data -->
+        </div><!-- /.panel -->
+    
+	</div>
+</div><!-- /.wrapper-md -->

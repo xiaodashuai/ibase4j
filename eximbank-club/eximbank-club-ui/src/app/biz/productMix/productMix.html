@@ -1,0 +1,372 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>
+			<a ui-sref="main"><i class="fa fa-home"></i> 首页</a>
+		</li>
+		<li>
+			<a ui-sref="">产品组合</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+	<div class="panel panel-default">
+		<!--尽职调查步骤-->
+		<div class="panel-heading clearfix">
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.list" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		产品类型</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.debtSummary" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		债项概要</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.useLetter" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		用信主体</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.productMix" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		产品组合</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.risk" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		风险分析</a></button>》》》》
+		   	<button class="btn btn-primary"> <a ui-sref="main.biz.response.manageInformation" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		管理信息</a></button>》》》》	
+			<button class="btn btn-primary"> <a ui-sref="" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		业务专有信息</a></button>
+		</div>
+		<div class="line line-dashed b-b line-lg pull-in"></div>
+
+		<!-- 头部 -->
+		<div class="panel-heading font-bold">产品组合
+		</div>
+
+		<div class="form-classifyLevel">
+			<label class="col-lg-4 col-sm-6 control-label" style="margin-left: 10em;" for="remark">产品规则</label>
+			<div class="col-sm-6">
+				<select class="form-control" style="width:140px;" ng-change="change1(record.ruleType)" ng-model="record.ruleType">
+					<option value="" selected>请选择</option>
+					<option value="0">全局产品规则</option>
+					<option value="1">全局+单一产品规则</option>
+				</select>
+			</div>
+		</div>
+		<div class="line line-dashed b-b line-lg pull-in"></div>
+
+		<!--表单-->
+		<div class="panel-body">
+			<form class="form-horizontal" name="user_form">
+
+				<!--全局产品规则-->
+				<div ng-show='show1'><label class="col-lg-1 col-sm-6 control-label" for="remark">全局：</label>
+					<div class="form-classifyLevel">
+						<label class="col-lg-3 col-sm-6 control-label" for="remark">可办理笔数限制</label>
+						<div class="col-sm-6">
+							<select class="form-control" style="width:140px;" ng-click="change8(record.ltnopa)" ng-model="record.ltnopa">
+								<option value="0">不限制</option>
+								<option value="1">限制</option>
+							</select>
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div ng-show="show13" class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">可办理笔数</label>
+						<div class="col-sm-6">
+							<input  type="number" ng-model="record.tdwln">笔
+						</div>
+						<div class="line line-dashed b-b line-lg pull-in"></div>
+					</div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">主方案币种</label>
+						<span class="col-sm-6">
+                                <select class="form-control" style="width:140px;" ng-model="record.mpc">
+	                        	<option value="0" >人民币</option>
+	                        	<option value="1" >美元</option>
+	                        	<option value="2" >其他货币</option>
+                        			</select>
+                            </span>
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">辅助币种</label>
+						<span class="col-sm-6">
+                                <select class="form-control" style="width:140px;" ng-model="record.ac">
+	                        	<option value="0" >无</option>
+	                        	<option value="1" >其他可选币种</option>
+	                        	<option value="2" >等值其他币种</option>
+                        			</select>
+                            </span>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">方案金额形式</label>
+						<div class="col-sm-6">
+							<select class="form-control" style="width:140px;" ng-change="change2(record.amountType)" ng-model="record.amountType">
+								<option value="0">方案金额</option>
+								<option value="1">方案金额范围</option>
+							</select>
+						</div>
+						<div ng-show="show3" class="col-lg-8 col-sm-6">
+							<label class=" col-sm-6 control-label" for="name">方案金额:</label>
+							<div class="col-sm-6">
+								<input  type="text" ng-model="record.solutionAmount">元
+							</div>
+						</div>
+						<div ng-show="show4" class="col-lg-8 col-sm-6">
+							<label class=" col-sm-6 control-label" for="name">方案金额范围:</label>
+							<div class="col-sm-6">
+								<input type="number" class="col-sm-5"   ng-model="record.amounttrangemix">
+								<div class="col-sm-1">
+									<label>——</label>
+								</div>
+								<input type="number" class="col-sm-5" ng-model="record.amounttrangemax">元
+								<span style="color: red;" id="amount"></span>
+							</div>
+
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="name">
+                                <span class="text-danger wrapper-sm">*</span>方案业务期限范围</label>
+						<div class="col-sm-4">
+							<input type="number" ng-model="record.dopo">天
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">方案利率类型</label>
+						<div class="col-sm-6">
+                                <select class="form-control" style="width:140px;" ng-change="change3(record.srt)"  ng-model="record.srt">
+		                        	<option value="" selected>请选择</option>
+		                        	<option value="0" >有</option>
+		                        	<option value="1" >无</option>
+                        		</select>
+                            </div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div  class="form-classifyLevel" ng-show="show5">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">方案利率形式</label>
+						<div class="col-sm-6">
+							<select class="form-control" style="width: 140px;" ng-change="change4(record.sru)" ng-model="record.sru">
+								<option value="" selected>请选择</option>
+								<option value="0">方案利率</option>
+								<option value="1">方案利率范围</option>
+							</select>
+						</div>
+						<div class="line line-dashed b-b line-lg pull-in"></div>
+					</div>
+					<div  class="form-classifyLevel" ng-show="show6">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">方案利率:</label>
+						<div class="col-sm-6">
+							<input  type="number"  ng-model="record.packageRates">%
+						</div>
+						<div class="line line-dashed b-b line-lg pull-in"></div>
+					</div>
+					<div  class="form-classifyLevel" ng-show="show7">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">方案利率范围:</label>
+						<div class="col-sm-6">
+							<input  type="number" class="col-sm-5" ng-model="record.rateRangeMix">
+								<div class="col-sm-1">
+									<label>——</label>
+								</div>
+								<input  type="number" class="col-sm-5" ng-model="record.rateRangeMax">%
+						</div>
+						<div class="line line-dashed b-b line-lg pull-in"></div>
+					</div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">利率审批机构</label>
+						<div class="col-sm-6">
+							<select class="form-control" style="width:140px;" ng-model="record.eaaa">
+								<option value="" selected>请选择</option>
+								<option value="0">总行</option>
+								<option value="1">分行</option>
+							</select>
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">方案费率类型</label>
+						<div class="col-sm-6">
+                                <select class="form-control" style="width:140px;" ng-change="change5(record.progRateType)"  ng-model="record.progRateType">
+		                        	<option value="" selected>请选择</option>
+		                        	<option value="0" >无</option>
+		                        	<option value="1" >非优惠费率</option>
+		                        	<option value="2" >优惠费率</option>
+                        		</select>
+                            </div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div ng-show="show8" class="form-classifyLevel" >
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">方案费率形式</label>
+						<div class="col-sm-6">
+							<select class="form-control" style="width: 140px;" ng-change="change6(record.schemeRateForm)" ng-model="record.schemeRateForm">
+								<option value="" selected>请选择</option>
+								<option value="0">方案费率</option>
+								<option value="1">方案费率范围</option>
+							</select>
+						</div>
+						<div class="line line-dashed b-b line-lg pull-in"></div>
+					</div>
+					<div  class="form-classifyLevel" ng-show="show9">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">方案费率:</label>
+						<div class="col-sm-6">
+							<input  type="number"  ng-model="record.packageRate">%
+						</div>
+						<div class="line line-dashed b-b line-lg pull-in"></div>
+					</div>
+					<div ng-show="show10" class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">方案费率范围:</label>
+						<div class="col-sm-6">
+							<input  type="number" class="col-sm-5" ng-model="record.prrMix">
+								<div class="col-sm-1">
+									<label>——</label>
+								</div>
+							<input  type="number" class="col-sm-5" ng-model="record.prrMax">%
+						</div>
+						<div class="line line-dashed b-b line-lg pull-in"></div>
+					</div>
+					<div ng-show="show11" class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">费率是否经审批</label>
+						<div class="col-sm-6">
+							<select class="form-control" style="width:140px;" ng-change="change7(record.approve)" ng-model="record.approve">
+								<option value="" selected>请选择</option>
+								<option value="0">需要审批</option>
+								<option value="1">不需审批</option>
+							</select>
+						</div>
+						<div class="line line-dashed b-b line-lg pull-in"></div>
+					</div>
+					<div ng-show="show12" class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">费率审批机构</label>
+						<div class="col-sm-6">
+							<select class="form-control" style="width:140px;" ng-model="record.raaa">
+								<option value="" selected>请选择</option>
+								<option value="0">总行</option>
+								<option value="1">分行</option>
+							</select>
+						</div>
+						<div class="line line-dashed b-b line-lg pull-in"></div>
+					</div>
+				</div>
+
+				<!--单一产品规则-->
+				<div ng-show='show2' ng-repeat="pro in proList"><label class="col-lg-1 col-sm-6 control-label" for="remark">单一：</label>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="name">
+                                <span class="text-danger wrapper-sm">*</span>产品名称</label>
+						<div class="col-sm-4">
+							<input disabled type="text" class="form-control" ng-model="pro.name">
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">可办理笔数限制</label>
+						<div class="col-sm-6">
+							<select class="form-control" style="width:140px;" ng-click="changeItnopa(pro.ltnopa)" ng-model="pro.ltnopa">
+								<option value="0">不限制</option>
+								<option value="1">限制</option>
+							</select>
+						</div>
+					</div>
+					<div ng-show="showtdwln" class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">可办理笔数</label>
+						<div class="col-sm-6">
+							<input disabled type="number" class="form-control" ng-model="pro.tdwln">
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">产品币种</label>
+						<div class="col-sm-6">
+							<select class="form-control" style="width:140px;" ng-model="pro.productCurrency">
+								<option value="0">人民币</option>
+								<option value="1">美元</option>
+								<option value="2">其他货币</option>
+							</select>
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">产品金额形式</label>
+						<span class="col-sm-6">
+							<select class="form-control" style="width:140px;" ng-click="changeAopForm(pro.aopForm)" ng-model="pro.aopForm">
+								<option value="" selected>请选择</option>
+								<option value="0">产品金额</option>
+								<option value="1">产品金额范围</option>
+							</select>
+						</span>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div ng-show="showaop" class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">产品金额</label>
+						<span class="col-sm-6">
+							<input type="number" ng-model="pro.aop">元
+						</span>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="name">产品金额范围:</label>
+						<input disabled type="number" ng-model="pro.aopMiN">————
+						<input disabled type="number" ng-model="pro.aopMax">元
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="name">
+                                <span class="text-danger wrapper-sm">*</span>产品业务期限范围</label>
+						<div class="col-sm-4">
+							<input type="number" ng-model="pro.psp">天
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">产品利率类型</label>
+						<span class="col-sm-6">
+                                <select class="form-control" style="width:140px;" ng-model="pro.prType">
+	                        	<option value="" selected>请选择</option>
+	                        	<option value="0" >有</option>
+	                        	<option value="1" >无</option>
+                        			</select>
+                            </span>
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">审批机构</label>
+						<span class="col-sm-6">
+                                <select class="form-control" style="width:140px;" ng-model="pro.eaaa">
+	                        	<option value="" selected>请选择</option>
+	                        	<option value="0" >总行</option>
+	                        	<option value="1" >分行</option>
+                        			</select>
+                            </span>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">产品费率类型</label>
+						<span class="col-sm-6">
+                                <select class="form-control" style="width:140px;" ng-model="single.prodRateType">
+	                        	<option value="0" selected>无</option>
+	                        	<option value="1" >优惠费率</option>
+	                        	<option value="2" >非优惠费率</option>
+                        			</select>
+                            </span>
+						<label class="col-lg-4 col-sm-6 control-label" for="remark">是否经审批</label>
+						<span class="col-sm-6">
+                                <select class="form-control" style="width:140px;" ng-model="single.bteaa">
+	                        	<option value="" selected>请选择</option>
+	                        	<option value="0" >需要审批</option>
+	                        	<option value="1" >不需要审批</option>
+                        			</select>
+                            </span>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+				</div>
+
+				<div class="form-classifyLevel">
+					<div class="col-sm-6 col-sm-offset-2">
+						<button ng-click="reset()" class="btn btn-default w-xs">重置</button>
+						<button type="submit" class="btn btn-info w-xs m-l-xl" ng-click="submit()">保存</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

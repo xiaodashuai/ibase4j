@@ -1,0 +1,188 @@
+<div class="modal fade" id="myCustRisk" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document" style="width: 1300px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myModalLabel">{{title}}</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -20px;"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body" style="height:75%;overflow-y:auto;">
+
+				<form class="form-horizontal col-sm-12" name="user_form">
+
+					<div class="row">
+						<div class="col-sm-12" style="margin-bottom: 1em;">
+							<div class="col-sm-6">
+								<label style="width: 200px;" class="col-sm-6 control-label mt3">客户号</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.custNo">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<label style="width: 150px;" class="col-sm-6 control-label mt3">客户规模</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.custScale">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12" style="margin-bottom: 1em;">
+							<div class="col-sm-6">
+								<label style="width: 200px;" class=" col-sm-6 control-label mt3">客户名称（中文）</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.custNameCN">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<label style="width: 150px;" class=" col-sm-6 control-label mt3">所属集团编号</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.groupNumber">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12" style="margin-bottom: 1em;">
+							<div class="col-sm-6">
+								<label style="width: 200px;" class=" col-sm-6 control-label mt3">客户名称（英文）</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.custNameEN">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<label style="width: 150px;" class=" col-sm-6 control-label mt3">所属集团名称</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.groupName">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12" style="margin-bottom: 1em;">
+							<div class="col-sm-6">
+								<label style="width: 200px;" class=" col-sm-6 control-label mt3">客户所在地址（中文）</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.custAddressCN">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<label style="width: 150px;" class=" col-sm-6 control-label mt3">客户所属行业</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.mainBusiness">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12" style="margin-bottom: 1em;">
+							<div class="col-sm-6">
+								<label style="width: 200px;" class=" col-sm-6 control-label mt3">客户所在地址（英文）</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.custAddressEN">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<label style="width: 150px;" class=" col-sm-6 control-label mt3">客户所属国别</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.custCountry">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12" style="margin-bottom: 1em;">
+							<div class="col-sm-6">
+								<label style="width: 200px;" class=" col-sm-6 control-label mt3">客户属辖经营单位</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.custBusinessUnit">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<label style="width: 150px;" class=" col-sm-6 control-label mt3">信用评级</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.creditRating">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12" style="margin-bottom: 1em;">
+							<div class="col-sm-6">
+								<label style="width: 200px;" class=" col-sm-6 control-label mt3">客户登记注册类型</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.custRegistrastionType">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<label style="width: 150px;" class=" col-sm-6 control-label mt3">评级时间</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.ratiTime">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-12" style="margin-bottom: 1em;">
+							<div class="col-sm-6">
+								<label style="width: 200px;" class=" col-sm-6 control-label mt3">客户评级授信类型</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.custRatingCreditType">
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<label style="width: 150px;" class=" col-sm-6 control-label mt3">客户经理</label>
+								<div class="col-sm-6">
+									<input disabled type="text" class="form-control" ng-model="recordUseLetter.custManager">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="table-responsive" id="scroll-2">
+						<table class="table table-striped b-t b-light" style="width:86%;margin:10px 10px 10px 10px;border:#cccccc 1px solid;">
+							<thead>
+								<tr>
+									<th style="width:60px;">序号</th>
+									<th style="width:100px;">授信号码</th>
+									<th style="width:150px;">授信额度名称</th>
+									<th style="width:100px;">额度总金额</th>
+									<th style="width:110px;">已用金额</th>
+									<th style="width:110px;">可用金额</th>
+									<th style="width:150px;">起始日</th>
+									<th style="width:*px;min-width:110px;">到期日</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="ite in recordUseLetter.creditLinesList">
+									<td style="text-align: center;">{{$index+1}}</td>
+									<td class="v-middle">{{ite.creditNo}}</td>
+									<td class="v-middle">{{ite.creditLineName}}</td>
+									<td class="v-middle">{{ite.totalAmount}}</td>
+									<td class="v-middle">{{ite.usedAmount}}</td>
+									<td class="v-middle">{{ite.availableBalance}}</td>
+									<td class="v-middle" style="width:110px;">{{ite.startDate|date:'yyyy-MM-dd HH:mm:ss'}}</td>
+									<td class="v-middle" style="width:110px;">{{ite.maturityDate|date:'yyyy-MM-dd HH:mm:ss'}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<div class="form-classifyLevel">
+					<div class="col-sm-4 col-sm-offset-2">
+						<button type="button" class="el-button el-button--success" ng-click="closeLetter('myCustRisk','closeCustWin','synchrRefreshCust')"><span class="glyphicon glyphicon-check"></span>保存</button>
+						<button type="button" class="el-button el-button--danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true" id="closeCustWin"></span>关闭</button>
+						<span id="warnmsg" style="color: red;font-size: 16px;"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

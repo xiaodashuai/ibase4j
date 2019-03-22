@@ -1,0 +1,227 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li><a ui-sref="main.sys.menu.list">菜单管理</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">{{title}}
+        <a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.sys.menu.list"><i class="text-md fa fa-mail-reply text-muted" title="关闭"></i></a>
+        </div>
+        <!--表单-->
+            <div class="panel-body" >
+                <form class="form-horizontal"  name="user_form">
+                    <div class="form-group" id="menuNames">
+                        <label class="col-lg-2 col-sm-3 control-label" for="menuName">
+                        <span class="text-danger wrapper-sm">*</span>菜单名称</label>
+                        <div class="col-sm-6">
+                        	<input type="hidden" id="biaoji" ng-model="record.id" value="{{record.id}}" />
+                            <input type="text" class="form-control" onblur="menuNameJiaoYan(this.value)" name="menuName" id="menuName"  placeholder="请输入菜单名称..." ng-model="record.menuName" ng-readonly="record.id != null">
+                        	<span style="color: red;" id="menuNameTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-group">
+                        <label class="col-lg-2 col-sm-3 control-label" for="phone">
+                        <span class="text-danger wrapper-sm">*</span>上级菜单</label>
+                        <div class="col-sm-6">
+                             <div class="selects">
+                            <select id="parentId" class="form-control" ng-model="record.parentId" onblur="vailidateToPerentId(this.value)" class="selects" ng-options="x.id as x.menuName for x in orgList">
+                            </select>
+                            <span style="color: red;" id="parentIdBiaoJi"></span>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 col-sm-3 control-label" for="permission">
+                            <span class="text-danger wrapper-sm">*</span>权限标识</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" onblur="permissionJiaoYan()" name="permission" id="permission" placeholder="例如：sys.base.dic" ng-model="record.permission">
+                        	<span style="color: red;" id="permissionTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!-- add by zhy 20180208 -->
+                    <div class="form-group">
+                        <label class="col-lg-2 col-sm-3 control-label" for="phone">
+                        <span class="text-danger wrapper-sm">*</span>菜单类型</label>
+                       <div class="col-sm-6" ng-init="record.menuType = 1">
+                            <div>
+                                <span>菜单:</span> <input class="menuType" ng-checked="true" value="1"  type="radio" name="menuType" ng-model="record.menuType"/>
+                            </br>
+                            	<span>按钮:</span> <input class="menuType" value="2" type="radio"  name="menuType"  ng-model="record.menuType"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 col-sm-3 control-label" for="remark">
+                            <span class="text-danger wrapper-sm"></span>菜单描述</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="remark" id="remark" placeholder="请输入菜单描述..." ng-model="record.remark">
+                        </div>
+                    </div>
+                 	<div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-group">
+                        <label class="col-lg-2 col-sm-3 control-label" for="permissionShort">
+                            <span class="text-danger wrapper-sm">*</span>权限编码</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" onblur="permissionShortJiaoYan()" name="permissionShort" id="permissionShort" placeholder="例如：read" ng-model="record.permissionShort">
+                        	<span style="color: red;" id="permissionShortTest"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 col-sm-3 control-label" for="request">
+                            <span class="text-danger wrapper-sm">*</span>路由路径</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" onblur="requestJiaoYan()" name="request" id="request" placeholder="例如：main.sys.dic.list" ng-model="record.request">
+                        	<span style="color: red;" id="requestTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-group">
+                        <label class="col-lg-2 col-sm-3 control-label" for="leaf">
+                            <span class="text-danger wrapper-sm">*</span>菜单层级</label>
+                        <div class="col-sm-6">
+                        	<select class="form-control"  name="leaf" onblur="leafTest(this.value)" id="leaf" ng-model="record.leaf">
+                        		
+                        		<option value="1">第一层</option>
+                        		<option value="2">第二层</option>
+                        		<option value="3">第三层</option>
+                        	</select>
+                        	<span style="color: red" id="leaftest"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-2 col-sm-3 control-label" for="sortNo">排序</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="sortNo" onblur="sortNoJiaoYan()" id="sortNo" placeholder="请输入排序..." ng-model="record.sortNo">
+                            <span class="help-block m-b-none"></span>
+                            <span style="color: red" id="sortNoTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--btn-->
+                    <div class="form-group">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <button type="button" id="submitBtn" onclick="test(document.getElementById('menuName').value , document.getElementById('parentId').value ,document.getElementById('leaf').value)"  class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>
+<script type="text/javascript">
+   
+    function sortNoJiaoYan(){
+        if($('#sortNo').val().length > 2){
+            $('#sortNoTest').text("最大为两位数字");
+        }else{
+            $('#sortNoTest').text("");
+        }
+    }
+	function menuNameJiaoYan(menuName) {
+		if($('#biaoji').val() == null || $('#biaoji').val() == ''){
+			jQuery.ajax({
+			url:'/eximbank-console/menu/read/menuName',
+    		type:'GET',
+    		async:false,
+    		data:{
+                account:menuName
+            },
+    		dataType:'json',
+    		success:function(data){
+    			if(data.accounts == "true"){
+    				$("#menuNameTest").text("菜单名称已存在");
+				}else if($("#menuName").val() == null || $("#menuName").val().trim() == ''){
+					$("#menuNameTest").text("请输入菜单名称");
+				}else if($("#menuName").val().length > 16){
+					$("#menuNameTest").text("菜单名称最多只能为16位");
+				}else{
+					$("#menuNameTest").text("");
+				}
+				
+			}
+    	});
+		}
+		
+	} 
+	//信息来源的非空校验
+	function permissionJiaoYan() {
+		if($('#permission').val() == null || $('#permission').val().trim() == '') {
+			$('#permissionTest').text("请输入权限标识");
+        }else if($('#permission').val().length > 50){
+            $('#permissionTest').text("权限标识最大为50个字符");
+        } else if(/[\u4E00-\u9FA5]/.test($('#permission').val())){
+            $('#permissionTest').text("请按例子输入:sys.base.dic");
+        }else {
+			$('#permissionTest').text("");
+		}
+	}
+
+	function leafTest(leafValue){
+		if(leafValue == '? undefined:undefined ?'){
+			$("#leaftest").text("请选择菜单层级");
+		}else{
+			$("#leaftest").text("");
+		}
+	}
+
+	function vailidateToPerentId(parentId){
+		if(parentId == '?'){
+			$("#parentIdBiaoJi").text("请选择上级菜单");
+		}else{
+			$("#parentIdBiaoJi").text("");
+		}
+	}
+	
+	function permissionShortJiaoYan() {
+		if($('#permissionShort').val() == null || $('#permissionShort').val().trim() == '') {
+			$('#permissionShortTest').text("请输入权限编码");
+        }else if($('#permissionShort').val().length > 30){
+            $('#permissionShortTest').text("权限编码最大为30个字符");
+        } else if(/[\u4E00-\u9FA5]/.test($('#permissionShort').val())){
+            $('#permissionShortTest').text("请按例子输入:read");
+        }else {
+			$('#permissionShortTest').text("");
+		}
+	}
+	
+	function requestJiaoYan() {
+		if($('#request').val() == null || $('#request').val() == '' ) {
+			$('#requestTest').text("请输入路由路径");
+        }else if($('#request').val().length > 100){
+            $('#requestTest').text("路由路径最大为100个字符");
+        } else if(/[\u4E00-\u9FA5]/.test($('#request').val())){
+            $('#requestTest').text("请按例子输入:main.sys.dic.list");
+        } else {
+			$('#requestTest').text("");
+		}
+	}
+	
+	function test(menuName , parentId , leafValue) {
+		$('#submitBtn').attr("type" , "button");
+		if($('#biaoji').val() == null || $('#biaoji').val() == ''){
+			menuNameJiaoYan(menuName);
+		}
+		permissionJiaoYan();
+		leafTest(leafValue);
+		vailidateToPerentId(parentId);
+		permissionShortJiaoYan();
+        requestJiaoYan();
+        sortNoJiaoYan();
+		if($('#sortNoTest').text() == "" && $('#menuNameTest').text() == "" && $('#permissionTest').text() == "" && $('#leaftest').text() == "" && $('#parentIdBiaoJi').text() == "" && $('#permissionShortTest').text() == "" && $('#requestTest').text() == ""){
+			$('#submitBtn').attr("type" , "submit");
+		}
+	}
+	
+</script>

@@ -1,0 +1,41 @@
+<div class="modal fade" id="grantProduct" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myProductLabel">
+	<div class="modal-dialog" role="document" style="width: 600px;height:450px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myModalLabel1">{{title}}</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -20px;"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body" style="height:100%;overflow-y:auto;">
+				<form class="form-horizontal col-sm-12">
+					<div class="table-responsive" id="scroll-2">
+						<table class="table table-striped b-t b-light" style="width: 100%;border:#cccccc 1px solid;">
+							<thead>
+								<tr>
+									<th style="width:60px;">序号</th>
+									<th style="width:60px;">选择</th>
+									<th style="width:*px;min-width:250px;">产品名称</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="item in List">
+									<td style="text-align: center;">{{$index+1}}</td>
+									<td class="v-middle"><input type="checkbox" ng-model="item.checked" ng-click="checkOne(item.checked,item.businessType)"></td>
+									<td class="v-middle">{{item.businessName}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<div class="form-classifyLevel">
+					<div class="col-sm-5 col-sm-offset-2">
+						<button type="button" class="el-button el-button--success" ng-click="addItem()"><span class="glyphicon glyphicon-check"></span>确定</button>
+						<button type="button" class="el-button el-button--danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true" id="closeProductWin"></span>关闭</button>
+						<br/><span id="warnmsg" style="color: red;font-size: 16px;"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

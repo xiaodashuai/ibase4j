@@ -1,0 +1,542 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li>
+            <a ui-sref="main.sys.user.list">
+                <i class="fa fa-home"></i> 首页</a>
+        </li>
+        <li>
+            <a ui-sref="main.sys.dept.list">机构管理</a>
+        </li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content" onmousemove="changePage(document.getElementById('deptType').value)">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">{{title}}
+            <a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.sys.dept.list">
+                <i title="返回" class="text-md fa fa-mail-reply text-muted"></i>
+            </a>
+        </div>
+        <!--表单-->
+        <div class="panel-body">
+            <form class="form-horizontal" name="user_form">
+
+
+                <!--类型-->
+                <div class="form-dept">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm">*</span>类别</label>
+                    <div class="col-sm-6" ng-init="record.type=0">
+                        <select class="form-control"  ng-init="record.type='0'" onclick="changePage(this.value)" style="width:120px;" ng-model="record.type"
+                            id="deptType">
+                            <!-- <option value="">请选择</option> -->
+                            <option value="0" ng-selected="true">机构</option>
+                            <option value="1">处室</option>
+                        </select>
+                        <span class="help-block m-b-none"></span>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <!--机构级别-->
+                <div class="form-dept">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm">*</span>级别</label>
+                    <div class="col-sm-6" >
+                        <select class="form-control"   style="width:120px;" name="deptLevel" ng-model="record.deptLevel"
+                                id="deptLevel" onblur="deptLevelJiaoYan()">
+                             <option value="" >请选择</option>
+                            <option value="1">一级</option>
+                            <option value="2">二级</option>
+                            <option value="3">三级</option>
+                        </select>
+                        <span style="color: red;" id="deptLevelTest"></span>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <!--机构代码-->
+                <div class="form-dept form-horizontal">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm">*</span>机构代码</label>
+                    <div class="col-sm-6">
+                        <input type="hidden" id="biaoji" value="{{record.id}}" ng-model="record.id">
+                        <input type="text" class="form-control" onblur="codeJiaoYan(this.value)" name="code" id="code"
+                            placeholder="请输入机构代码..." ng-model="record.code" ng-readonly="record.id != null">
+                        <span style="color: red;" id="codeTest"></span>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <!--机构名称-->
+                <div class="form-dept form-horizontal">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm">*</span>机构名称</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" onblur="formTestIsNull(this.value)" name="deptName" id="deptName"
+                            placeholder="请输入机构名称..." ng-model="record.deptName" ng-readonly="record.id != null">
+                        <span style="color: red;" id="formtest"></span>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <!--所在机构-->
+                <div class="form-dept">
+                    <label class="col-lg-2 col-sm-3 control-label" for="department">
+                        <span class="text-danger wrapper-sm">*</span>上级机构</label>
+                    <div class="col-sm-6" id="deptTree" onclick="parentCodeJiaoYan()">
+                        <input type="text" class="form-control" readonly="readonly" style="color:#000" id="department"
+                            ng-model="record.parentCode" onclick="showMenu()" />
+                        <span style="color: red;" id="parentCodetest"></span>
+                        <ul id="tree" tree class="ztree" style="display: none;"></ul>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <!--排序-->
+                <div class="form-dept">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>排序</label>
+                    <div class="col-sm-6">
+                        <input type="text" style="width:150px;" class="form-control" onblur="sortNoJiaoYan()" name="sortNo" id="sortNo"
+                            placeholder="请输入排序..." ng-model="record.sortNo">
+                        <span class="help-block m-b-none"></span>
+                        <span style="color: red" id="sortNoTest"></span>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <!--机构所在省份-->
+                <div id="changes">
+                    <div class="form-dept">
+                        <label class="col-lg-2 col-sm-3 control-label">
+                            <span class="text-danger wrapper-sm">*</span>机构所在省份</label>
+                        <div class="col-sm-6">
+                            <!--<input type="text" class="form-control" name="province" onblur="provinceJiaoYan()" id="province"-->
+                                <!--placeholder="请输入机构所在省份..." ng-model="record.province">-->
+                            <select class="form-control" name="province" onblur="provinceJiaoYan()" id="province"
+                                    placeholder="请输入机构所在省份..." ng-model="record.province">
+                                <option value="" ng-selected="true">请选择省</option>
+                            </select>
+                            <span class="help-block m-b-none"></span>
+                            <span style="color: red" id="provinceTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--机构所在市-->
+                    <div class="form-dept">
+                        <label class="col-lg-2 col-sm-3 control-label">
+                            <span class="text-danger wrapper-sm">*</span>机构所在市</label>
+                        <div class="col-sm-6">
+                            <!--<input type="text" class="form-control" name="city" onblur="cityJiaoYan()" id="city"
+                                placeholder="请输入机构所在市..." ng-model="record.city">-->
+                            <select class="form-control" name="city" onblur="cityJiaoYan()" id="city"   placeholder="请输入机构所在市..." ng-model="record.city">
+                                <option value="" ng-selected="true">请选择市</option>
+                            </select>
+                            <span style="color: red" id="cityTest"></span>
+                            <span class="help-block m-b-none"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--机构所在县-->
+                    <div class="form-dept">
+                        <label class="col-lg-2 col-sm-3 control-label">
+                            <span class="text-danger wrapper-sm">*</span>机构所在县/区</label>
+                        <div class="col-sm-6">
+                            <!--<input type="text" class="form-control" name="district" onblur="districtJiaoYan()" id="district"
+                                placeholder="请输入机构所在县/区..." ng-model="record.district">-->
+                            <select class="form-control" name="district" onblur="districtJiaoYan()" id="district"
+                                    placeholder="请输入机构所在县/区..." ng-model="record.district">
+                                <option value="" ng-selected="true">请选择县/区</option>
+                            </select>
+                            <span class="help-block m-b-none"></span>
+                            <span style="color: red" id="districtTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--地址-->
+                    <div class="form-dept">
+                        <label class="col-lg-2 col-sm-3 control-label">
+                            <span class="text-danger wrapper-sm">*</span>联系地址</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="address" onblur="addressJiaoYan()" id="address"
+                                placeholder="请输入机构详细地址..." ng-model="record.address">
+                            <span class="help-block m-b-none"></span>
+                            <span style="color: red" id="addressTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--金融机构许可证编号-->
+                    <div class="form-dept">
+                        <label class="col-lg-2 col-sm-3 control-label">
+                            <span class="text-danger wrapper-sm"></span>金融机构许可证编号</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="finLicenseNo" onblur="finLicenseNoJiaoYan()"
+                                id="finLicenseNo" placeholder="请输入金融机构许可证编号..." ng-model="record.finLicenseNo">
+                            <span class="help-block m-b-none"></span>
+                            <span style="color: red" id="finLicenseNoTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--统一社会信用代码-->
+                    <div class="form-dept">
+                        <label class="col-lg-2 col-sm-3 control-label">
+                            <span class="text-danger wrapper-sm"></span>统一社会信用代码</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="bizLicenseNo" onblur="bizLicenseNoJiaoYan()" id="bizLicenseNo" placeholder="请输入营业执照编号..." ng-model="record.bizLicenseNo">
+                            <input type="hidden" id="orgCertNo"  ng-model="record.orgCertNo" value="{{record.bizLicenseNo}}">
+                            <span class="help-block m-b-none"></span>
+                            <span style="color: red" id="bizLicenseNoTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!-- 组织机构代码证编号
+                    <div class="form-dept">
+                        <label class="col-lg-2 col-sm-3 control-label">
+                            <span class="text-danger wrapper-sm">*</span>组织机构代码证编号</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="orgCertNo" onblur="orgCertNoJiaoYan()" id="orgCertNo"
+                                placeholder="请输入组织机构代码证编号..." ng-model="record.orgCertNo">
+                            <span class="help-block m-b-none"></span>
+                            <span style="color: red" id="orgCertNoTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div> -->
+                    <!--联系电话-->
+                    <div class="form-dept">
+                        <label class="col-lg-2 col-sm-3 control-label">
+                            <span class="text-danger wrapper-sm"></span>联系电话</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="tel" onblur="telJiaoYan()" id="tel"
+                                placeholder="请输入机构联系电话..." ng-model="record.tel">
+                            <span class="help-block m-b-none"></span>
+                            <span style="color: red" id="telTest"> </span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                </div>
+
+
+                <!--是否禁止-->
+                <div class="form-dept" >
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm">*</span>状态</label>
+                    <div class="col-sm-6" >
+                        <input type="radio" ng-checked="true" name="enable" value="1" ng-model="record.enable">正常
+                        <br />
+                        <br />
+                        <input type="radio" name="enable" value="0" ng-model="record.enable">注销
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-dept">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <input type="button" onclick="test()" id="submitBtn" value="保存" class="btn btn-info w-xs m-l-xl">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    // var lable = $("#parentCode").selected;
+    // console.log(lable);
+    // $("#parentName").val(label);
+
+   /* $(function() {
+        // setCity("top", "0");//页面加载时就现实数据库第一个数据，一定要加上
+        setCity("province", "LOC0101003","013");
+        $("#province").change(function() {
+            // 当省级改变的时候，让市级和县级文本清空
+            $("#city option").remove();
+            $("#district option").remove();
+            //获得省级的id
+            var parentCode=$("#province option:selected").attr("id");
+            //加载该省级的市级数据
+            $("#city").append(" <option class=\"form-control\" selected>请选择市</option>");
+            $("#district").append(" <option class=\"form-control\" selected>请选择县/区</option>");
+            setCity("city", parentCode);
+        });
+        $("#city").change(function() {
+            //当市级改变的时候，让县级文本清空
+            $("#district option").remove();
+            //获取城市的parentCode
+            var parentCode=$("#city option:selected").attr("id");
+            //加载该省市级的县级数据
+            $("#district").append(" <option class=\"form-control\" selected>请选择县/区</option>");
+            setCity("district",parentCode );
+        });
+    });
+    //selectid:select标签的id，code数据库省级县级的code
+    function setCity(selectid, code,typeCode) {
+        var nowTime=new Date();
+        if(code!=null&& code!=""){
+            $.ajax({
+                type: "PUT",
+                async: true,
+                cache: false, //设置数据不缓存
+                url: "/eximbank-console/components/getDicType",
+                data: angular.toJson({
+                    parentCode: code,
+                    type: typeCode,
+                    time: nowTime
+                }),
+                success: function(json) {
+                    var result = json.data;
+                    //注意!!!这里必须使用eval(res)函数，否则获取到的json数据无法遍历,无话获取到数据
+                    var arr = eval(result);
+                    //遍历返回的json数据加载到select标签;
+                    $.each(arr, function(key, val) {
+                        $("#" + selectid).append(" <option class=\"form-control\" id='" + val.code + "'>"+ myTrim(val.name) + "</option>");
+                    });
+                },
+                error: function(e) {
+                    console.log(e);
+                }
+            });
+        }
+    };
+
+
+    function myTrim(x) {
+        return x.replace(/^\s+|\s+$/gm,'');
+    }*/
+    //填写机构名称的后台重复性校验,非空校验
+    var count = 0;
+    //根据机构类型控制是否隐藏页面项
+    function changePage(value) {
+        if (value == 1) {
+            $('#changes').hide();
+        } else {
+            $('#changes').show();
+        }
+    }
+
+    function formTest(deptName) {
+        jQuery.ajax({
+            url: '/eximbank-console/dept/read/deptName',
+            type: 'GET',
+            async: false,
+            data: {
+                account: deptName
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.accounts == "true") {
+                    $("#formtest").text("该机构名称已存在");
+                } else {
+                    $("#formtest").text("");
+                }
+            }
+        });
+        if ($("#formtest").text() == '') {
+            return true;
+        } else {
+            count++;
+        }
+    }
+
+    function formTestIsNull(deptName) {
+        if ($('#biaoji').val() == null || $('#biaoji').val() == '') {
+            if ($('#deptName').val() == null || $('#deptName').val().trim() == '') {
+                $("#formtest").text("机构名称不能为空");
+                count++;
+            } else {
+                return formTest(deptName);
+            }
+        }
+    }
+    //机构代码的后台重复性校验,非空校验
+    function codeValidate(code) {
+        jQuery.ajax({
+            url: '/eximbank-console/dept/read/code',
+            type: 'GET',
+            async: false,
+            data: {
+                account: code
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.accounts == "true") {
+                    $("#codeTest").text("该机构代码已存在");
+                } else {
+                    $("#codeTest").text("");
+                }
+            }
+        });
+        if ($('#codeTest').text() == '') {
+            return true;
+        } else {
+            count++;
+        }
+    }
+
+    function codeJiaoYan() {
+        if ($('#biaoji').val() == null || $('#biaoji').val() == '') {
+            if ($('#code').val().length != 7) {
+                $('#codeTest').text("请填写正确的7位机构代码");
+                count++;
+            } else if ($('#code').val() == null || $('#code').val().trim() == '') {
+                $("#codeTest").text("机构代码不能为空");
+                count++;
+            } else {
+                return codeValidate($('#code').val());
+            }
+        }
+    }
+    function deptLevelJiaoYan() {
+        if ($('#deptLevel').val() == null || $('#deptLevel').val() == '') {
+            $('#deptLevelTest').text("请选择机构级别");
+            count++;
+        }else{
+            $('#deptLevelTest').text("");
+        }
+    }
+
+    function sortNoJiaoYan() {
+        if ($('#sortNo').val().length > 4 && $('#sortNo').val() > 0) {
+            $('#sortNoTest').text("序号为0~4位数字");
+            count++;
+        } else {
+            $('#sortNoTest').text("");
+        }
+
+
+    }
+
+    //上级机构的非空校验
+    function parentCodeJiaoYan() {
+        if ($("#department").val() == null || $("#department").val() == '') {
+            $("#parentCodetest").text("请选择上级机构");
+            count++;
+        } else {
+            $("#parentCodetest").text("");
+            return true;
+        }
+    }
+    //机构所属省份的非空校验
+    function provinceJiaoYan() {
+        if ($('#province').val() == null || $('#province').val().trim() == '') {
+            $("#provinceTest").text("请填写机构所属省份信息");
+            count++;
+        } else if ($('#province').val().length > 10) {
+            $("#provinceTest").text("省份长度不应超过10个字符");
+            count++;
+        } else {
+            $("#provinceTest").text("");
+            return true;
+        }
+    }
+    //机构所属城市的非空校验
+    function cityJiaoYan() {
+        if ($('#city').val() == null || $('#city').val().trim() == '') {
+            $("#cityTest").text("请填写机构所属城市信息");
+            count++;
+        } else if ($('#city').val().length > 20) {
+            $("#cityTest").text("城市名称不应超过20个字符");
+            count++;
+        } else {
+            $("#cityTest").text("");
+            return true;
+        }
+    }
+    //机构所属县/市的非空校验
+    function districtJiaoYan() {
+        if ($('#district').val() == null || $('#district').val().trim() == '') {
+            $("#districtTest").text("请填写机构所属县/市信息");
+            count++;
+        } else if ($('#district').val().length > 20) {
+            $("#districtTest").text("区/县名称不应超过20个字符");
+            count++;
+        } else {
+            $("#districtTest").text("");
+            return true;
+        }
+    }
+    //机构联系地址
+    function addressJiaoYan() {
+        if ($('#address').val() == null || $('#address').val().trim() == '') {
+            $("#addressTest").text("请填写机构详细地址");
+            count++;
+        } else {
+            $("#addressTest").text("");
+            return true;
+        }
+    }
+    //金融机构许可证编号
+    function finLicenseNoJiaoYan() {
+        //非必填  注释掉验证
+       /* if ($('#finLicenseNo').val() == null || $('#finLicenseNo').val().trim() == '') {
+            $("#finLicenseNoTest").text("请填写金融机构许可证编号");
+            count++;
+        } else {
+            $("#finLicenseNoTest").text("");
+            return true;
+        }*/
+    }
+    //营业执照编号
+    function bizLicenseNoJiaoYan() {
+        //非必填  注释掉验证
+        /*if ($('#bizLicenseNo').val() == null || $('#bizLicenseNo').val().trim() == '') {
+            $("#bizLicenseNoTest").text("请填写营业执照编号");
+            count++;
+        } else {
+            $("#bizLicenseNoTest").text("");
+            return true;
+        }*/
+    }
+
+    // //组织机构代码证编号
+    // function orgCertNoJiaoYan() {
+    //     if ($('#orgCertNo').val() == null || $('#orgCertNo').val().trim() == '') {
+    //         $("#orgCertNoTest").text("请填写组织机构代码证编号");
+    //         count++;
+    //     } else {
+    //         $("#orgCertNoTest").text("");
+    //         return true;
+    //     }
+    // }
+    //机构联系电话
+    function telJiaoYan() {
+        if ($('#tel').val() == null || $('#tel').val().trim() == '') {
+            //非必填  注释掉验证
+           /* $('#telTest').text("请输入手机或电话号码");
+            count++;*/
+        } else if (/^1[3-8][0-9]\d{8}$/.test($('#tel').val()) == false && /0\d{2,3}-\d{7,8}/.test($('#tel').val()) ==
+            false) {
+            $('#telTest').text("请输入正确格式的手机或电话号码");
+            count++;
+        } else {
+            $('#telTest').text("");
+        }
+        return true;
+    }
+
+    function test() {
+        count = 0;
+        $("#submitBtn").attr("type", "button");
+        formTestIsNull();
+        codeJiaoYan();
+        if ($('#deptType').val() == 0) {
+            provinceJiaoYan();
+            cityJiaoYan();
+            districtJiaoYan();
+            addressJiaoYan();
+            deptLevelJiaoYan();
+            finLicenseNoJiaoYan();
+            bizLicenseNoJiaoYan();
+            // orgCertNoJiaoYan();
+            telJiaoYan();
+            parentCodeJiaoYan($('#parentCode').val());
+        }
+        if (count == 0) {
+            $('#bizLicenseNo').val($('#orgCertNo').val());
+            $("#submitBtn").attr("type", "submit");
+        } else {
+            $("#submitBtn").attr("type", "button");
+        }
+    }
+</script>

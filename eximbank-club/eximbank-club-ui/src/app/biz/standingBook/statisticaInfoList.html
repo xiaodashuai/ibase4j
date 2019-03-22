@@ -1,0 +1,109 @@
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>您当前所在位置：</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+	<div class="panel panel-default">
+
+		<form ng-submit="queryStatisticInfoList()" class="ng-pristine ng-valid">
+			<div class="panel-heading clearfix" style="border-bottom: 1px solid #ccc;padding: 0px;">
+				<div class="row" style="margin-top: 1em;">
+					<div class="col-sm-2 mt3">
+						<label class="control-label " style="float: right;" for="grantcode">发放条件编号:</label>
+					</div>
+					<div class="col-sm-2">
+						<input class="form-control" id="grantcode" type="text" style="width: 100%;"
+							   ng-model="param.grantCode" >
+					</div>
+					<div class="col-sm-2 mt3" style="margin-left: -5%;">
+						<label class="control-label " style="float: right;" for="productName">客户名称:</label>
+					</div>
+					<div class="col-sm-2">
+						<input class="form-control" type="text" id="productName" style="width: 100%;"
+							   ng-model="param.proposer" >
+					</div>
+					<div class="col-sm-2 mt3" style="margin-left: -5%;">
+						<label class="control-label " style="float: right;" for="deptCode">所属机构:</label>
+					</div>
+					<div class="col-sm-2" ng-show="deptList.length == 1">
+						<input class="form-control" type="text" id="parentCode" style="width: 100%;"
+							   ng-model="param.deptCode" ng-value="deptList[0].deptName" readonly>
+					</div>
+					<div class="col-sm-2" ng-show="deptList.length != 1">
+						<select id="deptCode" class="form-control" ng-model="param.deptCode">
+							<option value="">-全部分行-</option>
+							<option ng-repeat="x in deptList" value="{{x.code}}">{{x.deptName}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="row mt3" style="margin-top: 1em;margin-bottom: 1em;">
+					<div class="col-sm-2 mt3">
+						<label class="control-label " style="float: right;" for="beginDate">查询起始日:</label>
+					</div>
+					<div class="col-sm-2">
+						<input onclick="WdatePicker({maxDate:'#F{$dp.$D(\'endDate\')}',onpicking:function(dp){cleanRequiredWarn(this);}})" id="beginDate"
+							   class="form-control" style="width: 100%;" ng-model="param.beginDate" onchange="" name="beginDate" autocomplete="off">
+					</div>
+					<div class="col-sm-2 mt3" style="margin-left: -5%;">
+						<label class="control-label " style="float: right;" for="endDate">查询截止日:</label>
+					</div>
+					<div class="col-sm-2">
+						<input onclick="WdatePicker({minDate:'#F{$dp.$D(\'beginDate\')}',onpicking:function(dp){cleanRequiredWarn(this);}})" id="endDate"
+							   class="form-control" style="width: 100%;" ng-model="param.endDate" onchange="" name="endDate" autocomplete="off">
+					</div>
+					<div class="col-sm-2 col-sm-offset-2" style="margin-left: 11.7%;">
+						<button class="el-button el-button--primary" style="width: 90px;margin-left: -70px" type="submit">查&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;询</button>
+                        <!--<button class="el-button el-button&#45;&#45;primary" style="margin-top: -30px;margin-left: 3px;" ng-click="exportExcel()">导&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;出</button>-->
+					</div>
+					<div class="col-sm-2 col-sm-offset-2" style="margin-left: 11.7%;">
+						<!--<button class="el-button el-button&#45;&#45;primary" style="" type="submit">查&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;询</button>-->
+						<button class="el-button el-button--primary" style="margin-top: -32px;width: 90px;margin-left: 60px;" ng-click="exportExcel()" ng-disabled="isDisabled">导&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;出</button>
+					</div>
+				</div>
+			</div>
+			<div class="table-responsive" id="scroll-2">
+				<!--<div class="col-sm-12">-->
+				<table class="table table-striped b-t b-light" style="margin-bottom: 0px;width: 7000px;">
+					<thead>
+					<tr>
+						<th style="text-align: center;">发放条件编号</th>
+						<th style="text-align: center;">所属机构</th>
+						<th style="text-align: center;">出租人客户名称</th>
+						<th style="text-align: center;">承租人客户名称</th>
+						<th style="text-align: center;">追索权</th>
+						<th style="text-align: center;">本金期末余额 (原币)</th>
+						<th style="text-align: center;">本金期末余额 (折人民币)</th>
+						<th style="text-align: center;">累计发放金额 (折人民币)</th>
+						<th style="text-align: center;">累计回收本金金额 (折人民币)</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="item in pageInfo.data" style="text-align: center;">
+						<td style="line-height: inherit">{{(pageInfo.current-1)*pageInfo.size+$index+1}}</td>
+						<td>{{item.grantCode}}</td>
+						<td>{{item.deptName}}</td>
+						<td>{{item.propcn}}</td>
+						<td>{{item.conecn}}</td>
+						<td>{{item.recourse}}</td>
+						<td>{{item.closingBal}}</td>
+						<td>{{item.closingBalCNY}}</td>
+						<td>{{item.totffamtCNY}}</td>
+						<td>{{item.tothkamtCNY}}</td>
+					</tr>
+					</tbody>
+				</table>
+				<!--</div>-->
+			</div>
+			<!-- 底部分页-->
+			<span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+		</form>
+	</div>
+</div>

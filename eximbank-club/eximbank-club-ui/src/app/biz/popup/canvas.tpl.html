@@ -1,0 +1,28 @@
+<div dragg-able>
+    <div class="modal-header"><span class="close" ng-click="close()">x</span>
+        <h4 class="modal-title" style="color: black">详情</h4> </div>
+    <div class="modal-body">
+        <carousel interval="">
+            <slide ng-repeat="slide in slides" active="slide.active">
+                <img ng-src="{{slide.image}}" style="margin:auto;display: inline-block; width: auto;">
+            </slide>
+        </carousel>
+    </div>
+    <div class="modal-footer"><button class="button-cancel" ng-click="close()">确定</button></div>
+</div>
+<style>
+    .carousel-indicators .active { background-color: #00a0e9; }
+    .carousel-indicators li { background-color: #7f7f7f; }
+    .carousel-control.left {
+        background-image:none;
+        background-color: transparent;
+        height: auto;
+        float: none;
+        color: #004ea2;
+    }
+    .carousel-control.right { background-image:none; color: #004ea2; }
+    .modal-dialog {
+        width: auto;
+        padding: 30px 100px;
+    }
+</style>

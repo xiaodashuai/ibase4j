@@ -1,0 +1,111 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li><a ui-sref="main.post.reductionRatioFormula.list">减值比例配置管理</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">{{title}}
+        <a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.post.reductionRatioFormula.list"><i class="text-md fa fa-mail-reply text-muted" title="关闭"></i></a>
+        </div>
+        <!--表单-->
+            <div class="panel-body">
+                <form class="form-horizontal"  name="user_form">
+                    <!--减值比例名称-->
+                    <div class="form-reductionRatioFormula">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                        <span class="text-danger wrapper-sm">*</span>减值比例名称</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" onblur="ratioNameJiaoYan()" name="ratioName" id="ratioName" placeholder="请输入减值比例名称..." ng-model="record.ratioName">
+                        	<span style="color: red;" id="ratioNameTest"> </span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--减值比例公式-->
+                    <div class="form-reductionRatioFormula">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                        <span class="text-danger wrapper-sm">*</span>减值比例公式</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" onblur="ratioExpressionJiaoYan()" name="ratioExpression" id="ratioExpression" placeholder="请输入减值比例公式..." ng-model="record.ratioExpression">
+                       		<span style="color: red;" id="ratioExpressionTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--关联风险分类等级-->
+                    <div class="form-reductionRatioFormula">
+                        <label class="col-lg-2 col-sm-3 control-label" >
+                        <span class="text-danger wrapper-sm">*</span>风险分类等级</label>
+                        <div class="col-sm-6">
+                            <div class="selects">
+                            <select id="classifyLevelId" onblur="classifyLevelIdJiaoYan(this.value)" ng-model="record.classfyLevelId" required="required" class="selects" ng-options="x.id as x.clName for x in classifyList">
+                            </select>
+                            <span style="color: red;" id="classifyLevelIdTest"> </span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--减值比例配置描述-->
+                    <div class="form-reductionRatioFormula">
+                        <label class="col-lg-2 col-sm-3 control-label" for="remark">描述</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="remark" id="remark" placeholder="请输入减值比例描述..." ng-model="record.remark">
+                            <span class="help-block m-b-none"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--btn-->
+                    <div class="form-reductionRatioFormula">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <button type="button" onclick="test(document.getElementById('classifyLevelId').value)" id="submitBtn" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>
+<script type="text/javascript">
+	//信息来源的非空校验
+	function ratioNameJiaoYan() {
+		if($("#ratioName").val() == null || $("#ratioName").val().trim() == '') {
+			$("#ratioNameTest").text("请输入检查计划名称");
+		} else {
+			$("#ratioNameTest").text("");
+		}
+	}
+
+	function ratioExpressionJiaoYan() {
+		if($("#ratioExpression").val() == null || $("#ratioExpression").val().trim() == '') {
+			$("#ratioExpressionTest").text("请输入减值比例公式");
+		}  else {
+			$("#ratioExpressionTest").text("");
+		}
+	}
+
+	function classifyLevelIdJiaoYan(classifyLevelId) {
+		if(classifyLevelId == '?') {
+			$("#classifyLevelIdTest").text("请选择风险分类等级");
+		} else {
+			$("#classifyLevelIdTest").text("");
+			
+		}
+	}
+
+	function test(classifyLevelId) {
+		$("#submitBtn").attr("type" , "button");
+		ratioNameJiaoYan();
+		ratioExpressionJiaoYan();
+		classifyLevelIdJiaoYan(classifyLevelId);
+		if($("#ratioNameTest").text() == "" && $("#ratioExpressionTest").text() == "" && $("#classifyLevelIdTest").text() == ""){
+			$("#submitBtn").attr("type" , "submit");
+		}
+	}
+</script>

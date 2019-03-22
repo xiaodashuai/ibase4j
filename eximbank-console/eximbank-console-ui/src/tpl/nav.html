@@ -1,0 +1,63 @@
+<div class="main-menu">
+	<header class="header">
+		<a href="index.html" class="logo">中国进出口银行</a>
+		<button type="button" class="button-close fa fa-mail-reply js__menu_close"></button>
+		<div class="user">
+			<a href="javascript:void(0)" class="avatar"><img src="../../res/img/user2.png" alt=""><span class="status online"></span></a>
+			<h5 class="name"><a href="javascript:void(0)">{{userInfo.userName}}</a></h5>
+			<label ng-switch="userInfo.userType">
+			<h5 class="position" ng-switch-when="1">柜员</h5>
+			<h5 class="position" ng-switch-when="2">管理员</h5>
+			<h5 class="position" ng-switch-when="3">系统用户</h5>
+			<p ng-switch-default>无岗位</p>
+			</label>
+			<!-- /.name -->
+		</div>
+		<!-- /.user -->
+	</header>
+	<!-- /.header -->
+	<div class="content mCustomScrollbar _mCS_1">
+		<!-- mCSB_1 -->
+		<div id="mCSB_1" class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside" style="max-height: none;" tabindex="0">
+			<!-- mCSB_1_container -->
+			<div id="mCSB_1_container" class="mCSB_container test-1" dir="ltr">
+				<div class="navigation">
+					<h5 class="title"><strong>功能菜单</strong> </h5>
+					<!-- /.title -->
+					<ul class="menu nav js__accordion" ng-controller="navCtrl">
+						<li ng-repeat="menu in menuList " class="current" ng-class="{active: $state.includes('**.{{menu.permission}}.**')}">
+							<a ng-if="menu.leaf==0" href class="auto waves-effect parent-item js__control">
+								<span class="pull-right text-muted">
+								<i class="fa fa-fw fa-angle-right text"></i>
+								<i class="fa fa-fw fa-angle-down text-active"></i>
+								</span>
+								<i class="{{menu.iconcls}}"></i>
+								<span>{{menu.menuName}}</span>
+								<!--<span class="menu-arrow fa fa-angle-down"></span>-->
+							</a>
+							<ul class="sub-menu nav-sub js__content"  ng-if="menu.leaf==0">
+								<li ng-repeat="rm in menu.menuBeans" ng-class="{active: $state.includes('**.{{rm.permission}}.**')}">
+									<a ui-sref="{{rm.request}}"  ng-class="{active: $state.includes('**.{{rm.request}}.**')}">
+										<i class="{{rm.iconcls}}"></i>
+										<span>{{rm.menuName}}</span>
+									</a>
+								</li>
+							</ul>
+							<!-- /.sub-menu js__content -->
+							<a ng-if="menu.leaf==1" ui-sref="{{menu.request}}">
+								<i class="{{menu.iconcls}}"></i>
+								<span>{{menu.menuName}}</span>
+							</a>
+						</li>
+					</ul>
+					<!-- /.menu js__accordion -->
+				</div>
+				<!-- /.navigation -->
+			</div>
+			<!-- mCSB_1_container -->
+		</div>
+		<!-- mCSB_1 -->
+	</div>
+	<!-- /.content -->
+</div>
+

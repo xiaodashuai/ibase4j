@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>alert</title>
+</head>
+
+<body>
+
+
+<div class="modal-body" ng-click="open()">
+    <ul style="width:600px;height:400px">
+        <div class="row">
+            <div class="col-sm-12" style="margin-top: 30px;" >
+                <div class="col-sm-4">
+                    <label class="control-label" style="text-align: left;float: right;line-height: 35px;"><span class="text-danger wrapper-sm">*</span>我已审核此债项信息：</label>
+                </div>
+                <div class="col-sm-5">
+                    <input class="el-radio " type="radio" value="1" name="liaison03" ng-model="record.liaison03" checked="checked" disabled> 是
+                    <input class="el-radio " type="radio" value="2" name="liaison03" ng-model="record.liaison03" disabled>否
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="margin-top: 30px;" >
+                <div class="col-sm-4">
+                    <label class="control-label" style="text-align: left;float: right;line-height: 35px;"><span class="text-danger wrapper-sm">*</span>我已审核全部附件：</label>
+                </div>
+                <div class="col-sm-5">
+                    <input class="el-radio " type="radio" value="1" name="liaison04" ng-model="record.liaison04" checked="checked" disabled> 是
+                    <input class="el-radio " type="radio" value="2" name="liaison04" ng-model="record.liaison04" disabled>否
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="margin-top: 30px;" >
+                <div class="col-sm-4">
+                    <label class="control-label" style="text-align: left;float: right;line-height: 35px;"><span class="text-danger wrapper-sm">*</span>我已检查经办审核的每个审核要素：</label>
+                </div>
+                <div class="col-sm-5">
+                    <input class="el-radio " type="radio" value="1" name="liaison05" ng-model="record.liaison05" checked="checked" disabled> 是
+                    <input class="el-radio " type="radio" value="2" name="liaison05" ng-model="record.liaison05" disabled>否
+                </div>
+            </div>
+        </div>
+
+
+    </ul>
+
+    <div class="modal-footer">
+        <button class="el-button el-button--danger is-plain " ng-click="cancel()">退出</button>
+    </div>
+
+
+</div>
+</body>
+</html>

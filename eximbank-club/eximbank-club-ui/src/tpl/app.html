@@ -1,0 +1,40 @@
+<div id="wrap">
+	<!-- Make page fluid -->
+	<div class="row">
+      	
+      	<!-- Fixed navbar -->
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        	
+			<!-- navbar -->
+			<!--<div data-ng-include=" 'src/tpl/header.html' "></div>-->
+			<!-- / navbar -->
+					
+			<!-- menu -->
+			<div data-ng-include=" 'src/tpl/aside.html' " ></div>
+			<!-- / menu -->
+		</div>
+			
+		<!-- content -->
+		<div id="content" class="col-md-12" style="background-color: #f4f8fa;overflow-y:auto">
+	        	
+			<div class="app-content">
+				<div class="body-bg"></div>
+				<div ui-butterbar></div>
+				<a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".app-aside" ></a>
+				<div class="app-content-body" ui-view></div> <!-- -->
+			</div>
+			
+		</div>
+		<!-- /content -->
+			
+			
+		<!-- footer 
+		<div class="footer" data-ng-include=" 'src/tpl/footer.html' "></div>
+		<!-- / footer -->
+			
+	</div>
+  	<!-- Make page fluid-->
+</div>
+
+
+  

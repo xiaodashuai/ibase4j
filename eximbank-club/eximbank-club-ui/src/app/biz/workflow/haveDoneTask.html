@@ -1,0 +1,169 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-href="main"><i class="fa fa-home"></i>首页</a></li>
+		<li class="active" ng-bind="我的已办">
+			<a>我的已办</a>
+		</li>
+		<li class="active" ng-show="debt" ng-bind="债项方案">
+			<a>债项方案</a>
+		</li>
+		<li class="active" ng-show="grant"  ng-bind="发放条件">
+			<a>发放条件</a>
+		</li>
+    </ul>
+</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+    <!-- 数据显示 -->
+    <div class="wrapper-data row" style="padding: 0px  15px;">
+        <div class="panel panel-default" style="border: none">
+            <!-- 头部 -->
+            <div class="panel-heading clearfix" style="padding-bottom: 0px; border-bottom:none;">
+				<ul id="myTab" class="nav nav-tabs">
+					<li class="active">
+						<a data-toggle="tab" data-target="#toScheme" ng-click="getSchemeHaveDoneTaskPage()" style="padding: 10px 50px ">
+							债&nbsp;项&nbsp;方&nbsp;案
+						</a>
+					</li>
+					<li class=""  style="">
+						<a data-toggle="tab" data-target="#toGrant" ng-click="getGrantHaveDoneTaskPage()" style="padding: 10px 50px ">
+							发&nbsp;放&nbsp;条&nbsp;件
+						</a>
+					</li>
+				</ul>
+			</div>
+
+
+			<div class="wrapper-data">
+			<div class="tab-content">
+				<!-- 债项方案 -->
+
+				<div role="tabpanel" class="tab-pane active" id="toScheme" style="padding: 0 50px;">
+					<!--<li style="    list-style: none;">
+						<div class=""  style="margin: 50px  50px 20px ;">
+							<form ng-submit="search()" class="form-inline ng-pristine ng-valid" role="form" style="margin-top: -15px;">
+								<div style="display: inline-block">时间区间：</div>
+								<div class="form-group" style="">
+									<select id="getSchemeId" class="form-control" style="height:35px;width: 150px">
+										<option value="">按时间</option>
+										<option value="1">一星期</option>
+										<option value="2">一个月</option>
+										<option value="3">三个月</option>
+									</select>
+								</div>
+							</form>
+						</div>
+					</li>-->
+					<div class="table-responsive" id="scroll-2">
+					<table class="table table-striped b-t b-light" style="border: 1px solid #e0e4e8;width: 1600px;">
+						<thead>
+						<tr>
+							<th style="width:60px;text-align: center">序号</th>
+							<th style="text-align: center">事项类型</th>
+							<th style="text-align: center">债项方案编号</th>
+							<th style="text-align: center">项目名称</th>
+							<th style="text-align: center">申请人名称</th>
+							<th style="text-align: center">方案主币种</th>
+							<th style="text-align: center">方案金额</th>
+							<th style="text-align: center">启动人员</th>
+							<th style="text-align: center">审批进度</th>
+							<th style="text-align: center">已办创建时间</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="x in pageInfoHaveDoneSchemeTask.records">
+							<td style="text-align: center" ng-bind="$index+1">1</td>
+							<td style="text-align: center">
+								<a ui-sref="{{x.exAttributes.exAttributeC}}({taskId:x.taskId,piid:x.piid,ptid:x.ptid,adid:x.adid,aiid:x.aiid,starterId:x.starterId,debtCode:x.debtCode})" >
+									{{x.exAttributes.exAttributeH}}
+								</a>
+							</td>
+							<td style="text-align: center">{{x.debtCode}}</td>
+							<td style="text-align: center">{{x.projectName}}</td>
+							<td style="text-align: center">{{x.proposer}}</td>
+							<td style="text-align: center">{{x.mainCodeName}}</td>
+							<td style="text-align: center">{{x.solutionAmt | number:2}}</td>
+							<td style="text-align: center">{{x.userNameStart}}</td>
+							<td style="text-align: center">{{x.roleIdNow}}</td>
+							<td style="text-align: center">{{x.receivedDateString}}</td>
+
+						</tr>
+						</tbody>
+					</table>
+					</div>
+					<!--底部分页-->
+					<span data-ng-include=" 'src/tpl/pageInfoHaveDoneSchemeTask.html' "></span>
+				</div>
+				<!-- 发放审核 -->
+				<div role="tabpanel" class="tab-pane" id="toGrant" style="padding: 0 50px;">
+					<!--<li style="    list-style: none;">
+						<div class=""  style="margin: 50px  50px 20px ;">
+							<form ng-submit="search()" class="form-inline ng-pristine ng-valid" role="form" style="margin-top: -15px;">
+								<div style="display: inline-block">时间区间：</div>
+								<div class="form-group" style="">
+									<select id="getGrantId" class="form-control"  style="height:35px;width: 150px">
+										<option value="">按时间</option>
+										<option value="1">一星期</option>
+										<option value="2">一个月</option>
+										<option value="3">三个月</option>
+									</select>
+								</div>
+							</form>
+						</div>
+					</li>-->
+					<div class="table-responsive" id="scroll-2">
+					<table class="table table-striped b-t b-light" style="border: 1px solid #e0e4e8;width: 1600px;">
+						<thead>
+						<tr>
+							<th style="width:60px;text-align: center">序号</th>
+							<th style="width:120px;text-align: center">事项类型</th>
+							<th style="width:120px;text-align: center">发放条件编号</th>
+							<th style="width:120px;text-align: center">申请人名称</th>
+							<th style="width:120px;text-align: center">产品名称</th>
+							<th style="width:120px;text-align: center">币种</th>
+							<th style="width:120px;text-align: center">金额</th>
+							<th style="width:120px;text-align: center">业务期限(天)</th>
+							<th style="width:120px;text-align: center">启动人员</th>
+							<th style="width:120px;text-align: center">审批进度</th>
+							<th style="width:130px;text-align: center">已办创建时间</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="x in pageInfoHaveDoneGrantTask.records">
+							<td style="text-align: center" ng-bind="$index+1">1</td>
+							<td style="text-align: center">
+								<a ui-sref="{{x.exAttributes.exAttributeC}}({taskId:x.taskId,piid:x.piid,ptid:x.ptid,adid:x.adid,aiid:x.aiid,starterId:x.starterId,grantCode:x.grantCode,debtCode:x.debtCode})" >
+									{{x.exAttributes.exAttributeH}}
+							    </a>
+							</td>
+							<td style="text-align: center">{{x.grantCode}}</td>
+							<td style="text-align: center">{{x.userName}}</td>
+							<td style="text-align: center">{{x.name_}}</td>
+							<td style="text-align: center">{{x.codeName}}</td>
+							<td style="text-align: center">{{x.paymentAmt | number:2}}</td>
+							<td style="text-align: center">{{x.scopeBusinPeriod}}</td>
+							<td style="text-align: center">{{x.userNameStart}}</td>
+							<td style="text-align: center">{{x.roleIdNow}}</td>
+							<td style="text-align: center">{{x.receivedDateString}}</td>
+
+						</tr>
+						</tbody>
+					</table>
+					</div>
+					<!--底部分页-->
+					<span data-ng-include=" 'src/tpl/pageInfoHaveDoneGrantTask.html' "></span>
+				</div>
+			</div>
+
+			</div>
+        </div>
+    </div>
+
+</div>
+

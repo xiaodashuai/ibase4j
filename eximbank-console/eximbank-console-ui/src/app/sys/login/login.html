@@ -1,0 +1,57 @@
+<div class="login-l">
+	<img src="res/img/login-l.png" alt="" style="width: 22%;float: left;height:100%;">
+</div>
+<div id="single-wrapper"  style="float: right;width: 78%;height:100%;background-color: white;">
+
+
+	<form class="login-form frm-single" ng-submit="login()">
+
+		<div class="inside">
+			<div class="logo">
+				<img src="res/img/logo.png" alt class="logo" style="margin:0px  auto ;width: 65%; display: inherit;">
+				<img src="res/img/Title1.png" alt class="logo" style="margin: 50px auto 20px;width: 100%;">
+
+			</div>
+			<!--<div class="title">贸易金融授管理系统</div>-->
+			<!-- /.title -->
+			<!--<div class="frm-title">管理端</div>-->
+			<!--<img src="res/img/Title1.png" alt class="logo" style="margin: 50px auto 20px;width: 420px">-->
+			<!-- /.frm-title -->
+			<div class="frm-input" style=" padding: 0px 20%;">
+				<!--<input type="text" placeholder="请输入用户名" class="frm-inp login-field"  ng-model="user.account" name="account" ng-maxlength="20" autofocus="autofocus" required >-->
+				<input style="border-radius: 3px !important;box-shadow:0 0 0 60px #f9f9f9 inset !important; float: left;border-radius: 0; border: none; background-color: transparent; width: 100%;border-bottom: 1px solid #c0c0c0; margin-bottom: 20px;" type="text" class="frm-inp login-field" name="username" placeholder="请输入用户名" ng-model="user.account" name="account" ng-maxlength="20" autofocus="autofocus" required >
+				<!--<i class="fa fa-user frm-ico"></i>-->
+				<div class="" style=" float: right; margin-top: -42px;">
+					<!--<i class="fa fa-user"></i>-->
+					<img src="res/img/User.png" alt="" style="width: 15px;height: 15px">
+				</div>
+			</div>
+			<!-- /.frm-input -->
+			<div class="frm-input" style=" padding: 0px 20%;">
+				<!--<input type="password" placeholder="请输入密码" class="frm-inp login-field" ng-model="user.password" name="password" ng-maxlength="20" required>-->
+				<!--<i class="fa fa-lock frm-ico"></i>-->
+				<input style="border-radius: 3px !important;box-shadow:0 0 0 60px #f9f9f9 inset  !important; float: left;border-radius: 0; border: none; background-color: transparent; width: 100%;border-bottom: 1px solid #c0c0c0; margin-bottom: 40px;" type="password" placeholder="请输入密码" class="frm-inp login-field" ng-model="user.password" name="password" ng-maxlength="20" required>
+				<!--<i class="fa fa-user frm-ico"></i>-->
+				<div class="" style=" float: right; margin-top: -62px;">
+					<!--<i class="fa fa-user"></i>-->
+					<img src="res/img/Key.png" alt="" style="width: 15px;height: 15px">
+				</div>
+			</div>
+
+			<!-- /.frm-input -->
+			<!-- /.clearfix -->
+			<button type="submit" class="frm-submit" id="btn-login" style="width: 40%;margin: 0px auto;">登&nbsp;&nbsp;录
+				<!--<i class="fa fa-arrow-circle-right"></i>-->
+			</button>
+			<div class="row small-spacing">
+				<div class="has-error center"><label class="control-label">{{msg}}</label></div>
+			</div>
+			<!-- /.row -->
+			<!-- <div class="frm-footer">中国进出口银行 © 2016.</div> -->
+			<!-- /.footer -->
+		</div>
+		<!-- .inside -->
+	</form>
+	<!-- /.frm-single -->
+</div><!--/#single-wrapper -->
+<!--<footer class="footer" data-ng-include=" 'src/tpl/footer.html' "></footer>-->

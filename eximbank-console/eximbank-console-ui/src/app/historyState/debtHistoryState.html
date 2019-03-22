@@ -1,0 +1,79 @@
+<!-- toaster directive-->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li>
+            <a ui-href="main">
+                <i class="fa fa-home"></i> 首页</a>
+        </li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg">
+    <i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+    <!-- 数据显示 -->
+    <div class="wrapper-data">
+        <div class="panel panel-default">
+            <!-- 头部 -->
+            <div class="panel-heading clearfix">
+                <a class="btn btn-info pull-right" ng-click="disableItem('1')">
+                    <i class="fa fa-edit m-r-sm text-md"></i> 未提交
+                </a>
+                <a class="btn btn-info pull-right" ng-click="disableItem('2')">
+                    <i class="fa fa-edit m-r-sm text-md"></i> 已提交
+                </a>
+                <div class="w-lg">
+                    <form ng-submit="query()" class="ng-pristine ng-valid">
+                        <div class="input-group search-box">
+                            <input type="text" class="form-control" ng-model="param.keyword" placeholder="债项方案编号">
+                            <i ng-show="user.keyword" ng-click="clearSearch()" class="fa fa-mail-reply-circle text-muted search-clear"></i>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 数据表格 -->
+            <div class="table-responsive">
+                <table class="table table-striped b-t b-light text-center">
+                    <thead>
+                        <tr>
+                            <th style="width:50px;">选择</th>
+                            <th width="150px">债项方案编号</th>
+                            <th width="250px">项目名称</th>
+                            <th width="150px">是否已提交</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in pageInfo.data" ng-click="onCheckedRow(pageInfo.data,item)">
+                            <td class="v-middle">
+                                <input type="checkbox" ng-model="item.checked" ng-click="selectOne(item.checked,item.id)">
+                            </td>
+                            <td class="v-middle">{{item.debtCode}}</td>
+                            <td class="v-middle">{{item.projectName}}</td>
+                            <td class="v-middle">
+                                <span ng-show="item.historyState==1" class="text-danger">未提交</span>
+                                <span ng-hide="item.historyState==1" class="text-success">已提交</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- 底部分页 -->
+            <span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+        </div>
+    </div>
+
+</div>

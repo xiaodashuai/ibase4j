@@ -1,0 +1,285 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i>首页</a></li>
+        <li><a ui-sref="main.post.classifyLevel.list">风险分类</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+    	
+    	<!--尽职调查步骤-->
+		<div class="panel-heading clearfix">
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.list" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		产品类型</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.debtSummary" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		债项概要</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.useLetter" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		用信主体</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.productMix" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		产品组合</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.risk" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		风险分析</a></button>》》》》
+		   	<button class="btn btn-primary"> <a ui-sref="main.biz.response.manageInformation" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		管理信息</a></button>》》》》	
+			<button class="btn btn-primary"> <a ui-sref="" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		业务专有信息</a></button>
+		</div>
+		<div class="line line-dashed b-b line-lg pull-in"></div>
+    	    	        
+        <!--表单-->
+            <div class="panel-body">
+                <form class="form-horizontal"  name="user_form">
+                    <!--组名称-->
+                    <div class="form-notice">
+                        <label class="col-lg-2 col-sm-3 control-label" >
+                            <span class="text-danger wrapper-sm">*</span>交易背景简述</label>
+                        <div class="col-sm-6">
+                            <textarea class="form-control"  style="height: 200px" ng-model="record.backgroundBrief">{{record.backgroundBrief}}</textarea>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-notice">
+                        <label class="col-lg-2 col-sm-3 control-label" >
+                            <span class="text-danger wrapper-sm">*</span>货物/服务情况简述</label>
+                        <div class="col-sm-6">
+                            <textarea class="form-control" name="condition" id="condition" style="height: 200px" ng-model="record.DOGS">{{record.dogs}}</textarea>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>用信主体名称</label>
+                        <div class="col-sm-6">
+                            <input disabled type="text" class="form-control" name="productName" id="productName" ng-model="record.background">
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>评级</label>
+                        <div class="col-sm-6">
+                            <input disabled type="text" class="form-control" name="productName" id="productName" ng-model="record.background">
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>评级有效期</label>
+                        <div class="col-sm-6">
+                            <input disabled type="text" class="form-control" name="productName" id="productName" ng-model="record.background">
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>用信主体授信方案</label>
+                        <div class="col-sm-6">
+                            <a ui-sref="main.biz.response.selectCustomer({custNo:item.custNo,debtNum:debtNum})">详情</a>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    
+                    <div ng-repeat="pro in proList">
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                        <span class="text-danger wrapper-sm">*</span>产品名称</label>
+                        <div class="col-sm-6">
+                            <input disabled type="text" class="form-control" ng-model="record.background">
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="remark">行业投向</label>
+                        <div class="col-sm-2">
+                            <div class="selects">
+                                <select id="industryTo" ng-model="record.industryTo" required="required" class="selects" ng-options="x for x in grade"></select>
+                            </div>
+                            <span class="help-block m-b-none"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+                    
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-2 control-label" for="remark">背景国别</label>
+                        <div class="col-sm-2">
+                            <div class="selects">
+                                <select id="parentCode" ng-model="record.tbon" required="required" class="selects" ng-options="x for x in grade"></select>
+                            </div>
+                            <span class="help-block m-b-none"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-2 control-label" for="remark">是否已有信贷贷款编号</label>
+                        <div class="col-sm-2">
+                            <div class="selects">
+                                <select class="form-control" style="width:140px;" ng-change="change1(record.ruleType)" ng-model="record.ruleType">
+									<option value="" selected>请选择</option>
+									<option value="0">无信贷合同</option>
+									<option value="1">有信贷合同</option>
+								</select>
+                            </div>
+                        </div>
+                    </div>    
+                    <div class="form-classifyLevel">    
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>信贷贷款编号</label>
+                        <div class="col-sm-2">
+                            <input disabled type="number" class="form-control" name="productName" id="productName" ng-model="record.clcn">
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div>
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>报告名称</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" name="productName" id="productName" ng-model="record.background">
+                        </div>
+                        <input id="fileUpload" type="file" />
+                        <button ng-click="uploadFile()">文本上传</button>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>担保类型</label>
+                        <div class="col-sm-6">
+                            <input type="checkbox" ng-model="">保证
+                            <input type="checkbox" ng-model="">抵押
+                            <input type="checkbox" ng-model="">质押
+                            <input type="checkbox" ng-model="">信用
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>担保名称</label>
+                        <div class="col-sm-6">
+                            <input disabled type="text" class="form-control" name="productName" id="productName" ng-model="record.reportName">
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-2 control-label" for="remark">担保人</label>
+                        <div class="col-sm-2">
+                            <div class="selects">
+                                <select id="parentCode" ng-model="record.parentCode" required="required" class="selects" ng-options="x for x in grade"></select>
+                            </div>
+                            <span class="help-block m-b-none"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-2 control-label" for="remark">是否保证金质押</label>
+                        <div class="col-sm-2">
+                            <div class="selects">
+                                <select class="form-control" style="width:140px;" ng-model="record.ruleType">
+									<option value="0">是</option>
+									<option value="1">否</option>
+								</select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>保证金比例</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" ng-model="record.background">
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-2 control-label" for="remark">抵押、质押</label>
+                        <div class="col-sm-2">
+                            <div class="selects">
+                                <a ui-sref="">新建担保物</a>
+                            </div>
+                            <span class="help-block m-b-none"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>担保所属主体</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="productName" id="productName" ng-model="record.background">
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div ng-repeat="" class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>担保合同</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" ng-model="record.background">
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>担保信息</label>
+                        <div class="col-sm-6">
+                            <input disabled type="text" class="form-control" name="productName" id="productName" ng-model="record.background">
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-2 control-label" for="remark">担保与产品对应关系</label>
+                        <div class="col-sm-2">
+                            <div class="selects">
+                                <select id="parentCode" ng-model="record.parentCode" required="required" class="selects" ng-options="x for x in grade"></select>
+                            </div>
+                            <span class="help-block m-b-none"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>备注</label>
+                        <div class="col-sm-6">
+                            <input disabled type="text" class="form-control" name="productName" id="productName" ng-model="record.background">
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div>
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                            <span class="text-danger wrapper-sm">*</span>其他附件名称</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" name="productName" id="productName" ng-model="record.background">
+                        </div>
+                        <input id="fileUpload" type="file" />
+                        <button ng-click="uploadFile()">附件上传</button>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-2 control-label" for="remark">打分表</label>
+                        <div class="col-sm-2">
+                            <div class="selects">
+                                <select id="parentCode" ng-model="record.grade" required="required" class="selects" ng-options="x for x in grade"></select>
+                            </div>
+                            <span class="help-block m-b-none"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--btn-->
+                    <div class="form-classifyLevel">
+                        <div class="col-sm-6 col-sm-offset-2">
+                            <button type="reset" class="btn btn-default w-xs">重置</button>
+                            <button type="submit" class="btn btn-info w-xs m-l-xl" ng-click="submit()">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>

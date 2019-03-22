@@ -1,0 +1,76 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>
+			<a ui-sref="main"><i class="fa fa-home"></i> 首页</a>
+		</li>
+		<li>
+			<a ui-sref="main.biz.countryRiskRating.list">国别风险等级查询</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+	<div class="panel panel-default">
+		<!-- 头部 -->
+		<div class="panel-heading font-bold">{{title}}
+			<a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.biz.countryRiskRating.list"><i class="text-md fa fa-mail-reply text-muted" title="关闭"></i></a>
+		</div>
+		<!--表单-->
+		<div class="panel-body">
+			<form class="form-horizontal" name="user_form">
+				<!--国家编码-->
+				<div class="form-checkPlan">
+					<label class="col-lg-2 col-sm-3 control-label" for="name">
+                        <span class="text-danger wrapper-sm"></span>国家编码</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" name="code" id="code" ng-readonly="true"  ng-model="record.code">
+					</div>
+				</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<!--国家名称(中文)-->
+				<div class="form-checkPlan">
+					<label class="col-lg-2 col-sm-3 control-label" for="name">
+                        <span class="text-danger wrapper-sm"></span>国家名称(中文)</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control"  name="nameCN" id="nameCN" ng-readonly="true" ng-model="record.nameCN">
+					</div>
+				</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<!--国家名称(英文)-->
+				<div class="form-checkPlan">
+					<label class="col-lg-2 col-sm-3 control-label" for="name">
+                        <span class="text-danger wrapper-sm"></span>国家名称(英文)</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control"  name="nameEN" id="nameEN" ng-model="record.nameEN">
+					</div>
+				</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<!--关联风险分类等级-->
+				<div class="form-checkPlan">
+					<label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm">*</span>风险分类等级</label>
+					<div class="col-sm-6">
+						<div class="selects">
+							<select id="riskLevel" ng-model="record.riskLevel" class="selects" ng-options="x.id as x.clName for x in classifyList"></select>
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					
+					<!--btn-->
+					<div class="form-checkPlan">
+						<div class="col-sm-6 col-sm-offset-3">
+							<button type="submit" id="submitBtn" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled">保存</button>
+						</div>
+					</div>
+			</form>
+			</div>
+		</div>
+	</div>
+</div>

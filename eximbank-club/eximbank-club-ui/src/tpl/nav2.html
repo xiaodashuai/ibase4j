@@ -1,0 +1,268 @@
+
+<!-- Sidebar -->
+            <ul class="nav navbar-nav side-nav" id="navigation" ng-controller="navCtrl">
+              <li class="collapsed-content">
+                <!-- Collapsed content pasting here at 768px -->
+              </li>
+              <li class="user-status status-online" id="user-status">
+                <div class="profile-photo">
+                  <img src="../../lib/images/profile-photo.jpg" alt />
+                </div>
+                <div class="user">
+                  	 <strong>刘志军</strong>
+                  <span class="role">管理员</span>
+                  <div class="status">
+                    <ul>
+                      <li class="dropdown change-status">
+                        <a class="dropdown-toggle my-status" data-toggle="dropdown" href="#">Online</a>
+                        
+                        <ul class="dropdown-menu arrow">
+                          <li>
+                            <a href="#" id="status-online" data-status="status-online">Online</a>
+                          </li>
+
+                          <li>
+                            <a href="#" id="status-away" data-status="status-away">Away</a>
+                          </li>
+
+                          <li>
+                            <a href="#" id="status-invisible" data-status="status-invisible">Invisible</a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </li>
+              
+              <li class="dropdown"  ng-repeat="menu in menuList " ng-class="{open: $state.includes('**.{{menu.permission}}.**')}">
+                <a ng-if="menu.leaf==0" href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" title="Dashboard">
+                  <i class="fa fa-dashboard">
+                    <span class="overlay-label red"></span>
+                  </i> 
+                  	待办夹 <b class="fa fa-angle-left dropdown-arrow"></b>
+                  <span class="badge badge-cyan">1</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a ui-sref="main.sys.user.list" title="Overview">
+                      <i class="fa fa-eye"><span class="overlay-label red80"></span></i>
+                      	我的已办
+                    </a>
+                  </li>
+                  <li>
+                    <a href="mail.html" title="Inbox">
+                      <i class="fa fa-envelope"><span class="overlay-label red60"></span></i>
+                	我的待办
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" title="Forms">
+                  <i class="fa fa-list">
+                    <span class="overlay-label green"></span>
+                  </i>
+                  	进度 <b class="fa fa-angle-left dropdown-arrow"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="form-elements.html" title="Common Elements">
+                      <i class="fa fa-thumb-tack"><span class="overlay-label green80"></span></i>
+                      	我参与的流程
+                    </a>
+                  </li>
+                  <li>
+                    <a href="validation-elements.html" title="Validation">
+                      <i class="fa fa-check-square"><span class="overlay-label green60"></span></i>
+                      Validation
+                    </a>
+                  </li>
+                  <li>
+                    <a href="form-wizard.html"  title="Form Wizard">
+                      <i class="fa fa-shield"><span class="overlay-label green40"></span></i>
+                      Form Wizard
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" title="Interface">
+                  <i class="fa fa-pencil">
+                    <span class="overlay-label amethyst"></span>
+                  </i>
+                  	事前 <b class="fa fa-angle-left dropdown-arrow"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="main.sys.use" title="UI Elements">
+                      <i class="fa fa-puzzle-piece"><span class="overlay-label amethyst80"></span></i>
+                      	尽职调查
+                    </a>
+                  </li>
+                  <li>
+                    <a href="typography.html" title="Typography">
+                      <i class="fa fa-font"><span class="overlay-label amethyst60"></span></i>
+                      Typography
+                    </a>
+                  </li>
+                  <li>
+                    <a href="nestable.html" title="Nestable Lists">
+                      <i class="fa fa-arrows"><span class="overlay-label amethyst40"></span></i>
+                      Nestable Lists
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" title="Buttons & Icons">
+                  <i class="fa fa-tint">
+                    <span class="overlay-label orange"></span>
+                  </i>
+                  	事中<b class="fa fa-angle-left dropdown-arrow"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="ui-elements.html" title="UI Elements">
+                      <i class="fa fa-puzzle-piece"><span class="overlay-label amethyst80"></span></i>
+                      	债项审批
+                    </a>
+                  </li>
+                  <li>
+                    <a href="ui-elements.html" title="UI Elements">
+                      <i class="fa fa-font"><span class="overlay-label amethyst60"></span></i>
+                      	债项发放
+                    </a>
+                  </li>
+                  <li>
+                    <a href="ui-elements.html" title="UI Elements">
+                      <i class="fa fa-arrows"><span class="overlay-label amethyst40"></span></i>
+                      	尽职调查
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              
+              <li class="dropdown">
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" title="Grid Layout">
+                  <i class="fa fa-th">
+                    <span class="overlay-label cyan"></span> 
+                  </i>
+                  	变更<b class="fa fa-angle-left dropdown-arrow"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="ui-elements.html" title="UI Elements">
+                      <i class="fa fa-puzzle-piece"><span class="overlay-label amethyst80"></span></i>
+                      	方案变更申请
+                    </a>
+                  </li>
+                  <li>
+                    <a href="ui-elements.html" title="UI Elements">
+                      <i class="fa fa-font"><span class="overlay-label amethyst60"></span></i>
+                      	方案变更审批
+                    </a>
+                  </li>
+                  <li>
+                    <a href="ui-elements.html" title="UI Elements">
+                      <i class="fa fa-arrows"><span class="overlay-label amethyst40"></span></i>
+                      	债项发放变更
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" title="Tables">
+                  <i class="fa fa-th-large">
+                    <span class="overlay-label greensea"></span>
+                  </i>
+                  	事后 <b class="fa fa-angle-left dropdown-arrow"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="ui-elements.html" title="UI Elements">
+                      <i class="fa fa-puzzle-piece"><span class="overlay-label amethyst80"></span></i>
+                      	风险初分类
+                    </a>
+                  </li>
+                  <li>
+                    <a href="ui-elements.html" title="UI Elements">
+                      <i class="fa fa-font"><span class="overlay-label amethyst60"></span></i>
+                      	分类上调
+                    </a>
+                  </li>
+                  <li>
+                    <a href="ui-elements.html" title="UI Elements">
+                      <i class="fa fa-arrows"><span class="overlay-label amethyst40"></span></i>
+                      	分类下调
+                    </a>
+                  </li>
+                  <li>
+                    <a href="tiles.html" title="Tiles">
+                      <i class="fa fa-check-square-o"><span class="overlay-label amethyst40"></span></i>
+                      	事后检查
+                    </a>
+                  </li>
+                  <li>
+                    <a href="tiles.html" title="Tiles">
+                      <i class="fa fa-money"><span class="overlay-label amethyst40"></span></i>
+                      	本息回收
+                    </a>
+                  </li>
+                  <li>
+                    <a href="tiles.html" title="Tiles">
+                      <i class="fa fa-file-video-o"><span class="overlay-label amethyst40"></span></i>
+                      	风险预警监控
+                    </a>
+                  </li>
+                  <li>
+                    <a href="tiles.html" title="Tiles">
+                      <i class="fa fa-pencil"><span class="overlay-label amethyst40"></span></i>
+                      	垫款申请
+                    </a>
+                  </li>
+                  <li>
+                    <a href="tiles.html" title="Tiles">
+                      <i class="fa fa-file-text-o"><span class="overlay-label amethyst40"></span></i>
+                      	垫款审批
+                    </a>
+                  </li>
+                  <li>
+                    <a href="tiles.html" title="Tiles">
+                      <i class="fa fa-credit-card"><span class="overlay-label amethyst40"></span></i>
+                      	垫款发放
+                    </a>
+                  </li>
+                  <li>
+                    <a href="tiles.html" title="Tiles">
+                      <i class="fa fa-scissors"><span class="overlay-label amethyst40"></span></i>
+                      	减值计算
+                    </a>
+                  </li>
+                  <li>
+                    <a href="tiles.html" title="Tiles">
+                      <i class="fa fa-search"><span class="overlay-label amethyst40"></span></i>
+                      	档案查询
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="javascript:void(0)" title="Widgets">
+                  <i class="fa fa-play-circle">
+                    <span class="overlay-label hotpink"></span>  
+                  </i>
+                  	日志查看
+                </a>
+              </li>
+              <li class="dropdown">
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" title="Charts & Graphs">
+                  <i class="fa fa-bar-chart-o">
+                    <span class="overlay-label dutch"></span>  
+                  </i>
+                  	曲线及统计<b class="fa fa-angle-left dropdown-arrow"></b>
+                </a>
+              </li>
+            </ul>
+            <!-- Sidebar end -->
+

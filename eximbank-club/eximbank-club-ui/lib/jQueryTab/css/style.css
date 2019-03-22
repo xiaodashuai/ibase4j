@@ -1,0 +1,80 @@
+
+body {
+  background-color: #f7f7f7;
+  /*font-family: Arial, sans-serif;*/
+  /*line-height: 1.5;*/
+  /*color: #464646;*/
+}
+.tab-wrapper {
+    /*margin: 1px auto;*/
+    width: 100%;
+    max-width:100%;
+    border: 1px solid #dddddd;
+    /*margin-left: -5px;*/
+}
+.tab-menu{
+    border-bottom: 1px solid #dddddd;
+    background-color: white;
+}
+.tab-menu li {
+  position:relative;
+  /*border-radius: 35px 0px;*/
+  background-color: #FFFFFF;
+  color:#b7c4cb;
+  display: inline-block;
+  padding: 20px 20px;
+  opacity: 0.8;
+  cursor:pointer;
+  z-index:0;
+  margin: 0 20px ;
+}
+
+@media  screen and (max-width: 1085px) {
+  .tab-menu li {
+    position: relative;
+    background-color: #FFFFFF;
+    color: #b7c4cb;
+    display: inline-block;
+    padding: 20px 0px;
+    opacity: 0.8;
+    cursor: pointer;
+    z-index: 0;
+  }
+  }
+
+.tab-menu li:hover {
+  color:#464646;
+}
+
+.tab-menu li.active {
+  background-color: #004ea2;
+  color:#1c252a;
+  opacity: 1;
+  box-shadow: 0 58px #ffffff inset;
+}
+
+.tab-menu li.active:hover {
+  /*color:#464646;*/
+}
+
+.tab-content>div {
+  background-color: #fff;
+  box-sizing:border-box;
+  width: 100%;
+  padding: 50px;   
+  min-height:200px;
+}
+.tab-content>div>div {
+  margin-left: 0px;
+  margin-bottom: 30px;
+}
+.line {
+  position:absolute;
+  width: 0;
+  height: 7px;
+  background-color: #409EFF;
+  top: 0;
+  left: 0;
+}
+
+

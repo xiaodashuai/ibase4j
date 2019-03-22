@@ -1,0 +1,143 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>您当前所在位置：</li>
+		<li>
+			<a ui-sref="main">
+				数据迁移
+			</a>
+		</li>
+		<li class="active" ng-bind="title">
+			<!--<a >方案查询</a>-->
+		</li>
+	</ul>
+	<!--<li class="active" ng-bind="title"></li>-->
+</div>
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-data">
+	<div class="panel panel-default">
+		<form ng-submit="search()" class="ng-pristine ng-valid" id="queryForm">
+			<!-- 头部 -->
+			<div class="panel-heading clearfix">
+				<div class="w-lg">
+					<div class="input-group search-box" style="width:100%;">
+						<div class="row mt3" style="line-height: 30px;height: 45px;">
+							<div class="col-sm-2" style="width:130px;">
+								<label class="control-label " style="float: right;">发放条件编号:</label>
+							</div>
+							<div class="col-sm-2" style="width:150px;">
+								<input class="form-control" type="text" style="width:150px" ng-model="param.schemeNum" placeholder="模糊搜索审核编号" maxlength="19">
+							</div>
+							<div class="col-sm-2" style="width:100px;">
+								<label class="control-label " style="float: right;">产品名称:</label>
+							</div>
+							<div class="col-sm-2" style="width:150px;">
+								<input class="form-control" type="text" style="width:150px" ng-model="param.businessName" maxlength="50">
+							</div>
+							<div class="col-sm-2" style="width:100px;">
+								<label class="control-label " style="float: right;">时间查询:</label>
+							</div>
+							<div class="col-sm-2" style="width:*px;min-width:300px;">
+								<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" onchange="" class="form-control date" style="width:120px;" ng-model="param.stateTime">
+								至&nbsp;<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" onchange="" class="form-control date" style="width:120px;" ng-model="param.endTime">
+							</div>
+						</div>
+						<div class="row mt3">
+							<div class="col-sm-2" style="width:130px;">
+								<label class="control-label" style="float: right;">申请人名称:</label>
+							</div>
+							<div class="col-sm-2" style="width:150px;">
+								<input class="form-control" type="text" style="width:150px" ng-model="param.applicant" maxlength="50">
+							</div>
+							<div class="col-sm-2" style="width:100px;">
+								<label class="control-label " style="float: right;">所属机构:</label>
+							</div>
+							<div class="col-sm-2" style="width:270px;">
+								<select class="form-control" id="deptCode" style="width:260px;"></select>
+							</div>
+							<div class="col-sm-2" style="width:60px;">
+								<label class="control-label " style="float: right;">状态:</label>
+							</div>
+							<div class="col-sm-2" style="width:100px;">
+								<select class="form-control" ng-model="param.historyStatus" style="width:100px;">
+									<option value="">请选择</option>
+									<option value="4">已提交</option>
+									<option value="3">未提交</option>
+								</select>
+							</div>
+							<div class="col-sm-2" style="width:80px;">
+								<button type="submit" class="el-button el-button--primary" style="width:70px;margin-left:5px;">查询</button>
+							</div>
+							<div class="col-sm-2" style="width:80px;">
+								<button type="button" class="el-button el-button--primary" ng-click="clearSearch('queryForm')" style="width:70px;margin-left:10px;">清空</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 数据表格 -->
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light">
+					<thead>
+					<tr>
+						<th width="50px;" style="text-align: center;">序号</th>
+						<th width="110px;" style="text-align: center;">发放条件编号</th>
+						<th width="*px;" style="text-align: center;min-width:100px;">产品名称</th>
+						<th width="100px;" style="text-align: center;">申请人名称</th>
+						<th width="120px;" style="text-align: center;">金额</th>
+						<th width="50px;" style="text-align: center;">币种</th>
+						<th width="85px" style="text-align: center;">业务期限</th>
+						<th width="60px;" style="text-align: center;">状态</th>
+						<th width="120px;" style="text-align: center;">所属机构</th>
+						<th width="90px" style="text-align: center;">操作人员</th>
+						<th width="90px" style="text-align: center;">提交时间</th>
+						<th width="75px;" style="text-align: center;">操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="item in pageInfo.data" style="text-align: center;">
+						<td>{{(pageInfo.current-1)*pageInfo.size+$index+1}}</td>
+						<td><div style="width:110px;word-break:normal;word-wrap: break-word; ">{{item.grantCode}}</div></td>
+						<td>{{item.businessTypeName}}</td>
+						<td>{{item.proposer}}</td>
+						<td style="text-align:right;">{{item.grantAmt | number:2}}</td>
+						<td>{{item.currency}} {{item.currencyName}}</td>
+						<td>{{item.scopeBusinPeriod}}</td>
+						<td>
+							<span ng-switch="item.historyState">
+	                    	<span ng-switch-when="4">已提交</span>
+	                     	<span ng-switch-default>未提交</span>
+						</td>
+						<td>{{item.deptName}}</td>
+						<td>{{item.createByName}}</td>
+						<td>{{item.updateTime| date:'yyyy-MM-dd'}}</td>
+						<td>
+							<li ng-if="item.historyState=='4'">
+								<a ng-click="openPop('B','',item.grantCode,'')">查看详情</a>
+							</li>
+							<li ng-if="item.historyState=='4'">
+								<a ng-click="openWindow(item.grantCode,$index)" data-toggle="modal" data-target="#fileModal">查看附件</a>
+							</li>
+							<li ng-if="item.historyState!='4'">
+								<a ng-click="edit(item.id,item.grantCode)">编辑</a>
+							</li>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- 底部分页-->
+			<span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+			<!-- 担保信息录入 -->
+			<div ng-include="'src/app/biz/grant/view_file.html'"></div>
+
+		</form>
+	</div>
+</div>

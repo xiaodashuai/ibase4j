@@ -1,0 +1,155 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>
+			<a ui-sref="main">
+				<i class="fa fa-home"></i> 首页</a>
+		</li>
+		<li>
+			<a ui-sref="main.sys.role.list">岗位管理</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+	<div class="panel panel-default">
+		<!-- 头部 -->
+		<div class="panel-heading font-bold">{{title}}
+			<a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.sys.role.list">
+				<i class="text-md fa fa-mail-reply text-muted" title="关闭"></i>
+			</a>
+		</div>
+		<!--表单-->
+		<div class="panel-body">
+			<div class="form-horizontal">
+				<label class="col-lg-2 col-sm-3 control-label">
+					<span class="text-danger wrapper-sm">*</span>岗位名称</label>
+				<div class="col-sm-6">
+					<input type="hidden" id="biaoji" ng-model="record.id" value="{{record.id}}" />
+					<input type="text" class="form-control" name="roleName" id="roleName" onblur="checkRoleName(this.value)" placeholder="请输入岗位名称..."
+					    ng-model="record.roleName" ng-readonly="record.id != null">
+					<span style="color: red;" id="roleNameMsg"></span>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+		<!--	<div class="form-horizontal">
+				<label class="col-lg-2 col-sm-3 control-label">
+					<span class="text-danger wrapper-sm">*</span>岗位编码</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control" name="code" id="code" onblur="checkCode(this.value)" placeholder="请输入岗位编号..." ng-model="record.code"
+					    ng-readonly="record.id != null">
+					<span style="color: red;" id="codeMsg"></span>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>-->
+			<form class="form-horizontal" name="user_form">
+
+				<div class="form-group">
+					<span class="col-sm-6">
+						<input type="hidden" id="roleType" value="1" ng-model="record.roleType">
+					</span>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-sm-3 control-label">
+						<span class="text-danger wrapper-sm">*</span>设置操作权限</label>
+					<span class="col-sm-6">
+						<div class="col-md-4 col-xs-12">
+							<div class="box-content" style="width:530px;height:300px;overflow:auto;">
+								<div id="treeview4" class="treeview">
+									<ul id="tree" addmenutree class="ztree" style="border:#cccccc 1px solid;background-color:#efefef;overflow-y:auto;"></ul>
+								</div>
+							</div>
+						</div>
+					</span>
+				</div>
+				<div style="width: 100%;padding-left:300px;">
+					<input type="hidden" ng-model="record.menus" id="menus" />
+					<span style="color: red;">{{roleMsg}}</span>
+				</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<!--btn-->
+				<div class="form-group">
+					<div class="col-sm-6 col-sm-offset-3">
+						<button type="button" onclick="test()" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled" id="submitBtn">保存</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	var count = 0;
+	//填写机构名称的后台重复性校验,非空校验
+	function checkRoleName(name) {
+		if ($("#biaoji").val() == null || $("#biaoji").val() == '') {
+			$.ajax({
+				type: 'GET',
+				url: '/eximbank-console/role/read/roleName',
+				async: false,
+				data: {
+					'roleName': name
+				},
+				dataType: 'json',
+				success: function (data) {
+					if (data.accounts == 'true') {
+						$("#roleNameMsg").text("该岗位名称已存在");
+						count += 1;
+					} else if ($("#roleName").val() == null || $("#roleName").val().trim() == '') {
+						$("#roleNameMsg").text("岗位名称不能为空");
+						count += 1;
+					} else if ($("#roleName").val().length > 20) {
+						$("#roleNameMsg").text("岗位名称最长不能超过20个字符");
+						count += 1;
+					} else {
+						$("#roleNameMsg").text("");
+					}
+				}
+			});
+		}
+	}
+
+	function checkCode(code) {
+		if ($("#biaoji").val() == null || $("#biaoji").val() == '') {
+			$.ajax({
+				type: 'GET',
+				url: '/eximbank-console/role/read/code',
+				async: false,
+				data: {
+					'code': code
+				},
+				dataType: 'json',
+				success: function (data) {
+					if (data.accounts == 'true') {
+						$("#codeMsg").text("该岗位编码已存在");
+						count += 1;
+					} else if ($("#code").val() == null || $("#code").val().trim() == '') {
+						$("#codeMsg").text("岗位编码不能为空");
+						count += 1;
+					} else if ($("#code").val().length > 20) {
+						$("#codeMsg").text("岗位编码最长为20个字符");
+						count += 1;
+					} else {
+						$("#codeMsg").text("");
+					}
+				}
+			});
+		}
+	}
+
+	function test() {
+		count = 0;
+		var name = $("#codeName").val();
+		var code = $("#code").val();
+		/*checkCode(code);*/
+		checkRoleName(name);
+		if (count == 0) {
+			$("#submitBtn").attr("type", "submit");
+		}
+	}
+</script>

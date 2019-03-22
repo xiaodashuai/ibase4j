@@ -1,4 +1,0 @@
-localhost
-index.html
-127.0.0.1/
-/

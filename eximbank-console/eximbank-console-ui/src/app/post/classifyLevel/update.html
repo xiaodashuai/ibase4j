@@ -1,0 +1,75 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li><a ui-sref="main.post.classifyLevel.list">分类等级管理</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">{{title}}
+        <a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.post.classifyLevel.list"><i class="text-md fa fa-mail-reply text-muted" title="关闭"></i></a>
+        </div>
+        <!--表单-->
+            <div class="panel-body">
+                <form class="form-horizontal"  name="user_form">
+                    <!--组名称-->
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                        <span class="text-danger wrapper-sm">*</span>等级名称</label>
+                        <div class="col-sm-6">
+                            <input type="text" onblur="clNameJiaoYan()" class="form-control" name="clName" id="clName" placeholder="请输入等级名称..." ng-model="record.clName">
+                        	<span style="color: red;" id="clNameTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--组描述-->
+                    <div class="form-classifyLevel">
+                        <label class="col-lg-2 col-sm-3 control-label" for="remark">描述</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="remark" id="remark" placeholder="请输入描述..." ng-model="record.remark">
+                            <span class="help-block m-b-none"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--btn-->
+                    <div class="form-classifyLevel">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <button type="submit" id="submitBtn" onclick="test()" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>
+<script type="text/javascript">
+	var count = 0;
+	//信息来源的非空校验
+	function clNameJiaoYan() {
+		if($("#clName").val() == null || $("#clName").val().trim() == '') {
+			$("#clNameTest").text("请输入分类等级名称");
+			count += 1;
+			$("#submitBtn").attr("disabled", "true");
+		} else {
+			$("#clNameTest").text("");
+			count -= 1;
+			if(count <= 0) {
+				$("#submitBtn").removeAttr("disabled");
+			}
+
+		}
+	}
+
+
+	function test() {
+		clNameJiaoYan();
+	}
+</script>

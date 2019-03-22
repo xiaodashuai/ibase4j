@@ -1,0 +1,110 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-href="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+    <!-- 数据显示 -->
+    <div class="wrapper-data row">
+        <div class="panel panel-default">
+            <!-- 头部 -->
+            <div class="panel-heading clearfix" style="padding-bottom: 0px; border-bottom:none;">
+				<ul id="myTab" class="nav nav-tabs">
+					<li style="float:right;margin-right:20px;height: 40px">
+						<div class="" >
+							<form ng-submit="search()" class="form-inline ng-pristine ng-valid" role="form" style="margin-top: -15px;">
+								
+								<div class="input-group search-box" style="height: 40px;float: right;width:200px;margin-left: 10px; margin-top: -3px;" >
+									<input type="text" class="form-control" style="height:35px;padding: 0px 12px; margin-top:1px;font-size: 14px;border: 1px solid #ccc;" ng-model="param.keyword" placeholder="按名称">
+									<i ng-show="params.keyword" ng-click="clearSearch()" class="fa fa-times-circle text-muted search-clear"></i>
+									<span class="input-group-btn" style="top: 1px;">
+										<button class="btn btn-default" style="height: 37px; margin-top: -2px;" type="submit"><i class="fa fa-search"></i></button>
+									</span>
+								</div>
+								<div class="form-group" style="float: right;">
+									<select class="form-control" style="height:35px;padding: 0px 12px;">
+									  <option value="">按时间</option>
+									  <option value="1">一星期</option>
+									  <option value="2">一个月</option>
+									  <option value="3">三个月</option>
+									</select>
+								  </div>
+							</form>
+						</div>
+					</li>
+				</ul>
+                
+            </div>
+			<div class="wrapper-data">
+			<div class="tab-content">  <!-- -->
+			  <div role="tabpanel" class="tab-pane active" id="todo" style="margin-top: 20px;">
+				<ul style="list-style:none;margin-left:-30px;">审批<p><hr style="height:1px;border:none;border-top:1px solid #555555;margin:2px;width:15%;"><p/>
+					<div>
+						<a ui-sref="main.biz.grant.obligationGrantForFQCSJB" class="btn btn-sm btn-default">
+							<i class="fa fa-edit m-r-xs text-sm"></i>分行业务发起处经办</a>
+					</div>
+					<div>
+						<a ui-sref="main.biz.grant.obligationGrantForMJSCBLFJ" class="btn btn-sm btn-default">
+							<i class="fa fa-edit m-r-xs text-sm"></i>上传</a>
+					</div>
+					<div>
+						<a ui-sref="main.biz.grant.webupload" class="btn btn-sm btn-default">
+							<i class="fa fa-edit m-r-xs text-sm"></i>上传例子</a>
+					</div>
+					<div>
+						<a ui-sref="main.biz.grant.hkjh" class="btn btn-sm btn-default">
+							<i class="fa fa-edit m-r-xs text-sm"></i>方案还款计划</a>
+					</div>
+                    <div>
+                        <a ui-sref="main.biz.grant.fafk" class="btn btn-sm btn-default">
+                            <i class="fa fa-edit m-r-xs text-sm"></i>方案放款</a>
+                    </div>
+                    <div>
+                        <a ui-sref="main.biz.grant.fafq" class="btn btn-sm btn-default">
+                            <i class="fa fa-edit m-r-xs text-sm"></i>方案废弃</a>
+                    </div>
+                    <div>
+                        <a ui-sref="main.biz.grant.fafqsp" class="btn btn-sm btn-default">
+                            <i class="fa fa-edit m-r-xs text-sm"></i>方案废弃审批</a>
+                    </div>
+                    <div>
+                        <a ui-sref="main.biz.grant.fasp" class="btn btn-sm btn-default">
+                            <i class="fa fa-edit m-r-xs text-sm"></i>方案审批</a>
+                    </div>
+                    <div>
+                        <a ui-sref="main.biz.grant.xxbl" class="btn btn-sm btn-default">
+                            <i class="fa fa-edit m-r-xs text-sm"></i>信息补充</a>
+                    </div>
+				</ul>
+			</div>
+				<div>
+					<table class="table table-striped b-t b-light">
+						<thead>
+						<tr>
+							<th width="55px">文件名</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="item in fileNames">
+							<td class="v-middle">
+							<button type="button"  ng-click="disableItem(item.fileName)" class="btn btn-sm btn-default m-l-xs">
+								<i class="fa fa-ban m-r-xs text-sm"></i>{{item.fileName}}</button>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			</div>
+        </div><!-- /.panel -->
+    </div><!-- /.wrapper-data -->
+
+</div><!-- /.wrapper-md -->

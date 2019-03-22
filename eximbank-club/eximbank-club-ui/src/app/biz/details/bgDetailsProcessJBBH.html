@@ -1,0 +1,256 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li><a ui-sref="main.biz.workflow.todo">我的待办</a></li>
+        <li><a ui-sref="">发放条件</a></li>
+        <li><a ui-sref="">变更</a></li>
+    </ul>
+</div>
+<!--业务经办审批-->
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">业务经办审批
+
+        </div>
+        <!--表单-->
+        <div class="panel-body" >
+            <form class="form-middle"  name="middle_form">
+                <div class="canvas">
+                    <div class="col-sm-8 col-sm-offset-2" style="margin-top:20px;" align="center" >
+                        <button type="button"  class="btn btn-info w-xs m-l-xl" ng-click="openPopGrant()" >快照查看</button>
+                        <button type="button" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled" ng-click="openE($state.params.grantCode,$index)" data-toggle="modal" data-target="#myCustUserLetter" style="margin-left: 100px">附件查看</button>
+                    </div>
+                    <div class="row" >
+                        <div class="col-sm-12" style="margin-top:20px;" >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;">发放条件状态：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" ng-show="summaryInfo.solutionState=='1'" class="form-control"  value="已变更" readonly />
+                                <input type="text" ng-show="summaryInfo.solutionState=='2'" class="form-control"  value="新建审核中" readonly />
+                                <input type="text" ng-show="summaryInfo.solutionState=='3'" class="form-control"  value="已批未放" readonly />
+                                <input type="text" ng-show="summaryInfo.solutionState=='4'" class="form-control"  value="发放中" readonly />
+                                <input type="text" ng-show="summaryInfo.solutionState=='5'" class="form-control"  value="已发放" readonly />
+                                <input type="text" ng-show="summaryInfo.solutionState=='6'" class="form-control"  value="已废弃" readonly />
+                                <input type="text" ng-show="summaryInfo.solutionState=='7'" class="form-control"  value="废弃审核中" readonly />
+                                <input type="text" ng-show="summaryInfo.solutionState=='8'" class="form-control"  value="变更审核中" readonly />
+                                <input type="text" ng-show="summaryInfo.solutionState=='9'" class="form-control"  value="失效" readonly />
+                                <input type="text" ng-show="summaryInfo.solutionState=='10'" class="form-control"  value="已驳回" readonly />
+                                <input type="text" ng-show="summaryInfo.solutionState=='11'" class="form-control"  value="冻结" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-sm-12" style="margin-top:20px;" >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;">发放条件审批状态：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" ng-show="summaryInfo.processStatus=='0'" class="form-control"  value="已审批" readonly />
+                                <input type="text" ng-show="summaryInfo.processStatus=='1'" class="form-control"  value="待审批" readonly />
+                                <input type="text" ng-show="summaryInfo.processStatus=='2'" class="form-control"  value="已审批" readonly />
+                                <input type="text" ng-show="summaryInfo.processStatus=='3'" class="form-control"  value="被驳回" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-repeat="item in summaryInfo.custList">
+                        <div class="col-sm-12" style="margin-top:20px;" >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;">用信主体{{$index+1}}：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="yxzt" ng-model="item.custNameCN"  readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-sm-12" style="margin-top:20px;" >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;">产品组合：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="proName" ng-model="summaryInfo.proName"  readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-sm-12" style="margin-top:20px;" >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;">发放条件币种：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="zbz" ng-model="summaryInfo.mpcName"  readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-sm-12" style="margin-top:20px;" >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;">债项方案金额：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="zxfazje" ng-model="summaryInfo.totalAmont"  readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" >
+                        <div class="col-sm-12" style="margin-top:20px;" >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;">汇总期限：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="hzqx" ng-model="summaryInfo.summaryPeriod"  readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="summaryInfo.summaryRates !=null" >
+                        <div class="col-sm-12" style="margin-top:20px;" >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;">汇总费率：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="hzfl" ng-model="summaryInfo.summaryRates"  readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="summaryInfo.summaryRates ==null && summaryInfo.rateRangeMix !=null" >
+                        <div class="col-sm-12" style="margin-top:20px;" >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;">汇总费率：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="col-sm-5 " id="rateRangeMix" ng-model="summaryInfo.rateRangeMix" readonly/>
+                                <div class="col-sm-2" style=" margin-top: 10px;text-align: center;">——</div>
+                                <input type="text" class="col-sm-5 " id="rateRangeMax" ng-model="summaryInfo.rateRangeMax" readonly/>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-repeat="item in summaryInfo.fecList">
+                        <!-- <div class="row" >
+                        <div class="col-sm-12" style="margin-top:20px;" >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;">利率类型：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                &lt;!&ndash;<input type="text" class="form-control" id="lllx" ng-model="item.currency"  readonly />&ndash;&gt;
+                                <input type="text" ng-show="item.type=='1'" class="form-control"  value="固定利率" readonly />
+                                <input type="text" ng-show="item.type=='2'" class="form-control"  value="浮动利率" readonly />
+                            </div>
+                        </div>
+                    </div>-->
+                         <div ng-show="item.type=='1'" class="form-liaisonleader">
+                        <div class="row">
+                                <div class="col-sm-12" style="margin-top:20px">
+                                    <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;">汇总利率：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control"  ng-model="item.rateVal"  readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                       <!-- 浮动利率时 显示折算牌价、费率值、利率、浮动率、逾期加点(或百分比)数据项的字段长度调整-->
+                    <div ng-show="item.type=='2'" class="form-liaisonleader">
+                        <div class="row">
+                            <div class="col-sm-12" style="margin-top:20px">
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;">汇总利率：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control"  value="折算牌价:{{item.convertedPrice}};浮动率:{{item.floatingRate}};逾期加点(或百分比):{{item.overdueIncrRatio}};"   readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-sm-12" style="margin-top:20px;" >
+                            <div class="col-sm-3">
+                                <label class="control-label" style="float: right;margin-top: 10px;">政策性分类：</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" ng-show="summaryInfo.classificPolicies=='1'" class="form-control"  value="是" readonly />
+                                <input type="text" ng-show="summaryInfo.classificPolicies=='0'" class="form-control"  value="否" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="summaryInfo.classificPolicies=='1'" class="form-liaisonleader">
+                        <div class="row">
+                            <div class="col-sm-12" style="margin-top:20px">
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>政策性属性描述：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <textarea type="text" rows="6" class="form-control" style="resize: none" ng-model="summaryInfo.policiesDescribe"  readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-liaisonleader">
+                        <div class="row">
+                            <div class="col-sm-12" style="margin-top:20px">
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>驳回意见：</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <textarea type="text" rows="6" class="form-control" style="resize: none" ng-model="record.grantOpinion"  disabled></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--btn-->
+                    <div class="form-liaison">
+                        <div class="col-sm-8 col-sm-offset-2" style="margin-top:20px;" align="center">
+                            <button type="button" onclick="javascript:history.back(-1);" class="btn btn-default w-xs">返回</button>
+                        </div>
+                    </div>
+
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+
+
+                    <div class="table-responsive" style="overflow: inherit; border-top: #666666 1px solid;margin-top:100px;" >
+                        <div style="height: 30px;border: #666666 1px solid;">
+                            <label style="margin-bottom: -5px;" class="col-lg-4 col-sm-3 control-label"><span class="text-danger wrapper-sm"></span>历史意见信息</label>
+                        </div>
+                        <table class="table table-striped b-t b-light text-center" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <th class="table-striped-td" width="80px">序号</th>
+                                <th class="table-striped-td" width="*00px;">岗位</th>
+                                <th class="table-striped-td" width="100px;">姓名</th>
+                                <th class="table-striped-td" width="100px;">操作</th>
+                                <th class="table-striped-td" width="200px;">时间</th>
+                                 <!--<th class="table-striped-td" width="200px;">备注</th>-->
+                                <th class="table-striped-td" width="100px;">操作详情</th>
+                            </tr>
+                            <tr ng-repeat="item in voList">
+                                <th class="table-striped-td" ng-bind="$index+1">1</th>
+                                <th class="table-striped-td">{{item.roleName}}</th>
+                                <th class="table-striped-td">{{item.userName}}</th>
+                                <th class="table-striped-td">{{item.commentInfo}}</th>
+                                <th class="table-striped-td">{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</th>
+                                <!--<th class="table-striped-td">{{item.remark}}</th>-->
+                                <th class="table-striped-td">
+                                    <button type="button" class="btn btn-info w-xs m-l-xl" ng-show="{{item.remark!=1}}" ng-disabled="isDisabled" ng-click="openPopDebtApproval(item.taskId)" style="">查看</button>
+                                    <button type="button" class="btn btn-info w-xs m-l-xl" ng-show="{{item.remark==1}}" ng-disabled="isDisabled" ng-click="openPopGrant()" style="">查看</button>
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                </div>
+                <div ng-include="'src/app/biz/process/view_grant.html'"></div>
+            </form>
+        </div>
+    </div>
+</div>

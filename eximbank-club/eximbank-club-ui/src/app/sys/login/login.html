@@ -1,0 +1,127 @@
+<!-- 登录页面 -->
+
+<!--/Preloader -->
+<!-- Wrap all page content here -->
+<div id="wrap">
+	<!-- Make page fluid -->
+	<div class="row" style="background-color: white">
+		<div class="login-l">
+			<img src="lib/images/login-l.png" alt="" style="width: 22%;height: 100%;float: left">
+		</div>
+		<!-- Page content -->
+		<div id="content" class="col-md-12 full-page login" style="float: right;width: 78%;height: 100%;background-color: white;">
+			<!-- 模态框（Modal）修改密码 -->
+			<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" data-backdrop="false">
+					<div class="modal-dialog" style="margin-top: 180px;margin-left: 640px">
+						<div class="modal-content" style="box-shadow: 0px 53px 5px 0px rgba(0, 0, 0, 0.5);">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title" id="myModalLabel">修改密码</h4>
+							</div>
+							<div class="modal-body" style="height: 270px;">
+								<div class="col-md-12" style="padding-bottom: 10px">
+									<div class="col-md-4" style="margin-top: 10px;">登录名:</div>
+									<div class="col-md-5"><input type="text" ng-blur="userNameJiaoYan()" style="width: 280px ; margin-left: -60px" id="userName" name="userName"
+											ng-model="changePassword.account" placeholder="请输入登录名"></div>
+								</div>
+								<div class="col-md-12" style="padding-bottom: 10px">
+									<div class="col-md-4" style="margin-top: 10px;">旧密码:</div>
+									<div class="col-md-5"><input type="password" ng-blur="passwordJiaoYan()" style="width: 280px ; margin-left: -60px" id="password" name="password"
+											ng-model="changePassword.password" placeholder="请输入旧密码"></div>
+								</div>
+								<div class="col-md-12" style="padding-bottom: 10px">
+									<div class="col-md-4" style="margin-top: 10px;">新密码:</div>
+									<div class="col-md-5"><input type="password" ng-blur="newPasswordJiaoYan()" style="width: 280px ; margin-left: -60px" id="newPassword" name="newPassword"
+											ng-model="changePassword.newPassword" placeholder="请输入新密码"></div>
+								</div>
+								<div class="col-md-12" style="padding-bottom: 10px">
+									<div class="col-md-4" style="margin-top: 10px;margin-left: -15px;">确认新密码:</div>
+									<div class="col-md-5"><input type="password" ng-blur="confirmNewPasswordJiaoYan()" style="width: 280px ; margin-left: -45px" id="confirmNewPassword" name="confirmNewPassword"
+											ng-model="changePassword.confirmNewPassword" placeholder="请再次输入新密码"></div>
+								</div>
+							</div>
+							<div class="modal-footer col-md-12" style="margin-top: 0px;height: 50px;padding: 10px;">
+								<div class="col-md-6">
+									<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+								</div>
+								<div class="col-md-1">
+									<button type="button" ng-click="commitChange()" class="btn btn-primary">提交</button>
+								</div>
+							</div>
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal -->
+				</div>
+			<div class="welcome">
+				<!--<img src="lib/images/logo_" alt class="logo">-->
+				<!--<img src="lib/images/logo.png" alt class="logo" style="margin: 50px auto 20px;width:154px ;height: 100px">-->
+				<img src="lib/images/logo.png" alt class="logo" style="width: 65%;">
+				<img src="lib/images/Title1.png" alt class="logo" style="">
+				<!--<h1 style="font-family: 华文楷体">中国进出口银行</h1>-->
+				<!--<h1 style="font-family: 华文宋体">中国进出口银行</h1>-->
+				<!--<h1 style="font-family: 'Microsoft YaHei UI'">中国进出口银行</h1>-->
+				<!--<h3 style="font-family: 新宋体;font-weight: 600">中国进出口银行</h3>-->
+				<br>
+				<!--<h1>-->
+				<!--<strong>贸易金融授信业务管理系统</strong>-->
+				<!--</h1>-->
+				<!--<h5 style="margin-top: 3px">Trade finance credit management system</h5>-->
+				<form id="form-signin" class="form-signin" ng-submit="login()" style=" padding: 0px 15%;">
+					<section>
+						<div class="user" style="">
+							<input style="  border-radius: 3px !important; box-shadow:0 0 0 60px #f9f9f9 inset !important; float: left;border-radius: 0; border: none; background-color: transparent; width: 100%;border-bottom: 1px solid #c0c0c0; margin-bottom: 20px;"
+							    type="text" class="" name="username" placeholder="请输入用户名" ng-model="user.account" name="account"
+							    ng-maxlength="20" autofocus="autofocus" required>
+							<div class="" style=" float: right; margin-top: -42px;">
+								<!--<i class="fa fa-user"></i>-->
+								<img src="lib/images/User.png" alt="" style="width: 15px;height: 15px">
+							</div>
+						</div>
+						<div class="" style="margin-bottom: 10px;">
+							<input style=" border-radius: 3px !important;  box-shadow:0 0 0 60px #f9f9f9 inset !important;  float: left;border-radius: 0;border: none; background-color: transparent; width: 100%;border-bottom: 1px solid #c0c0c0;"
+							    type="password" class="" name="password" placeholder="请输入密码" ng-model="user.password" name="password"
+							    ng-maxlength="20" required style="color:#ffffff;">
+							<div class="" style=" float: right; margin-top: -22px;">
+								<!--<i class="fa fa-key"></i>-->
+								<img src="lib/images/Key.png" alt="" style="width: 15px;height: 15px">
+							</div>
+						</div>
+					</section>
+					<section class="controls">
+						<!--<div class="checkbox check-transparent">-->
+						<!--<input type="checkbox" value="1" id="remember" checked>-->
+						<!--&lt;!&ndash;<label for="remember">记住密码</label>&ndash;&gt;-->
+						<!--</div>-->
+					</section>
+
+					<section class="new-acc">
+						<button type="submit" class="btn btn-greensea" id="btn-login" style="width: 50%;margin-left: 55px;margin-top: 45px">登&nbsp;&nbsp;录</button>
+						<!-- 按钮触发模态框 -->
+						<button class="btn btn-greensea" id="modelShow" onclick="isShow()" style="width: 50%;margin-left: 55px;" data-toggle="modal"
+						    data-target="#myModal">修改密码</button>
+					</section>
+					
+					<div class="row small-spacing">
+						<div class="has-error center"><label class="control-label">{{msg}}</label></div>
+					</div>
+				</form>
+			</div>
+			<!--<a href="javascript:void(0)" class="log-in">系统登录 </a>-->
+		</div>
+		<!-- Page content end -->
+	</div>
+	<!-- Make page fluid-->
+</div>
+<!-- Wrap all page content end -->
+
+<script>
+	$(function () {
+		$('.welcome').addClass('animated bounceIn');
+	})
+	function isShow(){
+		$('#userName').val("");
+		$('#password').val("");
+		$('#newPassword').val("");
+		$('#confirmNewPassword').val("");
+		$('#myModal').show();
+	}
+</script>

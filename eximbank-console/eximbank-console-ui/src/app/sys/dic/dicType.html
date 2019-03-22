@@ -1,0 +1,88 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>
+			<a ui-href="main"><i class="fa fa-home"></i> 首页</a>
+		</li>
+		<li>
+			<a ui-sref="main.sys.dicType.list">{{title}}</a>
+		</li>
+	</ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+	<!-- 数据显示 -->
+	<div class="wrapper-data">
+		<div class="panel panel-default">
+			<!-- 头部 -->
+			<div class="panel-heading font-bold">
+				<a ui-sref="main.sys.dicType.create" class="btn btn-info pull-right">
+					<i class="fa fa-plus m-r-sm text-md"></i> 码表新增</a>
+				<a class="btn btn-info pull-right" ng-click="edit()">
+					<i class="fa fa-book m-r-sm text-md"></i> 二级码表
+				</a>
+				<!--<td class="v-middle">
+                    <!--<a ui-sref="main.sys.dicType.update({id: item.id})" class="btn btn-sm btn-default">
+                        <i class="fa fa-edit m-r-xs text-sm"></i>编辑</a>-->
+				<!--<a ui-sref="main.sys.dicType.detail({code: item.code})" class="btn btn-sm btn-default">二级码表</a>
+                </td>-->
+				<div class="w-lg">
+					<form ng-submit="query()" class="ng-pristine ng-valid">
+						<div class="input-group search-box">
+							<input type="text" class="form-control" ng-model="param.keyword" placeholder="码表名称">
+							<i ng-show="user.keyword" ng-click="clearSearch()" class="fa fa-mail-reply-circle text-muted search-clear"></i>
+							<span class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<!-- 数据表格 -->
+			<div class="table-responsive">
+                <table class="table table-striped b-t b-light text-center">
+                    <thead>
+						<tr>
+							<th style="width:60px;">选择</th>
+							<th style="width:50px;">序号</th>
+							<th width="200px">类型编码</th>
+							<th width="*px;" style="min-width:200px;">码表名称</th>
+							<th width="70px">类别</th>
+							<th width="200px">描述</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in pageInfo.data" ng-click="onCheckedRow(pageInfo.data,item)">
+							<td class="v-middle" align="center"><input type="checkbox" ng-model="item.checked" ng-click="selectOne(item.checked,item.id)"></td>
+							<td class="v-middle">{{(pageInfo.current-1)*pageInfo.size+$index+1}}</td>
+							<td class="v-middle">{{item.code}}</td>
+							<td class="v-middle">{{item.codeText}}</td>
+							<td class="v-middle">
+								<span ng-hide="item.sysFlg==1" class="text-danger">自定义级</span>
+	                        	<span ng-show="item.sysFlg==1" class="text-success">系统级</span>
+							</td>
+							<td class="v-middle">{{item.remark}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- /.table-responsive -->
+
+			<!-- 底部分页 -->
+			<span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+		</div>
+		<!-- /.panel -->
+	</div>
+	<!-- /.wrapper-data -->
+
+</div>
+<!-- /.wrapper-md -->

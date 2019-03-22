@@ -1,0 +1,97 @@
+<div class="modal fade" id="myCustUserLetter" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width: 1100px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">附件查看</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -20px;"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" style="height:75%;overflow-y:auto;">
+                <div class="col-sm-12 mt2">
+                    <div class="col-sm-3 mt3">
+                        <label class="control-label" style="float: right;">合同名称:</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" ng-model="realFileName" readonly/>
+                    </div>
+                </div>
+                <div class="col-sm-12 mt2 mb2">
+                    <div class="col-sm-3 mt3">
+                        <label class="control-label " style="float: right;">文件上传:</label>
+                    </div>
+                    <div>
+                        <ul>
+                            <li>
+                                <div class="uploder-container">
+                                    <div class="cxuploder">
+                                        <div class="queueList">
+                                            <div class="placeholder">
+
+
+                                            </div>
+                                        </div>
+                                        <div class="statusBar" style="display:none;">
+                                            <div class="btns">
+                                                <div class="jxfilePicker"></div>
+                                            </div>
+                                            <div class="info"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </li>
+                        </ul>
+                        <div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+                            <div id="innerdiv" style="position:absolute;">
+                                <img id="bigimg" style="border:5px solid #fff;" src="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 mt2">
+                        <div class="col-sm-3 mt3">
+                            <label class="control-label" style="float: right;">附件名称:</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" ng-model="nclosureName" readonly />
+                        </div>
+                    </div>
+                    <div class="col-sm-12 mt2 mb2">
+                        <div class="col-sm-3 mt3">
+                            <label class="control-label " style="float: right;">附件上传:</label>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>
+                                    <div class="uploder-container">
+                                        <div class="cxuploder">
+                                            <div class="queueList">
+                                                <div class="placeholder">
+
+                                                </div>
+                                            </div>
+                                            <div class="statusBar" style="display:none;">
+                                                <div class="btns">
+                                                    <div class="jxfilePicker"></div>
+                                                </div>
+                                                <div class="info"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="form-classifyLevel">
+                    <div class="col-sm-5 col-sm-offset-1">
+                        <button type="button" class="el-button el-button--danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>收起</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

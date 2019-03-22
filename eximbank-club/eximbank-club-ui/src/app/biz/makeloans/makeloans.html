@@ -1,0 +1,128 @@
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li>您当前所在位置：</li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+
+        <form ng-submit="queryMakeLoansDebts()" class="ng-pristine ng-valid">
+            <div class="panel-heading clearfix" style="border-bottom: 1px solid #ccc;padding: 0px;">
+            <div class="row" style="margin-top: 1em;">
+                <div class="col-sm-2 mt3">
+                    <label class="control-label " style="float: right;" for="grantcode">发放条件编号:</label>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" id="grantcode" type="text" style="width: 100%;"
+                           ng-model="param.grantCode" autocomplete="off">
+                </div>
+                <div class="col-sm-2 mt3" style="margin-left: -5%;">
+                    <label class="control-label " style="float: right;" for="productName">产品名称:</label>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" id="productName" style="width: 100%;"
+                           ng-model="param.productName" autocomplete="off">
+                </div>
+                <div class="col-sm-2 mt3" style="margin-left: -5%;">
+                    <label class="control-label" style="float: right;" for="proposer">申请人名称:</label>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" id="proposer" style="width: 100%;" ng-model="param.proposer"
+                           autocomplete="off">
+                </div>
+            </div>
+            <div class="row mt3" style="margin-top: 1em;margin-bottom: 1em;">
+                <div class="col-sm-2 mt3">
+                    <label class="control-label " style="float: right;" for="beginDate">开始时间:</label>
+                </div>
+                <div class="col-sm-2">
+                    <input onclick="WdatePicker({maxDate:'#F{$dp.$D(\'endDate\')}',onpicking:function(dp){cleanRequiredWarn(this);}})" id="beginDate"
+                           class="form-control" style="width: 100%;" ng-model="param.beginDate" onchange="" name="beginDate" autocomplete="off">
+                </div>
+                <div class="col-sm-2 mt3" style="margin-left: -5%;">
+                    <label class="control-label " style="float: right;" for="endDate">结束时间:</label>
+                </div>
+                <div class="col-sm-2">
+                    <input onclick="WdatePicker({minDate:'#F{$dp.$D(\'beginDate\')}',onpicking:function(dp){cleanRequiredWarn(this);}})" id="endDate"
+                           class="form-control" style="width: 100%;" ng-model="param.endDate" onchange="" name="endDate" autocomplete="off">
+                </div>
+                <div class="col-sm-2 col-sm-offset-2" style="margin-left: 11.7%;">
+                    <button class="el-button el-button--primary" style="width: 100%;" type="submit">查&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;询</button>
+                </div>
+            </div>
+            </div>
+            <div class="table-responsive" id="scroll-2">
+                <!--<div class="col-sm-12">-->
+                    <table class="table table-striped b-t b-light" style="margin-bottom: 0px;">
+                        <thead>
+                        <tr>
+                            <th style="text-align: center;">序号</th>
+                            <th style="text-align: center;">发放条件编号</th>
+                            <th style="text-align: center;">申请人名称</th>
+                            <th style="text-align: center;">产品名称</th>
+                            <th style="text-align: center;">币种</th>
+                            <th style="text-align: center;">金额</th>
+                            <th style="text-align: center;">业务期限(天)</th>
+                            <th style="text-align: center;">发放条件完成时间</th>
+                            <th style="text-align: center;">发放条件状态</th>
+                            <th style="text-align: center;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in pageInfo.data" style="text-align: center;">
+                            <td style="line-height: inherit">{{(pageInfo.current-1)*pageInfo.size+$index+1}}</td>
+                            <td>{{item.grantCode |limitTo:16}}</td>
+                            <td>{{item.proposer}}</td>
+                            <td>{{item.productName}}</td>
+                            <td>
+                                <ul>
+                                    <li ng-repeat="currency in item.bizFECList">
+                                        {{currency.currencyString}}
+                                    </li>
+                                </ul>
+                            </td>
+                            <td style="text-align:right;">
+                                <ul>
+                                    <li ng-repeat="currency in item.bizFECList">
+                                        {{currency.paymentAmt}}
+                                    </li>
+                                </ul>
+                            </td>
+                            <td>{{item.scopeBusinPeriod}}</td>
+                            <td>{{item.passDate | date:'yyyy-MM-dd'}}</td>
+                            <td>
+                                <span ng-show="item.grantStatus==1" class="text-success" style="color: #0000FF">{{item.grantStatusString}}</span>
+                                <span ng-show="item.grantStatus==3" class="text-success" style="color: #008000">{{item.grantStatusString}}</span>
+                                <span ng-show="item.grantStatus==4" class="text-success" style="color: #800080">{{item.grantStatusString}}</span>
+                                <span ng-show="item.grantStatus==5" class="text-success" style="color: #00FFFF">{{item.grantStatusString}}</span>
+                                <span ng-show="item.grantStatus==11" class="text-success" style="color: #FF0000">{{item.grantStatusString}}</span>
+                            </td>
+                            <td>
+                                <li style=" display: initial; margin: 0 5px;" ng-click="openPop('B','',item.grantCode,'')"><a ui-sref="">查看详情</a></li>
+                                <li style=" display: initial;margin: 0 5px;"><a ng-click="openWindow(item.grantCode,$index)" data-toggle="modal" data-target="#fileModal">查看附件</a></li>
+                                <li style=" display: initial;margin: 0 5px;">
+                                    <a ui-sref="{{item.grantStatus==3 ? 'main.biz.makeloans.detail({grantCode:item.grantCode,businessTypes:item.businessTypes,objInr:item.objInr,debtCode:item.debtCode,grantCodes:param.grantCode,productName:param.productName,proposer:param.proposer,beginDate:param.beginDate,endDate:param.endDate})':''}}"><span class="{{item.grantStatus==3 ? '':'text-muted'}}">发放</span></a>
+                                </li>
+                                <li style=" display: initial;margin: 0 5px;">
+                                    <a ui-sref="{{item.grantStatus==4 ? 'main.biz.makeloans.paymentPlan({grantCode:item.grantCode,businessTypes:item.businessTypes,objInr:item.objInr,debtCode:item.debtCode,grantCodes:param.grantCode,productName:param.productName,proposer:param.proposer,beginDate:param.beginDate,endDate:param.endDate})':(item.grantStatus==1 ? 'main.biz.makeloans.updatePaymentPlan({grantCode:item.grantCode,businessTypes:item.businessTypes,objInr:item.objInr,debtCode:item.debtCode})' : '')}}"><span class="{{item.grantStatus==4 ? '':(item.grantStatus==1 ? '' :'text-muted')}}">发送还款计划</span></a>
+                                </li>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                <!--</div>-->
+            </div>
+            <!-- 底部分页-->
+            <span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+
+            <div ng-include="'src/app/biz/grant/view_file.html'"></div>
+        </form>
+    </div>
+</div>

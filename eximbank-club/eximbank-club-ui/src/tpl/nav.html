@@ -1,0 +1,72 @@
+<!-- Sidebar -->
+<ul class="nav navbar-nav side-nav" id="navigation" ng-controller="navCtrl">
+	<li class="collapsed-content">
+		<!-- Collapsed content pasting here at 768px -->
+	</li>
+	<li class="user-status status-online" id="user-status" style="height: 70px; border-bottom: 1px solid #1a5ea7;">
+		<div class="profile-photo" style="width: 50px ;height: 50px">
+			<img src="lib/images/arnold-avatar.jpg" alt />
+		</div>
+		<div class="user" style="position: absolute;">
+			<label style="">{{userInfo.userName}}</label>
+			<span class="role" ng-switch="userInfo.userType">
+			<h5 class="position" ng-switch-when="1" style="font-size: 12px;margin-top: 10px;color: white;font-weight: 500;">柜员</h5>
+			<h5 class="position" ng-switch-when="2" style="font-size: 12px;margin-top: 10px;color: white;font-weight: 500;">管理员</h5>
+			<h5 class="position" ng-switch-when="3" style="font-size: 12px;margin-top: 10px;color: white;font-weight: 500;">系统用户</h5>
+			<p ng-switch-default>无岗位</p>
+			</span>
+			<!--<div class="status">-->
+				<!--<ul>-->
+					<!--<li class="dropdown change-status">-->
+						<!--<a class="dropdown-toggle my-status" data-toggle="dropdown" href="#">在线</a>-->
+						<!--<ul class="dropdown-menu arrow">-->
+							<!--<li>-->
+								<!--<a href="#" id="status-online" data-status="status-online">在线</a>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--<a href="#" id="status-away" data-status="status-away">离开</a>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--<a href="#" id="status-invisible" data-status="status-invisible">Invisible</a>-->
+							<!--</li>-->
+						<!--</ul>-->
+					<!--</li>-->
+				<!--</ul>-->
+			<!--</div>-->
+		</div>
+	</li>
+
+	<li class="dropdown" ng-repeat="menu in menuList " ng-class="{open: $state.includes('**.{{menu.permission}}.**')}" style="    border-bottom: 1px solid #1a5ea7;">
+		<a onclick="show1(this)" ng-if="menu.leaf==0" href="javascript:void(0)" class="" title="Dashboard" style="color: white; font-size: 16px;">
+			<!--<i class="{{menu.iconcls}}">-->
+          		<!--<span class="overlay-label" ng-class="{red:menu.leaf==0}"></span>-->
+         	<!--</i> -->
+			<img src="lib/images/Folder.png" alt="" style="width: 18px; margin-right: 10px;">
+			{{menu.menuName}}
+			<b class="fa fa-angle-left dropdown-arrow"></b>
+			<span class="badge badge-cyan"></span>
+		</a>
+		<ul class="dropdown-menu" ng-if="menu.leaf==0">
+			<li ng-repeat="rm in menu.menuBeans" class="">
+				<a  class="" ui-sref="{{rm.request}}" title="Overview" style="font-size: 14px;padding-left: 20px">
+					<div class="circle"></div>
+					<!--<img src="lib/images/circle-w.png" alt="" id="1" style="width: 12px; margin-right: 10px;display: inline">-->
+					<!--<img src="lib/images/circle-B.png" alt="" id="2" style="width: 12px; margin-right: 10px;display: none">-->
+					<!--<i class="{{rm.iconcls}}">-->
+						<!--<span class="overlay-label red80"></span>-->
+					<!--</i> -->
+					{{rm.menuName}}
+				</a>
+			</li>
+		</ul>
+		<!--sub menu -->
+		<a href="javascript:void(0)" title="Widgets" ng-if="menu.leaf==1" ui-sref="{{menu.request}}">
+			<i class="{{menu.iconcls}}">
+          		<span class="overlay-label hotpink"></span>  
+      		</i> {{menu.menuName}}
+		</a>
+	</li>
+</ul>
+<!-- Sidebar end -->

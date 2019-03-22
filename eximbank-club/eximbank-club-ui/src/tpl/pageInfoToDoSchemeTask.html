@@ -1,0 +1,22 @@
+			<!-- 底部分页 -->
+            <footer ng-show="pageInfoToDoSchemeTask.total" class="panel-footer">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <small class="text-muted inline m-t-sm m-b-sm">共{{pageInfoToDoSchemeTask.pages}}页{{pageInfoToDoSchemeTask.total}}条记录 当前第{{pageInfoToDoSchemeTask.current}}页</small>
+                    </div>
+
+                    <paging ng-show="pageInfoToDoSchemeTask.total" class="col-sm-6 text-right text-center-xs"
+                         hide-if-empty=true
+                         ul-class="pagination pagination-sm m-t-none m-b-none"
+                         page="pageInfoToDoSchemeTask.current"
+                         page-size="pageInfoToDoSchemeTask.size"
+                         total="pageInfoToDoSchemeTask.total"
+                         show-prev-next="false"
+                         scroll-top="false"
+                         paging-action="schemeToDoTaskPagination(page)">
+                    </paging>
+                </div>
+            </footer>
+
+            <!-- 无数据提醒 -->
+            <div ng-hide="pageInfoToDoSchemeTask.total" class="m-md alert alert-warning text-center text-lg" style="background-color: #ebf5ff">暂无数据</div>

@@ -1,0 +1,215 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i>首页</a></li>
+        <li><a ui-sref="main.sys.cust.list">客户信息查询</a></li>
+        <li class="active" id="biaoti" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 加载提醒 -->
+<!--<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>-->
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <!-- 数据显示 -->
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">{{title}}
+            <a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.sys.cust.list"><i class="text-md fa fa-mail-reply text-muted" title="返回"></i></a>
+        </div>
+        <!--表单-->
+        <div class="panel-body">
+            <form class="form-horizontal"  name="user_form">
+                <!--用户名-->
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户编号</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custNo" name="custNo" class="form-control" ng-model="record.custNo">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>公有信息编号</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="debtCode" name="debtCode" class="form-control" ng-model="record.debtCode">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户名称（中文）</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custNameCN" name="custNameCN" class="form-control" ng-model="record.custNameCN">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户名称（英文）</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custNameEN" name="custNameEN" class="form-control" ng-model="record.custNameEN">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户证件类型</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custIdType" name="custIdType" class="form-control" ng-model="record.custIdType">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户证件号</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custLicenseNo" name="custLicenseNo" class="form-control" ng-model="record.custLicenseNo">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户所在地址（中文）</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custAddressCN" name="custAddressCN" class="form-control" ng-model="record.custAddressCN">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户所在地址（英文）</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custAddressEN" name="custAddressEN" class="form-control" ng-model="record.custAddressEN">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户属辖经营单位</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custBusinessUnit" name="custBusinessUnit" class="form-control" ng-model="record.custBusinessUnit">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户登记注册类型</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custRegType" name="custRegType" class="form-control" ng-model="record.custRegType">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户评级授信类型</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custRcreditType" name="custRcreditType" class="form-control" ng-model="record.custRcreditType">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>信用评级</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="creditRating" name="creditRating" class="form-control" ng-model="record.creditRating">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>评级时间</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="ratingTime" name="ratingTime" class="form-control" ng-model="record.ratingTime">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>评级有效期</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="ratValiPeriod" name="ratValiPeriod" class="form-control" ng-model="record.ratValiPeriod">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户所属国别</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custCountry" name="custCountry" class="form-control" ng-model="record.custCountry">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户所属行业</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="mainBusiness" name="mainBusiness" class="form-control" ng-model="record.mainBusiness">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户规模</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custScale" name="custScale" class="form-control" ng-model="record.custScale">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>客户经理</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="custManager" name="custManager" class="form-control" ng-model="record.custManager">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>所属集团编号</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="groupNo" name="groupNo" class="form-control" ng-model="record.groupNo">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>所属集团名称</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="groupName" name="groupName" class="form-control" ng-model="record.groupName">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>是否高风险客户</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="highRiskFlg" name="highRiskFlg" class="form-control" ng-model="record.highRiskFlg">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm"></span>在我行所属合并授信主体客户号</label>
+                    <div class="col-sm-6">
+                        <input type="text" id="grpNo" name="grpNo" class="form-control" ng-model="record.grpNo">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                
+                
+                <div class="col-sm-8 col-sm-offset-4">
+                    <a ui-sref="main.sys.cust.list" class="btn btn-info w-xs m-l-xl">
+                        返回
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+

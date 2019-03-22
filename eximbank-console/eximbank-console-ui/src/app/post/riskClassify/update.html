@@ -1,0 +1,117 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li><a ui-sref="main.post.riskClassify.list">初分类规则管理</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">{{title}}
+        <a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.post.riskClassify.list"><i class="text-md fa fa-mail-reply text-muted" title="关闭"></i></a>
+        </div>
+        <!--表单-->
+            <div class="panel-body">
+                <form class="form-horizontal"  name="user_form">
+                    <!--分级名称-->
+                    <div class="form-dept">
+                        <label class="col-lg-2 col-sm-3 control-label" >
+                            <span class="text-danger wrapper-sm">*</span>分类名称</label>
+                        <div class="col-sm-6">
+                            <div class="selects">
+                                <select id="clCode" onblur="clCodeJiaoYan(this.value)" ng-model="record.clCode"  class="selects" ng-options="x.clCode as x.clName for x in orgList"></select>
+                           		<span style="color: red;" id="clCodeTest"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <input type="hidden" id="dd" ng-model="record.dd">
+                    <!--分级描述-->
+                    <div class="form-riskClassify">
+                        <label class="col-lg-2 col-sm-3 control-label" for="remark">描述</label>
+                        <div class="col-sm-6">
+                            <input type="hidden" ng-model="record.clName" id="clName">
+                            <input type="text"  class="form-control" name="remark" id="remark" placeholder="请输入描述..." ng-model="record.remark">
+                            <span class="help-block m-b-none"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--日期-->
+                    <div class="form-riskClassify">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                        <span class="text-danger wrapper-sm">*</span>日期</label>
+                        <div class="col-sm-6">
+                            <input type="text" onblur="classifyDateJiaoYan()" class="form-control" name="classifyDate" id="classifyDate" placeholder="请输入日期..." ng-model="record.clDate">
+                        	<span style="color: red;" id="classifyDateTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--逾期-->
+                    <div class="form-riskClassify">
+                        <label class="col-lg-2 col-sm-3 control-label" for="name">
+                        <span class="text-danger wrapper-sm">*</span>逾期提示日期</label>
+                        <div class="col-sm-6">
+                            <input type="text" onblur="overdueHintJiaoYan()" class="form-control" name="overdueHint" id="overdueHint" placeholder="请输入逾期提示日期..." ng-model="record.ovHint">
+                        	<span style="color: red;" id="overdueHintTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--btn-->
+                    <div class="form-riskClassify">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <button type="button" id="submitBtn" onclick="test(document.getElementById('clCode').value)" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>
+<script type="text/javascript">
+	//信息来源的非空校验
+	function classifyDateJiaoYan() {
+		if($('#classifyDate').val() == null || $('#classifyDate').val().trim() == '') {
+			$('#classifyDateTest').text('请输入日期');
+		} else if(/^[0-9]*$/.test($('#classifyDate').val()) == false) {
+			$('#classifyDateTest').text('日期只能为数字');
+		} else {
+			$('#classifyDateTest').text('');
+		}
+	}
+
+	function overdueHintJiaoYan() {
+		if($('#overdueHint').val() == null || $('#overdueHint').val().trim() == '') {
+			$('#overdueHintTest').text('请输入逾期天数');
+		}  else if(/^[0-9]*$/.test($('#overdueHint').val()) == false) {
+			$('#overdueHintTest').text('逾期天数只能为数字');
+		} else {
+			$('#overdueHintTest').text('');
+		}
+	}
+
+	function clCodeJiaoYan(clCode) {
+		if(clCode == '?') {
+			$('#clCodeTest').text('请选择风险分类名称');
+		} else {
+            $('#clCodeTest').text('');
+			}
+		}
+	
+
+	function test(clCode) {
+		$("#submitBtn").attr("type" , "button");
+		classifyDateJiaoYan();
+		overdueHintJiaoYan();
+		clCodeJiaoYan(clCode);
+		if($('#classifyDateTest').text() == '' && $('#overdueHintTest').text() == '' && $('#clCodeTest').text() == ''){
+			$('#submitBtn').attr('type' , 'submit');
+		}
+	}
+</script>

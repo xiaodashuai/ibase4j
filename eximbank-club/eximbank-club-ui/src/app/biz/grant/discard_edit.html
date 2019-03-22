@@ -1,0 +1,134 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>您当前所在位置：</li>
+		<li>
+			<a ui-href="main">
+				发放条件
+			</a>
+		</li>
+		<li>
+			<a ui-sref="main.biz.grant.query">发放管理</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<div class="wrapper-md content">
+	<div class="panel panel-default">
+		<!-- 头部 -->
+		<div class="panel-heading font-bold">废弃</div>
+		<!--表单-->
+		<div class="panel-body">
+
+			<form class="form-middle" name="middle_form">
+				<div class="col-sm-9" style="margin-top:20px;" align="center">
+					<button type="button" class="btn btn-info w-xs m-l-xl" ng-click="openPop('B','',record.grantCode,'')" style="margin-left: 100px">快照查看</button>
+					<button type="button" class="btn btn-info w-xs m-l-xl" ng-click="openWindow(record.grantCode,0)" style="margin-left: 100px" data-toggle="modal" data-target="#fileModal">附件查看</button>
+				</div>
+
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">发放审核编号:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control" name="grantCode" id="grantCode" ng-model="record.grantCode" readonly="readonly">
+						</div>
+					</div>
+				</div>
+
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">申请人名称:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control" name="proposer" id="proposer" ng-model="record.proposer" readonly="readonly">
+						</div>
+					</div>
+				</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">业务品种:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control" name="businessName" id="businessName" ng-model="record.businessName" readonly="readonly">
+						</div>
+					</div>
+				</div>
+				
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">业务期限:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control" name="scopeBusinPeriod" id="scopeBusinPeriod" ng-model="record.scopeBusinPeriod" readonly="readonly">
+						</div>
+					</div>
+				</div>
+				
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">币种:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control" name="currency" id="currency" ng-model="record.currencyName" readonly="readonly">
+						</div>
+					</div>
+				</div>
+				
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">发放金额:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control" name="grantAmt" id="grantAmt" ng-model="record.grantAmt" readonly="readonly">
+						</div>
+					</div>
+				</div>
+
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label need" style="float: right;line-height: 35px;">废弃理由:</label>
+						</div>
+						<div class="col-sm-5">
+							<textarea class="form-control required" maxlength="255" style="width:99%;" id="reason" name="reason" ng-model="record.reason"></textarea>
+						</div>
+					</div>
+				</div>
+
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<!--btn-->
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-6" style="width: 100%;text-align:center;margin-top:20px;">
+							<button class="el-button el-button--primary is-plain" ng-disabled="isDisabled" ng-click="submit()">提交</button>
+						</div>
+					</div>
+				</div>
+		</div>
+	
+		<!-- 快照信息查看 -->
+		<div ng-include="'src/app/biz/grant/view_file.html'"></div>
+	</div>
+</div>

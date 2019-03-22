@@ -1,0 +1,85 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li>您当前所在位置：</li>
+        <li>
+            <a ui-href="main">
+                事 &nbsp;&nbsp;中
+            </a>
+        </li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+    <!-- 数据显示 -->
+
+    <div class="wrapper-data">
+        <div class="panel panel-default" style="border: none">
+            <!-- 头部 -->
+            <div class="panel-heading clearfix">
+                <a class="btn btn-info pull-right" ng-click="addItem()">
+                    <i class="fa fa-ban m-r-xs text-sm"></i>发放申请
+                </a>
+
+                <div class="w-lg">
+                    <form ng-submit="search()" class="ng-pristine ng-valid">
+                        <div class="input-group search-box" style="width:250px;">
+                            <input type="text" class="form-control" ng-model="param.keyword" placeholder="业务编号" style="width:200px;">
+                            <i ng-show="user.keyword" ng-click="clearSearch()" class="fa fa-times-circle text-muted search-clear"></i>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 数据表格 -->
+            <div class="table-responsive" id="scroll-2">
+                <table class="table table-striped b-t b-light" style="width:1500px;">
+                    <thead>
+                    <tr>
+                        <th style="width:50px;">序号</th>
+                        <th style="width:*px;min-width:300px;">项目名称</th>
+                        <th style="width:150px;">方案编号</th>
+                        <th style="width:110px;">总金额</th>
+                        <th style="width:210px;">方案有效期</th>
+                        <th style="width:500px;">产品组合</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in pageInfo.data">
+                        <td style="text-align: center;">{{(pageInfo.current-1)*pageInfo.size+$index+1}}</td>
+                        <td class="v-middle">{{item.projectName}}</td>
+                        <td class="v-middle">{{item.debtCode}}</td>
+                        <td class="v-middle">{{item.solutionAmount}}</td>
+                        <td class="v-middle" style="width:110px;">{{item.pgEffectivDate|date:'yyyy-MM-dd'}}至{{item.pgExpiDate|date:'yyyy-MM-dd'}}</td>
+                        <td class="v-middle" style="width:250px;">
+                     		<span ng-repeat="node in item.productSet">
+                     			<li style="list-style-type:none;">
+                              		<input type="radio"  ng-model="$parent.$parent.ckNode" name="productIds" ng-click="getProductDb(node.properInfo,item.debtCode)" ng-value="{{node}}"/>{{node.businessName}}
+                              		(<label style="padding-left:5px;">限制笔数: {{item.ruleType==1 ? item.tdwln : node.totalNum}}</label>
+                              		<label style="padding-left:5px;">已发笔数:{{node.usedNum}}</label>)
+                                </li>
+                     		</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div><!-- /.table-responsive -->
+
+            <!-- 底部分页 -->
+            <span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+        </div><!-- /.panel -->
+    </div><!-- /.wrapper-data -->
+
+</div><!-- /.wrapper-md -->

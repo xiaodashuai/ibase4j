@@ -1,0 +1,71 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 --> 
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-href="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+    <!-- 数据显示 -->
+    <div class="wrapper-data">
+        <div class="panel panel-default">
+            <!-- 头部 -->
+            <div class="panel-heading clearfix">
+                <div class="w-lg">
+                    <form ng-submit="search()" class="ng-pristine ng-valid">
+                        <div class="input-group search-box">
+                            <input type="text" class="form-control" ng-model="param.keyword" placeholder="操作类型">
+                            <i ng-show="user.keyword" ng-click="clearSearch()" class="fa fa-mail-reply-circle text-muted search-clear"></i>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 数据表格 -->
+            <div class="table-responsive">
+                <table class="table table-striped b-t b-light text-center">
+                    <thead>
+                    <tr>
+                    	<th style="width:50px;">序号</th>
+                        <th width="200px">操作人IP</th>
+                        <th width="100px">操作模块</th>
+                        <th width="100px">操作内容</th>
+                        <th width="350px">操作详情</th>
+                        <th width="100px">操作类型</th>          
+                        <th width="100px">资源名称</th>
+                        <th width="*" style="min-width:100px;">操作时间</th> 
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in pageInfo.data">
+                    	<td style="text-align: center;">{{(pageInfo.current-1)*pageInfo.size+$index+1}}</td>
+                        <td class="v-middle">{{item.operationerIp}}</td>                       
+                        <td class="v-middle">{{item.optCode}}</td>
+                        <td class="v-middle">{{item.optContent}}</td>
+                        <td class="v-middle">{{item.optDetail}}</td>
+                        <td class="v-middle">{{item.optType}}</td>
+                        <td class="v-middle">{{item.resId}}</td> 
+                        <td class="v-middle">{{item.optType}}</td> 
+                    </tr>
+                    </tbody>
+                </table>
+            </div><!-- /.table-responsive -->
+
+            <!-- 底部分页 -->
+			<span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+        </div><!-- /.panel -->
+    </div><!-- /.wrapper-data -->
+
+</div><!-- /.wrapper-md -->

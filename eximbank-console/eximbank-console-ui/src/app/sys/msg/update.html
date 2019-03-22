@@ -1,0 +1,168 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i>首页</a></li>
+        <li><a ui-sref="main.sys.msgConfig.list">短信模板管理</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 加载提醒 -->
+<!--<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>-->
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <!-- 数据显示 -->
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">
+        	<span id="title1">{{title}}</span>
+        	
+            <a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.sys.msgConfig.list"><i class="text-md fa fa-mail-reply text-muted" title="关闭"></i></a>
+        </div>
+        <!--表单-->
+        <div class="panel-body">
+            <form class="form-horizontal"  name="msgConfig_form">
+                <!--用户名-->
+                <div class="form-group" id="msgConfigs">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm">*</span>模板名称</label>
+                    <div class="col-sm-6">
+                    	<input id="biaoji" type="hidden" value="{{record.id}}" ng-model="record.id" />
+                        <input type="text" onblur="msgNameJiaoYan(this.value)" id="msgName" name="msgName" class="form-control" placeholder="请输入模板名称..." ng-model="record.msgName">
+                    	<span style="color: red;" id="msgNameTest"></span>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm">*</span>所属模块</label>
+                    <div class="col-sm-6">
+                        <input type="text" onblur="moduleJiaoYan()" id="module" name="module"  class="form-control"  placeholder="请输入描述..." ng-model="record.module">
+                    	<span style="color: red;"id="moduleTest"></span>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <!--所属机构-->
+                <div class="form-dept">
+                    <label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm">*</span>所属机构</label>
+                    <div class="col-sm-6">
+                        <div class="selects">
+                            <select id="deptCode" name="deptCode" class="form-control" value="" onclick="parentCodeJiaoYan(this.value)" ng-model="record.deptCode"
+                                class="selects" ng-options="x.code as x.deptName for x in orgList"></select>
+                            <span style="color: red;" id="parentCodetest"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label" >
+                        <span class="text-danger wrapper-sm">*</span>标题</label>
+                    <div class="col-sm-6">
+                    	<input type="hidden" id="biaoji" value="{{record.id}}" />
+                        <input type="text" onblur="titleJiaoYan()" id="title" name="title" class="form-control"  placeholder="请输入标题..." ng-model="record.title">
+                    	<span style="color: red;" id="titleTest"></span>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label" >
+                        <span class="text-danger wrapper-sm"></span>备注</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" placeholder="请输入备注..." ng-model="record.remark">
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label" >
+                        <span class="text-danger wrapper-sm">*</span>模板正文</label>
+                    <div class="col-sm-6">
+                        <textarea rows="16" class="form-control col-sm-6" onblur="templateJiaoYan()" id="template" name="template" placeholder="请输入正文..."  ng-model="record.template" style="margin: 0px -1.2px 0px 0px; height: 320px;">
+                        </textarea>
+                    	<span style="color: red;" id="templateTest"></span>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <button type="button" id="submitBtn" class="btn btn-info w-xs m-l-xl" onclick="test(document.getElementById('msgName').value , document.getElementById('deptCode').value)" ng-disabled="isDisabled">保存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div><!-- /.wrapper-md -->
+	
+<script type="text/javascript">
+	function msgNameJiaoYan(msgName){
+        	jQuery.ajax({
+        		url:'/eximbank-console/msgConfig/read/msgName',
+        		type:'GET',
+        		async:false,
+        		data:{
+                    account:msgName
+                },
+        		dataType:'json',
+        		success:function(data){
+        			if(data.accounts == "true" && $('#biaoji').val() == ''){
+        				$("#msgNameTest").text("该模板名称已存在");
+    				}else if($('#msgName').val() == null || $('#msgName').val().trim() == ''){
+    					$("#msgNameTest").text("模板名称不能为空");
+    				}else{
+    					$("#msgNameTest").text("");
+    				}
+    			}
+        	});
+        }
+        //所属机构的非空校验
+    function parentCodeJiaoYan(parentCode) {
+        if (parentCode == '?' || parentCode == '' || parentCode == null) {
+            $("#parentCodetest").text("请选择所属机构");
+        } else {
+            $("#parentCodetest").text("");
+        }
+    }
+	//信息来源的非空校验
+	function moduleJiaoYan() {
+		if($('#module').val() == null || $('#module').val().trim() == '') {
+			$('#moduleTest').text("请输入所属模块");
+		} else {
+			$('#moduleTest').text("");
+		}
+	}
+
+	function titleJiaoYan() {
+		if($('#title').val() == null || $('#title').val().trim() == '') {
+			$('#titleTest').text("请输入标题");
+		}else {
+			$('#titleTest').text("");
+		}
+	}
+
+	function templateJiaoYan() {
+		if($('#template').val() == null || $('#template').val().trim() == '') {
+			$('#templateTest').text("请输入模版正文");
+		}else {
+			$('#templateTest').text("");
+		}
+	}
+	function test(msgName ,parentCode ) {
+		$('#submitBtn').attr("type" , "button");
+		if($('#biaoji').val() == null || $('#biaoji').val() == ''){
+			msgNameJiaoYan(msgName);
+		}
+        moduleJiaoYan();
+        parentCodeJiaoYan(parentCode);
+		titleJiaoYan();
+		templateJiaoYan();
+		if($('#msgNameTest').text() == "" && $('#moduleTest').text() == "" && $('#titleTest').text() == "" && $('#templateTest').text() == "" && $('#parentCodetest').text() == ""){
+			$('#submitBtn').attr("type" , "submit");
+		} 
+	}
+</script>

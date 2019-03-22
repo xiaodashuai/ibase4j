@@ -1,0 +1,168 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li><a ui-sref="main.sys.notice.list">公告管理</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">{{title}}
+        <a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.sys.notice.list"><i class="text-md fa fa-mail-reply text-muted" title="关闭"></i></a>
+        </div>
+        <!--表单-->
+            <div class="panel-body">
+                <form class="form-horizontal"  name="notice_form">
+                    <!--公告名称-->
+                    <div class="form-notice" id="noticeTitles">
+                        <label class="col-lg-2 col-sm-3 control-label" >
+                        <span class="text-danger wrapper-sm">*</span>公告名称</label>
+                        <div class="col-sm-6">
+                        	<input type="hidden" id="biaoji" value="{{record.id}}" />
+                            <input type="text" class="form-control" name="noticeTitle" id="noticeTitle" onblur="formTest(this.value)" placeholder="请输入公告名称..." ng-model="record.noticeTitle">
+                       		<span style="color: red;" id="noticeTitleFormTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!--信息来源-->
+                    <div class="form-notice">
+                        <label class="col-lg-2 col-sm-3 control-label" >
+                        <span class="text-danger wrapper-sm">*</span>信息来源</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" onblur="infoSourcesJiaoYan()" name="infoSources" id="infoSources" placeholder="请输入信息来源..." ng-model="record.infoSources">
+                        	<span style="color: red;" id="infoSourcesTest"></span>
+                        </div>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>          
+                    <!--公告类型-->
+                    <div class="form-notice">
+                        <label class="col-lg-2 col-sm-3 control-label" >
+                        <span class="text-danger wrapper-sm">*</span>公告类型</label>
+                        <div class="col-sm-6">
+                            <div class="selects">
+                            <select id="noticeType" ng-model="record.noticeType" onblur="noticeTypeJiaoYan(this.value)" class="selects" ng-options="x.code as x.codeText for x in dicList"></select>
+                            <span style="color: red;" id="noticeTypetest"></span>
+                            </div>
+                        </div>
+                    </div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<!--所属机构-->
+					<div class="form-dept">
+						<label class="col-lg-2 col-sm-3 control-label">
+							<span class="text-danger wrapper-sm">*</span>所属机构</label>
+						<div class="col-sm-6">
+							<div class="selects">
+								<select id="deptCode" name="deptCode" class="form-control" value="" onclick="parentCodeJiaoYan(this.value)" ng-model="record.deptCode"
+									class="selects" ng-options="x.code as x.deptName for x in orgList"></select>
+								<span style="color: red;" id="parentCodetest"></span>
+							</div>
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+                    <!-- 公告内容 --> 
+                    <div class="form-notice">
+                        <label class="col-lg-2 col-sm-3 control-label" >
+                        <span class="text-danger wrapper-sm">*</span>公告内容</label>
+                        <div class="col-sm-6">
+                            <textarea class="form-control" name="content" onblur="contentJiaoYan()" id="content" style="height: 200px" ng-model="record.content">{{record.content}}</textarea>
+                        	<span style="color: red;" id="contentTest"></span>
+                        </div>
+                    </div>
+                     <div class="line line-dashed b-b line-lg pull-in"></div>
+                    <div class="form-notice">
+                        <div class="col-sm-6 col-sm-offset-3" style="text-align: center;">
+                            <button type="button" id="submitBtn" onclick="test(document.getElementById('noticeTitle').value , document.getElementById('noticeType').value , document.getElementById('deptCode').value)"  class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>
+<script type="text/javascript">
+	var count = 0;
+	//公告名称的后台重复性校验,非空校验
+	function formTest(deptName){
+		if($("#biaoji").val() == null || $("#biaoji").val().trim() == ""){
+        	jQuery.ajax({
+        		url:'/eximbank-console/notice/read/noticeTitle',
+        		type:'GET',
+        		async:false,
+        		data:{
+                    account:deptName
+                },
+        		dataType:'json',
+        		success:function(data){
+        			if(data.accounts == "true" || $("#noticeTitleFormTest").val().trim() != ''){
+        			//console.log(data);
+        				$("#noticeTitleFormTest").text("该公告名称已存在");
+        				count += 1;
+        				$('#submitBtn').attr("disabled","true");
+    				}else if($('#noticeTitle').val() == null || $('#noticeTitle').val().trim() == ''){
+    					$("#noticeTitleFormTest").text("公告名称不能为空");
+    					count += 1;
+        				$('#submitBtn').attr("disabled","true");
+        				
+    				}else{
+    					$("#noticeTitleFormTest").text("");
+    					}
+    				}
+        	});
+		}
+        }
+	//信息来源的非空校验
+	function infoSourcesJiaoYan(){
+		if( $("#infoSources").val() == null || $("#infoSources").val() == ''){
+			$("#infoSourcesTest").text("请输入信息来源");
+			count += 1;
+        	$('#submitBtn').attr("disabled","true");
+		}else{
+			$("#infoSourcesTest").text("");
+		}
+	}
+	     //所属机构的非空校验
+		 function parentCodeJiaoYan(parentCode) {
+        if (parentCode == '?' || parentCode == '' || parentCode == null) {
+			$("#parentCodetest").text("请选择所属机构");
+			count += 1;
+        } else {
+            $("#parentCodetest").text("");
+        }
+    }
+	function noticeTypeJiaoYan(noticeType){
+		if(noticeType == '?'){
+			$("#noticeTypetest").text("请选择公告类型");
+			count += 1;
+        	$('#submitBtn').attr("disabled","true");
+		}else{
+			$("#noticeTypetest").text("");
+		}
+	}
+	function contentJiaoYan(){
+		if($('#content').val() == null || $('#content').val() == ''){
+			$('#contentTest').text("请输入公告内容");
+			count += 1;
+			$('#submitBtn').attr("disabled","true");
+		}else{
+			$('#contentTest').text("");
+		}
+	}
+	function test(deptName , noticeType , parentCode){
+		count = 0;
+		formTest(deptName);
+		infoSourcesJiaoYan();
+		parentCodeJiaoYan(parentCode);
+		noticeTypeJiaoYan(noticeType);
+		contentJiaoYan();
+		if(count==0){
+			$('#submitBtn').attr("type" , "submit");
+		}
+	}
+</script>

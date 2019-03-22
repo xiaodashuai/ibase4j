@@ -1,0 +1,117 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+		<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+            <li >您当前所在位置：</li>
+            <li>
+                <a ui-sref="main">
+                    补 &nbsp; &nbsp;录
+                </a>
+            </li>
+        <li class="active" ng-bind="title">
+        	<!--<a >方案查询</a>-->
+        </li>
+    </ul>
+		<!--<li class="active" ng-bind="title"></li>-->
+</div>
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+	<div class="panel panel-default">
+
+		<form ng-submit="search()" class="ng-pristine ng-valid">
+			<div class="row" style="margin-top: 2em;">
+				<div class="col-sm-2 mt3">
+					<label class="control-label " style="float: right;" for="name">发放条件编号:</label>
+				</div>
+				<div class="col-sm-2">
+					<input class="form-control" type="text" style="width: 100%;" ng-model="param.schemeNum" maxlength="4">
+				</div>
+				<div class="col-sm-2 mt3" style="margin-left: -5%;">
+					<label class="control-label " style="float: right;" for="name">产品名称:</label>
+				</div>
+				<div class="col-sm-2">
+					<input class="form-control" type="text" style="width: 100%;" ng-model="param.businessName" maxlength="4">
+				</div>
+				<div class="col-sm-2 mt3"  style="margin-left: -5%;">
+					<label class="control-label" style="float: right;" for="name">申请人:</label>
+				</div>
+				<div class="col-sm-2">
+					<input class="form-control" type="text" style="width: 100%;" ng-model="param.applicant" maxlength="4">
+				</div>
+			</div>
+			<div class="row mt3"  style="margin-top: 1em;margin-bottom: 2em;">
+				<div class="col-sm-2 mt3">
+					<label class="control-label " style="float: right;" for="name">开始时间:</label>
+				</div>
+				<div class="col-sm-2">
+					<!--<input class="control-label" type="number" style="width: 100%;" ng-model="param.stateTime" maxlength="4">-->
+					<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" id="pgEffectivDate" class="form-control" style="width: 100%;" ng-model="param.stateTime">
+				</div>
+				<div class="col-sm-2 mt3" style="margin-left: -5%;">
+					<label class="control-label " style="float: right;" for="name">结束时间:</label>
+				</div>
+				<div class="col-sm-2">
+					<!--<input class="control-label" type="number" style="width: 100%;" ng-model="param.endTime" maxlength="4">-->
+				<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" id="pgEffectivDate" class="form-control" style="width: 100%;" ng-model="param.endTime">
+				</div>
+				<div class="col-sm-2 col-sm-offset-2" style="margin-left: 11.7%;">
+					 <button class="el-button el-button--primary" style="width: 100%;" type="submit">查&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;询</button>
+					 <!--<button class="btn btn-default" ng-click="search()" ><i class="fa fa-search"></i></button>-->
+				</div>
+			</div>	
+			<div class="row" id="scroll-2">
+				<div class="col-sm-12">
+					<table class="table table-striped b-t b-light">
+	                    <thead>
+	                    <tr>
+							<th style="width:70px;text-align: center;">序号</th>
+	                        <th style="width:100px;text-align: center;">发放条件编号</th>
+	                        <th style="width:450px;text-align: center;">产品名称</th>
+	                        <th style="width:200px;text-align: center;">申请人名称</th>
+	                        <th style="width:130px;text-align: center;">方案主币种</th>
+	                        <th style="width:130px;text-align: center;">方案金额</th>
+	                        <th style="width:130px;text-align: center;">方案状态</th>
+	                        <th style="width:150px;text-align: center;">操作</th>
+	                    </tr>
+	                    </thead>
+	                    <tbody> 
+	                    <tr ng-repeat="item in pageInfo.data" style="text-align: center;">
+	                    	<td >{{(pageInfo.current-1)*pageInfo.size+$index+1}}</td>
+	                        <td >{{item.grantCode}}</td>
+	                        <td >{{item.businessName}}</td>
+	                        <td >{{item.proposer}}</td>
+	                        <td >{{item.currency}}</td>
+	                        <td >{{item.grantAmt}}</td>
+	                        <td >{{item.grantStatus}}</td>
+	                      	<td >
+	                      		<li><a ui-sref="">查看详情</a></li>
+	                      		<li><a ui-sref="">查看附件</a></li>
+	                      		<li><a ui-sref="">查看台账</a></li>
+	                      		<li><a ui-sref="main.biz.record.schemeRevise({debtCode:item.debtCode})">方案修订</a></li>
+	                      	</td>
+	                    </tr>
+	                    </tbody>
+	                </table>
+				</div>
+            </div>
+           	<!-- 底部分页-->
+			<span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+		</form>
+	</div>
+</div>
+  <!--<form ng-submit="search()" class="ng-pristine ng-valid">
+                        <div class="input-group search-box" style="width:250px;">
+                            <input type="text" class="form-control" ng-model="param.keyword" placeholder="请输入查询的债项方案编号" style="width:200px;">
+                            <i ng-show="user.keyword" ng-click="clearSearch()" class="fa fa-times-circle text-muted search-clear"></i>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div> 
+                    </form>-->
+                

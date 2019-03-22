@@ -1,0 +1,202 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>
+			<a ui-href="main"><i class="fa fa-home"></i> 首页</a>
+		</li>
+		<li class="active" ng-bind="title">
+			<a ui-href="main">用信主体</a>
+		</li>
+	</ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+	<!-- 数据显示 -->
+	<div class="wrapper-data">
+		<div class="panel panel-default">
+			<!--尽职调查步骤-->
+		<div class="panel-heading clearfix">
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.list" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		产品类型</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.debtSummary" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		债项概要</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.useLetter" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		用信主体</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.productMix" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		产品组合</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.risk" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		风险分析</a></button>》》》》
+		   	<button class="btn btn-primary"> <a ui-sref="main.biz.response.manageInformation" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		管理信息</a></button>》》》》	
+			<button class="btn btn-primary"> <a ui-sref="" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		业务专有信息</a></button>
+		</div>
+		<div class="line line-dashed b-b line-lg pull-in"></div>
+
+			<!-- 头部 -->
+			<div class="panel-heading clearfix">
+				<div>
+					<a ui-sref="main.biz.response.queryCustomer({debtNum})" class="btn btn-info pull-right" style="margin-right:50px;">
+						<i class="icon-user-follow m-r-sm text-md"></i>查询客户</a>
+				</div>
+			</div>
+			
+			<div ng-repeat="item in custList" class="form-horizontal col-sm-12">
+				<div class="panel-heading font-bold" style="margin-left: 3em;">用信主体{{$index+1}}</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<div class="col-sm-6">
+					 <div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="name">
+                                <span class="text-danger wrapper-sm">*</span>客户号</label>
+                            <div class="col-sm-6">
+                                <input disabled type="number" class="form-control" ng-model="item.custNo">
+                            </div>
+					</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="name">
+                                <span class="text-danger wrapper-sm">*</span>组织机构代码</label>
+                            <div class="col-sm-6">
+                                <input disabled type="number" class="form-control" ng-model="item.organizationCode">
+                            </div>
+					</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				</div>
+				
+				<div class="col-sm-6">
+					<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="name">
+                                <span class="text-danger wrapper-sm">*</span>客户名称</label>
+                            <div class="col-sm-6">
+                                <input disabled type="number" class="form-control" ng-model="item.custNameCN">
+                            </div>
+					</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<div class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="name">
+                                <span class="text-danger wrapper-sm">*</span>地方政府融资平台</label>
+                            <div class="col-sm-6">
+                                <input disabled type="number" class="form-control" ng-model="item.governmentPlatform">
+                            </div>
+					</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				</div>
+				
+				<!--产品与授信额度类型-->
+				<div ng-repeat="p in cusProList">
+					<div class="col-sm-3" class="form-classifyLevel">
+						<label class="col-lg-5 col-sm-6 control-label" for="name">
+                                <span class="text-danger wrapper-sm"></span>产品名称</label>
+                            <div class="col-sm-6">
+                                <input disabled type="text" class="form-control" ng-model="p.name">
+                            </div>
+					</div>	
+					<div class="col-sm-3" class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="name">
+                                <span class="text-danger wrapper-sm"></span>产品使用额度类型</label>
+                            <div class="col-sm-6">
+                               <select class="form-control" style="width:200px;" ng-model="p.creditLinesId">
+												<option value="" selected>请选择</option>
+												<option value="0">最高综合授信额度</option>
+												<option value="1">融资类保函额度</option>
+												<option value="3">非融资类保函额度</option>
+												<option value="4">公开授信额度项下业务的免担保授信额度</option>
+												<option value="5">非公开授信额度项下业务的免担保授信额度</option>
+												<option value="6">免反担保额度（融资类保函、船舶预付款退款保函、其他非融资类保函）</option>
+												<option value="7">专项授信等其他类型授信额度</option>
+											</select>
+                            </div>
+					</div>
+					<div class="col-sm-3" class="form-classifyLevel">
+						<label class="col-lg-4 col-sm-6 control-label" for="name">
+                                <span class="text-danger wrapper-sm"></span>产品用信比例</label>
+                            <div class="col-sm-6">
+                                <input type="number"  placeholder="请输入0--100的数字" style="width:150px;margin-left: 5em;" ng-model="p.creditRatio">%
+                            </div>
+					</div>
+					<div class="col-sm-3" class="form-classifyLevel">
+						<i class="fa fa-edit m-r-xs text-sm"></i>删除</a>
+					</div>
+				</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				
+				<button ng-click="" style="margin-left: 35em;"  class="btn btn-info w-xs m-l-xl" >添加产品</button>  <!--class="icon-user-follow m-r-sm text-md">-->
+				
+			</div>
+			
+			
+			
+			<!-- 数据表格 -->
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light text-center">
+					<thead>
+						<tr>
+							<td width="*px;">客户号</td>
+							<td width="100px">客户名称</td>
+							<td width="200px">用信主体客户信息</td>
+							<td width="100px">产品名称</td>
+							<td width="200px;">产品使用额度类型</td>
+							<td width="200px;">产品用信比例</td>
+							<td width="200px;">操作</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in custList">
+
+							<td class="v-middle">{{item.custNo}}</td>
+							<td class="v-middle">{{item.custNameCN}}</td>
+							<td class="v-middle">
+								<a ui-sref="main.biz.response.selectCustomer({custNo:item.custNo,debtNum:debtNum,proIds:proIds})">详情</a>
+							</td>
+							<td class="v-middle"  colspan="3">
+								<table class="table-striped b-t b-light text-center">
+									<tr ng-repeat="p in cusProList">
+										<td class="v-middle">{{p.name}}</td>
+										<td class="v-middle">
+											<select class="form-control" style="width:200px;" ng-model="p.creditLinesId">
+												<option value="" selected>请选择</option>
+												<option value="0">最高综合授信额度</option>
+												<option value="1">融资类保函额度</option>
+												<option value="3">非融资类保函额度</option>
+												<option value="4">公开授信额度项下业务的免担保授信额度</option>
+												<option value="5">非公开授信额度项下业务的免担保授信额度</option>
+												<option value="6">免反担保额度（融资类保函、船舶预付款退款保函、其他非融资类保函）</option>
+												<option value="7">专项授信等其他类型授信额度</option>
+											</select>
+										</td>
+										<td class="v-middle"><input type="number"  placeholder="请输入0--100的数字" style="width:150px;margin-left: 5em;" ng-model="p.creditRatio">%
+										</td>
+										<!--<span class="v-middle">
+			                            <select id="parentCode" ng-model="record.parentCode" required="required" class="selects" ng-options="x.code as x.name for x in parentProTypes"></select>
+			                        </span>-->
+									</tr>
+								</table>
+							</td>
+							
+							<td class="v-middle">
+								<a ui-sref="main.biz.response.queryProduct({debtNum:debtNum})" class="btn btn-sm btn-default">
+									<i class="fa fa-edit m-r-xs text-sm"></i>选择产品</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div ng-show="cusProList!=null" class="form-classifyLevel">
+				<div class="col-sm-6 col-sm-offset-4">
+					<!--<button ng-click="reset()" class="btn btn-default w-xs">重置</button>-->
+					<button type="submit" class="btn btn-info w-xs m-l-xl" ng-click="submit()">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+ 

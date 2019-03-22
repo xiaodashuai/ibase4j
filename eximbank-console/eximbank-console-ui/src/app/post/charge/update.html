@@ -1,0 +1,128 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>
+			<a ui-sref="main">
+				<i class="fa fa-home"></i> 首页</a>
+		</li>
+		<li>
+			<a ui-sref="main.post.chargeType.list">费用类型管理</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+	<div class="panel panel-default">
+		<!-- 头部 -->
+		<div class="panel-heading font-bold">{{title}}
+			<a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.post.chargeType.list">
+				<i class="text-md fa fa-mail-reply text-muted" title="返回"></i>
+			</a>
+		</div>
+		<!--表单-->
+		<div class="panel-body">
+			<form class="form-horizontal" name="notice_form">
+				<!--公告名称-->
+				<div class="form-notice">
+					<label class="col-lg-2 col-sm-3 control-label">
+						<span class="text-danger wrapper-sm">*</span>费用名称</label>
+					<div class="col-sm-6">
+						<input type="hidden" id="biaoji" value="{{record.id}}" ng-model="record.id" />
+						<input type="text" class="form-control" name="chargeName" id="chargeName" onblur="chargeNameJiaoYan()" placeholder="请输入费用类型名称..."
+						    ng-model="record.chargeName">
+						<span style="color: red;" id="chargeNameTest"></span>
+					</div>
+				</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<!--信息来源-->
+				<div class="form-notice">
+					<label class="col-lg-2 col-sm-3 control-label">
+						<span class="text-danger wrapper-sm">*</span>费用代码</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" onblur="chargeCodeJiaoYan()" name="chargeCode" id="chargeCode" placeholder="请输入费用类型代码..."
+						    ng-model="record.chargeCode">
+						<span style="color: red;" id="chargeCodeTest"></span>
+					</div>
+				</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<!--公告类型-->
+				<div class="form-notice">
+					<label class="col-lg-2 col-sm-3 control-label">
+						<span class="text-danger wrapper-sm">*</span>产品种类</label>
+					<div class="col-sm-6">
+						<div class="selects">
+							<select id="productTypesCode" name="productTypesCode" ng-model="record.productTyepsCode" onblur="productTypesCodeJiaoYan(this.value)" class="selects"
+							    ng-options="x.code as x.names for x in childList"></select>
+							<span style="color: red;" id="productTypesCodeTest"></span>
+						</div>
+					</div>
+				</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<div class="form-notice">
+					<div class="col-sm-6 col-sm-offset-3" style="text-align: center;">
+						<button type="button" id="submitBtn" onclick="test()"
+						    class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled">保存</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	var count = 0;
+
+	function chargeNameJiaoYan() {
+		var chargeName = $("#chargeName").val();
+		if ($('#biaoji').val() == null || $('#biaoji').val() == '') {
+			if (chargeName == null || chargeName.trim() == "") {
+				$("#chargeNameTest").text("请输入费用名称");
+				count += 1;
+			} else if (chargeName.length > 20) {
+				$("#chargeNameTest").text("费用名称不可大于20位,请重新输入");
+				count += 1;
+			} else {
+				$("#chargeNameTest").text("");
+			}
+		}
+	}
+
+	function chargeCodeJiaoYan() {
+		var chargeCode = $('#chargeCode').val();
+		if ($('#biaoji').val() == null || $('#biaoji').val() == '') {
+			if(chargeCode == null || chargeCode.trim() == ''){
+				$('#chargeCodeTest').text("请输入费用代码");
+				count += 1;
+			}else if(chargeCode.length > 5){
+				$('#chargeCodeTest').text("费用代码不可大于5位,请重新输入");
+				count += 1;
+			}else{
+				$('#chargeCodeTest').text("");
+			}
+		}
+	}
+	function productTypesCodeJiaoYan(){
+		var productTypesCode = $('#productTypesCode').val();
+			if(productTypesCode == '?' ){
+				$('#productTypesCodeTest').text("请选择产品种类");
+				count += 1;
+			}else{
+				$('#productTypesCodeTest').text("");
+			}
+	}
+
+	function test(productTypesCode) {
+		count = 0;
+		chargeNameJiaoYan();
+		chargeCodeJiaoYan();
+		productTypesCodeJiaoYan();
+		if (count == 0) {
+			$('#submitBtn').attr("type", "submit");
+		}
+	}
+</script>

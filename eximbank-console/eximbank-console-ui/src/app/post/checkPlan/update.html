@@ -1,0 +1,118 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>
+			<a ui-sref="main"><i class="fa fa-home"></i> 首页</a>
+		</li>
+		<li>
+			<a ui-sref="main.post.checkPlan.list">检查计划配置</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+	<div class="panel panel-default">
+		<!-- 头部 -->
+		<div class="panel-heading font-bold">{{title}}
+			<a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.post.checkPlan.list"><i class="text-md fa fa-mail-reply text-muted" title="关闭"></i></a>
+		</div>
+		<!--表单-->
+		<div class="panel-body">
+			<form class="form-horizontal" name="user_form">
+				<!--检查计划名称-->
+				<div class="form-checkPlan">
+					<label class="col-lg-2 col-sm-3 control-label" for="name">
+                        <span class="text-danger wrapper-sm">*</span>检查计划名称</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" onblur="ckNameJiaoYan()" name="ckName" id="ckName" placeholder="请输入检查计划名称..." ng-model="record.ckName">
+						<span style="color: red;" id="ckNameTest"></span>
+					</div>
+				</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<!--检查计划间隔-->
+				<div class="form-checkPlan">
+					<label class="col-lg-2 col-sm-3 control-label" for="name">
+                        <span class="text-danger wrapper-sm">*</span>检查计划间隔</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" onblur="ckTimeJiaoYan()" name="ckTime" id="ckTime" placeholder="请输入检查计划间隔..." ng-model="record.ckTime">
+						<span style="color: red;" id="ckTimeTest"></span>
+					</div>
+				</div>
+				<div class="line line-dashed b-b line-lg pull-in"></div>
+				<!--关联风险分类等级-->
+				<div class="form-checkPlan">
+					<label class="col-lg-2 col-sm-3 control-label">
+                        <span class="text-danger wrapper-sm">*</span>风险分类等级</label>
+					<div class="col-sm-6">
+						<div class="selects">
+							<select id="classifyLevelId" ng-model="record.classfyLevelId" onblur="classifyLevelIdJiaoYan(this.value)" class="selects" ng-options="x.id as x.clName for x in classifyList"></select>
+							<span style="color: red;" id="classifyLevelIdTest"></span>
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<!--检查计划描述-->
+					<div class="form-checkPlan">
+						<label class="col-lg-2 col-sm-3 control-label" for="remark">描述</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control" name="remark" id="remark" placeholder="请输入检查计划描述..." ng-model="record.remark">
+							<span class="help-block m-b-none"></span>
+						</div>
+					</div>
+					<div class="line line-dashed b-b line-lg pull-in"></div>
+					<!--btn-->
+					<div class="form-checkPlan">
+						<div class="col-sm-6 col-sm-offset-3">
+							<button type="button" id="submitBtn" onclick="test(document.getElementById('classifyLevelId').value)" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled">保存</button>
+						</div>
+					</div>
+			</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	//信息来源的非空校验
+	function ckNameJiaoYan() {
+		if($('#ckName').val() == null || $('#ckName').val().trim() == '') {
+			$('#ckNameTest').text("请输入检查计划名称");
+		} else {
+			$('#ckNameTest').text("");
+		}
+	}
+
+	function ckTimeJiaoYan() {
+		if($('#ckTime').val() == null || $('#ckTime').val().trim() == '') {
+			$('#ckTimeTest').text("请输入检查计划间隔");
+		} else if(/^[0-9]*$/.test($('#ckTime').val()) == false) {
+			$('#ckTimeTest').text("检查计划间隔只能为天数(纯数字)");
+		}else if($('#ckTime').val().length > 5) {
+			$('#ckTimeTest').text("检查计划间隔最大为99999");
+		}else {
+			$('#ckTimeTest').text("");
+		}
+	}
+
+	function classifyLevelIdJiaoYan(classifyLevelId) {
+		if(classifyLevelId == '?') {
+			$('#classifyLevelIdTest').text("请选择风险分类等级");
+		} else {
+			$('#classifyLevelIdTest').text("");
+		}
+	}
+
+	function test(classifyLevelId) {
+		$('#submitBtn').attr("type" , "button");
+		ckNameJiaoYan();
+		ckTimeJiaoYan();
+		classifyLevelIdJiaoYan(classifyLevelId);
+		if($('#ckNameTest').text() == "" && $('#ckTimeTest').text() == "" && $('#classifyLevelIdTest').text() == ""){
+			$('#submitBtn').attr("type" , "submit");
+		}
+	}
+</script>

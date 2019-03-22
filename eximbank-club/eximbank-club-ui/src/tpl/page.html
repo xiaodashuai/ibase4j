@@ -1,0 +1,24 @@
+<!-- 底部分页 -->
+<footer ng-show="pageInfo.total" class="panel-footer">
+	<div class="row text-muted inline m-t-sm m-b-sm">
+		<p style="float: right;height:20px;line-height:20px;padding-right:20px;">
+			<span>
+   			总记录数：<span class="rjAllNums" ng-bind="page.nums"></span> 本页记录数：
+			<span class="rjNowNums" ng-bind="page.nowNums"></span>
+			</span>
+			<button class="rjFirtPage" ng-click="jumpPage(1,dataList)">首页</button>
+			<button class="rjPrePage" ng-click="jumpPage(page.now-1,dataList)">上一页</button>
+			<span>
+   			<span class="rjNowPage" ng-bind="page.now"></span>/
+			<span class="rjAllPage" ng-bind="page.pageCount"></span>
+			</span>
+			<button class="rjNextPage" ng-click="jumpPage(page.now+1,dataList)">下一页</button>
+			<button class="rjLastPage" ng-click="jumpPage(page.pageCount,dataList)">尾页</button> 到第
+			<input type="text" ng-model="page.jumpPage" name="rjPageName" style="height:10px;line-height:20px;width:50px;border-color:#cccccc;border: 1px solid;"/> 页
+			<button class="rjJumpBtn" ng-click="jumpPage(page.jumpPage,dataList)">确定</button>
+		</p>
+	</div>
+</footer>
+
+<!-- 无数据提醒 -->
+<div ng-hide="pageInfo.total" class="m-md alert alert-warning text-center text-lg">暂无数据</div>

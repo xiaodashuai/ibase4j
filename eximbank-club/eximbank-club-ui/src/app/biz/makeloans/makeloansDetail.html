@@ -1,0 +1,576 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li >您当前所在位置：</li>
+        <li>
+            <a ui-sref="main.biz.makeloans.list">发放操作</a>
+        </li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+<!--分行评审处室处长发联系单-->
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">方案放款
+
+        </div>
+        <!--表单-->
+        <div class="panel-body">
+            <form class="form-middle" name="middle_form">
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <!-- 债项方案编号 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">债项方案编号:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="debtCode" ng-model="dataMap.debtInfoForMakeLoan.debtCode"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 发放审核编号 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">发放条件编号:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="grantCode" ng-model="dataMap.debtInfoForMakeLoan.grantCode |limitTo:16"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 项目名称 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">项目名称:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="projectName" ng-model="dataMap.debtInfoForMakeLoan.projectName"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 产品名称 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">产品名称:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="productName" ng-model="dataMap.debtInfoForMakeLoan.productName"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 申请人 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">申请人:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="proposer" ng-model="dataMap.debtInfoForMakeLoan.proposer"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 申请人客户号 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">申请人客户号:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="proposerNum" ng-model="dataMap.debtInfoForMakeLoan.proposerNum"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 所属机构 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">所属机构:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="deptName" ng-model="dataMap.debtInfoForMakeLoan.deptName"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 信贷员/客户经理 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">信贷员/客户经理:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="bankTellName" ng-model="dataMap.debtInfoForMakeLoan.bankTellName"  readonly />
+                            </div>
+                        </div>
+                </div>
+
+				<!-- 用信主体 -->
+				<div ng-repeat="productCustomer in dataMap.productCustomerInfo">
+					<div class="row">
+						<div class="col-sm-12" style="margin-top:20px;">
+							<div class="col-sm-4">
+								<label class="control-label" style="float: right;margin-top: 10px;">用信主体:</label>
+							</div>
+							<div class="col-sm-5">
+								<input type="text" class="form-control"  id="custNameCn" ng-model="productCustomer.custNameCn"  readonly />
+							</div>
+						</div>
+					</div>
+					<!-- 该产品使用的额度类型 -->
+					<div class="row">
+						<div class="col-sm-12" style="margin-top:20px;">
+							<div class="col-sm-4">
+								<label class="control-label" style="float: right;margin-top: 10px;">该产品使用的额度类型:</label>
+							</div>
+							<div class="col-sm-5">
+								<input type="text" class="form-control"  id="creditLineName" ng-model="productCustomer.creditLineName"  readonly />
+							</div>
+						</div>
+					</div>
+					<!-- 产品用信比例 -->
+					<div class="row">
+						<div class="col-sm-12" style="margin-top:20px;">
+							<div class="col-sm-4">
+								<label class="control-label" style="float: right;margin-top: 10px;">产品用信比例(%):</label>
+							</div>
+							<div class="col-sm-5">
+								<input type="text" class="form-control"  id="creditRatio" ng-model="productCustomer.creditRatio"  readonly />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- 担保类型（总） -->
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">担保类型(总):</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control"  id="AllGuaranName" ng-model="dataMap.debtInfoForMakeLoan.AllGuaranName"  readonly />
+						</div>
+					</div>
+				</div>
+				<!-- 担保 -->
+				<div ng-repeat="guaranteeResult in dataMap.bizGuaranteeResultList">
+					<!-- 担保类型 -->
+					<div class="row">
+						<div class="col-sm-12" style="margin-top:20px;">
+							<div class="col-sm-4">
+								<label class="control-label" style="float: right;margin-top: 10px;">担保类型:</label>
+							</div>
+							<div class="col-sm-5">
+								<input type="text" class="form-control"  id="guaranType" ng-model="guaranteeResult.guaranName"  readonly />
+							</div>
+						</div>
+					</div>
+					<!-- 担保份额划分 -->
+					<div class="row" >
+						<div class="col-sm-12" style="margin-top:20px;">
+							<div class="col-sm-4">
+								<label class="control-label" style="float: right;margin-top: 10px;">担保份额划分:</label>
+							</div>
+							<div class="col-sm-5">
+								<input type="text" class="form-control"  id="guaranPortType" ng-model="guaranteeResult.guaranPortName"  readonly />
+							</div>
+						</div>
+					</div>
+					<!-- 可明确划分使用本担保方式的份额 -->
+					<div class="row" ng-show="guaranteeResult.guaranPortType==1">
+						<div class="col-sm-12" style="margin-top:20px;">
+							<div class="col-sm-4">
+								<label class="control-label" style="float: right;margin-top: 10px;">可明确划分使用本担保方式的份额(%):</label>
+							</div>
+							<div class="col-sm-5">
+								<input type="text" class="form-control"  id="clearRatio" ng-model="guaranteeResult.clearRatio"  readonly />
+							</div>
+						</div>
+					</div>
+					<!-- 可明确划分使用本担保方式的金额 -->
+					<div class="row" ng-show="guaranteeResult.guaranPortType==1">
+						<div class="col-sm-12" style="margin-top:20px;">
+							<div class="col-sm-4">
+								<label class="control-label" style="float: right;margin-top: 10px;">可明确划分使用本担保方式的金额:</label>
+							</div>
+							<div class="col-sm-5">
+								<input type="text" class="form-control"  id="clearRatioAmt" ng-model="guaranteeResult.clearRatioAmt"  readonly />
+							</div>
+						</div>
+					</div>
+					<!-- 不可明确划分使用本担保方式的金额 -->
+					<div class="row"  ng-show="guaranteeResult.guaranPortType!=1">
+						<div class="col-sm-12" style="margin-top:20px;">
+							<div class="col-sm-4">
+								<label class="control-label" style="float: right;margin-top: 10px;">不可明确划分使用本担保方式的金额:</label>
+							</div>
+							<div class="col-sm-5">
+								<input type="text" class="form-control"  id="notClearAmt" ng-model="guaranteeResult.notClearAmt"  readonly />
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- 业务期限 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">业务期限(天):</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="scopeBusinPeriod" ng-model="dataMap.debtInfoForMakeLoan.scopeBusinPeriod"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 宽限期 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">宽限期(天):</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="gracePeriod" ng-model="dataMap.debtInfoForMakeLoan.gracePeriod"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 容忍期 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">容忍期(天):</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="toierancePeriod" ng-model="dataMap.bizRentalFactoring.tolerancePeriod"  readonly />
+                            </div>
+                        </div>
+                </div>
+				
+				<!-- 业务办理日期(当前工作日期) -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">业务办理日期(当前工作日期):</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="currentTime" ng-model="record.currentTime"  readonly />
+                            </div>
+                        </div>
+                </div>
+
+				<!-- 费用 -->
+				<div ng-repeat="fep in dataMap.fepList">
+					<!-- 费用类型 -->
+					<div class="row">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">费用类型:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="rateType" ng-model="fep.chargeName"  readonly />
+								</div>
+							</div>
+					</div>
+					<!-- 费率值 -->
+					<div class="row">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">费率值(%):</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="rateValue" ng-model="fep.rateValue"  readonly />
+								</div>
+							</div>
+					</div>
+				</div>
+				
+				<!-- 币种 -->
+				<div ng-repeat="fec in dataMap.fecList">
+					<!-- 币种 -->
+					<div class="row">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">币种:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="currency" ng-model="fec.currencyString"  readonly />
+								</div>
+							</div>
+					</div>
+					<!-- 发放金额 -->
+					<div class="row">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">发放金额:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="paymentAmt" ng-model="fec.paymentAmt"  readonly />
+								</div>
+							</div>
+					</div>
+					<!-- 折算牌价 -->
+					<div class="row">
+						<div class="col-sm-12" style="margin-top:20px;">
+							<div class="col-sm-4">
+								<label class="control-label" style="float: right;margin-top: 10px;">折算牌价:</label>
+							</div>
+							<div class="col-sm-5">
+								<input type="text" class="form-control"  id="convertedPrice" ng-model="fec.convertedPrice"  readonly />
+							</div>
+						</div>
+					</div>
+					<!-- 利率类型 -->
+					<div class="row">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">利率类型:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="type" ng-model="fec.rateTypeString"  readonly />
+								</div>
+							</div>
+					</div>
+					<!-- 利率 -->
+					<div class="row" ng-show="fec.rateType==1">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">利率:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="rateVal" ng-model="fec.rateVal"  readonly />
+								</div>
+							</div>
+					</div>				
+					<!-- 利率基准 -->
+					<div class="row" ng-show="fec.rateType!=1">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">利率基准:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="irBk" ng-model="fec.irBkString"  readonly />
+								</div>
+							</div>
+					</div>
+					<!-- 利率期限
+					<div class="row" ng-show="fec.rateType!=1">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">利率期限:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="term" ng-model="fec.term"  readonly />
+								</div>
+							</div>
+					</div>-->
+					<!--利率浮动方向-->
+					<div class="row" ng-show="fec.rateType!=1">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">利率浮动方向:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="floatDirectioin" ng-model="fec.floatDirectionString"  readonly />
+								</div>
+							</div>
+					</div>
+					<!--利率浮动方式-->
+					<div class="row" ng-show="fec.rateType!=1">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">利率浮动方式:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="floatMode" ng-model="fec.floatModeString"  readonly />
+								</div>
+							</div>
+					</div>
+					<!-- 浮动率 -->
+					<div class="row" ng-show="fec.rateType!=1">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">浮动率:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="floatingRate" ng-model="fec.floatingRate"  readonly />
+								</div>
+							</div>
+					</div>
+					<!-- 利率变动周期 -->
+					<div class="row" ng-show="fec.rateType!=1">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">利率变动周期:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="varCycle" ng-model="fec.varCycle"  readonly />
+								</div>
+							</div>
+					</div>
+					<!--利率变动周期单位-->
+					<div class="row" ng-show="fec.rateType!=1">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">利率变动周期单位:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="chgCycleUnit" ng-model="fec.chgCycleUnitString"  readonly />
+								</div>
+							</div>
+					</div>
+					<!--逾期利率计算方式-->
+					<div class="row">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">逾期利率计算方式:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="overdueRateCalcMode" ng-model="fec.overdueRateCalcModeString"  readonly />
+								</div>
+							</div>
+					</div>
+					<!-- 逾期加点(或百分比) -->
+					<div class="row">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">逾期加点(或百分比):</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="overdueIncrRatio" ng-model="fec.overdueIncrRatio"  readonly />
+								</div>
+							</div>
+					</div>
+				</div>
+				<!-- 业务专有信息 -->
+				<!-- 承租人(债务人)名称 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">承租人(债务人)名称:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="lesseName" ng-model="dataMap.bizRentalFactoring.lesseName"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 承租人(债务人)客户编号 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">承租人(债务人)客户编号:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="lesseCode" ng-model="dataMap.bizRentalFactoring.lesseCode"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 承租人(债务人)客户评级 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">承租人(债务人)客户评级:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="lesseRate" ng-model="dataMap.bizRentalFactoring.lesseRate"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">承租人是否地方政府融资平台:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control"  id="financePlatform" ng-model="dataMap.bizRentalFactoring.financePlatform"  readonly />
+						</div>
+					</div>
+				</div>
+				<!-- 行业投向 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">行业投向:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="industryInvestment" ng-model="dataMap.bizRentalFactoring.industryInvestmentsString"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 背景国别 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">背景国别:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="backgroundNationality" ng-model="dataMap.bizRentalFactoring.backgroundNationalityString"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 租金保理合同编号 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">租金保理合同编号:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="bizRentalFactoringCode" ng-model="dataMap.bizRentalFactoring.bizRentalFactoringCode"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 借据编号 -->
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">借据编号:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control"  id="iouCode" ng-model="dataMap.bizRentalFactoring.iouCode"  readonly />
+						</div>
+					</div>
+				</div>
+				<!-- 还款方式 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">还款方式:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="repaymentTypeString" ng-model="dataMap.bizRentalFactoring.repaymentTypeString"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 租赁物 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">租赁物:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="leasehold" ng-model="dataMap.bizRentalFactoring.leasehold"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<br/><br/>
+                <!--btn-->
+                <div class="form-liaison">
+                    <div class="col-sm-6 col-sm-offset-5">
+						<button type="submit" class="btn btn-info w-xs m-l-xl" ng-click="back()" style="margin-left: 50px">返回</button>
+                        <button type="submit" class="btn btn-info w-xs m-l-xl" ng-click="submit()" ng-disabled="isDisabled" style="margin-left: 50px">发放</button>
+                    </div>
+                </div>
+
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

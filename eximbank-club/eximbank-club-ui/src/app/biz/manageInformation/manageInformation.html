@@ -1,0 +1,230 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>
+			<a ui-sref="main"><i class="fa fa-home"></i> 首页</a>
+		</li>
+		<li>
+			<a ui-sref="">管理信息</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+	<div class="panel panel-default">
+		<!--尽职调查步骤-->
+		<div class="panel-heading clearfix">
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.list" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		产品类型</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.debtSummary" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		债项概要</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.useLetter" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		用信主体</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.productMix" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		产品组合</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.risk" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		风险分析</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="main.biz.response.manageInformation" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		管理信息</a></button>》》》》
+			<button class="btn btn-primary"> <a ui-sref="" class="btn2 btn-info pull-left" style="background-color: #19a9d5" font-size:25px>
+		   		业务专有信息</a></button>
+		</div>
+		<div class="line line-dashed b-b line-lg pull-in"></div>
+
+		<!-- 头部 -->
+		<div class="panel-heading font-bold">管理信息
+		</div>
+
+
+		<div class="col-lg-8 col-sm-6">
+			<label class=" col-sm-6 control-label" for="name">债项ID:</label>
+			<div class="col-sm-6">
+				<input type="number" ng-model="record.solutionAmount">
+			</div>
+			</div>
+
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">是否已有信贷贷款编号</label>
+				<div class="col-sm-6">
+					<select class="form-control" style="width:140px;" ng-model="record.srt">
+						<option value="" selected>请选择</option>
+						<option value="0">无信贷合同</option>
+						<option value="1">有信贷合同</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">信贷贷款合同编号</label>
+				<div class="col-sm-6">
+					<input type="number" ng-model="record.solutionAmount">
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">项目名称</label>
+				<div class="col-sm-6">
+					<input type="text" ng-model="record.solutionAmount">
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">贷款性质</label>
+				<div class="col-sm-6">
+					<select class="form-control" style="width:140px;" ng-model="record.srt">
+						<option value="" selected>请选择</option>
+						<option value="0">政策性贷款</option>
+						<option value="1">自营性贷款</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">支农投向</label>
+				<div class="col-sm-6">
+					<input type="text" ng-model="record.solutionAmount">
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">是否“两自一高”</label>
+				<div class="col-sm-6">
+					<select class="form-control" style="width:140px;" ng-model="record.srt">
+						<option value="" selected>请选择</option>
+						<option value="0">是</option>
+						<option value="1">否</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">是否国家特定贷款</label>
+				<div class="col-sm-6">
+					<select class="form-control" style="width:140px;" ng-model="record.srt">
+						<option value="" selected>请选择</option>
+						<option value="0">是</option>
+						<option value="1">否</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">是否中小企业贷款</label>
+				<div class="col-sm-6">
+					<select class="form-control" style="width:140px;" ng-model="record.srt">
+						<option value="" selected>请选择</option>
+						<option value="0">是</option>
+						<option value="1">否</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">是否船舶融资</label>
+				<div class="col-sm-6">
+					<select class="form-control" style="width:140px;" ng-model="record.srt">
+						<option value="" selected>请选择</option>
+						<option value="0">是</option>
+						<option value="1">否</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">产业结构调整类型</label>
+				<div class="col-sm-6">
+					<select class="form-control" style="width:140px;" ng-model="record.srt">
+						<option value="" selected>请选择</option>
+						<option value="0">鼓励</option>
+						<option value="1">限制</option>
+						<option value="2">淘汰</option>
+						<option value="3">无</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">工业转型升级标识</label>
+				<div class="col-sm-6">
+					<select class="form-control" style="width:140px;" ng-model="record.srt">
+						<option value="" selected>请选择</option>
+						<option value="0">是</option>
+						<option value="1">否</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">战略新兴产业类型</label>
+				<div class="col-sm-6">
+					<select class="form-control" style="width:140px;" ng-model="record.srt">
+						<option value="" selected>请选择</option>
+						<option value="0">节能环保</option>
+						<option value="1">新一代信息技术</option>
+						<option value="2">生物</option>
+						<option value="3">高端装备制造</option>
+						<option value="4">新能源</option>
+						<option value="5">新材料</option>
+						<option value="6">新能源汽车</option>
+						<option value="7">无</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">文化产品标识</label>
+				<div class="col-sm-6">
+					<select class="form-control" style="width:140px;" ng-model="record.srt">
+						<option value="" selected>请选择</option>
+						<option value="0">是</option>
+						<option value="1">否</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">是否精准扶贫贷款</label>
+				<div class="col-sm-6">
+					<select class="form-control" style="width:140px;" ng-model="record.srt">
+						<option value="" selected>请选择</option>
+						<option value="0">是</option>
+						<option value="1">否</option>
+					</select>
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">精准扶贫贷款分类</label>
+				<div class="col-sm-6">
+					<input type="text" ng-model="record.solutionAmount">
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-classifyLevel">
+				<label class="col-lg-4 col-sm-6 control-label" for="remark">政策性属性描述</label>
+				<div class="col-sm-6">
+					<input type="text" ng-model="record.solutionAmount">
+				</div>
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			
+
+			<div class="form-classifyLevel">
+				<div class="col-sm-6 col-sm-offset-2">
+					<button ng-click="reset()" class="btn btn-default w-xs">重置</button>
+					<button type="submit" class="btn btn-info w-xs m-l-xl" ng-click="submit()">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

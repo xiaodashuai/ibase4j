@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>alert</title>
+</head>
+
+<body>
+
+
+<div class="modal-body" ng-click="open()">
+    <ul style="width:600px;height:400px">
+        <div class="row">
+            <div class="col-sm-12" style="margin-top:20px;">
+                <div class="col-sm-4">
+                    <label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>其他（如有，请在此说明）：</label>
+                </div>
+                <div class="col-sm-5">
+                    <textarea type="text" rows="6" class="form-control" style="resize: none" id="zjaff06" ng-model="record.zjaff06" readonly ></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="line line-dashed b-b line-lg pull-in"></div>
+
+        <div class="row">
+            <div class="col-sm-12" style="margin-top:20px;" >
+                <div class="col-sm-4">
+                    <label class="control-label" style="text-align: left;float: right;line-height: 35px;"><span class="text-danger wrapper-sm">*</span>债项发放结论：</label>
+                </div>
+                <div class="col-sm-5">
+                    <input class="el-radio " type="radio" value="1" name="liaison06" ng-model="record.liaison06" checked="checked" disabled> 是
+                    <input class="el-radio " type="radio" value="2" name="liaison06" ng-model="record.liaison06" disabled>否
+                </div>
+            </div>
+        </div>
+        <div class="line line-dashed b-b line-lg pull-in"></div>
+
+        <div class="row">
+            <div class="col-sm-12" style="margin-top:20px;">
+                <div class="col-sm-4">
+                    <label class="control-label" style="float: right;margin-top: 10px;"><span class="text-danger wrapper-sm">*</span>债项发放意见：</label>
+                </div>
+                <div class="col-sm-5">
+                    <textarea type="text" rows="6" class="form-control" style="resize: none" id="liaison0" ng-model="record.liaison0" readonly ></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="line line-dashed b-b line-lg pull-in"></div>
+
+    </ul>
+
+    <div class="modal-footer">
+        <button class="el-button el-button--danger is-plain " ng-click="cancel()">退出</button>
+    </div>
+
+
+</div>
+</body>
+</html>

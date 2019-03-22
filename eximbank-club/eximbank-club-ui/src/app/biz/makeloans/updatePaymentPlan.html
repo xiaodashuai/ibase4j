@@ -1,0 +1,263 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li >您当前所在位置：</li>
+        <li>
+            <a ui-sref="main.biz.makeloans.list">还款计划</a>
+        </li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+<!--分行评审处室处长发联系单-->
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">还款计划
+
+        </div>
+        <!--表单-->
+        <div class="panel-body">
+            <form class="form-middle" name="middle_form">
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <!-- 债项方案编号 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">债项方案编号:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="debtCode" ng-model="dataMap.debtInfoForRepayment.debtCode"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 项目名称 -->
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">项目名称:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control"  id="projectName" ng-model="dataMap.debtInfoForRepayment.projectName"  readonly />
+						</div>
+					</div>
+				</div>
+				<!-- 申请人 -->
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">申请人:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control"  id="proposer" ng-model="dataMap.debtInfoForRepayment.proposer"  readonly />
+						</div>
+					</div>
+				</div>
+				<!-- 申请人客户号 -->
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">申请人客户号:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control"  id="proposerNum" ng-model="dataMap.debtInfoForRepayment.proposerNum"  readonly />
+						</div>
+					</div>
+				</div>
+				<!-- 所属机构 -->
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">所属机构:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control"  id="deptName" ng-model="dataMap.debtInfoForRepayment.deptName"  readonly />
+						</div>
+					</div>
+				</div>
+				<!-- 信贷员/客户经理 -->
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">信贷员/客户经理:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control"  id="bankTellName" ng-model="dataMap.debtInfoForRepayment.bankTellName"  readonly />
+						</div>
+					</div>
+				</div>
+				<!-- 产品名称 -->
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="col-sm-4">
+							<label class="control-label" style="float: right;margin-top: 10px;">产品名称:</label>
+						</div>
+						<div class="col-sm-5">
+							<input type="text" class="form-control"  id="productName" ng-model="dataMap.debtInfoForRepayment.productName"  readonly />
+						</div>
+					</div>
+				</div>
+				<!-- 发放审核编号 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">发放审核编号:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="grantCode" ng-model="dataMap.debtInfoForRepayment.grantCode"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 业务期限 -->
+				<div class="row">
+                        <div class="col-sm-12" style="margin-top:20px;">
+                            <div class="col-sm-4">
+                                <label class="control-label" style="float: right;margin-top: 10px;">业务期限(天):</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"  id="scopeBusinPeriod" ng-model="dataMap.debtInfoForRepayment.scopeBusinPeriod"  readonly />
+                            </div>
+                        </div>
+                </div>
+				<!-- 币种 -->
+				<div ng-repeat="fec in dataMap.bizFECList">
+					<!-- 币种 -->
+					<div class="row">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">币种:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="currencys" ng-model="fec.currency"  readonly />
+								</div>
+							</div>
+					</div>
+					<!-- 发放金额 -->
+					<div class="row">
+							<div class="col-sm-12" style="margin-top:20px;">
+								<div class="col-sm-4">
+									<label class="control-label" style="float: right;margin-top: 10px;">发放金额:</label>
+								</div>
+								<div class="col-sm-5">
+									<input type="text" class="form-control"  id="paymentAmt" ng-model="fec.paymentAmt"  readonly />
+								</div>
+							</div>
+					</div>
+				</div>
+
+				<br/>还款计划表<hr/>
+
+                <!-- 首次还本日 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">首次还本日:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control"  id="firstRepayDay" value="{{dataMap.debtInfoForRepaymentPlan.firstRepayDay|date:'yyyy-MM-dd'}}" readonly />
+                        </div>
+                    </div>
+                </div>
+                <!-- 末次还款日 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">末次还款日:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control"  id="lastRepaymentDay" value="{{dataMap.debtInfoForRepaymentPlan.lastRepaymentDay|date:'yyyy-MM-dd'}}"  readonly />
+                        </div>
+                    </div>
+                </div>
+                <!-- 还本方式 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">还本方式:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control"  id="repaymentCostModeString" ng-model="dataMap.debtInfoForRepaymentPlan.repaymentCostModeString"  readonly />
+                        </div>
+                    </div>
+                </div>
+                <!-- 首次还息日 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">首次还息日:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control"  id="firstDay" value="{{dataMap.debtInfoForRepaymentPlan.firstDay|date:'yyyy-MM-dd'}}" readonly />
+                        </div>
+                    </div>
+                </div>
+                <!-- 利息计收方式 -->
+                <div class="row">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">利息计收方式:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control"  id="caclWayString" ng-model="dataMap.debtInfoForRepaymentPlan.caclWayString" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <br/>还息计划表<hr/>
+
+                <!-- 计划还息日 -->
+                <div class="row" ng-repeat="repaymentLoan in dataMap.debtInfoForRepaymentLoan">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-4">
+                            <label class="control-label" style="float: right;margin-top: 10px;">计划还息日:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control"  id="repaymentLoan" value="{{repaymentLoan.interestDate|date:'yyyy-MM-dd'}}" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <br/>还本计划表<hr/>
+                <div class="row" ng-repeat="repaymentPricinal in dataMap.debtInfoForRepaymentPricinal">
+                    <div class="col-sm-12" style="margin-top:20px;">
+                        <div class="col-sm-2">
+                            <label class="control-label" style="float: right;margin-top: 10px;">还款日期:</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control"  id="payDate" value="{{repaymentPricinal.payDate|date:'yyyy-MM-dd'}}"   readonly />
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label" style="float: right;margin-top: 10px;">还款币种:</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control"  id="currency" ng-model="repaymentPricinal.currency"  readonly />
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="control-label" style="float: right;margin-top: 10px;">还款金额:</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control"  id="principalAmt" ng-model="repaymentPricinal.principalAmt"  readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <br/><br/>
+                <!--btn-->
+                <div class="form-liaison">
+                    <div class="col-sm-6 col-sm-offset-5">
+                        <button type="submit" class="btn btn-info w-xs m-l-xl" ng-click="back()" style="margin-left: 50px">返回</button>
+                        <button type="submit" class="btn btn-info w-xs m-l-xl" ng-click="submit()" ng-disabled="isDisabled" style="margin-left: 50px">发送还款计划</button>
+                    </div>
+                </div>
+
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

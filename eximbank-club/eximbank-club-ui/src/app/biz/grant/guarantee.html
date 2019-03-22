@@ -1,0 +1,234 @@
+<div class="modal fade" id="myCustUserLetter" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document" style="width: 1100px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myModalLabel1">{{title}}</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -20px;"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body" style="height:75%;overflow-y:auto;">
+				<form class="form-horizontal col-sm-12">
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">担保合同编号:</label>
+							</div>
+							<div class="col-sm-6">
+								<input id="guarNo" maxlength="40" readonly="readonly" type="text" class="form-control required"/>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">担保合同手工编号:</label>
+							</div>
+							<div class="col-sm-6">
+								<input id="guarManualNo" maxlength="40" type="text" class="form-control required" placeholder="请录入担保合同手工编号"/>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">担保人客户名称:</label>
+							</div>
+							<div class="col-sm-6">
+								<input id="guarCustName" maxlength="150" readonly="readonly" type="text" class="form-control required" placeholder="请录入担保人客户名称"/>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">担保人客户编号:</label>
+							</div>
+							<div class="col-sm-6">
+								<input id="guarCustNo" maxlength="50" readonly="readonly" type="text" class="form-control required"/>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">担保合同金额:</label>
+							</div>
+							<div class="col-sm-6">
+								<input id="guarAmount" onkeyup="checkMonenyLen(this,18)" type="text" class="form-control required amt" placeholder="请录入担保合同金额"/>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">币种:</label>
+							</div>
+							<div class="col-sm-6">
+								<select class="form-control required" id="gCurrency" name="gCurrency">
+									<option value="">请选择</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px; ">开始日期:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" class="form-control date required format-validate" placeholder="请输入开始日期" onChange="" ng-blur="isHgDate()" id="startDate">
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px; ">到期日期:</label>
+							</div>
+							<div class="col-sm-6">
+								<input type="text" id="dueDate" name="dueDate" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" class="form-control date required" placeholder="请输入到期日期" onChange="" ng-blur="isHgDate()">
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">期限:</label>
+							</div>
+							<div class="col-sm-6"> 
+								<input id="term" name="term" maxlength="5" type="text" class="form-control required isNumber" placeholder="请录入期限" style="width:350px;float: left;"/>
+								<select name="termUnit" id="termUnit" class="form-control required" style="width:100px;float: left;display: inline-block;height:35px;margin-left:5px;">
+									<option value="">请选择</option>
+									<option value="1">年</option>
+									<option value="2">月</option>
+									<option value="3">日</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label" style="float: right;line-height: 35px;">保证担保类型:</label>
+							</div>
+							<div class="col-sm-6">
+								<select name="warrandice" id="warrandice" class="form-control">
+									<option value="">请选择</option>
+									<option value="1">单人保证</option>
+									<option value="2">多人分保</option>
+									<option value="3">多人联保</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">担保合同类型:</label>
+							</div>
+							<div class="col-sm-6">
+								<select name="guarContType" id="guarContType" class="form-control required" disabled="disabled">
+									<option value="">请选择</option>
+									<option value="UE01">保证合同（对公）</option>
+									<option value="UE07">保证合同（个人）</option>
+									<option value="UE05">最高额保证合同</option>
+									<option value="UE12">最高额保证合同（个人）</option>
+									<option value="UE13">最高额保证合同（对公）</option>
+									<option value="UE06">最高额抵押合同</option>
+									<option value="UE02">抵押合同</option>
+									<option value="UE15">最高额权利质押合同</option>
+									<option value="UE14">最高额动产质押合同</option>
+									<option value="UE03">动产质押合同</option>
+									<option value="UE04">权利质押合同</option>
+									<option value="UE20">其他担保及保障措施</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">担保合同状态:</label>
+							</div>
+							<div class="col-sm-6">
+								<select name="guarContState" id="guarContState" class="form-control required">
+									<option value="">请选择</option>
+									<option value="1">未提交</option>
+									<option value="2">申请</option>
+									<option value="3">中止</option>
+									<option value="4">否决</option>
+									<option value="5">生效</option>
+									<option value="6">终止</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">是否最高额担保合同:</label>
+							</div>
+							<div class="col-sm-6">
+								<select name="guarMaxAmt" id="guarMaxAmt" class="form-control required" disabled="disabled">
+									<option value="">请选择</option>
+									<option value="0">否</option>
+									<option value="1">是</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">经办人:</label>
+
+							</div>
+							<div class="col-sm-6">
+								<input id="agent" type="text" class="form-control" readonly/>
+							</div>
+						</div>
+					</div>
+					<div class="row mb2">
+						<div class="col-sm-12">
+							<div class="col-sm-3">
+								<label class="control-label need" style="float: right;line-height: 35px;">经办机构:</label>
+
+							</div>
+							<div class="col-sm-6">
+								<input id="agencies" type="text" class="form-control" readonly/>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12" style="margin-top:20px;">
+							<div class="uploder-container">
+								<div  class="cxuploder">
+									<div class="queueList">
+										<div class="placeholder">
+											<div class="filePicker"></div>
+											
+										</div>
+									</div>
+									<div class="statusBar" style="display:none;">
+										<div class="btns">
+											<div  class="jxfilePicker"></div>
+										</div>
+										<div class="info"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<div class="form-classifyLevel"> 
+					<div class="col-sm-5 col-sm-offset-2">
+						<button type="button" class="el-button el-button--success" ng-click="getInterfaceData('myCustUserLetter','closeGuaranteeBtn','synchrRefreshGuarantee')"><span class="glyphicon glyphicon-check"></span>保存</button>
+						<button type="button" class="el-button el-button--danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true" id="closeGuaranteeBtn"></span>关闭</button>
+						<span id="warnmsg" style="color: red;font-size: 16px;"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

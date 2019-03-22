@@ -1,0 +1,52 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<!-- 
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+       
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>-->
+
+<!-- 内容区域 -->
+
+	<div class="wrapper-md content" style="margin-top: 0px;">
+
+
+		<div id="container">
+		<div class="bg-white bread-crumb">
+			<div id="toolbar" style="margin-top: 50px;">
+				<ul id="myTab" class="nav nav-tabs">
+					<li class="active" >
+						<a data-toggle="tab" data-target="#catalogue" >流程目录</a>
+					</li>
+					<li>
+						<a data-toggle="tab" data-target="#design" >流程设计</a>
+					</li>
+					<li>
+						<a data-toggle="tab" data-target="#monitor" >流程监控</a>
+					</li>
+				</ul>
+			</div>
+			<div style="overflow:hidden">			
+				<div id="left" style="position: relative;left: 0px;top: 0px;width: 218px;height: 610px;z-index: 200036;overflow: hidden;cursor: default-webkit-margin-collapse collapse collapse;outline-style: none; float:left"  class="tab-content">
+						<div id="catalogue" class="tab-pane active"style="scrolling=no">
+							 <iframe id="matrixcontrol" name="matrixcontrol" frameborder="0" scrolling="no"  src="http://localhost:8080/mworkbench/template/ProcessTmplTree.jsp?treeType=01&matrixUserName=YWRtaW4=&matrixUserPassword=MTExMTEx" style="position: relative;left: 0px;top: 0px;width: 218px;height: 410px;z-index: 200036;overflow: hidden;cursor: default;border: 0px solid;-webkit-margin-collapse: collapse collapse;outline-style: none;"></iframe>
+						</div>
+						<div id="design" class="tab-pane">
+							<iframe id="matrixcontrol" name="matrixcontrol"" frameborder="0" scrolling="no" width="100%" height="auto" src="http://localhost:8080/mworkbench/template/ProcessTmplTree.jsp?treeType=03&matrixUserName=YWRtaW4=&matrixUserPassword=MTExMTEx" style="position: relative;left: 0px;top: 0px;width: 218px;height: 410px;z-index: 200036;overflow: hidden;cursor: default;border: 0px solid;-webkit-margin-collapse: collapse collapse;outline-style: none;" ></iframe>
+
+						</div>
+						<div id="monitor" class="tab-pane">
+							<iframe id="matrixcontrol" name="matrixcontrol" frameborder="0" scrolling="no" width="100%" height="auto" src="http://localhost:8080/mworkbench/instance/TmplTreeOfInstanceInfo.jsp?matrixUserName=YWRtaW4=&matrixUserPassword=MTExMTEx" style="position: relative;left: 0px;top: 0px;width: 218px;height: 410px;z-index: 200036;overflow: hidden;cursor: default;border: 0px solid;-webkit-margin-collapse: collapse collapse;outline-style: none;"></iframe> 
+						</div>		
+				</div>
+				<div style="height: 550px;position: relative; overflow: hidden;">
+					<iframe id="matrixcontent" name="matrixcontent" frameborder="0" scrolling="no" src="" style="width: 1050px;height: 580px"></iframe> 
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

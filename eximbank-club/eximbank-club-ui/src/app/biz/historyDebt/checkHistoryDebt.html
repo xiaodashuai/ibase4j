@@ -1,0 +1,236 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+		<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+            <li >您当前所在位置：</li>
+            <li>
+                <a ui-sref="main">
+                  	 历史数据迁移
+                </a>
+            </li>
+        <li class="active" ng-bind="title">
+        	<!--<a >方案查询</a>-->
+        </li>
+    </ul>
+		<!--<li class="active" ng-bind="title"></li>-->
+</div>
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+	<div class="panel panel-default">
+
+		<form ng-submit="search()" class="ng-pristine ng-valid">
+			<div class="row" style="margin-top: 2em;">
+				<div class="col-sm-2 mt3" style="width: 13%;">
+					<label class="control-label " style="float: right;" for="name">债项方案编号:</label>
+				</div>
+				<div class="col-sm-2" style="width: 13%;">
+					<input class="form-control" type="text" style="width: 100%;" ng-model="param.schemeNum" maxlength="13">
+				</div>
+				<div class="col-sm-2 mt3" style="margin-left: -5%;width: 13%;">
+					<label class="control-label " style="float: right;" for="name">项目名称:</label>
+				</div>
+				<div class="col-sm-2" style="width: 13%;">
+					<input class="form-control" type="text" style="width: 100%;" ng-model="param.projectNam" maxlength="50">
+				</div>
+				<div class="col-sm-2 mt3" style="margin-left: -5%;width: 13%;">
+					<label class="control-label" style="float: right;" for="name">方案状态:</label>
+				</div>
+				<div class="col-sm-2" style="width: 13%;">
+					<select ng-model="param.historyState" class="form-control" >
+						<option value="">请选择</option>
+						<option value="2">已提交</option>
+						<option value="1">未提交</option>
+					</select>
+				</div>
+				<div class="col-sm-2 mt3" style="margin-left: -5%;width: 13%;">
+					<label class="control-label" style="float: right;" for="name">申请人:</label>
+				</div>
+				<div class="col-sm-2" style="width: 13%;">
+					<input class="form-control" type="text" style="width: 100%;" ng-model="param.applicant" maxlength="50">
+				</div>
+			</div>
+			<div class="row mt3" style="margin-top: 1em;margin-bottom: 2em;">
+				<div class="col-sm-2 mt3" style="width: 13%;">
+					<label class="control-label " style="float: right;" for="name">开始时间:</label>
+				</div>
+				<div class="col-sm-2" style="width: 13%;">
+					<!--<input class="control-label" type="number" style="width: 100%;" ng-model="param.stateTime" maxlength="4">-->
+					<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" onchange="" autocomplete="off" class="form-control" style="width: 100%;" ng-model="param.stateTime">
+				</div>
+				<div class="col-sm-2 mt3" style="margin-left: -5%;width: 13%;">
+					<label class="control-label " style="float: right;" for="name">结束时间:</label>
+				</div>
+				<div class="col-sm-2" style="width: 13%;">
+					<!--<input class="control-label" type="number" style="width: 100%;" ng-model="param.endTime" maxlength="4">-->
+					<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" onchange="" autocomplete="off" class="form-control" style="width: 100%;" ng-model="param.endTime">
+				</div>
+				<div class="col-sm-2 mt3" style="margin-left: -5%;width: 13%;">
+					<label class="control-label" style="float: right;" for="name">所属机构:</label>
+				</div>
+				<div class="col-sm-2" style="width: 13%;">
+					<select class="form-control" id="deptCode"></select>
+				</div>
+				<div class="col-sm-2" style="width: 13%;margin-left: 8%;">
+					<button class="el-button el-button--primary" style="width: 100%;" type="submit">查&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;询</button>
+				</div>
+			</div>	
+			<div class="row" id="scroll-2">
+				<div class="col-sm-12">
+					<table class="table table-striped b-t b-light">
+	                    <thead>
+	                    <tr>
+							<th style="width:70px;text-align: center;">序号</th>
+	                        <th style="width:*px;text-align: center;">债项方案编号</th>
+	                        <th style="width:*px;text-align: center;">项目名称</th>
+	                        <th style="width:*px;text-align: center;">申请人名称</th>
+	                        <th style="width:*px;text-align: center;">所属机构</th>
+	                        <th style="width:*px;text-align: center;">方案主币种</th>
+	                        <th style="width:*px;text-align: center;">方案金额</th>
+	                        <th style="width:*px;text-align: center;">方案状态</th>
+	                        <!--<th style="width:*px;text-align: center;">所属机构</th>-->
+	                        <th style="width:*px;text-align: center;">操作人员</th>
+	                        <th style="width:*px;text-align: center;">提交时间</th>
+	                        <th style="width:*px;text-align: center;">操作</th>
+	                    </tr>
+	                    </thead>
+	                    <tbody> 
+	                    <tr ng-repeat="item in pageInfo.data" style="text-align: center;">
+	                    	<td style="text-align: center;">{{(pageInfo.current-1)*pageInfo.size+$index+1}}</td>
+	                        <td class="v-middle">{{item.debtCode | limitTo:13}}</td>
+	                        <td class="v-middle">{{item.projectNam}}</td>
+	                        <td class="v-middle">{{item.proposer}}</td>
+	                        <td class="v-middle">{{item.deptName}}</td>
+	                        <td class="v-middle">{{item.mpc}}</td>
+	                        <td style="text-align:right;">{{item.solutionAmount | number:2}}</td>
+	                      	<td ng-if="item.historyState == '1'">未提交</td>
+	                      	<td ng-if="item.historyState == '2'">已提交</td>
+	                      	<!--<td class="v-middle">{{item.deptName}}</td>-->
+	                      	<td class="v-middle">{{item.userName}}</td>
+	                      	<td class="v-middle">{{item.updateTime | date:'yyyy-MM-dd'}}</td>
+	                      	<td ng-if="item.historyState == '1'">
+	                      		<li><a ng-click="queryTem(item)">编辑</a></li></td>
+	                      	<td ng-if="item.historyState == '2'">
+	                      		<li><a ng-click="openPop('A','',item.debtCode,'')">查看详情</a></li>
+	                      		<li><a  ng-click="openE(item.debtCode,$index)" data-toggle="modal" data-target="#myCustUserLetter">查看附件</a></li>
+	                      		<!--<li><a ui-sref="main.sys.historyDebt.edit({debtCode:item.debtCode})">编辑</a></li></td>-->
+	                    </tr>
+	                    </tbody>
+	                </table>
+				</div>
+            </div>
+            <div class="modal fade" id="myCustUserLetter" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog" role="document" style="width: 1100px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="myModalLabel">附件查看</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -20px;"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body" style="height:75%;overflow-y:auto;">
+							<div class="col-sm-12 mt2">
+								<div class="col-sm-3 mt3">
+									<label class="control-label" style="float: right;">报告名称:</label>
+								</div>
+								<div class="col-sm-6">
+									<input type="text" class="form-control" ng-model="realFileName" readonly/>
+								</div>
+							</div>
+							<div class="col-sm-12 mt2 mb2">
+								<div class="col-sm-3 mt3">
+									<label class="control-label " style="float: right;">文件上传:</label>
+								</div>
+								<div>
+									<ul>
+										<li>
+											<div class="uploder-container">
+												<div class="cxuploder">
+													<div class="queueList">
+														<div class="placeholder">
+															
+														</div>
+													</div>
+													<div class="statusBar" style="display:none;">
+														<div class="btns">
+															<div class="jxfilePicker"></div>
+														</div>
+														<div class="info"></div>
+													</div>
+												</div>
+											</div>
+
+										</li>
+									</ul>
+									<div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+										<div id="innerdiv" style="position:absolute;">
+											<img id="bigimg" style="border:5px solid #fff;" src="" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 mt2">
+									<div class="col-sm-3 mt3">
+										<label class="control-label" style="float: right;">附件名称:</label>
+									</div>
+									<div class="col-sm-6">
+										<input type="text" class="form-control" ng-model="nclosureName" readonly />
+									</div>
+								</div>
+								<div class="col-sm-12 mt2 mb2">
+									<div class="col-sm-3 mt3">
+										<label class="control-label " style="float: right;">附件上传:</label>
+									</div>
+									<div>
+										<ul>
+											<li>
+												<div class="uploder-container">
+													<div class="cxuploder">
+														<div class="queueList">
+															<div class="placeholder">
+															</div>
+														</div>
+														<div class="statusBar" style="display:none;">
+															<div class="btns">
+																<div class="jxfilePicker"></div>
+															</div>
+															<div class="info"></div>
+														</div>
+													</div>
+												</div>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="form-classifyLevel">
+								<div class="col-sm-5 col-sm-offset-1">
+									<button type="button" class="el-button el-button--danger" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>收起</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+           	<!-- 底部分页-->
+			<span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+		</form>
+	</div>
+</div>
+  <!--<form ng-submit="search()" class="ng-pristine ng-valid">
+                        <div class="input-group search-box" style="width:250px;">
+                            <input type="text" class="form-control" ng-model="param.keyword" placeholder="请输入查询的债项方案编号" style="width:200px;">
+                            <i ng-show="user.keyword" ng-click="clearSearch()" class="fa fa-times-circle text-muted search-clear"></i>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div> 
+                    </form>-->
+                

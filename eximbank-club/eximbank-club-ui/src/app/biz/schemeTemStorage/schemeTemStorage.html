@@ -1,0 +1,154 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+<style type="text/css">
+	th {
+		text-align: center;
+		width: *px;
+	}
+</style>
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>您当前所在位置：</li>
+		<li>
+			<a ui-sref="main">
+				债项方案
+			</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+	<!-- 数据显示 -->
+
+	<div class="wrapper-data">
+		<div class="panel panel-default">
+			<!-- 头部 -->
+			<div class="panel-heading clearfix">
+
+				<div class="w-lg">
+					<form ng-submit="search()" class="ng-pristine ng-valid">
+						<div class="row" style="margin-top: 2em;">
+							<div class="col-sm-2 mt3">
+								<label class="control-label " style="float: right;" for="name">债项方案编号:</label>
+							</div>
+							<div class="col-sm-2">
+								<input class="form-control" type="text" style="width: 100%;" ng-model="param.schemeNum" maxlength="13">
+							</div>
+							<div class="col-sm-2 mt3" style="margin-left: -5%;">
+								<label class="control-label " style="float: right;" for="name">项目名称:</label>
+							</div>
+							<div class="col-sm-2">
+								<input class="form-control" type="text" style="width: 100%;" ng-model="param.projectNam" maxlength="50">
+							</div>
+							<div class="col-sm-2 mt3" style="margin-left: -5%;">
+								<label class="control-label" style="float: right;" for="name">申请人名称:</label>
+							</div>
+							<div class="col-sm-2">
+								<input class="form-control" type="text" style="width: 100%;" ng-model="param.applicant" maxlength="50">
+							</div>
+						</div>
+						<div class="row mt3" style="margin-top: 1em;margin-bottom: 2em;">
+							<div class="col-sm-2 mt3">
+								<label class="control-label " style="float: right;" for="name">开始时间:</label>
+							</div>
+							<div class="col-sm-2">
+								<!--<input class="control-label" type="number" style="width: 100%;" ng-model="param.stateTime" maxlength="4">-->
+								<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" onchange="" autocomplete="off" class="form-control" style="width: 100%;" ng-model="param.stateTime">
+							</div>
+							<div class="col-sm-2 mt3" style="margin-left: -5%;">
+								<label class="control-label " style="float: right;" for="name">结束时间:</label>
+							</div>
+							<div class="col-sm-2">
+								<!--<input class="control-label" type="number" style="width: 100%;" ng-model="param.endTime" maxlength="4">-->
+								<input onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" onchange="" autocomplete="off" class="form-control" style="width: 100%;" ng-model="param.endTime">
+							</div>
+							<div class="col-sm-2" style="margin-left: -5%;">
+									<label class="control-label " style="float: right;">所属机构:</label>
+								</div>
+								<div class="col-sm-2" style="width:*px;">
+									<select class="form-control" id="deptCode"></select>
+								</div>
+							<div class="col-sm-2 col-sm-offset-2" style="margin-left: 73.5%;margin-top: 1em;">
+								<button class="el-button el-button--primary" style="width: 100%;" type="submit">查&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;询</button>
+								<!--<button class="btn btn-default" ng-click="search()" ><i class="fa fa-search"></i></button>-->
+							</div>
+						</div>
+
+					</form>
+				</div>
+				
+				<!--<div class="w-lg">
+				<a class="btn btn-info pull-right" ng-click="deleteItem()" style="margin-left:10px;">
+					<i class="glyphicon glyphicon-trash m-r-sm text-md"></i> 删除
+				</a>
+				<a class="btn btn-info pull-right" ng-click="edit()">
+					<i class="glyphicon glyphicon-edit m-r-sm text-md"></i> 编辑
+				</a>
+				</div>-->
+
+			</div>
+
+			<!-- 数据表格 -->
+			<div class="row" id="scroll-2" >
+				<div class="col-sm-12">
+				<table class="table table-striped b-t b-light" style="">
+					<thead>
+						<tr>
+							<th>序号</th>
+							<!--<th style="">选择</th>-->
+							<th>事项类型</th>
+							<th>债项方案编号</th>
+							<th>项目名称</th>
+							<th>申请人名称</th>
+							<th>方案主币种</th>
+							<th>方案金额</th>
+							<th>所属机构</th>
+							<th>操作人员</th>
+							<th>暂存时间</th>
+							<th style="width: 75px;">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in pageInfo.data" style="text-align: center;">
+							<td style="text-align: center;">{{$index+1}}</td>
+							<!--<td class="v-middle"><input type="checkbox" ng-model="item.checked" ng-click="selectOne(item.checked,item.id_)"></td>-->
+							<td ng-if="item.remark=='1'" class="v-middle">方案补录</td>
+							<td ng-if="item.remark=='2'" class="v-middle">补录修订</td>
+							<td ng-if="item.remark=='3'" class="v-middle">重新提交</td>
+							<td class="v-middle">{{item.bizcode |limitTo:13}}</td>
+							<td class="v-middle">{{item.obj.debtMain.projectName}}</td>
+							<td class="v-middle">{{item.obj.debtMain.proposer}}</td>
+							<td class="v-middle">{{item.obj.debtMain.mpc}}</td>
+							<td class="v-middle">{{item.obj.debtMain.solutionAmount | number:2}}</td>
+							<td class="v-middle">{{item.deptName}}</td>
+							<td class="v-middle">{{item.userName}}</td>
+							<td class="v-middle">{{item.updateTime | date:'yyyy-MM-dd' }}</td>
+							<td >
+	                      		<li><a ng-click="edit(item)">编辑</a></li>
+								<li><a ng-click="deleteItem(item)">删除</a></li>
+							</td>
+						</tr>
+						
+					</tbody>
+				</table>
+			</div>
+				</div>
+			<!-- /.table-responsive -->
+			<!-- 底部分页-->
+			<span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+			
+		</div>
+		<!-- /.panel -->
+
+	</div>
+	<!-- /.wrapper-data -->
+
+</div>
+<!-- /.wrapper-md -->

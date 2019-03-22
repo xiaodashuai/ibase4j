@@ -1,0 +1,1230 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li>您当前所在位置：</li>
+		<li>
+			<a ui-href="main">
+				<span ng-switch="record.taskid">
+	        	<span ng-switch-when="M">历史数据迁移</span>
+	        	<span ng-switch-default>发放条件</span>
+			</a>
+		</li>
+		<li>
+			<a ng-if="record.taskid=='M'" ui-sref="main.biz.grant.queryHistory">发放数据迁移暂存列表</a>
+			<a ng-if="record.taskid!='M'" ui-sref="main.biz.grant.queryTemp">发放审核暂存查询</a>
+		</li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg"><i class="fa fa-spin fa-spinner"></i> 数据加载中...</div>
+
+<form id="grantForm">
+	<div ng-hide="loading" class="tab-wrapper" style="margin-left: 0px;" ng-init="tab=1" ng-model="tab">
+		<ul class="tab-menu canvasNum">
+			<li class="{{tab==1?'active':''}}" id="zhengcexingshuxing" ng-click="changeTab(1)" num="1">
+				管理信息
+			</li>
+			<img src="lib/images/icon-r.png" alt="">
+			<li class="{{tab==2?'active':''}}" id="fafangshenhe" ng-click="changeTab(2)" num="2">
+				发放条件
+			</li>
+			<img src="lib/images/icon-r.png" alt="">
+			<li class="{{tab==3?'active':''}}" id="zhuanyouxinxi" ng-click="changeTab(3)" num="3">
+				专有信息
+			</li>
+			<img src="lib/images/icon-r.png" alt="">
+			<li class="{{tab==4?'active':''}}" id="huankuanjihua" ng-click="changeTab(4)" num="4">
+				还款计划
+			</li>
+		</ul>
+		<div class="tab-content canvas">
+			<!-- 1 -->
+			<div ng-show="tab==1" id="dv1">
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">贸金业务政策性属性:</label>
+						</div>
+						<div class="col-sm-6" ng-switch="record.policy">
+							<div ng-switch-when="1">
+								<select class="form-control required" ng-model="record.traneFinanceBusiness" onchange="chgTraneFinance(this)">
+									<option value="">请选择</option>
+									<option value="1">政策性贷款项下贸金业务</option>
+									<option value="2">与政策性贷款支持方向相同的贸金业务</option>
+								</select>
+							</div>
+							<div ng-switch-default>
+								<select class="form-control required" ng-model="record.traneFinanceBusiness" onchange="chgTraneFinance(this)">
+									<option value="">请选择</option>
+									<option value="3">非政策性业务</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div ng-show="record.traneFinanceBusiness=='1'" class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">政策性贷款业务状态:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control {{record.traneFinanceBusiness=='1'?'required':''}}" ng-model="record.policyLendingStatus" id="policyLendingStatus">
+								<option value="">请选择</option>
+								<option value="1">已放款</option>
+								<option value="2">已批准未放款</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="record.policy=='1'">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="text-align: left;float: right;line-height: 35px;">政策性属性分类:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="radio" value="1" name="traneFinanceType" class="{{record.traneFinanceBusiness=='1'||record.traneFinanceBusiness=='2'?'required':''}}" ng-model="record.policyAttributeClassify">一带一路<br/>
+							<input type="radio" value="2" name="traneFinanceType" class="{{record.traneFinanceBusiness=='1'||record.traneFinanceBusiness=='2'?'required':''}}" ng-model="record.policyAttributeClassify">国际产能和装备制造合作<br/>
+							<input type="radio" value="3" name="traneFinanceType" class="{{record.traneFinanceBusiness=='1'||record.traneFinanceBusiness=='2'?'required':''}}" ng-model="record.policyAttributeClassify">重大装备出口和高新技术出口<br/>
+							<input type="radio" value="4" name="traneFinanceType" class="{{record.traneFinanceBusiness=='1'||record.traneFinanceBusiness=='2'?'required':''}}" ng-model="record.policyAttributeClassify">对外承包工程和境外投资<br/>
+							<input type="radio" value="5" name="traneFinanceType" class="{{record.traneFinanceBusiness=='1'||record.traneFinanceBusiness=='2'?'required':''}}" ng-model="record.policyAttributeClassify">能源、资源类<br/>
+							<input type="radio" value="6" name="traneFinanceType" class="{{record.traneFinanceBusiness=='1'||record.traneFinanceBusiness=='2'?'required':''}}" ng-model="record.policyAttributeClassify">中国制造2025
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="record.policy=='1'">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">政策性属性描述:</label>
+						</div>
+						<div class="col-sm-6">
+							<textarea id="policyDescription" class="form-control {{record.policy=='1'?'required':''}}" maxlength="500" ng-model="record.policyDescription" readonly="readonly"></textarea>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">是否有信贷贷款编号:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control required" ng-model="record.loanNumberAvailable" disabled="disabled">
+								<option value="1" ng-selected="record.repaymentType='1'">无信贷合同</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="record.loanNumberAvailable=='2'">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">信贷贷款合同编号:</label>
+
+						</div>
+						<div class="col-sm-6">
+							<input id="creditLoanNum" maxlength="50" type="text" class="form-control {{record.loanNumberAvailable=='2'?'required':''}}" placeholder="请输入信贷贷款合同编号" ng-model="record.creditLoanNum" />
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label {{record.creditLoanNum!=null&&record.creditLoanNum!=''?'need':''}}" style="float: right;line-height: 35px;">信贷项目名称:</label>
+						</div>
+						<div class="col-sm-6">
+							<input id="projectName" type="text" maxlength="500" class="form-control {{record.creditLoanNum!=null&&record.creditLoanNum!=''?'required':''}}" ng-model="record.projectName" />
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label  {{record.creditLoanNum!=null&&record.creditLoanNum!=''?'need':''}}" style="float: right;line-height: 35px;">贷款性质:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control {{record.creditLoanNum!=null&&record.creditLoanNum!=''?'required':''}}" ng-model="record.naturnLoan">
+								<option value="">请选择</option>
+								<option value="1">政策性贷款</option>
+								<option value="2">自营性贷款</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">行业投向:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="hidden" class="required" ng-model="record.industryInvestment" id="industryInvestment" />
+							<div id="industryInvestmentUL" class="mulit_context_menu"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">背景国别:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control required" id="backgroundNationality" name="backgroundNationality">
+								<option value="">请选择</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">支农投向:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="hidden" class="required" ng-model="record.compare" id="compare" />
+							<div id="compareUL" class="mulit_context_menu"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">是否“两自一高”:</label>
+						</div>
+						<div class="col-sm-6">
+							<input class="el-radio required" type="radio" value="1" name="twoHeadTaller" ng-model="record.twoHeadTaller" ng-init="record.twoHeadTaller='1'" ng-checked="true" checked="checked"> 是
+							<input class="el-radio required" type="radio" value="2" name="twoHeadTaller" ng-model="record.twoHeadTaller">否
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">是否国家特定贷款:</label>
+						</div>
+						<div class="col-sm-6">
+							<input class="el-radio required" type="radio" value="1" name="contrySpecificLoans" ng-model="record.contrySpecificLoans" ng-init="record.contrySpecificLoans='1'" ng-checked="true" checked="checked"> 是
+							<input class="el-radio required" type="radio" value="2" name="contrySpecificLoans" ng-model="record.contrySpecificLoans">否
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">是否中小企业贷款:</label>
+						</div>
+						<div class="col-sm-6">
+							<input class="el-radio required" type="radio" value="1" name="mediumEnterpriseLoans" ng-model="record.mediumEnterpriseLoans" ng-init="record.mediumEnterpriseLoans='1'" ng-checked="true" checked="checked"> 是
+							<input class="el-radio required" type="radio" value="2" name="mediumEnterpriseLoans" ng-model="record.mediumEnterpriseLoans">否
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">是否船舶融资:</label>
+						</div>
+						<div class="col-sm-6">
+							<input class="el-radio required" type="radio" value="1" name="shipFinance" ng-model="record.shipFinance" ng-init="record.shipFinance='1'" ng-checked="true" checked="checked"> 是
+							<input class="el-radio required" type="radio" value="2" name="shipFinance" ng-model="record.shipFinance">否
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">产业结构调整类型:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control required" ng-model="record.tyoesIndustrial">
+								<option value="">请选择</option>
+								<option value="0">鼓励</option>
+								<option value="1">限制</option>
+								<option value="2">淘汰</option>
+								<option value="3">无</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">工业转型升级标识:</label>
+						</div>
+						<div class="col-sm-6">
+							<input class="el-radio required" type="radio" value="1" name="industrialTransformation" ng-model="record.industrialTransformation" ng-init="record.industrialTransformation='1'" ng-checked="true" checked="checked"> 是
+							<input class="el-radio required" type="radio" value="2" name="industrialTransformation" ng-model="record.industrialTransformation">否
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">中国制造2025及战略新兴产业分类:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="hidden" class="required" ng-model="record.emergingIndustryClassify" id="emergingIndustryClassify" />
+							<div id="emergingIndustryClassifyUL" class="mulit_context_menu"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">文化产品标识:</label>
+						</div>
+						<div class="col-sm-6">
+							<input class="el-radio required" type="radio" value="1" name="curturalProduct" ng-model="record.curturalProduct" ng-init="record.curturalProduct='1'" ng-checked="true" checked="checked"> 是
+							<input class="el-radio required" type="radio" value="2" name="curturalProduct" ng-model="record.curturalProduct">否
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">是否精准扶贫贷款:</label>
+						</div>
+						<div class="col-sm-6">
+							<input class="el-radio required" ng-change="chgAlleviationLoan()" type="radio" value="1" name="alleviationLoan" ng-model="record.alleviationLoan" ng-init="record.alleviationLoan='1'" ng-checked="true" checked="checked"> 是
+							<input class="el-radio required" ng-change="chgAlleviationLoan()" type="radio" value="2" name="alleviationLoan" ng-model="record.alleviationLoan">否
+						</div>
+					</div>
+				</div>
+
+				<div ng-show="record.alleviationLoan=='1'" class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label {{record.alleviationLoan=='1'?'need':''}}" style="float: right;line-height: 35px;">产业精准扶贫贷款带动人数/项目精准扶贫贷款服务人数:</label>
+						</div>
+						<div class="col-sm-6">
+							<input id="loanServicePeopleNum" maxlength="18" type="text" class="form-control isNumber {{record.alleviationLoan=='1'?'required':''}}" ng-model="record.loanServicePeopleNum" />
+						</div>
+					</div>
+				</div>
+
+				<div ng-show="record.alleviationLoan=='1'" class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label {{record.alleviationLoan=='1'?'need':''}}" style="float: right;line-height: 35px;">精准扶贫贷款资金来源:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control {{record.alleviationLoan=='1'?'required':''}}" ng-model="record.loanFunResource" id="loanFunResource">
+								<option value="">请选择</option>
+								<option value="ZJ01">扶贫再贷款</option>
+								<option value="ZJ02">易地扶贫搬迁专项金融债</option>
+								<option value="ZJ03">自有资金及其他</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div ng-show="record.alleviationLoan=='1'" class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label {{record.alleviationLoan=='1'?'need':''}}" style="float: right;line-height: 35px;">精准扶贫主体性质:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control  {{record.alleviationLoan=='1'?'required':''}}" ng-model="record.povertyProperty" id="povertyProperty">
+								<option value="">请选择</option>
+								<option value="ZT01">家庭农场及农业专业大户</option>
+								<option value="ZT02">农民专业合作社</option>
+								<option value="ZT03">农业产业龙头企业</option>
+								<option value="ZT05">其他企业及非企业组织</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div ng-show="record.alleviationLoan=='1'" class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label {{record.alleviationLoan=='1'?'need':''}}" style="float: right;line-height: 35px;">精准扶贫项目所在地区:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="hidden" class="{{record.alleviationLoan=='1'?'required':''}}" ng-model="record.povertyAddress" id="povertyAddress" />
+							<div id="povertyAddressUL" class="mulit_context_menu"></div>
+						</div>
+					</div>
+				</div>
+
+				<div ng-show="record.alleviationLoan=='1'" class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label {{record.alleviationLoan=='1'?'need':''}}" style="float: right;line-height: 35px;">精准扶贫项目类别:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="hidden" class="{{record.alleviationLoan=='1'?'required':''}}" ng-model="record.povertySort" id="povertySort" />
+							<div id="povertySortUL" class="mulit_context_menu"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">商务合同编码:</label>
+						</div>
+						<div class="col-sm-6">
+							<input id="businessContractCode" maxlength="50" type="text" class="form-control required" placeholder="请输入商务合同编码" ng-model="record.businessContractCode" />
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px; ">商务合同签订日期:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="text" ng-blur="checkBusinessContractDate()" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" class="form-control date required format-validate" placeholder="请输入商务合同签订日期"  onChange="" ng-model="record.businessContractDate" id="businessContractDate">
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">商务合同金额（折美元）:</label>
+						</div>
+						<div class="col-sm-6">
+							<input id="businessContractAmount" type="text" maxlength="18" onkeyup="if(this.value.length>18)this.value=this.value.slice(0,18)" class="form-control required amt" placeholder="请输入商务合同金额" ng-model="record.businessContractAmount" />
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">产品类型:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="hidden" class="required" ng-model="record.businessType" id="businessType" />
+							<div id="businessTypeUL" class="mulit_context_menu"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">创新业务类型:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="hidden" class="required" ng-model="record.innovativeBusinessType" id="innovativeBusinessType" />
+							<div id="innovativeBusinessTypeUL" class="mulit_context_menu"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">是否境外投向(授信部):</label>
+						</div>
+						<div class="col-sm-6">
+							<input class="el-radio required" type="radio" value="10" name="inOverseasTo" ng-model="record.inOverseasTo" ng-init="record.inOverseasTo='1'" ng-checked="true" checked="checked"> 境内
+							<input class="el-radio required" type="radio" value="20" name="inOverseasTo" ng-model="record.inOverseasTo">境外
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">是否421:</label>
+						</div>
+						<div class="col-sm-6">
+							<input class="el-radio required" type="radio" value="1" name="is421" ng-model="record.is421" ng-init="record.is421='1'" ng-checked="true" checked="checked"> 是
+							<input class="el-radio required" type="radio" value="2" name="is421" ng-model="record.is421">否
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">贷款领域:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="hidden" class="required" ng-model="record.loanDomain" id="loanDomain" />
+							<div id="loanDomainUL" class="mulit_context_menu" onblur="selectedImportExportGoodsService()"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">进出口货物及服务:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="hidden" class="required" ng-model="record.importExportGoodsService" id="importExportGoodsService" />
+							<div id="importExportGoodsServiceUL" class="mulit_context_menu"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">对外投资贷款分类:</label>
+						</div>
+						<div class="col-sm-6">
+							<input type="hidden" class="required" ng-model="record.investmentLoanCkassifcation" id="investmentLoanCkassifcation" />
+							<div id="investmentLoanCkassifcationUL" class="mulit_context_menu"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">是否银团:</label>
+						</div>
+						<div class="col-sm-6">
+							<input class="el-radio required" type="radio" value="1" name="isSyndicated" ng-change="chgIsSyndicated()" ng-model="record.isSyndicated"> 是
+							<input class="el-radio required" type="radio" value="2" name="isSyndicated" ng-change="chgIsSyndicated()" ng-model="record.isSyndicated" ng-init="record.isSyndicated='2'" ng-checked="true" checked="checked">否
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="record.isSyndicated=='1'">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">是否银团代理行:</label>
+						</div>
+						<div class="col-sm-6">
+							<span ng-switch="record.isSyndicated">
+				        	<span ng-switch-when="1">
+				        		<input class="el-radio required" type="radio" value="1" name="isSyndicatedAgency" ng-model="record.isSyndicatedAgency" ng-init="record.isSyndicatedAgency='1'" ng-checked="true" checked="checked"> 是
+								<input class="el-radio required" type="radio" value="2" name="isSyndicatedAgency" ng-model="record.isSyndicatedAgency">否
+				        	</span>
+				        	<span ng-switch-default>
+				        		<input class="el-radio" type="radio" value="1" name="isSyndicatedAgency" ng-model="record.isSyndicatedAgency">是
+								<input class="el-radio" type="radio" value="2" name="isSyndicatedAgency" ng-model="record.isSyndicatedAgency">否
+				        	</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="row" ng-show="record.isSyndicated=='1'">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">我行银团地位:</label>
+						</div>
+						<div class="col-sm-6">
+							<select class="form-control" id="syndicatedStatus">
+								<option value="">请选择</option>
+								<option value="1">牵头行</option>
+								<option value="2">参与行</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="" style="margin:40px auto;width: 400px">
+					<!-- <button class="el-button el-button--primary is-plain">返回列表</button> -->
+					<button class="el-button el-button&#45;&#45;primary is-plain " ng-click="tempSave('dv1')" ng-disabled="isDisabled">暂存</button>
+					<button class="el-button el-button--primary is-plain" onclick="nextCheck('dv1','fafangshenhe');">下一步</button>
+				</div>
+			</div>
+			<!-- 2 -->
+			<div ng-show="tab==2" id="dv2">
+				<!--用户名-->
+				<div class="form-group" style="margin-left: 5%">
+					<table class="table-editer-form" style="width: 74%">
+						<tr>
+							<td class="left_td">
+								方案查看:
+							</td>
+							<td class="right_td col-sm-6">
+								<button class="btn-cyan el-button el-button--primary is-plain" ng-click="openPopDebt()">点击查看</button>
+								<input type="hidden" id="properInfo" name="properInfo" ng-model="record.properInfo" value="{{record.properInfo}}"/>
+								<input type="hidden" id="debtCode" name="debtCode" ng-model="record.debtCode" value="{{record.debtCode}}"/>
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								债项发放条件编号:
+							</td>
+							<td class="right_td col-sm-4">
+								<input type="text" class="form-control required" id="grantCode" ng-model="record.grantCode | limitTo:16" readonly="readonly" />
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								发放日期:
+							</td>
+							<td class="right_td col-sm-2" style="display: inline-flex;width: 450px;" collapse="2">
+								<input type="text" style=" width: 110px;" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" class="form-control date required format-validate" placeholder="请选择日期" id="sendDate" ng-blur="checkSendDate()" ng-model="record.sendDate" />
+								-
+								<input type="text" style=" width: 110px;" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" class="form-control date required format-validate" placeholder="请选择日期" id="sendEndDate" ng-blur="checkSendDate()" ng-model="record.sendEndDate" />
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								业务品种:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" class="required form-control" name="businessName" id="businessName" ng-model="record.businessName" readonly="readonly" />
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								业务期限（天）:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" onkeyup="if(value.length>5)value=value.slice(0,5)" ng-blur="checkScopeBnsPeriod()" class="form-control required format-validate isNumber" name="scopeBusinPeriod" id="scopeBusinPeriod" placeholder="输入天数" value="{{record.scopeBusinPeriod}}" ng-model="record.scopeBusinPeriod">
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								宽限期（天）:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" value="0" readonly="readonly" onkeyup="if(value.length>5)value=value.slice(0,5)" class="form-control required isNumber" name="gracePeriod" id="gracePeriod" placeholder="输入天数" ng-model="record.gracePeriod">
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								方案综合报价描述:
+							</td>
+							<td class="right_td col-sm-6">
+								<textarea class="form-control required" style="width:99%;" id="descriptionProgramQuoqate" ng-model="record.descriptionProgramQuoqate" name="descriptionProgramQuoqate" readonly="readonly"></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								方案利率规则描述:
+							</td>
+							<td class="right_td col-sm-6">
+								<textarea class="form-control required" style="width:99%;" id="descriptionRateRules" ng-model="record.descriptionRateRules" name="descriptionRateRules" readonly="readonly"></textarea>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="form-group" style="margin-left: 5%;">
+					<table class="table-editer-form" style="width: 74%">
+						<tr>
+							<td class="left_td need">
+								有无费用:
+							</td>
+							<td class="right_td col-sm-6">
+								<input class="el-radio required" type="radio" value="1" name="isRate" onchange="chgIsRate()" ng-model="record.isRate" ng-init="record.isRate='1'" ng-checked="true" checked="checked"> 有
+								<input class="el-radio required" type="radio" value="2" name="isRate" onchange="chgIsRate()" ng-model="record.isRate">无
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="form-group" id="chargeTable" style=" margin-left: 5%;">
+					<table class="table-editer-form" style="width: 74%">
+						<tr>
+							<td class="left_td need">
+								费用类型:
+							</td>
+							<td class="right_td col-sm-6">
+								<select name="chargeType" id="chargeType" class="form-control required" style="width:200px;float: left;margin-right:5px;">
+								</select>
+								<img title="新增" class="u14222_img add ctAdd" src="res/img/u1662.png" onclick="addTable(this,'chargeTable',1)" />
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								费率值(%):
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" onkeyup="if(value.length>15)value=value.slice(0,15)" class="form-control ckFloat required format-validate" ng-blur="checkRateValue($event)" name="rateValue" id="rateValue" placeholder="输入费率">
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="form-group" id="rateTable" style="margin-top:0px; margin-left: 5%;">
+					<table class="table-editer-form" style="width: 74%">
+						<tr>
+							<td class="left_td need">
+								币种:
+							</td>
+							<td class="right_td col-sm-6">
+								<select name="currency" id="currency" class="form-control required" style="width:200px;float: left;margin-right:5px;">
+								</select>
+								<img title="新增" class="u14222_img add cnyBtn" src="res/img/u1662.png" onclick="addTable(this,'rateTable',1)" />
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								折算牌价(折人民币):
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" onkeyup="checkMonenyLen(this,19)" class="form-control required ckMoney" name="convertedPrice" id="convertedPrice" placeholder="请输入牌价">
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								发放金额:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" onkeyup="checkMonenyLen(this,18)" ng-blur="checkPriceValue($event)" class="form-control required format-validate amt" name="paymentAmt" id="paymentAmt" placeholder="请输入发放金额">
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								利率类型:
+							</td>
+							<td class="right_td col-sm-6">
+								<select name="rateType" id="rateType" class="form-control required" onchange="changeRateType($(this))">
+									<option value="">请选择</option>
+									<option value="1">固定利率</option>
+									<option value="2" selected="selected">浮动利率</option>
+									<option value="3">无</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								利率:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" onkeyup="if(value.length>15)value=value.slice(0,15)" onblur="checkRateVal(this)" class="form-control ckFloat format-validate" name="rateVal" id="rateVal" placeholder="请输入利率值">
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								利率基准:
+							</td>
+							<td class="right_td col-sm-6">
+								<select name="irBk" id="irBk" class="form-control">
+									<option value="">请选择</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								利率浮动方向:
+							</td>
+							<td class="right_td col-sm-6">
+								<select name="floatDirectioin" id="floatDirectioin" class="form-control">
+									<option value="">请选择</option>
+									<option value="1">上浮</option>
+									<option value="2">下浮</option>
+									<option value="3">不浮动</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								利率浮动方式:</label>
+							</td>
+							<td class="right_td col-sm-6">
+								<select name="floatMode" id="floatMode" class="form-control">
+									<option value="">请选择</option>
+									<option value="3" selected="selected">百分比</option>
+									<option value="2">加点</option>
+									<option value="1">不浮动</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								浮动率:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" onkeyup="if(value.length>15)value=value.slice(0,15)" class="form-control ckFloat" name="floatingRate" id="floatingRate" placeholder="请输入浮动率">
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								利率变动周期:</label>
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" onkeyup="if(value.length>1)value=value.slice(0,1)" style="width:170px;float: left;display: inline-block;" class="form-control isNumber" name="varCycle" id="varCycle" placeholder="请输入利率变动周期">
+								<label style="float: left;display: inline-block;height:35px;line-height:35px;">单位</label>
+								<select name="chgCycleUnit" id="chgCycleUnit" class="form-control" style="width:100px;float: left;display: inline-block;height:35px;margin-left:5px;">
+									<option value="">请选择</option>
+									<option value="3">年</option>
+									<option value="2">月</option>
+									<option value="1">日</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								逾期利率计算方式:</label>
+							</td>
+							<td class="right_td col-sm-6">
+								<select name="overdueRateCalcMode" id="overdueRateCalcMode" class="form-control required">
+									<option value="">请选择</option>
+									<option value="3" selected>百分比</option>
+									<option value="2">加点</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								逾期加点(或百分比):
+							</td>
+							<td class="right_td col-sm-6" colspan="2">
+								<input type="text" onkeyup="if(value.length>15)value=value.slice(0,15)" class="form-control required ckFloat" name="overdueIncrRatio" id="overdueIncrRatio" placeholder="请输入逾期加点">
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								利率计算天数:</label>
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" onkeyup="if(value.length>5)value=value.slice(0,5)" class="form-control required isNumber" name="calcDays" id="calcDays" placeholder="请输入1~365数字" value="360">
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								支付方式:</label>
+							</td>
+							<td class="right_td col-sm-6">
+								<select name="paymentMode" id="paymentMode" class="form-control required">
+									<option value="">请选择</option>
+									<option value="1">受托支付</option>
+									<option value="2">自主支付</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="form-group" id="guaranteeTable" style="margin-left: 5%;">
+					<table class="table-editer-form" style="width: 74%">
+						<tr>
+							<td class="left_td need">
+								担保类型:
+							</td>
+							<td class="right_td col-sm-6">
+								<select name="guaranType" id="guaranType" style="width:90px;float: left;" onchange="changeGuaranteeInfoSelect(this);isDelOption(this)" class="form-control required">
+									<option value="">请选择</option>
+								</select>
+								<select name="guaranType2" id="guaranType2" style="float: left;display:inline-block;width:250px;margin-left:5px;margin-right:5px;" class="form-control" onchange="getGuaranteeChildrenList(this)">
+									<option value="">请选择</option>
+								</select>
+								<img title="新增" class="u14222_img add" src="res/img/u1662.png" onclick="checkGuaranAdd(this,'guaranteeTable',1)" />
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								担保份额划分:
+							</td>
+							<td class="right_td col-sm-6">
+								<select name="guaranPortType" id="guaranPortType" class="form-control required" onchange="chgGpy(this)">
+									<option value="">请选择</option>
+									<option value="1">可明确划分份额</option>
+									<option value="2">不可明确划分份额</option>
+								</select>
+							</td>
+						</tr>
+						<tr class="guaranporttype1" style="display: none;">
+							<td class="left_td need">
+								可明确划分使用本担保方式的份额(%):
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" maxlength="5" onkeyup="if(value.length>5)value=value.slice(0,5)" class="form-control checkFloat format-validate" name="clearRatio" id="clearRatio" placeholder="请输入份额" onblur="calculateAmtText(this)">
+							</td>
+						</tr>
+						<tr class="guaranporttype1" style="display: none;">
+							<td class="left_td need">
+								可明确划分使用本担保方式的金额:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" onkeyup="checkMonenyLen(this,18)" class="form-control amt" name="clearRatioAmt" id="clearRatioAmt" placeholder="请输入金额" readonly="readonly">
+							</td>
+						</tr>
+						<tr class="guaranporttype2" style="display: none;">
+							<td class="left_td need">
+								不可明确划分使用本担保方式的金额:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" onkeyup="checkMonenyLen(this,18)" class="form-control amt format-validate" name="notClearAmt" id="notClearAmt" placeholder="请输入金额" ng-blur="checkGuaranPortType()">
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								担保合同编号:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" class="form-control required" name="guaranteeNo" readonly>
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								担保合同附件上传
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="hidden" name="selectedGuaranteeIndex" value="0"/>
+								<button type="button" ng-click="checkGuarantee($event);" data-toggle="modal" data-target="#myCustUserLetter" class="el-button el-button--success is-plain is-small">合同上传</button>
+								<input type="hidden" class="interface" name="synchrRefreshGuarantee" />
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								担保人:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="hidden" id="guarantorTypeCode" name="guarantorTypeCode" />
+								<input type="hidden" id="guarantorCustId" name="guarantorCustId" />
+								<input type="text" class="form-control required" placeholder="请录入担保人客户名称" name="guaranteeCustName" readonly/>
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								担保方式类型:
+							</td>
+							<td class="right_td col-sm-6">
+								<select name="pledgeType" class="form-control required" disabled>
+									<option value="">请选择</option>
+								</select>
+							</td>
+						</tr>
+						
+						<tr id="pledgeRow" style="display: none;">
+							<td class="col-sm-6" style="width:100%;" colspan="2" id="pledgeTable">
+								<table class="table-editer-form2">
+									<tr>
+										<td class="left_td need">
+											押品编号:
+										</td>
+										<td class="right_td col-sm-6">
+											<input type="text" class="form-control required" name="pledgeNo" readonly/>
+										</td>
+									</tr>
+									<!--
+									<tr>
+										<td class="left_td need">
+											押品状态:
+										</td>
+										<td class="right_td col-sm-6">
+											<select name="pledgeState" ng-model="record.pledgeState" class="form-control required">
+												<option value="">请选择</option>
+												<option value="1">已存</option>
+												<option value="2">未存</option>
+											</select>
+										</td>
+									</tr>
+									 -->
+									<tr>
+										<td class="left_td need">
+											押品信息描述:
+										</td>
+										<td class="right_td col-sm-6">
+											<textarea class="form-control required" style="height: 100px;resize:none;" maxlength="500" name="pledgeRemark" readonly></textarea>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								备注:
+							</td>
+							<td class="right_td col-sm-6">
+								<textarea class="form-control required" style="height: 100px;resize:none;" maxlength="500" name="guaranRemark" readonly></textarea>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<!-- 担保信息录入 -->
+				<div ng-include="'src/app/biz/grant/guarantee.html'"></div>
+
+				<div ng-repeat="customer in custUserLetter" class="form-group" style="margin-left: 5%;">
+					<table class="table-editer-form" id="guarantee" style="width: 74%;">
+						<tr>
+							<td class="left_td need">
+								用信主体名称:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" class="form-control" ng-model="customer.custNameCN" readonly />
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								评级:
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" class="form-control" ng-model="customer.creditRating" readonly />
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								评级评级有效期
+							</td>
+							<td class="right_td col-sm-6">
+								<input type="text" class="form-control" ng-model="customer.ratiTime|date:'yyyy-MM-dd'" readonly />
+							</td>
+						</tr>
+						<tr>
+							<td class="left_td need">
+								授信方案相关内容展示
+							</td>
+							<td class="right_td col-sm-6">
+								<button type="button" ng-click="checkCust(customer,$index)" data-toggle="modal" data-target="#myCustRisk" class="el-button el-button--success is-plain is-small">详细信息</button>
+								<input type="hidden" class="form-control interface" name="synchrRefreshCust"/>
+							</td>
+						</tr>
+						<!--弹框内容--查询客户-->
+					</table>
+				</div>
+				<!-- 客户主体以及用信主体授信方案查询 -->
+				<div ng-include="'src/app/biz/grant/customerLetter.html'"></div>
+
+                <div class="form-group" id="custLimitTable" style="margin-left: 5%;">
+                    <table class="table-editer-form" style="width: 74%">
+                        <tr>
+                            <td class="left_td need">
+                                额度信息:
+                            </td>
+                            <td class="right_td col-sm-6">
+                                <input type="hidden" name="selectedCustLimitIndex" value="0"/>
+                                <button type="button" ng-click="checkCustLimit($event);" data-toggle="modal" data-target="#myCustLimit" class="el-button el-button--success is-plain is-small">点击查看</button>
+                                <input type="hidden" class="interface" name="synchrRefreshCustLimit" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- 额度信息录入 -->
+                <div ng-include="'src/app/biz/grant/custlimit_include_add.html'"></div>
+
+				<div class="" style="margin:40px auto;width: 400px">
+					<button class="el-button el-button--primary is-plain" onclick="$(zhengcexingshuxing).click()">上一步</button>
+					<button class="el-button el-button&#45;&#45;primary is-plain " ng-click="tempSave('dv2')" ng-disabled="isDisabled">暂存</button>
+					<button class="el-button el-button--primary is-plain" onclick="nextCheck('dv2','zhuanyouxinxi');">下一步</button>
+				</div>
+
+			</div>
+
+			<!-- 3政策性属性 -->
+			<div ng-show="tab==3" id="dv3">
+				<!-- 3表格------ -->
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">租赁物:</label>
+							<!---->
+						</div>
+						<div class="col-sm-6">
+							<input id="leasehold" type="text" maxlength="200" class="form-control required" placeholder="请输入租赁物信息" ng-model="record.leasehold" />
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">租金保理合同编号:</label>
+							<!---->
+						</div>
+						<div class="col-sm-6">
+							<input id="bizRentalFactoringCode" maxlength="40" type="text" class="form-control required" placeholder="请输入租金保理合同编号" ng-model="record.bizRentalFactoringCode" />
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">租金保理合同附件名称:</label>
+						</div>
+						<div class="col-sm-6">
+							<input id="renFileName" maxlength="100" type="text" class="form-control required" placeholder="请输入租金保理合同附件名称" ng-model="record.renFileName" />
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12" style="margin-top:20px;">
+						<div class="uploder-container">
+							<div  class="cxuploder">
+								<div class="queueList">
+									<div class="placeholder">
+										<div class="filePicker"></div>
+										
+									</div>
+								</div>
+								<div class="statusBar" style="display:none;">
+									<div class="btns">
+										<div  class="jxfilePicker"></div>
+									</div>
+									<div class="info"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label need" style="float: right;line-height: 35px;">还款方式:</label>
+							<!---->
+						</div>
+						<div class="col-sm-6">
+							<select id="repaymentType" class="form-control" ng-model="record.repaymentType" disabled="disabled">
+								<option value="1" ng-selected="record.repaymentType='1'">不规则还款</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-3">
+							<label class="control-label" style="float: right;line-height: 35px;">借据编号:</label>
+						</div>
+						<div class="col-sm-6">
+							<input id="iouCode" type="text" maxlength="40" class="form-control" ng-model="record.iouCode" />
+						</div>
+					</div>
+				</div>
+
+				<div class="" style="margin:40px auto;width: 400px">
+					<button class="el-button el-button--primary is-plain" onclick="$(fafangshenhe).click()">上一步</button>
+					<button class="el-button el-button&#45;&#45;primary is-plain " ng-click="tempSave('dv3')" ng-disabled="isDisabled">暂存</button>
+					<button class="el-button el-button--primary is-plain " onclick="nextCheck('dv3','huankuanjihua');">下一步</button>
+				</div>
+			</div>
+			<!-- 4 -->
+			<div ng-show="tab==4" id="dv4" class="form-group" style="padding-left: 8%;">
+				<table class="table-editer-form" style="width: 74%">
+					<tr>
+						<td class="left_td need">
+							首次还本日:
+						</td>
+						<td class="right_td col-sm-4">
+							<input type="text" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" class="form-control date required" placeholder="请输入首次还本日" ng-model="record.fristRepayDate" id="fristRepayDate" onchange="" name="fristRepayDate">
+						</td>
+					</tr>
+					<tr>
+						<td class="left_td need">
+							末次还款日:
+						</td>
+						<td class="right_td col-sm-4">
+							<input type="text" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" class="form-control date required format-validate" placeholder="请输入末次还款日" ng-blur="checklastRepayDay()" ng-model="record.lastRepayDay" onchange="" id="lastRepayDay" name="lastRepayDay">
+						</td>
+					</tr>
+					<tr>
+						<td class="left_td need">
+							还本方式:
+						</td>
+						<td class="right_td col-sm-4">
+							<select name="repaymentCostMode" id="repaymentCostMode" ng-model="record.repaymentCostMode" class="form-control required">
+								<option value="">请选择</option>
+								<option value="12">年</option>
+								<option value="6">半年</option>
+								<option value="3">季</option>
+								<option value="1">月</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="left_td need">
+							首次还息日:
+						</td>
+						<td class="right_td col-sm-4">
+							<input type="text" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" class="form-control date required" placeholder="请输入首次还息日" ng-model="record.firstDay" name="firstDay" onchange="" id="firstDay">
+						</td>
+					</tr>
+					<tr>
+						<td class="left_td need">
+							利息计收方式:
+						</td>
+						<td class="right_td col-sm-4">
+							<select ng-model="record.caclWay" class="form-control required" name="caclWay" id="caclWay">
+								<option value="">请选择</option>
+								<option value="12">年</option>
+								<option value="6">半年</option>
+								<option value="3">季</option>
+								<option value="1">月</option>
+							</select>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="left_td ">
+							生成计划表:
+						</td>
+						<td class="right_td col-sm-4">
+							<button class="btn-cyan el-button el-button--primary is-plain" ng-click="payListChange()">点击查看</button>
+						</td>
+					</tr>
+
+				</table>
+
+				<table class="table-editer-form" id="huankuanTable" ng-show="showTable=='1'" style="width:800px;margin-left:140px">
+					<tr>
+						<td class="text-center" style="font-size:16px;font-weight: bold;" colspan="9">还本计划表</td>
+					</tr>
+					<tr ng-repeat="record in payList">
+						<td class="need" style="width:90px;">还款日期</td>
+						<td style="width:120px;">
+							<input type="text" style="width: 110px;" class="form-control date" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" onChange="" ng-model="record.payDate">
+						</td>
+						<td class="need" style="width:90px;">还款币种</td>
+						<td style="width:120px;">
+							<input style="width: 110px;" type="text" class="form-control" ng-model="record.currency" readonly>
+						</td>
+						<td class="need" style="width:90px;">还款金额</td>
+						<td style="width:180px;">
+							<input type="text" style="width:160px;" onkeyup="checkMonenyLen(this,18)" class="form-control amt" ng-model="record.principalAmy">
+						</td>
+						<td style="width:40px;">
+							<img title="新增" class="u14222_img add" src="res/img/u1662.png" ng-click="BDetailsAdd($index)" />
+						</td>
+						<td style="width:40px;">
+							<img title="刪除" class="u14222_img del" src="res/img/u1628.png" ng-click="BDetailsDel($index)" />
+						</td>
+						<td style="width:*px;"></td>
+					</tr>
+					<tr>
+						<td class="text-center" style="font-size:16px;font-weight: bold;" colspan="9"><strong>还息计划表</strong></td>
+					</tr>
+					<tr ng-repeat="record in loanList">
+						<td class="need" style="width:90px;">计划还息日</td>
+						<td style="width:300px;" colspan="5"><input type="text" style="width:200px" class="form-control date" onclick="WdatePicker({onpicking:function(dp){cleanRequiredWarn(this);}})" onChange="" ng-model="record.interestDate" ng-disabled="disableInterestDate(record.interestDate)"></td>
+						<td style="width:40px;">
+							<img title="新增" class="u14222_img add" src="res/img/u1662.png" ng-click="ADetailsAdd($index)" />
+						</td>
+						<td style="width:40px;" ng-hide="disableInterestDate(record.interestDate)">
+							<img title="刪除" class="u14222_img del" src="res/img/u1628.png" ng-click="ADetailsDel($index)" />
+						</td>
+						<td style="width:*px;"></td>
+					</tr>
+				</table>
+
+				<!--btn-->
+				<div class="form-group">
+					<div style="margin:40px auto;width: 400px">
+						<button class="el-button el-button--primary is-plain" onclick="$(zhuanyouxinxi).click()">上一步</button>
+						<button class="el-button el-button&#45;&#45;primary is-plain " ng-click="tempSave('dv4')" ng-disabled="isDisabled">暂存</button>
+						<button class="el-button el-button--primary is-plain submit" type="submit" ng-click="submit()" ng-disabled="isDisabled">提交</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+	<!-- //tab-content -->
+</form>

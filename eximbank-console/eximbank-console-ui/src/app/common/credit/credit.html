@@ -1,0 +1,70 @@
+<!-- toaster directive -->
+<toaster-container
+	toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+	<ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+		<li><a ui-href="main"><i class="fa fa-home"></i> 首页</a></li>
+		<li class="active" ng-bind="title"></li>
+	</ul>
+</div>
+
+<!-- 加载提醒 -->
+<div ng-show="loading" class="text-center m-t-md text-lg">
+	<i class="fa fa-spin fa-spinner"></i> 数据加载中...
+</div>
+
+<!-- 内容区域 -->
+<div ng-hide="loading" class="wrapper-md content">
+	<!-- 数据显示 -->
+	<div class="wrapper-data">
+		<div class="panel panel-default">
+			<!-- 头部 -->
+			<div class="panel-heading clearfix">
+				<a ui-sref="main.post.checkPlan.add" class="btn btn-info pull-right">
+					<i class="icon-user-follow m-r-sm text-md"></i>新增检查计划
+				</a>
+			</div>
+
+			<!-- 数据表格 -->
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light text-center">
+					<thead>
+						<tr>
+							<th width="200px;">检查计划名称</th>
+							<th width="100px;">检查计划时间</th>
+							<th width="200px;">风险分类等级</th>
+							<th width="200px;"style="text-align: center">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in pageInfo.data">
+							<td class="v-middle">{{item.ckName}}</td>
+							<td class="v-middle">{{item.ckTime}}</td>
+							<td class="v-middle" >
+                      		<div ng-repeat="x in classifyList">
+                      		<span ng-if="item.classfyLevelId==x.id">{{x.clName}}</span>
+                      		</div>
+                        	</td>
+							<td class="v-middle"><a
+								ui-sref="main.post.checkPlan.update({id:item.id, classifyid:item.classfyLevelId})"
+								class="btn btn-sm btn-default"> <i
+								class="fa fa-edit m-r-xs text-sm"></i>编辑
+							</a> </td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- /.table-responsive -->
+
+			<!-- 底部分页 -->
+			<span data-ng-include=" 'src/tpl/pageInfo.html' "></span>
+		</div>
+		<!-- /.panel -->
+	</div>
+	<!-- /.wrapper-data -->
+
+</div>
+<!-- /.wrapper-md -->

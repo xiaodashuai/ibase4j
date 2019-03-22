@@ -1,0 +1,118 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li><a ui-sref="main.sys.dicType.list">码表管理</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">{{title}}
+            <a class="btn btn-sm btn-icon btn-rounded btn-default pull-right m-t-n-xs" ui-sref="main.sys.dicType.list"><i class="text-md fa fa-mail-reply text-muted" title="关闭"></i></a>
+        </div>
+        <!--表单-->
+        <div class="panel-body">
+            <form class="form-horizontal"  name="user_form">
+                <!--用户名-->
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label" for="code">
+                        <span class="text-danger wrapper-sm">*</span>值编码</label>
+                    <div class="col-sm-6">
+                        <input type="text" onblur="codeRepeatJiaoYan(this.value)" class="form-control" name="code" id="code"  placeholder="请输入值编码..." ng-model="record.code">
+                    	<span style="color: red;" id="codeTest"></span>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label" for="codeText">
+                        <span class="text-danger wrapper-sm">*</span>值名称</label>
+                    <div class="col-sm-6">
+                        <input type="text" onblur="codeTextRepeatJiaoYan(this.value)" class="form-control" name="codeText" id="codeText"  placeholder="请输入值名称..." ng-model="record.codeText">
+                    	<span style="color: red;" id="codeTextTest"></span>
+                    </div>
+                </div>
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-sm-3 control-label" for="remark">
+                        <span class="text-danger wrapper-sm"></span>描述</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="remark" id="remark" placeholder="请输入描述.." ng-model="record.remark">
+                    </div>
+                </div>
+                <!--btn-->
+                <div class="form-group">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <button type="button" id="submitBtn" onclick="test(document.getElementById('code').value ,document.getElementById('codeText').value)" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled">保存</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+	function codeRepeatJiaoYan(code){
+			jQuery.ajax({
+        		url:'/eximbank-console/dicType/read/code',
+        		type:'GET',
+        		async:false,
+        		data:{
+                    account:code
+                },
+        		dataType:'json',
+        		success:function(data){
+        			if(data.accounts == "true"){
+        				$("#codeTest").text("值编码已存在");
+    				}else if($("#code").val() == null || $("#code").val().trim() == ''){
+    					$("#codeTest").text("请输入值编码");
+                    }else if(/^[A-Z]{1,20}$/.test($("#code").val()) == false){
+                        $("#codeTest").text("值编码应为最大20位字符的纯大写字母");
+                    }else{
+    					$("#codeTest").text("");
+    				}
+    				
+    			}
+        	});
+		} 
+	function codeTextRepeatJiaoYan(codeText){
+			jQuery.ajax({
+        		url:'/eximbank-console/dicType/read/codeText',
+        		type:'GET',
+        		async:false,
+        		data:{
+                    account:codeText
+                },
+        		dataType:'json',
+        		success:function(data){
+        			if(data.accounts == "true"){
+        				$("#codeTextTest").text("值名称已存在");
+    				}else if($("#codeText").val() == null || $("#codeText").val().trim() == ''){
+    					$("#codeTextTest").text("请输入值名称");
+                    }else if($("#codeText").val().length > 30){
+                        $("#codeTextTest").text("值名称最大长度为30个字符");
+                    }
+                    else{
+    					$("#codeTextTest").text("");
+    				}
+    				
+    			}
+        	});
+		} 
+
+	function test(code , codeText) {
+		$("#submitBtn").attr("type" , "button");
+		codeRepeatJiaoYan(code);
+		codeTextRepeatJiaoYan(codeText);
+		
+		if($("#codeTest").text() == "" && $("#codeTextTest").text() == ""){
+			$("#submitBtn").attr("type" , "submit");
+		}
+	}
+</script>

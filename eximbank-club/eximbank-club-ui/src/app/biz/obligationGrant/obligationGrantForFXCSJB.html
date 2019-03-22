@@ -1,0 +1,2422 @@
+<!-- toaster directive -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- / toaster directive -->
+
+<!-- 导航条 -->
+<div class="bg-white bread-crumb">
+    <ul class="breadcrumb b-a m-b-n-xs lter b-b wrapper-md">
+        <li><a ui-sref="main"><i class="fa fa-home"></i> 首页</a></li>
+        <li><a ui-sref="main.post.classifyLevel.list">分类级别</a></li>
+        <li class="active" ng-bind="title"></li>
+    </ul>
+</div>
+
+<!-- 内容区域 -->
+<div class="wrapper-md content">
+    <div class="panel panel-default">
+        <!-- 头部 -->
+        <div class="panel-heading font-bold">风险处室经办
+
+        </div>
+        <!--表单-->
+            <div class="panel-body">
+                <form class="form-middle"  name="middle_form">
+
+                    <div class="form-middle">
+                        &nbsp;&nbsp;
+                        <a ui-sref="" class="btn2 btn-info pull-left" style="background-color: #19a9d5;height:35px; width:120px">
+                            <i class="icon-social-dropbox m-r-sm text-md"></i>交易快照</a>
+                        &nbsp;&nbsp;
+                        <a ui-sref="" class="btn2 btn-info pull-left col-sm-offset-1" style="background-color: #19a9d5;height:35px; width:120px">
+                            <i class="icon-screen-tablet m-r-sm text-md"></i>附件查看</a>
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+
+                    <div>
+                        <label class="col-lg-1 col-sm-3 control-label">
+                            <span class="text-danger wrapper-sm">*</span>方案概要：</label>
+                    </div>
+                    <div class="col-sm-4 col-lg-11">
+                        <div class="form-group tab-pane active">
+                            <label class="col-lg-6 col-sm-3 control-label">
+                                产品名称:</label>
+                            <div class="col-sm-4 col-lg-6">
+                                <label class="col-lg-6 col-sm-3 control-label">有追索权租金保理</label>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group tab-pane active">
+                            <label class="col-lg-6 col-sm-3 control-label">
+                                债项方案总金额</label>
+                            <div class="col-sm-4 col-lg-6">
+                                <input disabled type="text" name="jsazje01" ng-model="record.jsazje01">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group tab-pane active">
+                            <label class="col-lg-6 col-sm-3 control-label">
+                                汇总期限</label>
+                            <div class="col-sm-4 col-lg-6">
+                                <input disabled type="date" name="jsahzqx01" ng-model="record.jsahzqx01" style="width: 192px">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group tab-pane active">
+                            <label class="col-lg-6 col-sm-3 control-label">
+                                汇总费率</label>
+                            <div class="col-sm-4 col-lg-6">
+                                <input disabled type="number" name="jsahzfl01" ng-model="record.jsahzfl01">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group tab-pane active">
+                            <label class="col-lg-6 col-sm-3 control-label">
+                                汇总利率</label>
+                            <div class="col-sm-4 col-lg-6">
+                                <input disabled type="number" name="jsahzll01" ng-model="record.jsahzll01">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-dept tab-pane active">
+                            <label class="col-lg-6 col-sm-3 control-label" >
+                                政策性分类</label>
+                            <div class="col-sm-6">
+                                <select disabled class="form-control" style="width:192px;" ng-model="record.jsazzxfl01">
+                                    <option value="1">政策性分类信息</option>
+                                    <option value="2" ng-selected="true">政策性分类描述信息</option>
+                                </select>
+                                <span class="help-block m-b-none"></span>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+
+
+                    </div>
+                    <div class="line line-dashed b-b line-lg pull-in"></div>
+
+                    <div>
+                        <label class="col-lg-1 col-sm-3 control-label">
+                            <span class="text-danger wrapper-sm">*</span>审核要素：</label>
+                    </div>
+                    <div class="col-sm-4 col-lg-11">
+
+                    <div class="tab-content" style="padding:0px;border:none">
+
+
+                    <!--国内信用证-->
+                    <div class="{{initProductId==1?'tab-pane active':'tab-pane'}}" id="1" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：国内信用证</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="jsaff01" value="1" ng-model="record.jsaff01">是
+                                <input type="radio"  name="jsaff01" value="2" ng-model="record.jsaff01">否
+                                <input type="radio"  name="jsaff01" value="3" ng-model="record.jsaff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="jsaff02" value="1" ng-model="record.jsaff02">是
+                                <input type="radio"  name="jsaff02" value="2" ng-model="record.jsaff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="jsaff03" value="1" ng-model="record.jsaff03">是
+                                <input type="radio"  name="jsaff03" value="2" ng-model="record.jsaff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="jsaff04" value="1" ng-model="record.jsaff04">是
+                                <input type="radio"  name="jsaff04" value="2" ng-model="record.jsaff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="jsaff05" value="1" ng-model="record.jsaff05">同意
+                                <input type="radio"  name="jsaff05" value="2" ng-model="record.jsaff05">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="background" id="jsaff06" style="height: 200px" ng-model="record.jsaff06">{{record.jsaff06}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--进口信用证-->
+                    <div class="{{initProductId==2?'tab-pane active':'tab-pane'}}" id="2" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：进口信用证</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="jsbff01" value="1" ng-model="record.jsbff01">是
+                                <input type="radio"  name="jsbff01" value="2" ng-model="record.jsbff01">否
+                                <input type="radio"  name="jsbff01" value="3" ng-model="record.jsbff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="jsbff02" value="1" ng-model="record.jsbff02">是
+                                <input type="radio"  name="jsbff02" value="2" ng-model="record.jsbff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="jsbff03" value="1" ng-model="record.jsbff03">是
+                                <input type="radio"  name="jsbff03" value="2" ng-model="record.jsbff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="jsbff04" value="1" ng-model="record.jsbff04">是
+                                <input type="radio"  name="jsbff04" value="2" ng-model="record.jsbff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="jsbff05" value="1" ng-model="record.jsbff05">是
+                                <input type="radio"  name="jsbff05" value="2" ng-model="record.jsbff05">否
+                                <input type="radio"  name="jsbff05" value="3" ng-model="record.jsbff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-dept">
+                            <label class="col-lg-2 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>风险初分类</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" style="width:120px;" ng-model="record.jsbff06">
+                                    <option value="" selected>请选择</option>
+                                    <option value="0">正常</option>
+                                    <option value="1">关注</option>
+                                </select>
+                                <span class="help-block m-b-none"></span>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="jsbff07" value="1" ng-model="record.jsbff07">同意
+                                <input type="radio"  name="jsbff07" value="2" ng-model="record.jsbff07">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="jsbff08" id="jsbff08" style="height: 200px" ng-model="record.jsbff08">{{record.jsbff08}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--非融资性保函-->
+                    <div class="{{initProductId==3?'tab-pane active':'tab-pane'}}" id="3" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：非融资性保函</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhaff01" value="1" ng-model="record.bhaff01">是
+                                <input type="radio"  name="bhaff01" value="2" ng-model="record.bhaff01">否
+                                <input type="radio"  name="bhaff01" value="3" ng-model="record.bhaff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhaff02" value="1" ng-model="record.bhaff02">是
+                                <input type="radio"  name="bhaff02" value="2" ng-model="record.bhaff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhaff03" value="1" ng-model="record.bhaff03">是
+                                <input type="radio"  name="bhaff03" value="2" ng-model="record.bhaff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhaff04" value="1" ng-model="record.bhaff04">是
+                                <input type="radio"  name="bhaff04" value="2" ng-model="record.bhaff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhaff05" value="1" ng-model="record.bhaff05">是
+                                <input type="radio"  name="bhaff05" value="2" ng-model="record.bhaff05">否
+                                <input type="radio"  name="bhaff05" value="3" ng-model="record.bhaff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhaff06" value="1" ng-model="record.bhaff06">同意
+                                <input type="radio"  name="bhaff06" value="2" ng-model="record.bhaff06">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="bhaff07" id="bhaff07" style="height: 200px" ng-model="record.bhaff07">{{record.bhaff07}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--融资性保函-->
+                    <div class="{{initProductId==4?'tab-pane active':'tab-pane'}}" id="4" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：融资性保函</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhbff01" value="1" ng-model="record.bhbff01">是
+                                <input type="radio"  name="bhbff01" value="2" ng-model="record.bhbff01">否
+                                <input type="radio"  name="bhbff01" value="3" ng-model="record.bhbff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhbff02" value="1" ng-model="record.bhbff02">是
+                                <input type="radio"  name="bhbff02" value="2" ng-model="record.bhbff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhbff03" value="1" ng-model="record.bhbff03">是
+                                <input type="radio"  name="bhbff03" value="2" ng-model="record.bhbff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhbff04" value="1" ng-model="record.bhbff04">是
+                                <input type="radio"  name="bhbff04" value="2" ng-model="record.bhbff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhbff05" value="1" ng-model="record.bhbff05">是
+                                <input type="radio"  name="bhbff05" value="2" ng-model="record.bhbff05">否
+                                <input type="radio"  name="bhbff05" value="3" ng-model="record.bhbff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-dept">
+                            <label class="col-lg-2 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>风险初分类</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" style="width:120px;" ng-model="record.bhbff06">
+                                    <option value="" selected>请选择</option>
+                                    <option value="0">正常</option>
+                                    <option value="1">关注</option>
+                                </select>
+                                <span class="help-block m-b-none"></span>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhbff07" value="1" ng-model="record.bhbff07">同意
+                                <input type="radio"  name="bhbff07" value="2" ng-model="record.bhbff07">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="bhbff08" id="bhbff08" style="height: 200px" ng-model="record.bhbff08">{{record.bhbff08}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--提货担保-->
+                    <div class="{{initProductId==5?'tab-pane active':'tab-pane'}}" id="5" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：提货担保</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhcff01" value="1" ng-model="record.bhcff01">是
+                                <input type="radio"  name="bhcff01" value="2" ng-model="record.bhcff01">否
+                                <input type="radio"  name="bhcff01" value="3" ng-model="record.bhcff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhcff02" value="1" ng-model="record.bhcff02">是
+                                <input type="radio"  name="bhcff02" value="2" ng-model="record.bhcff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhcff03" value="1" ng-model="record.bhcff03">是
+                                <input type="radio"  name="bhcff03" value="2" ng-model="record.bhcff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhcff04" value="1" ng-model="record.bhcff04">是
+                                <input type="radio"  name="bhcff04" value="2" ng-model="record.bhcff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+
+                                <input type="radio"  name="bhcff05" value="1" ng-model="record.bhcff05">是
+                                <input type="radio"  name="bhcff05" value="2" ng-model="record.bhcff05">否
+                                <input type="radio"  name="bhcff05" value="3" ng-model="record.bhcff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bhcff06" value="1" ng-model="record.bhcff06">同意
+                                <input type="radio"  name="bhcff06" value="2" ng-model="record.bhcff06">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="bhcff07" id="bhcff07" style="height: 200px" ng-model="record.bhcff07">{{record.bhcff07}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--出口订单融资-->
+                    <div class="{{initProductId==6?'tab-pane active':'tab-pane'}}" id="6" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：出口订单融资</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myaff01" value="1" ng-model="record.myaff01">是
+                                <input type="radio"  name="myaff01" value="2" ng-model="record.myaff01">否
+                                <input type="radio"  name="myaff01" value="3" ng-model="record.myaff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myaff02" value="1" ng-model="record.myaff02">是
+                                <input type="radio"  name="myaff02" value="2" ng-model="record.myaff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myaff03" value="1" ng-model="record.myaff03">是
+                                <input type="radio"  name="myaff03" value="2" ng-model="record.myaff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myaff04" value="1" ng-model="record.myaff04">是
+                                <input type="radio"  name="myaff04" value="2" ng-model="record.myaff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myaff05" value="1" ng-model="record.myaff05">是
+                                <input type="radio"  name="myaff05" value="2" ng-model="record.myaff05">否
+                                <input type="radio"  name="myaff05" value="3" ng-model="record.myaff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myaff06" value="1" ng-model="record.myaff06">同意
+                                <input type="radio"  name="myaff06" value="2" ng-model="record.myaff06">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="myaff07" id="myaff07" style="height: 200px" ng-model="record.myaff07">{{record.myaff07}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--打包贷款资-->
+                    <div class="{{initProductId==7?'tab-pane active':'tab-pane'}}" id="7" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：打包贷款</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mybff01" value="1" ng-model="record.mybff01">是
+                                <input type="radio"  name="mybff01" value="2" ng-model="record.mybff01">否
+                                <input type="radio"  name="mybff01" value="3" ng-model="record.mybff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mybff02" value="1" ng-model="record.mybff02">是
+                                <input type="radio"  name="mybff02" value="2" ng-model="record.mybff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mybff03" value="1" ng-model="record.mybff03">是
+                                <input type="radio"  name="mybff03" value="2" ng-model="record.mybff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mybff04" value="1" ng-model="record.mybff04">是
+                                <input type="radio"  name="mybff04" value="2" ng-model="record.mybff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mybff05" value="1" ng-model="record.mybff05">是
+                                <input type="radio"  name="mybff05" value="2" ng-model="record.mybff05">否
+                                <input type="radio"  name="mybff05" value="3" ng-model="record.mybff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mybff06" value="1" ng-model="record.mybff06">同意
+                                <input type="radio"  name="mybff06" value="2" ng-model="record.mybff06">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="mybff07" id="mybff07" style="height: 200px" ng-model="record.mybff07">{{record.mybff07}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--卖方押汇-->
+                    <div class="{{initProductId==8?'tab-pane active':'tab-pane'}}" id="8" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：卖方押汇</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mycff01" value="1" ng-model="record.mycff01">是
+                                <input type="radio"  name="mycff01" value="2" ng-model="record.mycff01">否
+                                <input type="radio"  name="mycff01" value="3" ng-model="record.mycff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mycff02" value="1" ng-model="record.mycff02">是
+                                <input type="radio"  name="mycff02" value="2" ng-model="record.mycff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mycff03" value="1" ng-model="record.mycff03">是
+                                <input type="radio"  name="mycff03" value="2" ng-model="record.mycff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mycff04" value="1" ng-model="record.mycff04">是
+                                <input type="radio"  name="mycff04" value="2" ng-model="record.mycff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mycff05" value="1" ng-model="record.mycff05">是
+                                <input type="radio"  name="mycff05" value="2" ng-model="record.mycff05">否
+                                <input type="radio"  name="mycff05" value="3" ng-model="record.mycff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mycff06" value="1" ng-model="record.mycff06">同意
+                                <input type="radio"  name="mycff06" value="2" ng-model="record.mycff06">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="mycff07" id="mycff07" style="height: 200px" ng-model="record.mycff07">{{record.mycff07}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--议付-->
+                    <div class="{{initProductId==9?'tab-pane active':'tab-pane'}}" id="9" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：议付</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mydff01" value="1" ng-model="record.mydff01">是
+                                <input type="radio"  name="mydff01" value="2" ng-model="record.mydff01">否
+                                <input type="radio"  name="mydff01" value="3" ng-model="record.mydff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mydff02" value="1" ng-model="record.mydff02">是
+                                <input type="radio"  name="mydff02" value="2" ng-model="record.mydff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mydff03" value="1" ng-model="record.mydff03">是
+                                <input type="radio"  name="mydff03" value="2" ng-model="record.mydff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mydff04" value="1" ng-model="record.mydff04">是
+                                <input type="radio"  name="mydff04" value="2" ng-model="record.mydff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mydff05" value="1" ng-model="record.mydff05">是
+                                <input type="radio"  name="mydff05" value="2" ng-model="record.mydff05">否
+                                <input type="radio"  name="mydff05" value="3" ng-model="record.mydff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mydff06" value="1" ng-model="record.mydff06">同意
+                                <input type="radio"  name="mydff06" value="2" ng-model="record.mydff06">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="mydff07" id="mydff07" style="height: 200px" ng-model="record.mydff07">{{record.mydff07}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--出口发票贴现-->
+                    <div class="{{initProductId==10?'tab-pane active':'tab-pane'}}" id="10" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：出口发票贴现</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myeff01" value="1" ng-model="record.myeff01">是
+                                <input type="radio"  name="myeff01" value="2" ng-model="record.myeff01">否
+                                <input type="radio"  name="myeff01" value="3" ng-model="record.myeff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myeff02" value="1" ng-model="record.myeff02">是
+                                <input type="radio"  name="myeff02" value="2" ng-model="record.myeff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myeff03" value="1" ng-model="record.myeff03">是
+                                <input type="radio"  name="myeff03" value="2" ng-model="record.myeff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myeff04" value="1" ng-model="record.myeff04">是
+                                <input type="radio"  name="myeff04" value="2" ng-model="record.myeff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myeff05" value="1" ng-model="record.myeff05">是
+                                <input type="radio"  name="myeff05" value="2" ng-model="record.myeff05">否
+                                <input type="radio"  name="myeff05" value="3" ng-model="record.myeff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myeff06" value="1" ng-model="record.myeff06">同意
+                                <input type="radio"  name="myeff06" value="2" ng-model="record.myeff06">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="myeff07" id="myeff07" style="height: 200px" ng-model="record.myeff07">{{record.myeff07}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--出口融信通-->
+                    <div class="{{initProductId==11?'tab-pane active':'tab-pane'}}" id="11" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：出口融信通</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myfff01" value="1" ng-model="record.myfff01">是
+                                <input type="radio"  name="myfff01" value="2" ng-model="record.myfff01">否
+                                <input type="radio"  name="myfff01" value="3" ng-model="record.myfff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myfff02" value="1" ng-model="record.myfff02">是
+                                <input type="radio"  name="myfff02" value="2" ng-model="record.myfff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myfff03" value="1" ng-model="record.myfff03">是
+                                <input type="radio"  name="myfff03" value="2" ng-model="record.myfff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myfff04" value="1" ng-model="record.myfff04">是
+                                <input type="radio"  name="myfff04" value="2" ng-model="record.myfff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myfff05" value="1" ng-model="record.myfff05">是
+                                <input type="radio"  name="myfff05" value="2" ng-model="record.myfff05">否
+                                <input type="radio"  name="myfff05" value="3" ng-model="record.myfff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myfff06" value="1" ng-model="record.myfff06">同意
+                                <input type="radio"  name="myfff06" value="2" ng-model="record.myfff06">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="myfff07" id="myfff07" style="height: 200px" ng-model="record.myfff07">{{record.myfff07}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--短险保单融资-->
+                    <div class="{{initProductId==12?'tab-pane active':'tab-pane'}}" id="12" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：短险保单融资</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mygff01" value="1" ng-model="record.mygff01">是
+                                <input type="radio"  name="mygff01" value="2" ng-model="record.mygff01">否
+                                <input type="radio"  name="mygff01" value="3" ng-model="record.mygff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mygff02" value="1" ng-model="record.mygff02">是
+                                <input type="radio"  name="mygff02" value="2" ng-model="record.mygff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mygff03" value="1" ng-model="record.mygff03">是
+                                <input type="radio"  name="mygff03" value="2" ng-model="record.mygff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mygff04" value="1" ng-model="record.mygff04">是
+                                <input type="radio"  name="mygff04" value="2" ng-model="record.mygff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mygff05" value="1" ng-model="record.mygff05">是
+                                <input type="radio"  name="mygff05" value="2" ng-model="record.mygff05">否
+                                <input type="radio"  name="mygff05" value="3" ng-model="record.mygff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实索赔转让手续</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mygff06" value="1" ng-model="record.mygff06">是
+                                <input type="radio"  name="mygff06" value="2" ng-model="record.mygff06">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mygff07" value="1" ng-model="record.mygff07">同意
+                                <input type="radio"  name="mygff07" value="2" ng-model="record.mygff07">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="mygff08" id="mygff08" style="height: 200px" ng-model="record.mygff08">{{record.mygff08}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--国内证向下买方押汇-->
+                    <div class="{{initProductId==13?'tab-pane active':'tab-pane'}}" id="13" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：国内证项下买方押汇</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myhff01" value="1" ng-model="record.myhff01">是
+                                <input type="radio"  name="myhff01" value="2" ng-model="record.myhff01">否
+                                <input type="radio"  name="myhff01" value="3" ng-model="record.myhff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myhff02" value="1" ng-model="record.myhff02">是
+                                <input type="radio"  name="myhff02" value="2" ng-model="record.myhff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myhff03" value="1" ng-model="record.myhff03">是
+                                <input type="radio"  name="myhff03" value="2" ng-model="record.myhff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myhff04" value="1" ng-model="record.myhff04">是
+                                <input type="radio"  name="myhff04" value="2" ng-model="record.myhff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myhff05" value="1" ng-model="record.myhff05">是
+                                <input type="radio"  name="myhff05" value="2" ng-model="record.myhff05">否
+                                <input type="radio"  name="myhff05" value="3" ng-model="record.myhff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myhff06" value="1" ng-model="record.myhff06">同意
+                                <input type="radio"  name="myhff06" value="2" ng-model="record.myhff06">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="myhff07" id="myhff07" style="height: 200px" ng-model="record.myhff07">{{record.myhff07}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--进口押汇-->
+                    <div class="{{initProductId==15?'tab-pane active':'tab-pane'}}" id="15" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：进口押汇</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myjff01" value="1" ng-model="record.myjff01">是
+                                <input type="radio"  name="myjff01" value="2" ng-model="record.myjff01">否
+                                <input type="radio"  name="myjff01" value="3" ng-model="record.myjff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myjff02" value="1" ng-model="record.myjff02">是
+                                <input type="radio"  name="myjff02" value="2" ng-model="record.myjff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myjff03" value="1" ng-model="record.myjff03">是
+                                <input type="radio"  name="myjff03" value="2" ng-model="record.myjff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myjff04" value="1" ng-model="record.myjff04">是
+                                <input type="radio"  name="myjff04" value="2" ng-model="record.myjff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myjff05" value="1" ng-model="record.myjff05">是
+                                <input type="radio"  name="myjff05" value="2" ng-model="record.myjff05">否
+                                <input type="radio"  name="myjff05" value="3" ng-model="record.myjff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="myjff06" value="1" ng-model="record.myjff06">同意
+                                <input type="radio"  name="myjff06" value="2" ng-model="record.myjff06">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="myjff07" id="myjff07" style="height: 200px" ng-model="record.myjff07">{{record.myjff07}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--福费廷自行买入-->
+                    <div class="{{initProductId==17?'tab-pane active':'tab-pane'}}" id="17" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：福费廷自行买入</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>主体授信是否有效</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mylff01" value="1" ng-model="record.mylff01">是
+                                <input type="radio"  name="mylff01" value="2" ng-model="record.mylff01">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>授信发放条件是否落实</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mylff02" value="1" ng-model="record.mylff02">是
+                                <input type="radio"  name="mylff02" value="2" ng-model="record.mylff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额领用额度</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mylff03" value="1" ng-model="record.mylff03">是
+                                <input type="radio"  name="mylff03" value="2" ng-model="record.mylff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>授信发放是否符合本行相关制度</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mylff04" value="1" ng-model="record.mylff04">是
+                                <input type="radio"  name="mylff04" value="2" ng-model="record.mylff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>此笔业务是否符合我行关于行业风险、国别风险管理要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="mylff05" value="1" ng-model="record.mylff05">是
+                                <input type="radio"  name="mylff05" value="2" ng-model="record.mylff05">否
+                                <input type="radio"  name="mylff05" value="3" ng-model="record.mylff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div>
+                            <label class="col-lg-2 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>上传附件栏</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" style="width:120px;" ng-model="record.mylff06">
+                                    <option value="0">债项尽职调查报告</option>
+                                    <option value="1">评审会议纪要</option>
+                                    <option value="2">其他</option>
+                                </select>
+                            </div>
+                            <input id="mylff07" type="file" />
+                            <button ng-click="uploadFile()">附件上传</button>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--出口双保理-->
+                    <div class="{{initProductId==18?'tab-pane active':'tab-pane'}}" id="18" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：出口双保理</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blaff01" value="1" ng-model="record.blaff01">是
+                                <input type="radio"  name="blaff01" value="2" ng-model="record.blaff01">否
+                                <input type="radio"  name="blaff01" value="3" ng-model="record.blaff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blaff02" value="1" ng-model="record.blaff02">是
+                                <input type="radio"  name="blaff02" value="2" ng-model="record.blaff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blaff03" value="1" ng-model="record.blaff03">是
+                                <input type="radio"  name="blaff03" value="2" ng-model="record.blaff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blaff04" value="1" ng-model="record.blaff04">是
+                                <input type="radio"  name="blaff04" value="2" ng-model="record.blaff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blaff05" value="1" ng-model="record.blaff05">是
+                                <input type="radio"  name="blaff05" value="2" ng-model="record.blaff05">否
+                                <input type="radio"  name="blaff05" value="3" ng-model="record.blaff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="blaff06" id="blaff06" ng-model="record.blaff06">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>审核结论</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blaff07" value="1" ng-model="record.blaff07">同意
+                                <input type="radio"  name="blaff07" value="2" ng-model="record.blaff07">不同意
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--国内工商企业代付-->
+                    <div class="{{initProductId==19?'tab-pane active':'tab-pane'}}" id="19" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：国内工商企业代付</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blbff01" value="1" ng-model="record.blbff01">是
+                                <input type="radio"  name="blbff01" value="2" ng-model="record.blbff01">否
+                                <input type="radio"  name="blbff01" value="3" ng-model="record.blbff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blbff02" value="1" ng-model="record.blbff02">是
+                                <input type="radio"  name="blbff02" value="2" ng-model="record.blbff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blbff03" value="1" ng-model="record.blbff03">是
+                                <input type="radio"  name="blbff03" value="2" ng-model="record.blbff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blbff04" value="1" ng-model="record.blbff04">是
+                                <input type="radio"  name="blbff04" value="2" ng-model="record.blbff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blbff05" value="1" ng-model="record.blbff05">是
+                                <input type="radio"  name="blbff05" value="2" ng-model="record.blbff05">否
+                                <input type="radio"  name="blbff05" value="3" ng-model="record.blbff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="blbff06" id="blbff06" ng-model="record.blbff06">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--进口双保理-->
+                    <div class="{{initProductId==20?'tab-pane active':'tab-pane'}}" id="20" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：进口双保理</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blcff01" value="1" ng-model="record.blcff01">是
+                                <input type="radio"  name="blcff01" value="2" ng-model="record.blcff01">否
+                                <input type="radio"  name="blcff01" value="3" ng-model="record.blcff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blcff02" value="1" ng-model="record.blcff02">是
+                                <input type="radio"  name="blcff02" value="2" ng-model="record.blcff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blcff03" value="1" ng-model="record.blcff03">是
+                                <input type="radio"  name="blcff03" value="2" ng-model="record.blcff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blcff04" value="1" ng-model="record.blcff04">是
+                                <input type="radio"  name="blcff04" value="2" ng-model="record.blcff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blcff05" value="1" ng-model="record.blcff05">是
+                                <input type="radio"  name="blcff05" value="2" ng-model="record.blcff05">否
+                                <input type="radio"  name="blcff05" value="3" ng-model="record.blcff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="blcff06" id="blcff06" ng-model="record.blcff06">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--国内双保理-->
+                    <div class="{{initProductId==21?'tab-pane active':'tab-pane'}}" id="21" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：国内双保理</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bldff01" value="1" ng-model="record.bldff01">是
+                                <input type="radio"  name="bldff01" value="2" ng-model="record.bldff01">否
+                                <input type="radio"  name="bldff01" value="3" ng-model="record.bldff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bldff02" value="1" ng-model="record.bldff02">是
+                                <input type="radio"  name="bldff02" value="2" ng-model="record.bldff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bldff03" value="1" ng-model="record.bldff03">是
+                                <input type="radio"  name="bldff03" value="2" ng-model="record.bldff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bldff04" value="1" ng-model="record.bldff04">是
+                                <input type="radio"  name="bldff04" value="2" ng-model="record.bldff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bldff05" value="1" ng-model="record.bldff05">是
+                                <input type="radio"  name="bldff05" value="2" ng-model="record.bldff05">否
+                                <input type="radio"  name="bldff05" value="3" ng-model="record.bldff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="bldff06" id="bldff06" ng-model="record.bldff06">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--国内保理（有追索权）-->
+                    <div class="{{initProductId==22?'tab-pane active':'tab-pane'}}" id="22" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：国内保理（有权索权）</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bleff01" value="1" ng-model="record.bleff01">是
+                                <input type="radio"  name="bleff01" value="2" ng-model="record.bleff01">否
+                                <input type="radio"  name="bleff01" value="3" ng-model="record.bleff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bleff02" value="1" ng-model="record.bleff02">是
+                                <input type="radio"  name="bleff02" value="2" ng-model="record.bleff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bleff03" value="1" ng-model="record.bleff03">是
+                                <input type="radio"  name="bleff03" value="2" ng-model="record.bleff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bleff04" value="1" ng-model="record.bleff04">是
+                                <input type="radio"  name="bleff04" value="2" ng-model="record.bleff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="bleff05" value="1" ng-model="record.bleff05">是
+                                <input type="radio"  name="bleff05" value="2" ng-model="record.bleff05">否
+                                <input type="radio"  name="bleff05" value="3" ng-model="record.bleff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="bleff06" id="bleff06" ng-model="record.bleff06">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--国内保理（无追索权）-->
+                    <div class="{{initProductId==23?'tab-pane active':'tab-pane'}}" id="23" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：国内保理（无追索权）</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blfff01" value="1" ng-model="record.blfff01">是
+                                <input type="radio"  name="blfff01" value="2" ng-model="record.blfff01">否
+                                <input type="radio"  name="blfff01" value="3" ng-model="record.blfff01">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blfff02" value="1" ng-model="record.blfff02">是
+                                <input type="radio"  name="blfff02" value="2" ng-model="record.blfff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>客户授信额度是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blfff03" value="1" ng-model="record.blfff03">是
+                                <input type="radio"  name="blfff03" value="2" ng-model="record.blfff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blfff04" value="1" ng-model="record.blfff04">是
+                                <input type="radio"  name="blfff04" value="2" ng-model="record.blfff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="blfff05" value="1" ng-model="record.blfff05">是
+                                <input type="radio"  name="blfff05" value="2" ng-model="record.blfff05">否
+                                <input type="radio"  name="blfff05" value="3" ng-model="record.blfff05">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="blfff06" id="blfff06" ng-model="record.blfff06">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--福费廷包买他行-->
+                    <div class="{{initProductId==24?'tab-pane active':'tab-pane'}}" id="24" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：福费廷包买他行</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额领用额度</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyaff01" value="1" ng-model="record.tyaff01">是
+                                <input type="radio"  name="tyaff01" value="2" ng-model="record.tyaff01">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>授信发放是否符合本行相关制度</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyaff02" value="1" ng-model="record.tyaff02">是
+                                <input type="radio"  name="tyaff02" value="2" ng-model="record.tyaff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>授信发放条件是否落实</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyaff03" value="1" ng-model="record.tyaff03">是
+                                <input type="radio"  name="tyaff03" value="2" ng-model="record.tyaff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>此笔业务是否符合我行关于行业风险、国别风险管理要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyaff04" value="1" ng-model="record.tyaff04">是
+                                <input type="radio"  name="tyaff04" value="2" ng-model="record.tyaff04">否
+                                <input type="radio"  name="tyaff04" value="3" ng-model="record.tyaff04">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div>
+                            <label class="col-lg-2 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>上传附件栏</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" style="width:120px;" ng-model="record.tyaff05">
+                                    <option value="0">债项尽职调查报告</option>
+                                    <option value="1">评审会议纪要</option>
+                                    <option value="2">其他</option>
+                                </select>
+                            </div>
+                            <input id="tyaff06" type="file" />
+                            <button ng-click="uploadFile()">附件上传</button>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-notice">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>风险处经办结论</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="tyaff07" id="tyaff07" style="height: 200px" ng-model="record.tyaff07">{{record.tyaff07}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他（如有，请在此说明）</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="tyaff08" id="tyaff08" ng-model="record.tyaff08">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--代开国内信用证-->
+                    <div class="{{initProductId==25?'tab-pane active':'tab-pane'}}" id="25" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：代开国内信用证</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tybff01" value="1" ng-model="record.tybff01">是
+                                <input type="radio"  name="tybff01" value="2" ng-model="record.tybff01">否
+                                <input type="radio"  name="tybff01" value="3" ng-model="record.tybff01">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tybff02" value="1" ng-model="record.tybff02">是
+                                <input type="radio"  name="tybff02" value="2" ng-model="record.tybff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用同业授信</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tybff03" value="1" ng-model="record.tybff03">是
+                                <input type="radio"  name="tybff03" value="2" ng-model="record.tybff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他（如有，请在此说明）</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="tybff04" id="tybff04" ng-model="record.tybff04">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--代理开立进口信用证-->
+                    <div class="{{initProductId==26?'tab-pane active':'tab-pane'}}" id="26" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：代理开立进口信用证</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tycff01" value="1" ng-model="record.tycff01">是
+                                <input type="radio"  name="tycff01" value="2" ng-model="record.tycff01">否
+                                <input type="radio"  name="tycff01" value="3" ng-model="record.tycff01">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tycff02" value="1" ng-model="record.tycff02">是
+                                <input type="radio"  name="tycff02" value="2" ng-model="record.tycff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用同业授信</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tycff03" value="1" ng-model="record.tycff03">是
+                                <input type="radio"  name="tycff03" value="2" ng-model="record.tycff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>国别风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tycff04" value="1" ng-model="record.tycff04">是
+                                <input type="radio"  name="tycff04" value="2" ng-model="record.tycff04">否
+                                <input type="radio"  name="tycff04" value="3" ng-model="record.tycff04">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他（如有，请在此说明）</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="tycff05" id="tycff05" ng-model="record.tycff05">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--转开代开非融资性保函-->
+                    <div class="{{initProductId==27?'tab-pane active':'tab-pane'}}" id="27" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：转开代开非融资性保函</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>行业风险限额是否充足</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tydff01" value="1" ng-model="record.tydff01">是
+                                <input type="radio"  name="tydff01" value="2" ng-model="record.tydff01">否
+                                <input type="radio"  name="tydff01" value="3" ng-model="record.tydff01">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tydff02" value="1" ng-model="record.tydff02">是
+                                <input type="radio"  name="tydff02" value="2" ng-model="record.tydff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用同业授信</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tydff03" value="1" ng-model="record.tydff03">是
+                                <input type="radio"  name="tydff03" value="2" ng-model="record.tydff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他（如有，请在此说明）</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="tydff04" id="tydff04" ng-model="record.tydff04">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--转开代开融资性保函-->
+                    <div class="{{initProductId==28?'tab-pane active':'tab-pane'}}" id="28" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：转开代开融资性保函</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用行业风险限额</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyeff01" value="1" ng-model="record.tyeff01">是
+                                <input type="radio"  name="tyeff01" value="2" ng-model="record.tyeff01">否
+                                <input type="radio"  name="tyeff01" value="3" ng-model="record.tyeff01">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyeff02" value="1" ng-model="record.tyeff02">是
+                                <input type="radio"  name="tyeff02" value="2" ng-model="record.tyeff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用同业授信</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyeff03" value="1" ng-model="record.tyeff03">是
+                                <input type="radio"  name="tyeff03" value="2" ng-model="record.tyeff03">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用国别风险限额</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyeff04" value="1" ng-model="record.tyeff04">是
+                                <input type="radio"  name="tyeff04" value="2" ng-model="record.tyeff04">否
+                                <input type="radio"  name="tyeff04" value="3" ng-model="record.tyeff04">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他（如有，请在此说明）</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="tyeff05" id="tyeff05" ng-model="record.tyeff05">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--保兑-->
+                    <div class="{{initProductId==29?'tab-pane active':'tab-pane'}}" id="29" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：保兑</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用行业风险限额</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyfff01" value="1" ng-model="record.tyfff01">是
+                                <input type="radio"  name="tyfff01" value="2" ng-model="record.tyfff01">否
+                                <input type="radio"  name="tyfff01" value="3" ng-model="record.tyfff01">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyfff02" value="1" ng-model="record.tyfff02">是
+                                <input type="radio"  name="tyfff02" value="2" ng-model="record.tyfff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用国别风险限额</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyfff03" value="1" ng-model="record.tyfff03">是
+                                <input type="radio"  name="tyfff03" value="2" ng-model="record.tyfff03">否
+                                <input type="radio"  name="tyfff03" value="3" ng-model="record.tyfff03">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用客户授信</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyfff04" value="1" ng-model="record.tyfff04">是
+                                <input type="radio"  name="tyfff04" value="2" ng-model="record.tyfff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tyfff05" value="1" ng-model="record.tyfff05">是
+                                <input type="radio"  name="tyfff05" value="2" ng-model="record.tyfff05">否
+                                <input type="radio"  name="tyfff05" value="3" ng-model="record.tyfff05">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他（如有，请在此说明）</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="tyfff06" id="tyfff06" ng-model="record.tyfff06">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--风险参与-->
+                    <div class="{{initProductId==30?'tab-pane active':'tab-pane'}}" id="30" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：风险参与</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用行业风险限额</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tygff01" value="1" ng-model="record.tygff01">是
+                                <input type="radio"  name="tygff01" value="2" ng-model="record.tygff01">否
+                                <input type="radio"  name="tygff01" value="3" ng-model="record.tygff01">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tygff02" value="1" ng-model="record.tygff02">是
+                                <input type="radio"  name="tygff02" value="2" ng-model="record.tygff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用国别风险限额</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tygff03" value="1" ng-model="record.tygff03">是
+                                <input type="radio"  name="tygff03" value="2" ng-model="record.tygff03">否
+                                <input type="radio"  name="tygff03" value="3" ng-model="record.tygff03">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用客户授信</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tygff04" value="1" ng-model="record.tygff04">是
+                                <input type="radio"  name="tygff04" value="2" ng-model="record.tygff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="tygff05" value="1" ng-model="record.tygff05">是
+                                <input type="radio"  name="tygff05" value="2" ng-model="record.tygff05">否
+                                <input type="radio"  name="tygff05" value="3" ng-model="record.tygff05">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他（如有，请在此说明）</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="tygff06" id="tygff06" ng-model="record.tygff06">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--远期结售汇-->
+                    <div class="{{initProductId==31?'tab-pane active':'tab-pane'}}" id="31" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：远期结售汇</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>主体授信是否有效</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="yqaff01" value="1" ng-model="record.yqaff01">是
+                                <input type="radio"  name="yqaff01" value="2" ng-model="record.yqaff01">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>授信发放条件是否落实</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="yqaff02" value="1" ng-model="record.yqaff02">是
+                                <input type="radio"  name="yqaff02" value="2" ng-model="record.yqaff02">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额领用额度</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="yqaff03" value="1" ng-model="record.yqaff03">是
+                                <input type="radio"  name="yqaff03" value="2" ng-model="record.yqaff03">否
+                                <input type="radio"  name="yqaff03" value="3" ng-model="record.yqaff03">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>授信发放是否符合本行相关制度</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="yqaff04" value="1" ng-model="record.yqaff04">是
+                                <input type="radio"  name="yqaff04" value="2" ng-model="record.yqaff04">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div>
+                            <label class="col-lg-2 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>上传附件栏</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" style="width:120px;" ng-model="record.yqaff05">
+                                    <option value="0">债项尽职调查报告</option>
+                                    <option value="1">评审会议纪要</option>
+                                    <option value="2">其他</option>
+                                </select>
+                            </div>
+                            <input id="yqaff06" type="file" />
+                            <button ng-click="uploadFile()">附件上传</button>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他（如有，请在此说明）</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="yqaff07" id="yqaff07" ng-model="record.yqaff07">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+                    <!--租金保理-->
+                    <div class="{{initProductId==32?'tab-pane active':'tab-pane'}}" id="32" >
+                        <div>
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>产品名称：租金保理</label>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用客户授信</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="zjaff01" value="1" ng-model="record.zjaff01">是
+                                <input type="radio"  name="zjaff01" value="2" ng-model="record.zjaff01">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                       <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用行业风险限额</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="zjaff02" value="1" ng-model="record.zjaff02">是
+                                <input type="radio"  name="zjaff02" value="2" ng-model="record.zjaff02">否
+                                <input type="radio"  name="zjaff02" value="3" ng-model="record.zjaff02">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                       <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否足额占用国别风险限额</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="zjaff03" value="1" ng-model="record.zjaff03">是
+                                <input type="radio"  name="zjaff03" value="2" ng-model="record.zjaff03">否
+                                <input type="radio"  name="zjaff03" value="3" ng-model="record.zjaff03">不涉及
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                       <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实担保措施</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="zjaff04" value="1" ng-model="record.zjaff04">是
+                                <input type="radio"  name="zjaff04" value="2" ng-model="record.zjaff04">否
+                                <input type="radio"  name="zjaff04" value="3" ng-model="record.zjaff04">免担保
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-group">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>是否落实其他审批要求</label>
+                            <div class="col-sm-4">
+                                
+                                <input type="radio"  name="zjaff05" value="1" ng-model="record.zjaff05">是
+                                <input type="radio"  name="zjaff05" value="2" ng-model="record.zjaff05">否
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-classifyLevel">
+                            <label class="col-lg-4 col-sm-3 control-label">
+                                <span class="text-danger wrapper-sm">*</span>其他</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="zjaff06" id="zjaff06" ng-model="record.zjaff06">
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-dept">
+                            <label class="col-lg-2 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>经办审核结论</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" style="width:120px;" ng-model="record.zjaff07">
+                                    <option value="" selected>请选择</option>
+                                    <option value="0">同意</option>
+                                    <option value="1">不同意</option>
+                                </select>
+                                <span class="help-block m-b-none"></span>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+
+
+                    <div style="display:none"; id="lastTab">
+                        <div class="tab-pane active">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>经办审核意见：</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="scheme" id="scheme" style="height: 200px" ng-model="taskRecord.scheme"></textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                        <div class="form-liaisonleader">
+                            <label class="col-lg-2 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>债项发放结论：</label>
+                            <div class="col-sm-6">
+                                <div class="selects">
+                                    <select ng-model="comment" required="required" class="selects" ng-options="x.name for x in transitions" >
+                                        <option value="">--请选择--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <span class="help-block m-b-none"></span>
+
+                        </div>
+                        <div ng-show="record.comment=='2'" class="line line-dashed b-b line-lg pull-in"></div>
+
+
+                        <div ng-show="record.comment=='2'" class="form-liaisonleader">
+                            <label class="col-lg-4 col-sm-3 control-label" >
+                                <span class="text-danger wrapper-sm">*</span>债项发放意见</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control" name="result" id="result" style="height: 200px" ng-model="record.result">{{record.result}}</textarea>
+                            </div>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+
+                        <div class="col-sm-6 col-sm-offset-2">
+                            <button type="reset" class="btn btn-default w-xs">返回</button>
+                            <button type="submit" class="btn btn-info w-xs m-l-xl" ng-disabled="isDisabled" ng-click="submit()">提交</button>
+                        </div>
+                        <div class="line line-dashed b-b line-lg pull-in"></div>
+                    </div>
+                    </div>
+
+                </form>
+
+                <ul id="myTab" class="nav nav-tabs">
+                    <li  ng-repeat="x in products" class="{{$index==0?'active':''}}" >
+                        <a data-toggle="tab" data-target="#{{x.productId}}" onClick="showTab(this)" da="{{$last}}">{{$index + 1}}</a>
+                    </li>
+                </ul>
+
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+                <div class="table-responsive" style="overflow: inherit; border-top: #666666 1px solid;">
+                    <div style="height: 30px;border: #666666 1px solid;">
+                        <label style="margin-bottom: -5px;" class="col-lg-4 col-sm-3 control-label"><span class="text-danger wrapper-sm"></span>历史意见信息</label>
+                    </div>
+                    <table class="table table-striped b-t b-light text-center" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <th class="table-striped-td" width="80px">序号</th>
+                            <th class="table-striped-td" width="*00px;">岗位</th>
+                            <th class="table-striped-td" width="100px;">姓名</th>
+                            <th class="table-striped-td" width="100px;">操作</th>
+                            <th class="table-striped-td" width="200px;">时间</th>
+                             <!--<th class="table-striped-td" width="200px;">备注</th>-->
+                            <th class="table-striped-td" width="100px;">操作详情</th>
+                        </tr>
+                        <tr ng-repeat="item in voList">
+                            <td class="table-striped-td" ng-bind="$index+1">1</td>
+                            <td class="table-striped-td">{{item.roleName}}</td>
+                            <td class="table-striped-td">{{item.userName}}</td>
+                            <td class="table-striped-td">{{item.commentInfo}}</td>
+                            <td class="table-striped-td">{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                             <!--<td class="table-striped-td">{{item.remark}}</td>-->
+                            </td>
+                            <td class="table-striped-td">
+                                <a ui-sref="{{item.taskId}}"
+                                   class="btn btn-sm btn-default"> <i
+                                        class="fa fa-edit m-r-xs text-sm"></i>查看
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="line line-dashed b-b line-lg pull-in"></div>
+
+            </div>
+    </div>
+</div>
+<script>
+    function showTab(i){
+        var title_ = $(i).attr("da");
+        if(title_=="true"){
+            document.getElementById("lastTab").style.display="block";
+        }else{
+            document.getElementById("lastTab").style.display="none";
+        }
+    }
+</script>
